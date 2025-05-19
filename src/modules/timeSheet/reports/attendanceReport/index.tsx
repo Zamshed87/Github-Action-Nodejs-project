@@ -14,28 +14,26 @@ import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, message, Row, Typography } from "antd";
-import { getWorkplaceDetails } from "../../../../common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
+import {} from "react-icons/md";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
-import {} from "react-icons/md";
+import { getWorkplaceDetails } from "../../../../common/api";
 
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 
-import { getCurrentMonthName } from "utility/monthIdToMonthName";
-import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
-import { column } from "./helper";
-import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
 import axios from "axios";
+import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
+import { column } from "./helper";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
@@ -142,25 +140,6 @@ const AttendanceReport = () => {
       ?.map((item: any) => item?.intWorkplaceId)
       .join(",");
 
-    // landingApi.action({
-    //   urlKey: "GetEmpAttendanceReport",
-    //   method: "GET",
-    //   params: {
-    //     AccountId: orgId,
-    //     IntBusinessUnitId: buId,
-    //     IsXls: false,
-    //     IsPaginated: true,
-
-    //     IntWorkplaceGroupId: values?.workplaceGroup?.value,
-    //     // IntWorkplaceId: values?.workplace?.value,
-    //     WorkplaceList: workplaceList?.length > 0 ? `${workplaceList}` : "",
-    //     PageNo: pagination.current || 1,
-    //     PageSize: pagination.pageSize || 25,
-    //     FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-    //     ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-    //     SearchTxt: searchText,
-    //   },
-    // });
     const payload = {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
@@ -183,6 +162,7 @@ const AttendanceReport = () => {
         filerList?.department?.length > 0 ? `${filerList?.department}` : "",
       designations:
         filerList?.designation?.length > 0 ? `${filerList?.designation}` : "",
+      sections: filerList?.section?.length > 0 ? `${filerList?.section}` : "",
     };
     landingApi.action({
       urlKey: "GetEmpAttendanceReport",
@@ -263,7 +243,9 @@ const AttendanceReport = () => {
     {
       title: "Section",
       dataIndex: "section",
-
+      filter: true,
+      filterKey: "strSectionList",
+      filterSearch: true,
       width: 100,
     },
     {
@@ -411,10 +393,10 @@ const AttendanceReport = () => {
 
                   const payload = {
                     intBusinessUnitId: buId,
-                    intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
+                    intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
 
                     workplaceList:
-                      workplaceList?.length > 0 ? `${workplaceList}` : 0,
+                      workplaceList?.length > 0 ? `${workplaceList}` : wId,
                     pageNo: 0,
                     pageSize: 0,
                     isPaginated: true,
@@ -453,8 +435,18 @@ const AttendanceReport = () => {
                         };
                       }
                     );
+                    const reportStartDate = moment(values?.fromDate).format(
+                      "DD MMM YYYY"
+                    );
+
+                    const reportEndDate = moment(values?.toDate).format(
+                      "DD MMM YYYY"
+                    );
+
                     createCommonExcelFile({
-                      titleWithDate: `Employees Attendance Report ${getCurrentMonthName()}-${currentYear()}`,
+                      titleWithDate: `Employees Attendance Report ${
+                        reportStartDate || ""
+                      } to ${reportEndDate || ""}`,
                       fromDate: "",
                       toDate: "",
                       buAddress: (buDetails as any)?.strAddress,

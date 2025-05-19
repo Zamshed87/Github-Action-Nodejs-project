@@ -3,7 +3,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form } from "antd";
+import { Form, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
@@ -14,10 +14,13 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import AddEditForm from "./addEditForm";
 import { dateFormatter } from "utility/dateFormatter";
+import CommonFilter from "common/CommonFilter";
 
 function CommonAppPipeline() {
   // hook
   const dispatch = useDispatch();
+
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   // redux
   const { buId, wgId, wId, orgId } = useSelector(
@@ -124,9 +127,41 @@ function CommonAppPipeline() {
       dataIndex: "workplaceGroupName",
       sorter: true,
     },
+
     {
       title: "Workplace/Concern",
       dataIndex: "workplaceName",
+      render: (_: any, rec: any) => {
+        const name = rec?.workplaceName || "";
+        const workplaces = name.split(",").map((w: any) => w.trim());
+        const firstWorkplace = workplaces[0] || "";
+        const remainingCount = workplaces.length - 1;
+
+        return workplaces.length > 1 ? (
+          <Tooltip title={name}>
+            <span>
+              {firstWorkplace},{" "}
+              <span
+                style={{
+                  backgroundColor: "rgb(20 184 54 / 57%)", // Custom green with transparency
+                  color: "white",
+                  padding: "2px 6px",
+                  borderRadius: "10px",
+                  fontWeight: 600,
+                  fontSize: "10px",
+                  display: "inline-block",
+                  minWidth: "7px",
+                  textAlign: "center",
+                }}
+              >
+                {remainingCount}+
+              </span>
+            </span>
+          </Tooltip>
+        ) : (
+          firstWorkplace
+        );
+      },
       sorter: true,
     },
     {
@@ -147,7 +182,6 @@ function CommonAppPipeline() {
       title: "Random Approval Count",
       dataIndex: "randomApproverCount",
       sorter: true,
-
     },
     {
       width: 50,
@@ -167,12 +201,32 @@ function CommonAppPipeline() {
                   setId(rec);
                 },
               },
+              {
+                type: "extend",
+                onClick: () => {
+                  setOpen(true);
+                  setId({ ...rec, type: "extend" });
+                },
+              },
             ]}
           />
         </>
       ),
     },
   ];
+
+  const handleFilter = (values: any) => {
+    landingApi.action({
+      urlKey: "ApprovalPipeline",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        workplaceId: values?.workplace?.value,
+        workplaceGroupId: values?.workplaceGroup?.value,
+        businessUnitId: buId,
+      },
+    });
+  };
   // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
@@ -185,21 +239,27 @@ function CommonAppPipeline() {
         <PCard>
           <PCardHeader
             title="Common Approval Pipeline"
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            // }}
             submitText="Approval Pipeline"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
+            filterComponent={
+              <CommonFilter
+                visible={isFilterVisible}
+                onClose={(visible: any) => setIsFilterVisible(visible)}
+                onFilter={handleFilter}
+                // isDate={true}
+                isWorkplaceGroup={true}
+                isWorkplace={true}
+                isAllValue={true}
+              />
+            }
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={
-              landingApi?.data?.length > 0 ? landingApi?.data : []
-            }
+            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header}
             onChange={(pagination, filters, sorter, extra) => {
@@ -226,7 +286,9 @@ function CommonAppPipeline() {
 
       <PModal
         open={open}
-        title={id ? "Edit Approval Pipeline" : "Create Approval Pipeline"}
+        title={
+          id ? "Edit/Extend Approval Pipeline" : "Create Approval Pipeline"
+        }
         width={1000}
         onCancel={() => {
           setId("");

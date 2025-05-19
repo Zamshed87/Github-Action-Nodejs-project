@@ -38,6 +38,7 @@ type PCardHeaderType = {
   }>;
   children?: React.ReactNode;
   buttonListRightLeft?: boolean;
+  filterComponent?: React.ReactNode;
 };
 export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
   const {
@@ -139,6 +140,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         {/* Search Input */}
         {onSearch ? (
           <PInput
+            name="search"
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={debouncedOnSearch}
@@ -184,6 +186,8 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
             icon={submitIcon}
           />
         ) : undefined}
+          {props.filterComponent && <div className="filter-container">{props.filterComponent}</div>}
+
       </div>
     </div>
   );

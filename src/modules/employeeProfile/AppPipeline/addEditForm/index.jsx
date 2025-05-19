@@ -1,12 +1,16 @@
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Checkbox, Col, Form, InputNumber, Row } from "antd";
+import { Checkbox, Col, Form, InputNumber, message, Row } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { labelChangeByOrgId } from "utility/strLabelChange";
-import { approverDDL, header, submitHandler } from "./helper";
+import {
+  fetchApproverData,
+  fetchPipelineData,
+  header,
+  submitHandler,
+} from "./helper";
 import DraggableTable from "./Draggabletable";
 
 export default function AddEditForm({
@@ -22,13 +26,14 @@ export default function AddEditForm({
   const [randomCount, setRandomCount] = useState(false);
   const [random, setRandom] = useState(false);
   const [isSequence, setIsSequence] = useState(true);
+  const [pipelineDDL, setPipelineDDL] = useState([]);
+  const [approverDDL, setApproverDDL] = useState([]);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
   const CommonEmployeeDDL = useApiRequest([]);
   const getWgDDL = useApiRequest({});
   const getWDDL = useApiRequest({});
-  const getPipelineDDL = useApiRequest({});
   const getUserGroupDDL = useApiRequest({});
   const { supervisor } = useSelector(
     (state) => state?.auth?.keywords,
@@ -63,6 +68,48 @@ export default function AddEditForm({
     });
   };
 
+  const getWorkplace = () => {
+    const values = form.getFieldsValue();
+    getWDDL.action({
+      urlKey: "GetWorkplaceWisePipelineStatusDdl",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: values?.orgName?.intWorkplaceGroupId || wgId,
+        applicationTypeId:
+          values?.pipelineName?.value || singleData?.applicationTypeId,
+      },
+      onSuccess: (res) => {
+        if (res.length > 1) {
+          res.unshift({
+            label: "All",
+            value: -1,
+            customLabel: "All",
+          });
+        }
+
+        res.forEach((item, i) => {
+          if (item.value !== -1) {
+            res[i].isNotSetup = true;
+
+            let statusLabel = " 🔴 (Pipeline Not Setup)";
+            if (item.isIndividualSetup) {
+              statusLabel = " 🟢 (Pipeline Individual Setup)";
+            } else if (item.isAllSetup) {
+              statusLabel = " 🔵 (Pipeline All Setup)";
+            }
+
+            res[i].label = `${item?.label} ${statusLabel}`;
+          }
+
+          res[i].customLabel = `${item?.label}`;
+          res[i].value = item?.value;
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     getWgDDL.action({
       urlKey: "WorkplaceGroupIdAll",
@@ -78,21 +125,23 @@ export default function AddEditForm({
         });
       },
     });
-    getWDDL.action({
-      urlKey: "WorkplaceIdAll",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
+    // getWDDL.action({
+    //   urlKey: "WorkplaceIdAll",
+    //   method: "GET",
+    //   params: {
+    //     accountId: orgId,
+    //     businessUnitId: buId,
+    //     workplaceGroupId: wgId,
+    //   },
+    //   onSuccess: (res) => {
+    //     res.forEach((item, i) => {
+    //       res[i].label = item?.strWorkplace;
+    //       res[i].value = item?.intWorkplaceId;
+    //     });
+    //   },
+    // });
+    getWorkplace();
+
     getUserGroupDDL.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -111,24 +160,11 @@ export default function AddEditForm({
     });
   }, [orgId, buId, wgId]);
   useEffect(() => {
-    getPipelineDDL.action({
-      urlKey: "ApprovalPipelineDDL",
-      method: "GET",
-      params: {
-        employeeId: employeeId || 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strDisplayName;
-          res[i].value = item?.intId;
-        });
-      },
-    });
+    fetchPipelineData(setPipelineDDL);
   }, [orgId, buId]);
 
   // Form Instance
   const [form] = Form.useForm();
-console.log("singleData",singleData)
   useEffect(() => {
     if (singleData?.id) {
       getPipelineDetails.action({
@@ -142,52 +178,80 @@ console.log("singleData",singleData)
           workplaceId: wId,
         },
         onSuccess: (data) => {
+          const applicationTypeId =
+            data?.header?.applicationTypeId || singleData?.applicationTypeId;
+
+          const isExtendType = singleData?.type === "extend";
           form.setFieldsValue({
             ...singleData,
             orgName: {
-              value: data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
-              label: data?.header?.workplaceGroupName || singleData?.workplaceGroupName,
+              value:
+                data?.header?.workplaceGroupId || singleData?.workplaceGroupId,
+              label:
+                data?.header?.workplaceGroupName ||
+                singleData?.workplaceGroupName,
             },
-            workplace: {
-              value: data?.header?.workplaceId || singleData?.workplaceId,
-              label: data?.header?.workplaceName || singleData?.workplaceName,
-            },
+            ...(isExtendType
+              ? {}
+              : {
+                  workplace: {
+                    value: data?.header?.workplaceId,
+                    label: data?.header?.workplaceName || "All",
+                  },
+                }),
             pipelineName: {
-              value: data?.header?.applicationTypeId || singleData?.applicationTypeId,
-              label: data?.header?.applicationType || singleData?.applicationType,
+              value:
+                data?.header?.applicationTypeId ||
+                singleData?.applicationTypeId,
+              label:
+                data?.header?.applicationType || singleData?.applicationType,
             },
             remarks: data?.header?.strRemarks || "",
             randomCountValue: data?.header?.randomApproverCount || 0,
             isSequence: data?.header?.isInSequence || false,
+            randomCount: !data?.header?.isInSequence,
             id: data?.header?.id || 0,
           });
-          const rowData = data?.row?.map((item) => ({
+
+          setIsSequence(data?.header?.isInSequence);
+          setRandomCount(!data?.header?.isInSequence);
+          setRandom(!data?.header?.isInSequence);
+          const rowData = data?.row?.map((item, index) => ({
             approver: item?.approverType || "User Group",
-            userGroup: item?.userGroupOrEmployeeId || "", 
+            approverId: item?.approverTypeId || 0,
+            userGroup: item?.userGroupOrEmployeeId || "",
             intPipelineRowId: item?.id || null,
             configHeaderId: data?.header?.id || 0,
             id: item?.id,
             isSupervisor: item?.approverType === "Supervisor",
             isLineManager: item?.approverType === "Line Manager",
             intUserGroupHeaderId: item?.userGroupOrEmployeeId || null,
-            intShortOrder: item?.sequenceId || 0,
+            userGroupOrEmployeeName: item?.userGroupOrEmployeeName || "",
+            intShortOrder: item?.sequenceId || index + 1,
             isCreate: false,
-            isDelete: false, 
+            isDelete: false,
             strStatusTitle: item?.afterApproveStatus || "",
             strStatusTitlePending: item?.beforeApproveStatus || "",
-            randomCount: false, 
+            randomCount: false,
           }));
-          
+
           setTableData(rowData);
+          if (applicationTypeId) {
+            fetchApproverData(setApproverDDL, applicationTypeId);
+          }
         },
       });
     }
-  }, [singleData]);
+  }, [singleData, singleData?.applicationTypeId]);
   const remover = (payload) => {
-    const filterArr = tableData.filter((itm, idx) => idx !== payload);
+    const filterArr = tableData
+      .filter((itm, idx) => idx !== payload)
+      .map((item, index) => ({
+        ...item,
+        intShortOrder: index + 1, // Update sequence based on new position
+      }));
     setTableData(filterArr);
   };
-
   return (
     <PForm
       form={form}
@@ -218,6 +282,31 @@ console.log("singleData",singleData)
       <Row gutter={[10, 2]}>
         <Col md={12} sm={24}>
           <PSelect
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
+            options={pipelineDDL || []}
+            name="pipelineName"
+            label="Pipeline Name"
+            showSearch
+            filterOption={true}
+            placeholder="Pipeline Name"
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                pipelineName: op,
+                approver: undefined,
+              });
+              getWorkplace();
+              fetchApproverData(setApproverDDL, value);
+            }}
+            rules={[{ required: true, message: "Pipeline Name is required" }]}
+          />
+        </Col>
+        <Col md={12} sm={24}>
+          <PSelect
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
             options={getWgDDL?.data?.length > 0 ? getWgDDL?.data : []}
             name="orgName"
             label="Workplace Group"
@@ -229,72 +318,103 @@ console.log("singleData",singleData)
                 orgName: op,
                 workplace: undefined,
               });
-              getWDDL.action({
-                urlKey: "WorkplaceIdAll",
-                method: "GET",
-                params: {
-                  accountId: orgId,
-                  businessUnitId: buId,
-                  workplaceGroupId: value,
-                },
-                onSuccess: (res) => {
-                  res.forEach((item, i) => {
-                    res[i].label = item?.strWorkplace;
-                    res[i].value = item?.intWorkplaceId;
-                  });
-                },
-              });
+              getWorkplace();
             }}
             rules={[{ required: true, message: "Workplace Group is required" }]}
           />
         </Col>
+
         <Col md={12} sm={24}>
           <PSelect
-            allowClear
+            disabled={
+              singleData?.type === "extend" ? false : singleData ? true : false
+            }
             maxTagCount="responsive"
             mode="multiple"
-            options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+            options={
+              getWDDL?.data?.length > 0
+                ? getWDDL?.data
+                    .filter((opt, index) => {
+                      const hasAllSetup = getWDDL?.data.some((o) =>
+                        o.label.includes("🔵 (Pipeline All Setup)")
+                      );
+                      const hasNotSetup = getWDDL?.data.some((o) =>
+                        o.label.includes("Pipeline Not Setup")
+                      );
+
+                      // Remove "All" if it's at the top AND "All Setup" exists, unless "Not Setup" is present
+                      if (
+                        index === 0 &&
+                        opt.label.includes("All") &&
+                        hasAllSetup &&
+                        !hasNotSetup
+                      ) {
+                        return false;
+                      }
+
+                      return true;
+                    })
+                    .map((opt) => ({
+                      ...opt,
+                      disabled: opt.label.includes("🟢 (Pipeline Individual Setup)"),
+                    }))
+                : []
+            }
             name="workplace"
             label="Workplace"
             showSearch
             filterOption={true}
             placeholder="Workplace"
-            onChange={(value, op) => {
+            onChange={(value, options) => {
+              let selectedValues = value;
+              let selectedOptions = options;
+
+              const isSelectingAll = selectedValues.includes(-1);
+              const isSelectingIndividual = selectedOptions.some((opt) =>
+                opt.label.includes("🟢 (Pipeline Individual Setup)")
+              );
+              const isSelectingAllSetup = selectedOptions.some((opt) =>
+                opt.label.includes("🔵 (Pipeline All Setup)")
+              );
+
+              if (isSelectingAll) {
+                selectedValues = [-1];
+                selectedOptions = options.filter((opt) => opt.value === -1);
+              } else if (isSelectingIndividual) {
+                selectedValues = [
+                  selectedOptions.find((opt) =>
+                    opt.label.includes("🟢 (Pipeline Individual Setup)")
+                  )?.value,
+                ];
+                selectedOptions = [
+                  selectedOptions.find((opt) =>
+                    opt.label.includes("🟢 (Pipeline Individual Setup)")
+                  ),
+                ];
+              } else {
+                selectedValues = selectedValues.filter((val) => val !== -1);
+                selectedOptions = selectedOptions.filter(
+                  (opt) => opt.value !== -1
+                );
+              }
+
+              if (isSelectingAllSetup) {
+                message.warning(
+                  "This workplace is already set up inside All Setup."
+                );
+              }
+
               form.setFieldsValue({
-                workplace: op,
+                workplace: selectedOptions,
               });
             }}
+            rules={[{ required: true, message: "Workplace is required" }]}
           />
         </Col>
+
         <Col md={12} sm={24}>
           <PSelect
-            options={
-              getPipelineDDL?.data?.length > 0 ? getPipelineDDL?.data : []
-            }
-            name="pipelineName"
-            label="Pipeline Name"
-            showSearch
-            filterOption={true}
-            placeholder="Pipeline Name"
-            onChange={(value, op) => {
-              form.setFieldsValue({
-                pipelineName: op,
-              });
-            }}
-            rules={[{ required: true, message: "Pipeline Name is required" }]}
-          />
-        </Col>
-        {/* <Col md={12} sm={24}>
-          <PInput
-            type="text"
-            name="remarks"
-            label="Remarks"
-            placeholder="Remarks"
-          />
-        </Col> */}
-        <Col md={12} sm={24}>
-          <PSelect
-            options={approverDDL(orgId, supervisor)}
+            options={approverDDL || []}
             name="approver"
             label="Approver"
             showSearch
@@ -325,7 +445,6 @@ console.log("singleData",singleData)
                     options={CommonEmployeeDDL?.data || []}
                     loading={CommonEmployeeDDL?.loading}
                     onChange={(value, op) => {
-                      console.log("op", op);
                       form.setFieldsValue({
                         employee: op,
                       });
@@ -366,7 +485,7 @@ console.log("singleData",singleData)
             const { approver } = form.getFieldsValue();
             return (
               <>
-                {approver?.value === 3 ? (
+                {approver?.value == 3 ? (
                   <Col md={24} sm={24}>
                     <PSelect
                       options={
@@ -413,10 +532,17 @@ console.log("singleData",singleData)
                   setRandomCount(false);
                   setRandom(false);
                 } else {
-                  form.setFieldsValue({
-                    isSequence: false,
-                  });
-                  setIsSequence(false);
+                  const randomCount = form.getFieldValue("randomCount");
+                  if (!randomCount) {
+                    form.setFieldsValue({ isSequence: true });
+                    setIsSequence(true);
+                    toast.warn("At least one option must be selected!", {
+                      toastId: "isSequence",
+                    });
+                  } else {
+                    form.setFieldsValue({ isSequence: false });
+                    setIsSequence(false);
+                  }
                 }
               }}
             >
@@ -443,10 +569,17 @@ console.log("singleData",singleData)
                   setIsSequence(false);
                   setRandom(true);
                 } else {
-                  form.setFieldsValue({
-                    randomCount: false,
-                  });
-                  setRandomCount(false);
+                  const isSequence = form.getFieldValue("isSequence");
+                  if (!isSequence) {
+                    form.setFieldsValue({ randomCount: true });
+                    setRandomCount(true);
+                    toast.warn("At least one option must be selected!", {
+                      toastId: "randomCount",
+                    });
+                  } else {
+                    form.setFieldsValue({ randomCount: false });
+                    setRandomCount(false);
+                  }
                 }
               }}
             >
@@ -484,7 +617,6 @@ console.log("singleData",singleData)
             }
           />
         </Form.Item>
-
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { approver, userGroup, strTitle, strTitlePending, employee } =
@@ -525,15 +657,26 @@ console.log("singleData",singleData)
                       if (userGroupExists?.length > 0)
                         return toast.warn("Already exists user group");
 
-                      // Dynamic Sequence (based on tableData length)
+                      if (
+                        approver?.label === "User Group" &&
+                        !userGroup?.value
+                      ) {
+                        return toast.warn("Please select user group");
+                      }
+                      if (
+                        approver?.label === "Individual Employee" &&
+                        !employee?.value
+                      ) {
+                        return toast.warn("Please select employee");
+                      }
+
                       const newSequence = tableData.length + 1;
 
                       const data = [...tableData];
-                      console.log("approver", approver);
                       const obj = {
-                        approverLabel: approver?.label,
-                        approverValue: approver?.value,
-                        userGroup:
+                        approver: approver?.label || "",
+                        approverId: approver?.value || 0,
+                        userGroupOrEmployeeName:
                           userGroup?.label ||
                           employee?.employeeNameWithCode ||
                           "",
@@ -541,7 +684,8 @@ console.log("singleData",singleData)
                         id: 0,
                         isSupervisor: approver?.value === 1,
                         isLineManager: approver?.value === 2,
-                        intUserGroupHeaderId: userGroup?.value || 0,
+                        intUserGroupHeaderId:
+                          userGroup?.value || employee?.value || 0,
                         intShortOrder: newSequence,
                         isCreate: true,
                         isDelete: false,
@@ -567,7 +711,6 @@ console.log("singleData",singleData)
             );
           }}
         </Form.Item>
-        {console.log("tableData", tableData)}
         <Col md={24} sm={24}>
           {tableData.length > 0 && (
             <DraggableTable

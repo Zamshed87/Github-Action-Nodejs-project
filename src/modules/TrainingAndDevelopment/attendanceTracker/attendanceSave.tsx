@@ -295,7 +295,13 @@ const TnDAttendanceSave = () => {
                       .validateFields()
                       .then(() => {
                         getLandingApi(
-                          `/TrainingAttendance/Participant/${data?.id}?attendanceDate=${values?.attendanceDate?.trainingDate}`,
+                          `/TrainingAttendance/Participant/${
+                            data?.id
+                          }?scheduleId=${
+                            values?.attendanceDate?.value
+                          }&attendanceDate=${
+                            values?.attendanceDate?.trainingDate?.split("T")[0]
+                          }`,
                           (data: any) => {
                             setRowData(
                               data.map((item: any, index: number) => ({

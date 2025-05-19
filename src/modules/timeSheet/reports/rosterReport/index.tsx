@@ -1,19 +1,7 @@
-import {
-  Avatar,
-  DataTable,
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
+import { Avatar, DataTable, PCard, PCardHeader, PForm } from "Components";
 import type { RangePickerProps } from "antd/es/date-picker";
-
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
-import { getWorkplaceDetails } from "common/api";
+import { Form } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
@@ -21,34 +9,40 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   dateFormatter,
   monthFirstDate,
   monthLastDate,
 } from "utility/dateFormatter";
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
-import { fromToDateList } from "../helper";
-import { gray600 } from "utility/customColor";
-import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import axios from "axios";
+import { debounce } from "lodash";
+import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
+import { gray600 } from "utility/customColor";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { column } from "./helper";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
+import { fromToDateList } from "../helper";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
+import { column } from "./helper";
 
 const RosterReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, wId, employeeId, orgId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30340),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -63,12 +57,9 @@ const RosterReport = () => {
     pageSize: paginationSize,
     total: 0,
   });
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
-  const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -80,45 +71,6 @@ const RosterReport = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
   // data call
   type TLandingApi = {
     pagination?: {
@@ -144,9 +96,12 @@ const RosterReport = () => {
         ReportType: "monthly_roster_report_for_all_employee",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
+        WorkplaceGroupId: wgId,
+        WorkplaceId: wId,
         PageNo: pagination.current || pages?.current,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         PageSize:
           pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
         EmployeeId: 0,
@@ -154,12 +109,20 @@ const RosterReport = () => {
         DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         SearchTxt: searchText || "",
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
   //   table column
@@ -293,23 +256,35 @@ const RosterReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
                   const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&BusinessUnitId=${buId}&DteFromDate=${moment(
                       values?.fromDate
                     ).format("YYYY-MM-DD")}&DteToDate=${moment(
                       values?.toDate
-                    ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
-                      values?.workplaceGroup?.value || 0
-                    }&WorkplaceId=${
-                      values?.workplace?.value || 0
-                    }&PageNo=1&SearchTxt=${
+                    ).format(
+                      "YYYY-MM-DD"
+                    )}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&departments=${
+                      formatFilterValue(values?.department) || 0
+                    }&designations=${formatFilterValue(
+                      values?.designation || 0
+                    )}&SearchTxt=${
                       values?.search || ""
-                    }&PageSize=1000&IsPaginated=false`
+                    }&PageSize=1000&IsPaginated=false&WorkplaceGroupList=${
+                      values?.workplaceGroup?.value == 0 ||
+                      values?.workplaceGroup?.value == undefined
+                        ? decodedToken.workplaceGroupList
+                        : values?.workplaceGroup?.value.toString()
+                    }&WorkplaceList=${
+                      values?.workplace?.value == 0 ||
+                      values?.workplace?.value == undefined
+                        ? decodedToken.workplaceList
+                        : values?.workplace?.value.toString()
+                    }`
                   );
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
+                      setExcelLoading(false);
                       return toast.error("No Attendance Data Found");
                     }
 
@@ -379,7 +354,12 @@ const RosterReport = () => {
               excelLanding();
             }}
           />
-          <PCardBody className="mb-3">
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+          />
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -455,7 +435,7 @@ const RosterReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
 
           <DataTable
             bordered
@@ -480,7 +460,7 @@ const RosterReport = () => {
                 searchText: form.getFieldValue("search"),
               });
             }}
-            scroll={{ x: 2000 }}
+            //scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

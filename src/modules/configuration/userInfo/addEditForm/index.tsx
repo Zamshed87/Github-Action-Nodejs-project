@@ -45,6 +45,7 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
       form.setFieldsValue({
         loginUserId: singelUser?.strLoginId || "",
         password: singelUser?.strPassword || "",
+        confirmPassword: singelUser?.strPassword || "",
         email: singelUser?.strOfficeMail || "",
         phone: singelUser?.strPersonalMobile || "",
         isEdit: !isCreate,
@@ -84,31 +85,52 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
     };
     createUser(payload, setLoading, () => {
       getData();
-      onHide(true)
+      onHide(true);
     });
   };
 
   return (
     <PForm onFinish={onSubmit} form={form}>
-      <div className="d-flex align-items-center modal-body-title">
-        <div className="py-1 px-0">
-          <Avatar
-            alt={"avatar"}
-            src={""}
-            sx={{
-              backgroundColor: "#5BABEF",
-              width: "40px",
-              height: "40px",
-              mr: 0,
-            }}
-          />
+      <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center modal-body-title">
+          <div className="py-1 px-0">
+            <Avatar
+              alt={"avatar"}
+              src={""}
+              sx={{
+                backgroundColor: "#5BABEF",
+                width: "40px",
+                height: "40px",
+                mr: 0,
+              }}
+            />
+          </div>
+          <div className="pl-2 ">
+            <h6 className="title-item-name">
+              {singelUser?.strEmployeeName} [{singelUser?.strEmployeeCode}]
+            </h6>
+            <p className="subtitle-p">{singelUser?.strEmploymentType}</p>
+          </div>
         </div>
-        <div className="pl-2">
-          <h6 className="title-item-name">
-            {singelUser?.strEmployeeName} [{singelUser?.strEmployeeCode}]
-          </h6>
-          <p className="subtitle-p">{singelUser?.strEmploymentType}</p>
-        </div>
+        {!isCreate && (
+          <>
+            {/* <div className="col-6 d-flex justify-content-end align-items-center "> */}
+            <Col
+              md={12}
+              sm={24}
+              // style={{ marginTop: "20px" }}
+              className="d-flex justify-content-end align-items-center "
+            >
+              <PInput
+                label="Is Active"
+                type="checkbox"
+                name="isActive"
+                layout="horizontal"
+              />
+            </Col>
+            {/* </div> */}
+          </>
+        )}
       </div>
       <Row gutter={[10, 2]}>
         <Col md={12} sm={24}>
@@ -117,16 +139,7 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
             name="loginUserId"
             label="Login User ID"
             placeholder="Write Login User ID"
-            rules={[{ required: false, message: "Login User ID is required" }]}
-          />
-        </Col>
-        <Col md={12} sm={24}>
-          <PInput
-            type="password"
-            name="password"
-            label="Password"
-            placeholder="Write Password"
-            rules={[{ required: false, message: "Password is required" }]}
+            rules={[{ required: true, message: "Login User ID is required" }]}
           />
         </Col>
         <Col md={12} sm={24}>
@@ -135,7 +148,39 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
             name="email"
             label="Office Email"
             placeholder="Write Office Email"
-            rules={[{ required: false, message: "Email is required" }]}
+            rules={[{ required: true, message: "Email is required" }]}
+          />
+        </Col>
+        <Col md={12} sm={24}>
+          <PInput
+            type="password"
+            name="password"
+            label="Password"
+            placeholder="Write Password"
+            iconRender={() => <></>}
+            rules={[{ required: true, message: "Password is required" }]}
+          />
+        </Col>
+        <Col md={12} sm={24}>
+          <PInput
+            type="password"
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm Password"
+            iconRender={() => <></>}
+            rules={[
+              { required: true, message: "Confirm Password is required" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The two passwords do not match!")
+                  );
+                },
+              }),
+            ]}
           />
         </Col>
 
@@ -145,7 +190,7 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
             name="phone"
             label="Contact No."
             placeholder="Write Contact No"
-            rules={[{ required: false, message: "Contact No is required" }]}
+            rules={[{ required: true, message: "Contact No is required" }]}
           />
         </Col>
 
@@ -162,7 +207,7 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
                     label="User Type"
                     placeholder="Write userType"
                     rules={[
-                      { required: false, message: "UserType is required" },
+                      { required: true, message: "UserType is required" },
                     ]}
                     onChange={(value, op) => {
                       form.setFieldsValue({
@@ -171,21 +216,6 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
                     }}
                   />
                 </Col>
-
-                {!isCreate && (
-                  <>
-                    <div className="col-6">
-                      <Col md={12} sm={24} style={{ marginTop: "20px" }}>
-                        <PInput
-                          label="Is Active"
-                          type="checkbox"
-                          name="isActive"
-                          layout="horizontal"
-                        />
-                      </Col>
-                    </div>
-                  </>
-                )}
               </>
             );
           }}

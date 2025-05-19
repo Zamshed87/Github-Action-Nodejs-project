@@ -1,41 +1,53 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getAssetListDataForApproval = async (
-  payload,
-  setter,
-  setAllData,
+export const fetchPendingApprovals = async ({
+  id,
   setLoading,
-  cb
-) => {
-  setLoading && setLoading(true);
+  orgId,
+  buId,
+  wgId,
+  wId,
+  employeeId,
+  employeeCode,
+  setData,
+  setTotalRecords,
+  departmentId,
+  designationId,
+  waitingStage,
+  searchText,
+  page,
+}) => {
+  setLoading(true);
   try {
-    const res = await axios.post(
-      `/ApprovalPipeline/AssetRequisitionLandingEngine`,
-      payload
+    const params = {
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      applicationTypeId: id,
+      employeeId: employeeId,
+      pageNo: page?.pageNo || 1,
+      pageSize: page?.pageSize || 25,
+    };
+
+    if (searchText) params.search = searchText;
+    if (designationId) params.designationId = designationId;
+    if (departmentId) params.departmentId = departmentId;
+    if (waitingStage) params.waitingStage = waitingStage;
+    if (employeeCode) params.employeeCode = employeeCode;
+
+    const response = await axios.get(
+      `/Approval/GetAllPendingApplicationsForApproval`,
+      { params }
     );
-    if (res?.data) {
-      setAllData && setAllData(res?.data);
-      setter(res?.data);
-    }
-    cb && cb();
-    setLoading && setLoading(false);
+
+    setData(Array.isArray(response.data?.data) ? response.data : []);
+    setTotalRecords(response.data?.totalCount || 0);
   } catch (error) {
-    setter([]);
-    setLoading && setLoading(false);
+    toast.error("Failed to fetch approvals.");
+    setData([]);
+  } finally {
+    setLoading(false);
   }
 };
-
-export const AssetApproveReject = async (payload, cb) => {
-  try {
-    const res = await axios.post(
-      `/ApprovalPipeline/AssetRequisitionApprovalEngine`,
-      payload
-    );
-    cb && cb();
-    toast.success(res?.data || "Submitted Successfully");
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-  }
-};
-

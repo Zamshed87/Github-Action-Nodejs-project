@@ -9,8 +9,6 @@ import {
 import { InputProperty, InputType } from "../TForm";
 import "../styles.scss";
 
-
-
 export const PInput = <T extends InputType>(property: InputProperty<T>) => {
   const renderInput = <T extends InputType>(property: InputProperty<T>) => {
     const {
@@ -42,6 +40,9 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       format,
       disabledDate,
       addOnBefore,
+      iconRender,
+      style,
+      className,
     } = property;
 
     const Components =
@@ -59,6 +60,26 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           disabledDate={disabledDate}
           picker={picker as "date" | "week" | "month" | "year"}
         />
+      ) : type === "dateRange" ? (
+        <DatePicker.RangePicker
+          placeholder={
+            (placeholder as unknown as [string, string]) || [
+              "From Date",
+              "To Date",
+            ]
+          }
+          onChange={
+            onChange as (values: any, formatString: [string, string]) => void
+          }
+          disabled={disabled}
+          suffixIcon={suffix}
+          value={value}
+          style={{ width: "100%" }}
+          format={format || "DD/MM/YYYY"}
+          allowClear={allowClear}
+          disabledDate={disabledDate}
+          picker={picker as "date" | "week" | "month" | "year"}
+        />
       ) : type === "month" ? (
         <DatePicker
           placeholder={placeholder || "Select Month"}
@@ -66,6 +87,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           disabled={disabled}
           suffixIcon={suffix}
           value={value}
+          disabledDate={disabledDate}
           style={{ width: "100%" }}
           format={format || "MM-YYYY"}
           allowClear={allowClear}
@@ -136,6 +158,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           suffix={suffix}
           allowClear={allowClear}
           value={value}
+          iconRender={iconRender}
         />
       ) : (
         <Input
@@ -165,7 +188,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           rules={rules}
           valuePropName={type === "checkbox" ? "checked" : valuePropName}
           hasFeedback={hasFeedback}
-          style={{ marginBottom: 0 }}
+          style={{...style, marginBottom: 0 }}
           className={disabled ? "peopledesk_input_disabled" : ""}
         >
           {Components}

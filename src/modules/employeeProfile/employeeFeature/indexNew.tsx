@@ -491,6 +491,7 @@ function EmployeeFeatureNew() {
                           item?.strBankAccountName || " ",
                         strAccountNo: item?.strBankAccountNo || " ",
                         strRoutingNo: item?.strRoutingNo || " ",
+                        strBloodGroup: item?.strBloodGroup || " ",
                         strWorkplace:
                           item?.strWorkplace || item?.strWorkplaceName || " ",
                         strWorkplaceGroup:

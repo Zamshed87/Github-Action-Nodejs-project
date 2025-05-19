@@ -145,6 +145,8 @@ const MgmtInOutReport = () => {
           filerList?.department?.length > 0 ? `${filerList?.department}` : "",
         designations:
           filerList?.designation?.length > 0 ? `${filerList?.designation}` : "",
+        sections:
+          filerList?.sectionName?.length > 0 ? `${filerList?.sectionName}` : "",
       },
     });
   };
@@ -164,8 +166,8 @@ const MgmtInOutReport = () => {
     },
 
     {
-      title: "Employee Code",
-      dataIndex: "employeeCode",
+      title: "Employee Id",
+      dataIndex: "employeeId",
       width: 30,
       fixed: "left",
     },
@@ -203,7 +205,14 @@ const MgmtInOutReport = () => {
       filterSearch: true,
       width: 50,
     },
-
+    {
+      title: "Section",
+      dataIndex: "sectionName",
+      filter: true,
+      filterKey: "strSectionList",
+      filterSearch: true,
+      width: 130,
+    },
     {
       title: "Date",
       dataIndex: "attendanceDate",

@@ -24,10 +24,13 @@ export const onGetLoanRequestLanding = (
   buId,
   wgId,
   values,
-  setRowDto
+  setRowDto,
+  empId,
+  isSelf
 ) => {
+  const id = isSelf ? `&intId=${empId}` : "";
   getLoanRequestLanding(
-    `/Employee/PeopleDeskAllLanding?TableName=LoanApplicationList&AccountId=${orgId}&BusinessUnitId=${buId}&fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}&WorkplaceGroupId=${wgId}`,
+    `/Employee/PeopleDeskAllLanding?TableName=LoanApplicationList&AccountId=${orgId}&BusinessUnitId=${buId}&fromDate=${values?.filterFromDate}&toDate=${values?.filterToDate}&WorkplaceGroupId=${wgId}${id}`,
     (data) => {
       setRowDto?.(data);
     }
@@ -63,7 +66,8 @@ export const loanRequestLandingTableColumns = (
   paginationSize,
   buId,
   wgId,
-  setLoading
+  setLoading,
+  isSelf
 ) => {
   return [
     {
@@ -182,9 +186,9 @@ export const loanRequestLandingTableColumns = (
       className: "text-right",
 
       title: "Total Amount with Interest",
-      dataIndex: "designationName",
+      dataIndex: "loanAmount",
       width: 200,
-      filter: true,
+      // filter: true,
       render: (_, record) => {
         const amount = record?.intInterest
           ? (
@@ -307,64 +311,74 @@ export const loanRequestLandingTableColumns = (
               <Chips label={data?.installmentStatus} classess="danger" />
             )}
           </div>
-          <div>
-            {data?.applicationStatus === "Pending" && (
-              <div className="d-flex">
-                <Tooltip title="Edit" arrow>
-                  <button
-                    type="button"
-                    className="iconButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSingleLoanApplication(data, setSingleData, setFileId);
-                      setShow(true);
-                    }}
-                  >
-                    <CreateOutlined />
-                  </button>
-                </Tooltip>
-                <Tooltip title="Delete" arrow>
-                  <button
-                    type="button"
-                    className="iconButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      loanCrudAction(
-                        data,
-                        getData,
-                        setLoading,
-                        employeeId,
-                        null,
-                        orgId,
-                        true,
-                        buId,
-                        wgId
-                      );
-                    }}
-                  >
-                    <DeleteOutline />
-                  </button>
-                </Tooltip>
-              </div>
-            )}
-            {data?.installmentStatus === "Running" && (
-              <div className="d-flex">
-                <Tooltip title="Edit" arrow>
-                  <button
-                    type="button"
-                    className="iconButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSingleLoanApplication(data, setSingleData, setFileId);
-                      setShow(true);
-                    }}
-                  >
-                    <CreateOutlined />
-                  </button>
-                </Tooltip>
-              </div>
-            )}
-          </div>
+          {!isSelf && (
+            <div>
+              {data?.applicationStatus === "Pending" && (
+                <div className="d-flex">
+                  <Tooltip title="Edit" arrow>
+                    <button
+                      type="button"
+                      className="iconButton"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSingleLoanApplication(
+                          data,
+                          setSingleData,
+                          setFileId
+                        );
+                        setShow(true);
+                      }}
+                    >
+                      <CreateOutlined />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title="Delete" arrow>
+                    <button
+                      type="button"
+                      className="iconButton"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        loanCrudAction(
+                          data,
+                          getData,
+                          setLoading,
+                          employeeId,
+                          null,
+                          orgId,
+                          true,
+                          buId,
+                          wgId
+                        );
+                      }}
+                    >
+                      <DeleteOutline />
+                    </button>
+                  </Tooltip>
+                </div>
+              )}
+              {data?.installmentStatus === "Running" && (
+                <div className="d-flex">
+                  <Tooltip title="Edit" arrow>
+                    <button
+                      type="button"
+                      className="iconButton"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSingleLoanApplication(
+                          data,
+                          setSingleData,
+                          setFileId
+                        );
+                        setShow(true);
+                      }}
+                    >
+                      <CreateOutlined />
+                    </button>
+                  </Tooltip>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ),
       width: 180,
@@ -481,7 +495,6 @@ export const loanCrudAction = async (
       return toast.warn("There should be at least 2 Guarantor employees.");
     }
   }
-
   try {
     setLoading?.(true);
     const row = tableData?.map((item) => ({
@@ -496,14 +509,15 @@ export const loanCrudAction = async (
     const payload = {
       partType: isDelete
         ? "LoanDelete"
-        : values?.loanApplicationId
+        : values?.loanApplicationId || tableData[0]?.loanApplicationId
         ? "ManagerLoanUpdate"
         : "LoanCreate",
       intAccountId: orgId,
       LastFractionAmount:
         values?.loanAmount % values?.amountPerInstallment || 0,
       guarantorRelative: values?.familyGuarantor || "",
-      loanApplicationId: values?.loanApplicationId || 0,
+      loanApplicationId:
+        values?.loanApplicationId || tableData[0]?.loanApplicationId || 0,
       employeeId: values?.employee?.value || values?.employeeId,
       loanTypeId: values?.loanType?.value || 0,
       intInterest: +values?.interest || 0,
@@ -531,10 +545,12 @@ export const loanCrudAction = async (
       updateByUserId: employeeId,
       isApprove: false,
       isReject: false,
-      remainingBalance: values?.loanApplicationId
-        ? values?.approveLoanAmount
-        : null,
-      intApproveLoanAmount: values?.approveLoanAmount || null,
+      remainingBalance:
+        values?.loanApplicationId || tableData[0]?.loanApplicationId
+          ? values?.approveLoanAmount || values?.loanAmount
+          : null,
+      intApproveLoanAmount:
+        values?.approveLoanAmount || values?.loanAmount || null,
       intApproveNumberOfInstallment: values?.approveInstallmentNumber || null,
       intApproveNumberOfInstallmentAmount:
         values?.approveAmountPerInstallment || null,
@@ -544,7 +560,7 @@ export const loanCrudAction = async (
     };
     const res = await axios.post(`/Employee/LoanCRUD`, payload);
     setLoading?.(false);
-    cb?.();
+    cb?.(res?.data);
     toast.success(res?.data?.message || "Submitted Successfully");
   } catch (error) {
     setLoading(false);

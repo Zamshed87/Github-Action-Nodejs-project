@@ -36,7 +36,6 @@ import {
 const initData = {
   adjustedAmount: "",
   payableAmount: "",
-  receivableAmount: "",
   pendingAmount: "",
 };
 
@@ -46,11 +45,11 @@ const validationSchema = Yup.object().shape({
     .required("Adjusted amount is required"),
   payableAmount: Yup.number().required("Payable amount is required"),
   receivableAmount: Yup.number()
-    .min(0, "Receivable amount should be positive number")
-    .required("Receivable amount is required"),
+    .min(0, "Unadjusted amount should be positive number")
+    .required("Unadjusted amount is required"),
   pendingAmount: Yup.number()
-    .min(0, "Pending amount should be positive number")
-    .required("Pending amount is required"),
+    .min(0, "Return Amount should be positive number")
+    .required("Return Amount is required"),
 });
 
 export default function MgtIOUApplicationView() {
@@ -198,11 +197,11 @@ export default function MgtIOUApplicationView() {
     };
 
     if (values?.pendingAmount < 0) {
-      return toast.warning("Pending amount should be positive number!!!");
+      return toast.warning("Unadjusted amount should be positive number!!!");
     }
 
     if (values?.payableAmount < 0) {
-      return toast.warning("Payable amount should be positive number!!!");
+      return toast.warning("Return amount should be positive number!!!");
     }
 
     if (params?.id && values?.adjustedAmount <= 0) {
@@ -210,12 +209,6 @@ export default function MgtIOUApplicationView() {
         toastId: "AMZ",
       });
     }
-
-    /*
-        for management required by BA
-          - values?.payableAmount => Cash Received Amount (Pay to Accounts)
-          - values?.receivableAmount => Receive from Accounts
-    */
 
     const modifyImageArray =
       imageFile?.length > 0
@@ -234,13 +227,13 @@ export default function MgtIOUApplicationView() {
       intWorkplaceGroupId: params?.id ? singleData?.workplaceGroupId : wgId,
       dteFromDate: dateFormatterForInput(singleData?.dteFromDate),
       dteToDate: dateFormatterForInput(singleData?.dteToDate),
-      numIOUAmount: singleData?.numIOUAmount,
+      numIOUAmount: singleData?.numIouAmount,
       numAdjustedAmount: values?.adjustedAmount,
       numPayableAmount: values?.payableAmount,
-      numReceivableAmount: values?.receivableAmount,
+      numReceivableAmount: values?.pendingAmount,
       strDiscription: singleData?.discription,
       isAdjustment: true,
-      intIOUAdjustmentId: singleData?.intIOUAdjustmentId || 0,
+      intIOUAdjustmentId: singleData?.intIouAdjustmentId || 0,
       isActive: true,
       urlIdViewModelList: modifyImageArray,
     };
@@ -250,21 +243,20 @@ export default function MgtIOUApplicationView() {
 
   // pending amount
   pendingAmount =
-    +singleData?.numIOUAmount -
+    +singleData?.numIouAmount -
     (+singleData?.numAdjustedAmount + +singleData?.numReceivableAmount);
 
   return (
     <>
       <Formik
         enableReinitialize={true}
-        validationSchema={validationSchema}
+        // validationSchema={validationSchema}
         initialValues={
           params?.id
             ? {
                 adjustedAmount: singleData?.numAdjustedAmount,
-                receivableAmount: singleData?.numReceivableAmount,
-                pendingAmount: pendingAmount > 0 ? pendingAmount : 0,
-                payableAmount: singleData?.numPayableAmount,
+                pendingAmount: singleData?.numReceivableAmount,
+                payableAmount: singleData?.pendingAdjAmount,
               }
             : initData
         }
@@ -273,8 +265,8 @@ export default function MgtIOUApplicationView() {
             if (params?.id) {
               resetForm({
                 adjustedAmount: singleData?.numAdjustedAmount,
-                payableAmount: singleData?.numPayableAmount,
-                receivableAmount: singleData?.numReceivableAmount,
+                pendingAmount: singleData?.numReceivableAmount,
+                payableAmount: singleData?.pendingAdjAmount,
               });
             } else {
               resetForm(initData);
@@ -358,7 +350,7 @@ export default function MgtIOUApplicationView() {
                       <CircleButton
                         icon={<img src={moneyIcon} alt="iBOS" />}
                         title={
-                          numberWithCommas(singleData?.numIOUAmount) || "-"
+                          numberWithCommas(singleData?.numIouAmount) || "-"
                         }
                         subTitle="IOU Amount"
                       />
@@ -447,94 +439,35 @@ export default function MgtIOUApplicationView() {
                                   value={values?.adjustedAmount || ""}
                                   type="number"
                                   onChange={(e) => {
-                                    // pending amount
-                                    pendingAmount =
-                                      +singleData?.numIOUAmount -
-                                      (+e.target.value +
-                                        +values?.receivableAmount);
-
-                                    // payable  amount
-                                    if (pendingAmount > 0) {
-                                      payableAmount = 0;
-                                      setFieldValue(
-                                        "pendingAmount",
-                                        pendingAmount
-                                      );
-                                    } else {
-                                      payableAmount = Math.abs(pendingAmount);
-                                      pendingAmount = 0;
-                                      setFieldValue("pendingAmount", 0);
-                                    }
-
-                                    if (
-                                      +e.target.value >
-                                      +singleData?.numIOUAmount
-                                    ) {
-                                      setFieldValue("receivableAmount", 0);
-                                    }
-
-                                    setFieldValue(
-                                      "payableAmount",
-                                      payableAmount
-                                    );
-
-                                    setFieldValue(
-                                      "adjustedAmount",
+                                    const inputValue = parseFloat(
                                       e.target.value
                                     );
+                                    if (inputValue > singleData?.numIouAmount) {
+                                      return toast.warning(
+                                        "Adjusted amount should be less than or equal to IOU amount !!!"
+                                      );
+                                    }
+
+                                    setFieldValue("adjustedAmount", inputValue);
+
+                                    const remainingAmount =
+                                      singleData?.numIouAmount - inputValue;
+                                    setFieldValue(
+                                      "payableAmount",
+                                      remainingAmount
+                                    );
+
+                                    setFieldValue("pendingAmount", 0);
                                   }}
                                   errors={errors}
                                   touched={touched}
                                 />
                               </div>
                             </div>
+
                             <div className="col-lg-2">
                               <div className="input-field-main">
-                                <label>Cash Received Amount</label>
-                                <FormikInput
-                                  placeholder=" "
-                                  classes="input-sm"
-                                  name="receivableAmount"
-                                  value={values?.receivableAmount || "0"}
-                                  type="number"
-                                  onChange={(e) => {
-                                    // pending amount
-                                    pendingAmount =
-                                      +singleData?.numIOUAmount -
-                                      (+values?.adjustedAmount +
-                                        +e.target.value);
-
-                                    // payable  amount
-                                    if (pendingAmount > 0) {
-                                      payableAmount = 0;
-                                      setFieldValue(
-                                        "pendingAmount",
-                                        pendingAmount
-                                      );
-                                    } else {
-                                      payableAmount = Math.abs(pendingAmount);
-                                      pendingAmount = 0;
-                                      setFieldValue("pendingAmount", 0);
-                                    }
-                                    setFieldValue(
-                                      "payableAmount",
-                                      payableAmount
-                                    );
-
-                                    setFieldValue(
-                                      "receivableAmount",
-                                      e.target.value
-                                    );
-                                  }}
-                                  disabled
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
-                            </div>
-                            <div className="col-lg-2">
-                              <div className="input-field-main">
-                                <label>Pay to Accounts</label>
+                                <label>Return Amount</label>
                                 <FormikInput
                                   placeholder=" "
                                   classes="input-sm"
@@ -542,24 +475,57 @@ export default function MgtIOUApplicationView() {
                                   value={values?.pendingAmount || "0"}
                                   type="number"
                                   onChange={(e) => {
-                                    return;
+                                    const inputValue = parseFloat(
+                                      e.target.value
+                                    );
+                                    const adjustedAmount =
+                                      values?.adjustedAmount || 0;
+
+                                    const remainingAmount =
+                                      singleData?.numIouAmount -
+                                      adjustedAmount -
+                                      inputValue;
+
+                                    if (remainingAmount >= 0) {
+                                      setFieldValue(
+                                        "payableAmount",
+                                        remainingAmount
+                                      );
+                                      setFieldValue(
+                                        "pendingAmount",
+                                        inputValue
+                                      );
+                                    } else {
+                                      setFieldValue("pendingAmount", "");
+                                      setFieldValue("payableAmount", 0);
+                                      toast.warning(
+                                        "Total amount (Adjusted + Pay to + Receive from) cannot exceed IOU amount."
+                                      );
+                                    }
+
+                                    if (inputValue === 0) {
+                                      const remaining =
+                                        singleData?.numIouAmount -
+                                        adjustedAmount;
+                                      setFieldValue("payableAmount", remaining);
+                                    }
                                   }}
                                   errors={errors}
                                   touched={touched}
-                                  disabled
                                 />
                               </div>
                             </div>
+
                             <div className="col-lg-2">
                               <div className="input-field-main">
-                                <label>Receive from Accounts</label>
+                                <label>Unadjusted Amount</label>
                                 <FormikInput
                                   placeholder=" "
                                   classes="input-sm"
                                   name="payableAmount"
-                                  value={values?.payableAmount || "0"}
+                                  value={values?.payableAmount || 0}
                                   type="number"
-                                  onChange={(e) => {
+                                  onChange={() => {
                                     return;
                                   }}
                                   errors={errors}
@@ -568,6 +534,7 @@ export default function MgtIOUApplicationView() {
                                 />
                               </div>
                             </div>
+
                             {edit && (
                               <div className="col-lg-4 text-right">
                                 <button
@@ -736,24 +703,16 @@ export default function MgtIOUApplicationView() {
                                 subTitle="Adjusted Amount"
                               />
                             </div>
+
                             <div className="col-lg-2">
                               <CircleButton
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData?.numReceivableAmount
+                                    singleData?.numReceivableAmount || 0
                                   ) || "-"
                                 }
-                                subTitle="Cash Received Amount"
-                              />
-                            </div>
-                            <div className="col-lg-2">
-                              <CircleButton
-                                icon={<img src={moneyIcon} alt="iBOS" />}
-                                title={
-                                  numberWithCommas(pendingAmount || 0) || "-"
-                                }
-                                subTitle="Pay to Accounts"
+                                subTitle="Return Amount"
                               />
                             </div>
                             <div className="col-lg-2">
@@ -761,10 +720,10 @@ export default function MgtIOUApplicationView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData?.numPayableAmount
+                                    singleData?.pendingAdjAmount
                                   ) || "-"
                                 }
-                                subTitle="Receive from Accounts"
+                                subTitle="Unadjusted Amount"
                               />
                             </div>
                             <div className="col-lg-2"></div>

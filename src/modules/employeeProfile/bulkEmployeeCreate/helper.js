@@ -17,7 +17,7 @@ export const processBulkUploadEmployeeAction = async (
       intEmpBulkUploadId: 0,
       intAccountId: orgId,
       intUrlId: intUrlId,
-      intIdentitySlid: item["INDENTITY SL"] || "",
+      intIdentitySlid: item["INDENTITY SL"] || 0,
       strBusinessUnit: item["Business Unit"] || "",
       strWorkplaceGroup: item["Workplace Group"] || "",
       strWorkplace: item["Workplace"] || "",
@@ -42,6 +42,7 @@ export const processBulkUploadEmployeeAction = async (
         : null,
       dteConfirmationDate: item["Confirmation Date"] || null,
       dteInternCloseDate: item["InternCloseDate"] || null,
+      ProbationaryEndInDays: item["Probation Period"] || null,
       dteProbationaryCloseDate: item["ProbationaryCloseDate"] || null,
       dteContactFromDate: item["Contact From Date"] || null,
       dteContactToDate: item["Contact To Date"] || null,
@@ -77,7 +78,7 @@ export const processBulkUploadEmployeeAction = async (
           ? "Without Salary/Additional OT"
           : "Not Applicable",
       intOtTypeId: +item["OT Type"],
-      intOTFixedHour : +item?.["OT Fixed Hour"] || 0,
+      intOTFixedHour: +item?.["OT Fixed Hour"] || 0,
       strJobLocation: item["Job Location"] || "",
       strJobTerritory: item["Job Territory"] || "",
     }));
@@ -104,11 +105,12 @@ export const saveBulkUploadEmployeeAction = async (
     callback();
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
+    console.log("res", res);
   } catch (error) {
     setLoading(false);
     setErrorData(error?.response?.data?.listData);
     setOpen(true);
-    error?.response?.data?.listData?.length < 0 &&
-      toast.warn(error?.response?.data?.message || "Failed, try again");
+    console.log("error",error?.response);
+    toast.error(error?.response?.data?.message || "Failed to process!");
   }
 };

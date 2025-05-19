@@ -1,0 +1,21 @@
+.single-month-panel .ant-picker-panels {
+  display: flex;
+}
+.single-month-panel .ant-picker-panels > *:nth-child(2) {
+  display: none;
+}
+.single-month-panel .ant-picker-header-view {
+  display: none;
+}
+
+.single-month-panel .ant-picker-header {
+  display: none;
+}
+
+.single-month-panel .ant-picker-footer {
+  display: none;
+}
+
+.single-month-panel .ant-picker-content thead {
+  display: none;
+}

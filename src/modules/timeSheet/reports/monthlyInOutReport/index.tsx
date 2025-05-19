@@ -35,19 +35,34 @@ import { fromToDateList } from "../helper";
 import { gray600 } from "utility/customColor";
 import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import axios from "axios";
-import Department from "modules/configuration/department";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const MonthlyInOutReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, wId, wgName },
+    profileData: {
+      buId,
+      wgId,
+      employeeId,
+      orgId,
+      buName,
+      wId,
+      wgName,
+      intAccountId,
+    },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30316),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -69,6 +84,7 @@ const MonthlyInOutReport = () => {
   const workplace = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
 
   // navTitle
   useEffect(() => {
@@ -163,6 +179,30 @@ const MonthlyInOutReport = () => {
       },
     });
   };
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department, workplace, workplaceGroup } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionIdAll",
+      method: "GET",
+      params: {
+        accountId: intAccountId,
+        businessUnitId: buId,
+        departmentId: department?.value || 0,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId: workplace?.value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label =
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
+          res[i].value = item?.intSectionId;
+        });
+      },
+    });
+  };
   // data call
   type TLandingApi = {
     pagination?: {
@@ -180,7 +220,7 @@ const MonthlyInOutReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-
+    console.log(values?.section);
     // const workplaceList = `${values?.workplace
     //   ?.map((item: any) => item?.intWorkplaceId)
     //   .join(",")}`;
@@ -188,6 +228,10 @@ const MonthlyInOutReport = () => {
       ?.map((item: any) => item?.value)
       .join(",")}`;
     const desigList = `${values?.designation?.map((item: any) => item?.value)}`;
+    const secList = `${values?.section
+      ?.map((item: any) => item?.value)
+      .join(",")}`;
+
     landingApi.action({
       urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
@@ -197,7 +241,6 @@ const MonthlyInOutReport = () => {
         businessUnitId: buId,
         workplaceGroupId: values?.workplaceGroup?.value || wgId,
         // WorkplaceId: values?.workplace?.value,
-        WorkplaceList: values?.workplace?.value || wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,
         employeeId: 0,
@@ -206,8 +249,18 @@ const MonthlyInOutReport = () => {
         dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         searchTxt: searchText || "",
         // isXls: false,
-        departments: values?.department?.length > 0 ? deptList : "",
-        designations: values?.designation?.length > 0 ? desigList : "",
+        departments: values?.department?.length > 0 ? deptList : 0,
+        designations: values?.designation?.length > 0 ? desigList : 0,
+        sections: values?.section?.length > 0 ? secList : 0,
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
@@ -361,14 +414,21 @@ const MonthlyInOutReport = () => {
                     ).format("YYYY-MM-DD")}&employeeId=0&workplaceGroupId=${
                       values?.workplaceGroup?.value || wgId
                     }&WorkplaceList=${
-                      values?.workplace?.value || wId
+                      values?.workplace?.value == 0 ||
+                      values?.workplace?.value == undefined
+                        ? decodedToken.workplaceList
+                        : values?.workplace?.value.toString()
+                    }&WorkplaceGroupList=${
+                      values?.workplaceGroup?.value == 0 ||
+                      values?.workplaceGroup?.value == undefined
+                        ? decodedToken.workplaceGroupList
+                        : values?.workplaceGroup?.value.toString()
                     }&pageNo=1&pageSize=1000&isPaginated=false&businessUnitId=${buId}&departments=${
-                      values?.department?.length > 0 ? deptList : ""
+                      values?.department?.length > 0 ? deptList : 0
                     }&designations=${
-                      values?.designation?.length > 0 ? desigList : ""
+                      values?.designation?.length > 0 ? desigList : 0
                     }`
                   );
-
                   if (res?.data) {
                     setExcelLoading(true);
                     if (res?.data < 1) {
@@ -510,6 +570,7 @@ const MonthlyInOutReport = () => {
                     });
                     getEmployeDesignation();
                     getEmployeDepartment();
+                    getEmployeeSection();
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />
@@ -534,6 +595,26 @@ const MonthlyInOutReport = () => {
                             });
                           }}
                           // rules={[{ required: true, message: "Workplace is required" }]}
+                        />
+                      </Col>
+                      <Col md={6} sm={24}>
+                        <PSelect
+                          options={empSectionDDL.data || []}
+                          name="section"
+                          showSearch
+                          allowClear
+                          filterOption={true}
+                          label="Section"
+                          placeholder="Section"
+                          mode="multiple"
+                          maxTagCount={"responsive"}
+                          disabled={workplace?.length > 1 ? true : false}
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              section: op,
+                            });
+                          }}
+                          // rules={[{ required: true, message: "Section is required" }]}
                         />
                       </Col>
                       <Col md={5} sm={12} xs={24}>

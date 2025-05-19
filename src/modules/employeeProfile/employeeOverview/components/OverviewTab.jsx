@@ -12,6 +12,7 @@ import Others from "./others/Others";
 import TransferAndPromotionInfo from "./TransferAndPromotionInfo";
 import OAuth from "./OAuth/OAuth";
 import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter";
+import TrainingDevelopment from "./Experience/TrainingDevelopment";
 
 function OverviewTab({ empId, wgId, buId, intAccountId }) {
   const [index, setIndex] = useState(0);
@@ -19,12 +20,13 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
     { name: "General Info", id: 0 },
     { name: "Contact & Places", id: 1 },
     { name: "Identification", id: 2 },
-    { name: "Experience", id: 3 },
+    { name: "Work Experience", id: 3 },
+    { name: "Training & Development", id: 12 },
     { name: "Education", id: 4 },
     { name: "Transfer & Promotion History", id: 5 },
     { name: "Increment History", id: 6 },
     { name: "Reward And Punishment", id: 7 },
-    { name: "Family & Relationships", id: 8 },
+    { name: "Contact Information", id: 8 },
     { name: "Documents", id: 9 },
     { name: "others", id: 10 },
     { name: "Social Media Information", id: 11 },
@@ -85,6 +87,13 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     empId={empId}
                     index={index}
                     tabIndex={3}
+                    wgId={wgId}
+                    buId={buId}
+                  />
+                  <TrainingDevelopment
+                    index={index}
+                    tabIndex={12}
+                    empId={empId}
                     wgId={wgId}
                     buId={buId}
                   />

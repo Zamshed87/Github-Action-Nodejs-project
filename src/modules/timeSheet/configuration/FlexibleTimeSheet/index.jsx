@@ -58,7 +58,6 @@ const MonthlyAttendanceReport = () => {
   // Form Instance
   const [form] = Form.useForm();
   //   api states
-  // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     document.title = "Flexible Timesheet";
@@ -67,12 +66,11 @@ const MonthlyAttendanceReport = () => {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // api states
   const empDepartmentDDL = useApiRequest([]);
 
   const getEmployeDepartment = () => {
-    empDepartmentDDL?.action({
+    empDepartmentDDL.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
@@ -174,7 +172,7 @@ const MonthlyAttendanceReport = () => {
   }, [landingApi?.data]);
 
   const getCalendarDDL = () => {
-    CommonCalendarDDL?.action({
+    CommonCalendarDDL.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
@@ -182,7 +180,7 @@ const MonthlyAttendanceReport = () => {
         IntWorkplaceId: wId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        intId: 0, // employeeId, Previously set 0
+        intId: 0,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -220,12 +218,8 @@ const MonthlyAttendanceReport = () => {
     });
 
     timeSheetSave(payload, setLoading, () => {});
-    // console.log(payload, "payload");
   };
-  {
-    console.log("rowDto", rowDto);
-  }
-  console.log("startingCalenderDDL", startingCalenderDDL);
+
   const dateColumns = headerDateList?.dateLists?.map((date, idx) => ({
     title: date?.level,
     dataIndex: date,
@@ -306,7 +300,7 @@ const MonthlyAttendanceReport = () => {
 
     setRowDto(data);
   };
-  //   table column
+
   const header = () => {
     return [
       {
@@ -321,17 +315,9 @@ const MonthlyAttendanceReport = () => {
           </Button>
         ),
         fixed: "left",
-        width: 80, // Adjust width as needed
+        width: 80,
         align: "center",
       },
-      // {
-      //   title: "SL",
-      //   render: (_, rec, index) =>
-      //     (pages?.current - 1) * pages?.pageSize + index + 1,
-      //   fixed: "left",
-      //   width: 45,
-      //   align: "center",
-      // },
       {
         title: "Employee Id",
         dataIndex: "intEmployeeId",
@@ -376,11 +362,7 @@ const MonthlyAttendanceReport = () => {
 
         width: 100,
       },
-      // {
-      //   title: "Department",
-      //   dataIndex: "strDepartmentName",
-      //   width: 100,
-      // },
+
       {
         title: "Copy From (Emp ID)",
         width: 250,
@@ -470,12 +452,7 @@ const MonthlyAttendanceReport = () => {
       searchText: value,
     });
   }, 500);
-  // const disabledDate = (current) => {
-  //   const { fromDate } = form.getFieldsValue(true);
-  //   const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-  //   // Disable dates before fromDate and after next3daysForEmp
-  //   return current && current < fromDateMoment.startOf("day");
-  // };
+
   return employeeFeature?.isView ? (
     <>
       {loading && <Loading />}
@@ -507,29 +484,28 @@ const MonthlyAttendanceReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              {isOfficeAdmin && (
-                <Col md={6} sm={12} xs={24}>
-                  <PSelect
-                    options={empDepartmentDDL?.data || []}
-                    name="department"
-                    label="Department"
-                    showSearch
-                    placeholder="Select Department"
-                    allowClear
-                    style={{ width: "300px" }}
-                    onSelect={(value, op) => {
-                      form.setFieldsValue({
-                        supervisor: undefined,
-                      });
-                      if (value) {
-                        getSuperUserList();
-                      } else {
-                        getSuperUserList([]);
-                      }
-                    }}
-                  />
-                </Col>
-              )}
+              {/* Modification guide from business  */}
+              <Col md={6} sm={12} xs={24}>
+                <PSelect
+                  options={empDepartmentDDL?.data || []}
+                  name="department"
+                  label="Department"
+                  showSearch
+                  placeholder="Select Department"
+                  allowClear
+                  style={{ width: "300px" }}
+                  onSelect={(value, op) => {
+                    form.setFieldsValue({
+                      supervisor: undefined,
+                    });
+                    if (value) {
+                      getSuperUserList();
+                    } else {
+                      getSuperUserList([]);
+                    }
+                  }}
+                />
+              </Col>
 
               <Col md={6} sm={12} xs={24}>
                 <PSelect
@@ -538,7 +514,7 @@ const MonthlyAttendanceReport = () => {
                   label="Supervisor"
                   allowClear
                   style={{ width: "300px" }}
-                  disabled={!isOfficeAdmin}
+                  // disabled={!isOfficeAdmin}
                   onSelect={(value, op) => {}}
                 />
               </Col>

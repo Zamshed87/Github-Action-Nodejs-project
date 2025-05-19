@@ -32,7 +32,10 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column, getTableDataDailyAttendance } from "./helper";
 import { timeFormatter } from "utility/timeFormatter";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { getPDFAction } from "utility/downloadFile";
+import { downloadFile, getPDFAction } from "utility/downloadFile";
+import { todayDate } from "utility/todayDate";
+import PFilter from "utility/filter/PFilter";
+import { formatFilterValue } from "utility/filter/helper";
 
 const LateReport = () => {
   const dispatch = useDispatch();
@@ -79,44 +82,44 @@ const LateReport = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
+  // const getWorkplaceGroup = () => {
+  //   workplaceGroup?.action({
+  //     urlKey: "WorkplaceGroupWithRoleExtension",
+  //     method: "GET",
+  //     params: {
+  //       accountId: orgId,
+  //       businessUnitId: buId,
+  //       workplaceGroupId: wgId,
+  //       empId: employeeId,
+  //     },
+  //     onSuccess: (res) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.strWorkplaceGroup;
+  //         res[i].value = item?.intWorkplaceGroupId;
+  //       });
+  //     },
+  //   });
+  // };
 
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
+  // const getWorkplace = () => {
+  //   const { workplaceGroup } = form.getFieldsValue(true);
+  //   workplace?.action({
+  //     urlKey: "WorkplaceWithRoleExtension",
+  //     method: "GET",
+  //     params: {
+  //       accountId: orgId,
+  //       businessUnitId: buId,
+  //       workplaceGroupId: workplaceGroup?.value,
+  //       empId: employeeId,
+  //     },
+  //     onSuccess: (res: any) => {
+  //       res.forEach((item: any, i: any) => {
+  //         res[i].label = item?.strWorkplace;
+  //         res[i].value = item?.intWorkplaceId;
+  //       });
+  //     },
+  //   });
+  // };
   const [, getExcelData, apiLoading] = useAxiosGet();
 
   type TLandingApi = {
@@ -136,9 +139,9 @@ const LateReport = () => {
   TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const workplaceList = `${values?.workplace
-      ?.map((item: any) => item?.intWorkplaceId)
-      .join(",")}`;
+    // const workplaceList = `${values?.workplace
+    //   ?.map((item: any) => item?.intWorkplaceId)
+    //   .join(",")}`;
 
     landingApi.action({
       urlKey: "GetLateReport",
@@ -147,8 +150,10 @@ const LateReport = () => {
         IntBusinessUnitId: buId,
         IsXls: false,
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
+        departments: formatFilterValue(values?.department),
+        sections: formatFilterValue(values?.section),
         // IntWorkplaceId: values?.workplace?.value,
-        WorkplaceList: workplaceList || "",
+        WorkplaceList: values?.workplace?.value,
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
         Date: moment(values?.fromDate).format("YYYY-MM-DD"),
@@ -158,7 +163,7 @@ const LateReport = () => {
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
+    // getWorkplaceGroup();
     landingApiCall();
   }, []);
 
@@ -272,7 +277,7 @@ const LateReport = () => {
         <PCard>
           {(excelLoading || apiLoading || loading) && <Loading />}
           <PCardHeader
-            exportIcon={true}
+            // exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             // onSearch={(e) => {
             //   searchFunc(e?.target?.value);
@@ -280,105 +285,153 @@ const LateReport = () => {
             //     search: e?.target?.value,
             //   });
             // }}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                try {
-                  const values = form.getFieldsValue(true);
-                  getExcelData(
-                    `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-                      values?.workplaceGroup?.value
-                    }&IntWorkplaceId=${values?.workplace?.value}&Date=${moment(
-                      values?.fromDate
-                    ).format("YYYY-MM-DD")}&IsXls=true&PageNo=1&PageSize=10000`,
 
-                    (res: any) => {
-                      const newData = res?.data?.map(
-                        (item: any, index: any) => {
-                          return {
-                            ...item,
-                            sl: index + 1,
-                            intime: timeFormatter(item?.intime) || "N/A",
-                          };
-                        }
-                      );
-                      createCommonExcelFile({
-                        titleWithDate: `Late Report for ${moment(
-                          values?.fromDate
-                        ).format("YYYY-MM-DD")} }`,
-                        fromDate: "",
-                        toDate: "",
-                        buAddress: (buDetails as any)?.strAddress,
-                        businessUnit: values?.workplaceGroup?.value
-                          ? (buDetails as any)?.strWorkplace
-                          : buName,
-                        tableHeader: column,
-                        getTableData: () =>
-                          getTableDataDailyAttendance(
-                            newData,
-                            Object.keys(column)
-                          ),
-                        // eslint-disable-next-line @typescript-eslint/no-empty-function
-                        getSubTableData: () => {},
-                        subHeaderInfoArr: [],
-                        subHeaderColumn: [],
-                        tableFooter: [],
-                        extraInfo: {},
-                        tableHeadFontSize: 10,
-                        widthList: {
-                          C: 30,
-                          D: 30,
-                          E: 25,
-                          F: 20,
-                          G: 25,
-                          H: 25,
-                          I: 25,
-                          K: 20,
-                        },
-                        commonCellRange: "A1:J1",
-                        CellAlignment: "left",
-                      });
-                    }
-                  );
-                  setExcelLoading(false);
-                } catch (error: any) {
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                  // console.log(error?.message);
-                }
-              };
-              excelLanding();
-            }}
-            printIcon={true}
-            pdfExport={() => {
-              const values = form.getFieldsValue(true);
-              const list = landingApi?.data?.data?.map(
-                (item: any) => item?.employeeId
-              );
-              getPDFAction(
-                `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${moment(
-                  values?.fromDate
-                )?.format("YYYY-MM-DD")}${
-                  buId ? `&IntBusinessUnitId=${buId}` : ""
-                }${
-                  values?.workplaceGroup?.value
-                    ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                    : ""
-                }${
-                  landingApi?.data?.data?.length !==
-                  landingApi?.data?.totalCount
-                    ? `&EmployeeIdList=${list}`
-                    : ""
-                }${
-                  values?.workplace?.value
-                    ? `&IntWorkplaceId=${values?.workplace?.value}`
-                    : ""
-                }`,
-                setLoading
-              );
-            }}
+            // from Rayhan vai Clarification == >> 🤗🙌
+
+            // onExport={() => {
+            //   const excelLanding = async () => {
+            //     setExcelLoading(true);
+            //     try {
+            //       const values = form.getFieldsValue(true);
+            //       // const workplaceList = `${values?.workplace
+            //       //   ?.map((item: any) => item?.intWorkplaceId)
+            //       //   .join(",")}`;
+            //       const url = `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+            //         values?.workplaceGroup?.value
+            //       }&workplaceList=${
+            //         values?.workplace?.value
+            //       }&departments=${formatFilterValue(
+            //         values?.department
+            //       )}&sections=${formatFilterValue(
+            //         values?.section
+            //       )}&AttendanceDate=${moment(values?.fromDate).format(
+            //         "YYYY-MM-DD"
+            //       )}&PageNo=1&PageSize=10000&ReportType=excel`;
+            //       downloadFile(
+            //         url,
+            //         `Attendance Report (${
+            //           values?.fromDate
+            //             ? moment(values.fromDate).format("YYYY-MM-DD")
+            //             : todayDate()
+            //         })`,
+            //         "xlsx",
+            //         setExcelLoading
+            //       );
+            //       // getExcelData(
+            //       //   `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+            //       //     values?.workplaceGroup?.value
+            //       //   }&IntWorkplaceId=${values?.workplace?.value}&Date=${moment(
+            //       //     values?.fromDate
+            //       //   ).format("YYYY-MM-DD")}&IsXls=true&PageNo=1&PageSize=10000`,
+
+            //       //   (res: any) => {
+            //       //     const newData = res?.data?.map(
+            //       //       (item: any, index: any) => {
+            //       //         return {
+            //       //           ...item,
+            //       //           sl: index + 1,
+            //       //           intime: timeFormatter(item?.intime) || "N/A",
+            //       //         };
+            //       //       }
+            //       //     );
+            //       //     createCommonExcelFile({
+            //       //       titleWithDate: `Late Report for ${moment(
+            //       //         values?.fromDate
+            //       //       ).format("YYYY-MM-DD")} }`,
+            //       //       fromDate: "",
+            //       //       toDate: "",
+            //       //       buAddress: (buDetails as any)?.strAddress,
+            //       //       businessUnit: values?.workplaceGroup?.value
+            //       //         ? (buDetails as any)?.strWorkplace
+            //       //         : buName,
+            //       //       tableHeader: column,
+            //       //       getTableData: () =>
+            //       //         getTableDataDailyAttendance(
+            //       //           newData,
+            //       //           Object.keys(column)
+            //       //         ),
+            //       //       // eslint-disable-next-line @typescript-eslint/no-empty-function
+            //       //       getSubTableData: () => {},
+            //       //       subHeaderInfoArr: [],
+            //       //       subHeaderColumn: [],
+            //       //       tableFooter: [],
+            //       //       extraInfo: {},
+            //       //       tableHeadFontSize: 10,
+            //       //       widthList: {
+            //       //         C: 30,
+            //       //         D: 30,
+            //       //         E: 25,
+            //       //         F: 20,
+            //       //         G: 25,
+            //       //         H: 25,
+            //       //         I: 25,
+            //       //         K: 20,
+            //       //       },
+            //       //       commonCellRange: "A1:J1",
+            //       //       CellAlignment: "left",
+            //       //     });
+            //       //   }
+            //       // );
+            //       // setExcelLoading(false);
+            //     } catch (error: any) {
+            //       toast.error("Failed to download excel");
+            //       setExcelLoading(false);
+            //       // console.log(error?.message);
+            //     }
+            //   };
+            //   excelLanding();
+            // }}
+            // printIcon={true}
+            // pdfExport={() => {
+            //   const values = form.getFieldsValue(true);
+            //   // const list = landingApi?.data?.data?.map(
+            //   //   (item: any) => item?.employeeId
+            //   // );
+            //   // const workplaceList = `${values?.workplace
+            //   //   ?.map((item: any) => item?.intWorkplaceId)
+            //   //   .join(",")}`;
+            //   getPDFAction(
+            //     `/PdfAndExcelReport/DailyAttendanceReportPDF?ReportType=pdf&IntAccountId=${orgId}&AttendanceDate=${moment(
+            //       values?.fromDate
+            //     )?.format("YYYY-MM-DD")}${
+            //       buId ? `&IntBusinessUnitId=${buId}` : ""
+            //     }${
+            //       values?.workplaceGroup?.value
+            //         ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
+            //         : ""
+            //     }${
+            //       values?.workplace
+            //         ? `&workplaceList=${values?.workplace?.value}`
+            //         : ""
+            //     }&departments=${formatFilterValue(
+            //       values?.department
+            //     )}&sections=${formatFilterValue(values?.section)}`,
+            //     setLoading
+            //   );
+            // }}
           />
-          <PCardBody className="mb-3">
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+            ishideDate={true}
+            showDesignation={"NO"}
+          >
+            <Col md={12} sm={12} xs={24}>
+              <PInput
+                type="date"
+                name="fromDate"
+                label="Date"
+                placeholder="Date"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    fromDate: value,
+                  });
+                }}
+              />
+            </Col>
+          </PFilter>
+          {/* <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PInput
@@ -442,7 +495,7 @@ const LateReport = () => {
                 <PButton type="primary" action="submit" content="View" />
               </Col>
             </Row>
-          </PCardBody>
+          </PCardBody> */}
           <div
             style={{ marginLeft: "-7px" }}
             className=" d-flex justify-content-left align-items-center my-2"

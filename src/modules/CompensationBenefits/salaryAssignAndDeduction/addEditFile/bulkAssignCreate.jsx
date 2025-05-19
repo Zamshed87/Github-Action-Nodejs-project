@@ -27,6 +27,7 @@ import {
 } from "./helperNew";
 import ExistsBulkModal from "./ExistsBulkModal";
 import { getEmployeeProfileLanding } from "modules/employeeProfile/employeeFeature/helper";
+import { isDevServer } from "App";
 
 function bulkAssignCreate() {
   const location = useLocation();
@@ -34,7 +35,7 @@ function bulkAssignCreate() {
   const { isCreate, isView } = location?.state?.state;
 
   //redux data
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -224,9 +225,9 @@ function bulkAssignCreate() {
                             onClick={() => {
                               downloadFile(
                                 `${
-                                  process.env.NODE_ENV === "development"
-                                    ? "/document/downloadfile?id=154"
-                                    : "/document/downloadfile?id=155"
+                                  isDevServer
+                                    ? "/document/downloadfile?id=8583"
+                                    : "/document/downloadfile?id=11175"
                                 }`,
                                 "BulkAddition and Deduction",
                                 "xlsx",
@@ -252,6 +253,7 @@ function bulkAssignCreate() {
                                 orgId,
                                 buId,
                                 wgId,
+                                wId,
                                 setIsLoadingBulk
                               );
                             }}

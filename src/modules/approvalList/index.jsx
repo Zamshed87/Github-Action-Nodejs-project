@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar } from "@material-ui/core";
 import { Tooltip } from "@mui/material";
-import { Form, Formik } from "formik";
+import { Formik } from "formik";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -12,6 +13,15 @@ import Loading from "common/loading/Loading";
 import ResetButton from "common/ResetButton";
 import MasterFilter from "common/MasterFilter";
 import Chips from "common/Chips";
+import {
+  FileOutlined,
+  UserOutlined,
+  SettingOutlined,
+  DashboardOutlined,
+} from "@ant-design/icons";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import CommonFilter from "common/CommonFilter";
+import { toast } from "react-toastify";
 
 const initData = {
   search: "",
@@ -19,44 +29,115 @@ const initData = {
 
 export default function ApprovalList() {
   const history = useHistory();
-  const dispatch = useDispatch();
   const { orgId, employeeId, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [approvalData, setApprovalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
+  const landingApiCall = () => {
+    try {
+      const values = form.getFieldsValue(true);
+      const savedFilters = localStorage.getItem("commonFilterData");
+      let parsedFilters;
 
-  useEffect(() => {
-    if (wgId && wId) {
+      if (savedFilters) {
+        try {
+          parsedFilters = JSON.parse(savedFilters);
+        } catch (error) {
+          parsedFilters = values;
+        }
+      } else {
+        parsedFilters = values;
+      }
+
       getApprovalDashboardLanding(
         orgId,
         employeeId,
         false,
         setApprovalData,
         setLoading,
-        wId,
+        parsedFilters?.workplace?.value || values?.workplace?.value || wId,
         buId,
-        wgId
+        parsedFilters?.workplaceGroup?.value ||
+          values?.workplaceGroup?.value ||
+          wgId,
+        values
       );
+    } catch (error) {
+      toast.warn("Failed to fetch data");
     }
-  }, [orgId, employeeId, wId, buId, wgId]);
+  };
 
-  // map the data to the format required by the table
+  const handleFilter = (values) => {
+    const savedFilters = localStorage.getItem("commonFilterData");
+    const parsedFilters = savedFilters ? JSON.parse(savedFilters) : values;
+
+    const { workplace, workplaceGroup } = parsedFilters;
+
+
+    getApprovalDashboardLanding(
+      orgId,
+      employeeId,
+      false,
+      setApprovalData,
+      setLoading,
+      workplace?.value || wId,
+      buId,
+      workplaceGroup?.value || wgId,
+      parsedFilters
+    );
+  };
+
+  useEffect(() => {
+    if (wId && wgId) {
+      landingApiCall();
+    }
+  }, [wId, wgId]);
+
+ 
+
   useEffect(() => {
     if (approvalData.length > 0) {
+      const iconMapping = {
+        "Type A": (
+          <FileOutlined style={{ fontSize: "24px", color: "#1890ff" }} />
+        ),
+        "Type B": (
+          <UserOutlined style={{ fontSize: "24px", color: "#52c41a" }} />
+        ),
+        "Type C": (
+          <SettingOutlined style={{ fontSize: "24px", color: "#faad14" }} />
+        ),
+        default: (
+          <DashboardOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />
+        ),
+      };
+
       const mappedData = approvalData.map((item) => ({
-        id: item.applicationTypeId,
-        menuName: item.applicationType,
-        totalCount: item.pendingApprovalCount,
-        icon: "path/to/default/icon.png", // Default icon, update as needed
+        ...item,
+        icon: iconMapping[item.type] || iconMapping.default,
       }));
+
       setFilteredData(mappedData);
+    } else {
+      setFilteredData([]);
     }
-  }, [approvalData]);
+  }, [approvalData, wgId, wId]);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Approval";
+    return () => {
+      document.title = "";
+    };
+  }, []);
+
+  const [form] = Form.useForm();
 
   return (
     <>
@@ -70,7 +151,10 @@ export default function ApprovalList() {
             {loading && <Loading />}
             <div className="approval-wrapper">
               <div className="table-card">
-                <div className="table-card-heading" style={{ margin: "10px 0 14px 0" }}>
+                <div
+                  className="table-card-heading"
+                  style={{ margin: "10px 0 14px 0" }}
+                >
                   <h2>Pending Applications</h2>
                   <div className="table-card-head-right">
                     <ul>
@@ -99,18 +183,33 @@ export default function ApprovalList() {
                           value={values?.search}
                           setValue={(value) => {
                             setFieldValue("search", value);
-                            const filtered = approvalData.filter((item) =>
-                              item.applicationType
-                                .toLowerCase()
-                                .includes(value.toLowerCase())
-                            );
-                            setFilteredData(filtered);
+                            if (value) {
+                              const filtered = approvalData.filter((item) =>
+                                item.applicationType
+                                  ?.toLowerCase()
+                                  .includes(value.toLowerCase())
+                              );
+                              console.log("filtered", filtered);
+                              setFilteredData(filtered);
+                            } else {
+                              setFilteredData(approvalData);
+                            }
                           }}
                           cancelHandler={() => {
                             setFilteredData(approvalData);
                             setFieldValue("search", "");
                           }}
                           isHiddenFilter
+                        />
+                      </li>
+                      <li>
+                        <CommonFilter
+                          visible={isFilterVisible}
+                          onClose={(visible) => setIsFilterVisible(visible)}
+                          onFilter={handleFilter}
+                          isWorkplaceGroup={true}
+                          isWorkplace={true}
+                          isAllValue={true}
                         />
                       </li>
                     </ul>
@@ -125,13 +224,27 @@ export default function ApprovalList() {
                             <tr
                               className="hasEvent"
                               key={index}
-                              onClick={() => history.push(`/approvalNew/${data.id}`)}
+                              onClick={() => {
+                                const serializableData = {
+                                  applicationTypeId: data.applicationTypeId,
+                                  applicationType: data.applicationType,
+                                };
+                                history.push(
+                                  `/approval/${data.applicationTypeId}`,
+                                  {
+                                    state: serializableData,
+                                  }
+                                );
+                              }}
                             >
                               <td>
                                 <div className="employeeInfo d-flex align-items-center approval-avatar">
-                                  <Avatar alt={data.menuName} src={data.icon} />
+                                  <Avatar
+                                    alt={data.applicationType}
+                                    src={data.icon}
+                                  />
                                   <div className="table-title pl-3">
-                                    <p>{data.menuName}</p>
+                                    <p>{data.applicationType}</p>
                                   </div>
                                 </div>
                               </td>
@@ -139,7 +252,7 @@ export default function ApprovalList() {
                                 <Tooltip title="Pending">
                                   <div>
                                     <Chips
-                                      label={data.totalCount}
+                                      label={data.pendingApprovalCount}
                                       classess="success p-2 rounded-5"
                                     />
                                   </div>

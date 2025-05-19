@@ -5,6 +5,7 @@ import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
+import { isDevServer } from "App";
 
 export const getSingleCalendar = async (
   monthId,
@@ -78,6 +79,8 @@ export const offDayAssignDtoCol = (
       sort: false,
       filter: false,
       className: "text-center",
+      fixed: "left",
+      width: "50",
     },
     {
       title: "Employee Id",
@@ -85,10 +88,15 @@ export const offDayAssignDtoCol = (
       sort: true,
       filter: false,
       fieldType: "string",
+      fixed: "left",
+      width: "150",
     },
     {
       title: "Employee",
       dataIndex: "",
+      fixed: "left",
+      width: "150",
+
       render: (record) => (
         <div className="d-flex align-items-center">
           <AvatarComponent
@@ -443,6 +451,7 @@ export const crudOffDayAssign = async (
     }
     let commonObj = {
       ...values,
+      effectiveDate: moment(values?.effectiveDate).format("YYYY-MM-DD"),
       accountId: orgId,
       workplaceId: wId,
       businessUnitId: buId,
@@ -460,6 +469,7 @@ export const crudOffDayAssign = async (
         ...commonObj,
       };
     } else {
+      console.log({ empIDString, singleData });
       payload = {
         employeeList: isAssignAll ? empIDString : `${singleData?.employeeId}`,
         ...commonObj,
@@ -471,7 +481,7 @@ export const crudOffDayAssign = async (
     cb();
     toast.success("Submitted Successfully");
   } catch (error) {
-    console.log({ error }, error?.response?.data?.listData);
+    isDevServer && console.log({ error }, error?.response?.data?.listData);
 
     setLoading(false);
     setErrorData(error?.response?.data?.listData);

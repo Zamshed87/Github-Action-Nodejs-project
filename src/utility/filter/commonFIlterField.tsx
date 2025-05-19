@@ -1,9 +1,10 @@
-import { Col, FormInstance } from "antd";
+import { Col } from "antd";
 import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { setCustomFieldsValue } from "./helper";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const CommonFilterField = ({
   form,
@@ -11,25 +12,28 @@ const CommonFilterField = ({
   isDesignation,
   col,
   mode = undefined,
+  isSection,
 }: {
   form: any;
   isDepartment?: boolean;
   isDesignation?: boolean;
   col?: number;
   mode?: string | undefined;
+  isSection?: boolean;
 }) => {
-  const dispatch = useDispatch();
-  const { permissionList, profileData } = useSelector(
+  const { profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId, wId } = profileData;
+  const { buId, wgId, wId, employeeId, orgId, intAccountId } = profileData;
 
   const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
+  const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
   const positionDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -53,7 +57,7 @@ const CommonFilterField = ({
 
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
+    workplaceDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
@@ -63,9 +67,11 @@ const CommonFilterField = ({
         intId: employeeId,
       },
       onSuccess: (res: any) => {
+        const list: any = [];
         res.forEach((item: any, i: any) => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
+          list.push(item?.intWorkplaceId);
         });
         res.unshift({ label: "All", value: 0 });
       },
@@ -80,7 +86,7 @@ const CommonFilterField = ({
       params: {
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceId: typeof workplace?.value == "string" ? 0 : workplace?.value,
 
         accountId: orgId,
       },
@@ -103,12 +109,39 @@ const CommonFilterField = ({
         accountId: orgId,
         businessUnitId: buId,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceId: typeof workplace?.value == "string" ? 0 : workplace?.value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
           res[i].label = item?.designationName;
           res[i].value = item?.designationId;
+        });
+        res.unshift({ label: "All", value: 0 });
+      },
+    });
+  };
+
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department, workplace, workplaceGroup } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionIdAll",
+      method: "GET",
+      params: {
+        accountId: intAccountId,
+        businessUnitId: buId,
+        departmentId: department?.value || 0,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId:
+          typeof workplace?.value == "string" ? wId : workplace?.value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label =
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
+          res[i].value = item?.intSectionId;
         });
         res.unshift({ label: "All", value: 0 });
       },
@@ -177,7 +210,7 @@ const CommonFilterField = ({
       </Col>
       <Col md={col || 6} sm={12} xs={24}>
         <PSelect
-          options={workplace?.data || []}
+          options={workplaceDDL?.data || []}
           name="workplace"
           label="Workplace"
           allowClear
@@ -185,15 +218,33 @@ const CommonFilterField = ({
           mode={mode as "multiple" | undefined | "tags"}
           showSearch
           onChange={(value, op) => {
-            form.setFieldsValue({
-              workplace: op,
-              workplaceId: value,
-            });
+            const { workplaceGroup } = form.getFieldsValue(true);
+            if (workplaceGroup?.value != 0 && value == 0) {
+              form.setFieldsValue({
+                workplace: {
+                  label: "All",
+                  value: workplaceDDL?.data
+                    ?.filter((item: any) => item.value != 0)
+                    ?.map((item: any) => item.value)
+                    .join(","),
+                },
+                workplaceId: value,
+              });
+            } else {
+              form.setFieldsValue({
+                workplace: op,
+                workplaceId: value,
+                workplaceGroupId: undefined,
+              });
+            }
             if (isDepartment) {
               getEmployeDepartment();
             }
             if (isDesignation) {
               getDesignation();
+            }
+            if (isSection) {
+              getEmployeeSection();
             }
             //
             // getEmployeePosition();
@@ -212,7 +263,7 @@ const CommonFilterField = ({
             allowClear
             placeholder="Department"
             onChange={(value, op) => {
-              setCustomFieldsValue(form, "department", value);
+              setCustomFieldsValue(form, "department", op);
             }}
             // rules={[
             //   {
@@ -220,6 +271,22 @@ const CommonFilterField = ({
             //     message: "Department is required",
             //   },
             // ]}
+          />
+        </Col>
+      )}
+      {isSection && (
+        <Col md={col || 6} sm={12} xs={24}>
+          <PSelect
+            options={empSectionDDL?.data || []}
+            name="section"
+            label="Section"
+            mode={"multiple"}
+            showSearch
+            allowClear
+            placeholder="Section"
+            onChange={(value, op) => {
+              setCustomFieldsValue(form, "section", op);
+            }}
           />
         </Col>
       )}
@@ -234,7 +301,7 @@ const CommonFilterField = ({
             placeholder="Designation"
             showSearch
             onChange={(value, op) => {
-              setCustomFieldsValue(form, "designation", value);
+              setCustomFieldsValue(form, "designation", op);
             }}
           />
         </Col>

@@ -10,9 +10,10 @@ import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { calculateNextDate } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 import {
@@ -64,10 +65,23 @@ const CreateAndEditEmploye = () => {
 
   // Form Instance
   const [form] = Form.useForm();
+  const { state } = useLocation();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (state !== undefined) {
+      form.setFieldValue("jobApplicationId", state.jobApplicationId);
+      form.setFieldValue("fullName", state.fullName);
+      if (state.dateOfBirth != null)
+        form.setFieldValue("dateofBirth", dayjs(state.dateOfBirth));
+      form.setFieldValue("officePhone", state.phoneNo);
+      form.setFieldValue("nid", state.nid);
+      form.setFieldValue("permanentAddress", state.permanentAddress);
+      form.setFieldValue("presentAddress", state.presentAddress);
+    }
   }, []);
 
   // menu permission checking
@@ -103,6 +117,31 @@ const CreateAndEditEmploye = () => {
   const holidayDDL = useApiRequest([]);
   const jobLocationDDL = useApiRequest([]);
   const jobTerritoryDDL = useApiRequest([]);
+
+  useEffect(() => {
+    if (state !== undefined) {
+      const found = bloodGroupDDL.data.find(
+        (x) => x.strBloodGroup.trim() === state.bloodGroup
+      );
+      if (found) form.setFieldValue("bloodGroup", found);
+    }
+  }, [bloodGroupDDL.data]);
+  useEffect(() => {
+    if (state !== undefined) {
+      const found = religionDDL.data.find(
+        (x) => x.ReligionName.trim() === state.religion
+      );
+      if (found) form.setFieldValue("religion", found);
+    }
+  }, [religionDDL.data]);
+  useEffect(() => {
+    if (state !== undefined) {
+      const found = genderDDL.data.find(
+        (x) => x.GenderName.trim() === state.gender
+      );
+      if (found) form.setFieldValue("gender", found);
+    }
+  }, [genderDDL.data]);
 
   const getEmpData = () => {
     getEmployeeProfileViewData(
@@ -664,7 +703,8 @@ const CreateAndEditEmploye = () => {
                   const payload = {
                     strLoginId:
                       form.getFieldValue("loginUserId") ||
-                      form.getFieldValue("employeeCode"),
+                      form.getFieldValue("employeeCode") ||
+                      "",
                     intUrlId: intUrlId,
                     intAccountId: orgId,
                   };
@@ -721,7 +761,8 @@ const CreateAndEditEmploye = () => {
                   const payload = {
                     strLoginId:
                       form.getFieldValue("loginUserId") ||
-                      form.getFieldValue("employeeCode"),
+                      form.getFieldValue("employeeCode") ||
+                      "",
                     intUrlId: intUrlId,
                     intAccountId: orgId,
                   };
@@ -786,6 +827,9 @@ const CreateAndEditEmploye = () => {
 
           <div>
             <PCardBody>
+              <div style={{ display: "none" }}>
+                <PInput type="text" name="jobApplicationId" label="_" />
+              </div>
               <Row gutter={[10, 2]}>
                 <Col md={6} sm={24}>
                   <PInput
@@ -793,15 +837,18 @@ const CreateAndEditEmploye = () => {
                     name="employeeCode"
                     label="Employee ID"
                     placeholder="Employee ID"
-                    rules={[
-                      { required: true, message: "Employee ID is required" },
-                    ]}
-                    // disabled={params?.id}
+                    rules={
+                      intAccountId !== 16 && [
+                        { required: true, message: "Employee ID is required" },
+                      ]
+                    }
                     disabled={
-                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
+                      intAccountId === 16 ||
+                      (empId && (!employeeFeature?.isEdit || !isOfficeAdmin))
                     }
                   />
                 </Col>
+
                 <Col md={6} sm={24}>
                   <PInput
                     type="text"
@@ -894,6 +941,7 @@ const CreateAndEditEmploye = () => {
                     name="workplace"
                     label="Workplace/Concern"
                     placeholder="Workplace/Concern"
+                    showSearch
                     onChange={(value, op) => {
                       form.setFieldsValue({
                         workplace: op,

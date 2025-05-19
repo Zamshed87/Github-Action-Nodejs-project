@@ -2,11 +2,19 @@ import { Col, Drawer, Row } from "antd";
 import { PButton, PForm, PInput } from "Components";
 import React from "react";
 import CommonFilterField from "./commonFIlterField";
-const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
+const PFilter = ({
+  form,
+  landingApiCall,
+  resetApiCall,
+  ishideDate,
+  isSection,
+  showDesignation,
+  children,
+}: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
 
   return (
-    <div style={{ float: "left" }}>
+    <div style={{ float: "right", marginRight: "10px" }}>
       <PButton
         style={{ marginBottom: "15px" }}
         size="small"
@@ -30,6 +38,7 @@ const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
             workplace: { label: "All", value: 0 },
             department: { label: "All", value: 0 },
             designation: { label: "All", value: 0 },
+            section: { label: "All", value: 0 },
           }}
         >
           <Row gutter={[10, 2]}>
@@ -78,7 +87,8 @@ const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
               form={form}
               col={12}
               isDepartment={true}
-              isDesignation={true}
+              isDesignation={showDesignation !== "NO"}
+              isSection={isSection}
               // mode="multiple"
             />
 
@@ -120,8 +130,9 @@ const PFilter = ({ form, landingApiCall, ishideDate, children }: any) => {
                     departmentId: [0],
                     designation: { label: "All", value: 0 },
                     designationId: [0],
+                    section: { label: "All", value: 0 },
                   });
-                  landingApiCall();
+                  resetApiCall && resetApiCall();
                 }}
               />
             </Col>

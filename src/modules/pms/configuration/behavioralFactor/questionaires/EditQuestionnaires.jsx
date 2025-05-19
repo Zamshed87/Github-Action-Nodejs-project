@@ -23,6 +23,7 @@ const initialValues = {
 };
 
 const EditQuestionnaires = ({
+  data,
   orgId,
   permission,
   onHide,
@@ -90,6 +91,9 @@ const EditQuestionnaires = ({
         <Loading />
       ) : (
         <div className="add-new-employee-form">
+          <div className="row ml-3 mb-2">
+            <h1>Level of Leadership: </h1> <h2>{data?.label}</h2>
+          </div>
           <div className="row m-0">
             <div className="col-md-6">
               <label>Question Group Name</label>
@@ -97,6 +101,7 @@ const EditQuestionnaires = ({
                 classes="input-sm"
                 value={values?.questionnairesGroupName}
                 name="questionnairesGroupName"
+                disabled={true}
                 type="text"
                 className="form-control"
                 onChange={(e) => {

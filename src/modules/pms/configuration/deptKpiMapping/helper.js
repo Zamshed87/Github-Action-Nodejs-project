@@ -254,16 +254,16 @@ export const setObjectiveToInitDataOnEditFromLanding = ({
 
 export const validationSchemaOfObjectiveCreate = () => {
   const validationSchema = Yup.object().shape({
-    pmType: Yup.object({
-      label: Yup.string()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-      value: Yup.number()
-        .required("PM type is required")
-        .typeError("Invalid PM type"),
-    })
-      .required("PM type is required")
-      .typeError("PM type is required"),
+    // pmType: Yup.object({
+    //   label: Yup.string()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    //   value: Yup.number()
+    //     .required("PM type is required")
+    //     .typeError("Invalid PM type"),
+    // })
+    //   .required("PM type is required")
+    //   .typeError("PM type is required"),
     objectiveType: Yup.object({
       label: Yup.string()
         .required("Objective type is required")
@@ -315,10 +315,10 @@ export const kpiMappingColumns = (page, paginationSize, rowDto, setRowDto) => {
       className: "text-center",
       fixed: "left",
     },
-    {
-      title: "PM Type",
-      dataIndex: "pmTypeName",
-    },
+    // {
+    //   title: "PM Type",
+    //   dataIndex: "pmTypeName",
+    // },
     {
       title: "Objective Type",
       dataIndex: "objectiveTypeName",
@@ -369,7 +369,7 @@ export const saveHandler = (
 ) => {
   const found = rowDto?.some((item) => {
     return (
-      item?.pmTypeId === values?.pmType?.value &&
+      // item?.pmTypeId === values?.pmType?.value &&
       item?.objectiveTypeId === values?.objectiveType?.value &&
       item?.objectiveId === values?.objective?.value &&
       item?.kpisId === values?.kpiName?.value
@@ -415,12 +415,12 @@ export const validationSchema = () => {
       })
       .typeError("Department is required"),
 
-    pmType: Yup.object()
-      .shape({
-        label: Yup.string().required("PM Type is required"),
-        value: Yup.string().required("PM Type is required"),
-      })
-      .typeError("PM Type is required"),
+    // pmType: Yup.object()
+    //   .shape({
+    //     label: Yup.string().required("PM Type is required"),
+    //     value: Yup.string().required("PM Type is required"),
+    //   })
+    //   .typeError("PM Type is required"),
     objective: Yup.object()
       .shape({
         label: Yup.string().required("Objective is required"),

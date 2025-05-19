@@ -1,5 +1,6 @@
 import { isDevServer } from "App";
 import axios from "axios";
+import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 
@@ -40,7 +41,7 @@ export const processBulkUploadIncrementAction = async (
             // console.log(keyValuePairs);
             return {
               elementName: key,
-              amount: fields[key].result || fields[key],
+              amount: roundToDecimals(fields[key]?.result) || fields[key],
               elementId: keyValuePairs[key],
             };
           }

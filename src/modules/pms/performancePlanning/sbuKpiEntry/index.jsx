@@ -96,7 +96,7 @@ const SbuKpiEntry = () => {
         values?.sbu?.value
       }&accountId=${intAccountId}&from=${values?.fromMonth?.value || 1}&to=${
         values?.toMonth?.value || 12
-      }&pmTypeId=${values?.pmType?.value}`
+      }&pmTypeId=${values?.pmType?.value || 1}`
     );
   };
 

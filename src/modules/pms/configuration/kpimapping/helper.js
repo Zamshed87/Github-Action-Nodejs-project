@@ -3,7 +3,7 @@ import { Tooltip } from "@mui/material";
 import axios from "axios";
 import * as Yup from "yup";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 
 export const initialValues = {
   department: "",
@@ -47,12 +47,6 @@ export const validationSchema = (validateWise) => {
           value: Yup.string().required("Employee is required"),
         })
         .typeError("Employee is required"),
-    pmType: Yup.object()
-      .shape({
-        label: Yup.string().required("PM Type is required"),
-        value: Yup.string().required("PM Type is required"),
-      })
-      .typeError("PM Type is required"),
     // objectiveType: Yup.object()
     //   .shape({
     //     label: Yup.string().required("Objective Type is required"),
@@ -98,7 +92,7 @@ export const getKPIsMappingLanding = async (
   setter,
   setLoading,
   pages,
-  setPages,
+  setPages
 ) => {
   setLoading && setLoading(true);
   try {
@@ -121,7 +115,13 @@ export const getKPIsMappingLanding = async (
   }
 };
 
-export const employeeeKpiMappingTable = (page, paginationSize, history, setSelectedData, setShowKpiViewModal) => {
+export const employeeeKpiMappingTable = (
+  page,
+  paginationSize,
+  history,
+  setSelectedData,
+  setShowKpiViewModal
+) => {
   return [
     {
       title: "SL",
@@ -154,7 +154,7 @@ export const employeeeKpiMappingTable = (page, paginationSize, history, setSelec
     {
       title: "Department",
       dataIndex: "departmentName",
-      sorter: true
+      sorter: true,
     },
     {
       title: "Total KPIs",
@@ -173,7 +173,7 @@ export const employeeeKpiMappingTable = (page, paginationSize, history, setSelec
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpimapping/employeeWise/edit/3`,
+                    `/pms/targetsetup/kpimapping/employeeWise/edit/3`,
                     {
                       deptName: record?.departmentName,
                       deptId: record?.departmentId,
@@ -237,7 +237,7 @@ export const deptKpiMappingTable = (page, paginationSize, history) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpimapping/departmentWise/edit/1`,
+                    `/pms/targetsetup/kpimapping/departmentWise/edit/1`,
                     {
                       deptName: record?.departmentName,
                       deptId: record?.departmentId,
@@ -288,7 +288,7 @@ export const designationKpiMappingTable = (page, paginationSize, history) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   history.push(
-                    `/pms/configuration/kpimapping/designationWise/edit/2`,
+                    `/pms/targetsetup/kpimapping/designationWise/edit/2`,
                     {
                       deptName: record?.departmentName,
                       deptId: record?.departmentId,

@@ -32,6 +32,8 @@ import {
   validationSchema2,
 } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import moment from "moment";
+import { todayDate } from "utility/todayDate";
 
 const paginationSize = 100;
 
@@ -258,60 +260,117 @@ function BulkAddEditForm() {
         .join(",");
     }
 
+    // const payload = {
+    //   strEntryType: "BulkUpload",
+    //   intSalaryAdditionAndDeductionId: 0,
+    //   intAccountId: orgId,
+    //   intBusinessUnitId: buId,
+    //   intEmployeeId: values?.employee?.value || null,
+    //   isAutoRenew: values?.isAutoRenew ? true : false,
+    //   intYear: +values?.fromMonth?.split("-")[0] || null,
+    //   intMonth: +values?.fromMonth?.split("-")[1] || null,
+    //   strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
+    //   isAddition: values?.salaryType?.value === 1 ? true : false,
+    //   strAdditionNDeduction: values?.allowanceAndDeduction?.label,
+    //   intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
+    //   intAmountWillBeId: values?.amountDimension?.value,
+    //   strAmountWillBe: values?.amountDimension?.label,
+    //   numAmount: +values?.amount,
+    //   isActive: true,
+    //   isReject: false,
+    //   intActionBy: employeeId,
+    //   intToYear: +values?.toMonth?.split("-")[0] || null,
+    //   intToMonth: +values?.toMonth?.split("-")[1] || null,
+    //   strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
+    //   // employeeIdList: modifyEmployeeIdListId, 🔥
+
+    //   // new requirement added 🔥 25-01-24
+    //   // strEntryType: "string",
+    //   // intSalaryAdditionAndDeductionId: 0,
+    //   // intAccountId: 0,
+    //   // intBusinessUnitId: 0,
+    //   intWorkplaceGroupId: wgId,
+    //   intWorkplaceId: wId,
+    //   // intEmployeeId: 0,
+    //   // isAutoRenew: true,
+    //   // intYear: 0,
+    //   // intMonth: 0,
+    //   // strMonth: "string",
+    //   // isAddition: true,
+    //   // strAdditionNDeduction: "string",
+    //   // intAdditionNDeductionTypeId: 0,
+    //   // intAmountWillBeId: 0,
+    //   // strAmountWillBe: "string",
+    //   // numAmount: 0,
+    //   intAllowanceDuration: values?.intAllowanceDuration?.value,
+    //   numMaxLimit: +values?.maxAmount,
+    //   intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+    //   // isActive: true,
+    //   // isReject: true,
+    //   // intActionBy: 0,
+    //   // intToYear: 0,
+    //   // intToMonth: 0,
+    //   // strToMonth: "string",
+    //   strEmployeeIdList: empListString,
+    // };
     const payload = {
-      strEntryType: "BulkUpload",
-      intSalaryAdditionAndDeductionId: 0,
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intEmployeeId: values?.employee?.value || null,
-      isAutoRenew: values?.isAutoRenew ? true : false,
-      intYear: +values?.fromMonth?.split("-")[0] || null,
-      intMonth: +values?.fromMonth?.split("-")[1] || null,
-      strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-      isAddition: values?.salaryType?.value === 1 ? true : false,
-      strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-      intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-      intAmountWillBeId: values?.amountDimension?.value,
-      strAmountWillBe: values?.amountDimension?.label,
-      numAmount: +values?.amount,
-      isActive: true,
-      isReject: false,
-      intActionBy: employeeId,
-      intToYear: +values?.toMonth?.split("-")[0] || null,
-      intToMonth: +values?.toMonth?.split("-")[1] || null,
-      strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-      // employeeIdList: modifyEmployeeIdListId, 🔥
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      employeeId: empListString,
+      // ------
+      allowanceItems: [
+        {
+          isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+          fromDate: values?.fromMonth + "-01",
+          toDate: values?.toMonth
+            ? moment(values?.toMonth).endOf("month").format("YYYY-MM-DD")
+            : todayDate(),
+          allowanceAttendenceStatusId:
+            values?.intAllowanceAttendenceStatus?.value,
+          allowanceDuration: values?.intAllowanceDuration?.value,
+          numMaxLimitAmount: +values?.maxAmount,
 
-      // new requirement added 🔥 25-01-24
-      // strEntryType: "string",
-      // intSalaryAdditionAndDeductionId: 0,
-      // intAccountId: 0,
-      // intBusinessUnitId: 0,
-      intWorkplaceGroupId: wgId,
-      intWorkplaceId: wId,
-      // intEmployeeId: 0,
-      // isAutoRenew: true,
-      // intYear: 0,
-      // intMonth: 0,
-      // strMonth: "string",
-      // isAddition: true,
-      // strAdditionNDeduction: "string",
-      // intAdditionNDeductionTypeId: 0,
-      // intAmountWillBeId: 0,
-      // strAmountWillBe: "string",
-      // numAmount: 0,
-      intAllowanceDuration: values?.intAllowanceDuration?.value,
-      numMaxLimit: +values?.maxAmount,
-      intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+          isAddition: values?.salaryType?.value === 1 ? true : false,
+          allowanceName: values?.allowanceAndDeduction?.label,
+          allowanceTypeId: values?.allowanceAndDeduction?.value,
+          amountWillBeId: values?.amountDimension?.value,
+          amountWillBe: values?.amountDimension?.label,
+          numAmount: +values?.amount,
+          allowanceId: 0,
+        },
+      ],
+      // strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
+      // intSalaryAdditionAndDeductionId: singleData
+      //   ? singleData?.intSalaryAdditionAndDeductionId
+      //   : 0,
+
+      // intWorkplaceId:
+      //   empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
+      // intEmployeeId: values?.employee?.value,
+      // isAutoRenew: values?.isAutoRenew ? true : false,
+      // intYear: +values?.fromMonth?.split("-")[0] || null,
+      // intMonth: +values?.fromMonth?.split("-")[1] || null,
+      // strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
+      // isAddition: values?.salaryType?.value === "Addition" ? true : false,
+      // strAdditionNDeduction: values?.allowanceAndDeduction?.label,
+      // intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
+      // intAmountWillBeId: values?.amountDimension?.value,
+      // strAmountWillBe: values?.amountDimension?.label,
+      // numAmount: +values?.amount,
       // isActive: true,
-      // isReject: true,
-      // intActionBy: 0,
-      // intToYear: 0,
-      // intToMonth: 0,
-      // strToMonth: "string",
-      strEmployeeIdList: empListString,
-    };
+      // isReject: false,
+      // intActionBy: employeeId,
+      // intToYear: +values?.toMonth?.split("-")[0] || null,
+      // intToMonth: +values?.toMonth?.split("-")[1] || null,
+      // strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
 
+      // // new requirement 🔥
+      // intAllowanceDuration: values?.intAllowanceDuration?.value,
+      // numMaxLimit: +values?.maxAmount,
+      // intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+    };
     createEditAllowanceAndDeduction(payload, setLoading, cb);
   };
 
@@ -322,6 +381,7 @@ function BulkAddEditForm() {
       allowanceAndDeduction: "Allowance/Deduction type is required",
       amountDimension: "Amount Dimension is required",
       amount: "Amount is required",
+      intAllowanceDuration: "Allowance Duration is required",
     };
     // throw error 🔥
     const remainingError = Object.keys(errorMessages).some((fieldName) => {
@@ -331,7 +391,22 @@ function BulkAddEditForm() {
       }
       return false;
     });
-
+    if (
+      values?.intAllowanceDuration?.value == 2 &&
+      !values?.intAllowanceAttendenceStatus
+    ) {
+      toast.warn("Allowance Attendance Status Field is Required.");
+      return;
+    } else if (
+      values?.intAllowanceDuration?.value == 1 &&
+      !values?.intAllowanceAttendenceStatus &&
+      !values?.maxAmount
+    ) {
+      toast.warn(
+        "Allowance Attendance Status & Max Amount [ for a month ] Field is Required."
+      );
+      return;
+    }
     if (!remainingError) {
       saveHandler(
         values,

@@ -41,9 +41,10 @@ import { getEnumData } from "common/api/commonApi";
 import { formatDate, setCustomFieldsValue } from "../requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { formatFilterValue, typeDataSetForTitle } from "../helpers";
+import { toast } from "react-toastify";
 const TnDPlanningLanding = () => {
-  const defaultToDate = moment();
-  const defaultFromDate = moment().subtract(3, "months");
+  const defaultFromDate = moment().subtract(3, "months").startOf("month"); // 1st day of 3 months ago
+  const defaultToDate = moment().endOf("month"); // Last day of the current month
   // router states
   const history = useHistory();
   const dispatch = useDispatch();
@@ -66,6 +67,7 @@ const TnDPlanningLanding = () => {
     setTrainingTitle,
   ] = useAxiosGet();
   const [trainingModeStatusDDL, setTrainingModeStatusDDL] = useState<any>([]);
+  const [trainingStatusDDL, setTrainingStatusDDL] = useState<any>([]);
 
   // state
   const [loading, setLoading] = useState(false);
@@ -159,7 +161,9 @@ const TnDPlanningLanding = () => {
       title: "Training Date & Time",
       dataIndex: "startDate",
       render: (text: any, record: any) =>
-        dateNewFormatter(record.startDate, record.endDate),
+        !record.startDate || !record.endDate
+          ? ""
+          : dateNewFormatter(record.startDate, record.endDate),
       align: "left",
       width: 150,
     },
@@ -284,6 +288,10 @@ const TnDPlanningLanding = () => {
       label: (
         <h1
           onClick={() => {
+            if (!permission?.isEdit) {
+              toast.warning("You don't have permission to edit");
+              return;
+            }
             ViewTrainingPlan(
               rec?.id,
               setLoading,
@@ -427,9 +435,13 @@ const TnDPlanningLanding = () => {
     const fromDate = values?.fromDate;
     const toDate = values?.toDate;
 
-    const apiUrl = `/Training/GetAllTraining?status=&fromDate=${formatDate(
-      fromDate
-    )}&toDate=${formatDate(toDate)}&businessUnitIds=${formatFilterValue(
+    const apiUrl = `/Training/GetAllTraining?status=${
+      formatFilterValue(values?.trainingStatus)
+        ? formatFilterValue(values?.trainingStatus)
+        : ""
+    }&fromDate=${formatDate(fromDate)}&toDate=${formatDate(
+      toDate
+    )}&businessUnitIds=${formatFilterValue(
       values?.bUnitId
     )}&workplaceGroupIds=${formatFilterValue(
       values?.workplaceGroupId
@@ -456,6 +468,7 @@ const TnDPlanningLanding = () => {
       setLoading,
       true
     );
+    getEnumData("TrainingStatus", setTrainingStatusDDL, setLoading, true);
     getTrainingTypeDDL("/TrainingType/Training/Type", typeDataSetForType);
     getTrainingTitleDDL(
       "/TrainingTitle/Training/Title?pageNumber=1&pageSize=200",
@@ -482,6 +495,7 @@ const TnDPlanningLanding = () => {
           trainingType: { label: "All", value: 0 },
           trainingTitle: { label: "All", value: 0 },
           trainingMode: { label: "All", value: 0 },
+          trainingStatus: { label: "All", value: 0 },
         }}
       >
         <PCard>
@@ -593,6 +607,24 @@ const TnDPlanningLanding = () => {
                       {
                         required: true,
                         message: "Training Mode is required",
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col md={12} sm={12} xs={24}>
+                  <PSelect
+                    options={trainingStatusDDL || []}
+                    name="trainingStatus"
+                    label="Training Status"
+                    mode="multiple"
+                    placeholder="Training Status"
+                    onChange={(value, op) => {
+                      setCustomFieldsValue(form, "trainingStatus", value);
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Training Status is required",
                       },
                     ]}
                   />

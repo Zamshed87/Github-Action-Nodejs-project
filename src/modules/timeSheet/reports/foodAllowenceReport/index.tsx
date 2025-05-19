@@ -25,7 +25,7 @@ const FoodAllowenceReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const featurePermission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30423),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30424),
     []
   );
 
@@ -78,7 +78,7 @@ const FoodAllowenceReport = () => {
           {(landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Food Allowence Report`}
+            title={`Food Allowance Report`}
             onExport={() => {
               const values = form.getFieldsValue(true);
               const url = `/PdfAndExcelReport/GetFoodAllowenceReport?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&payrollYearId=${moment(
@@ -86,7 +86,7 @@ const FoodAllowenceReport = () => {
               ).format("YYYY")}&payrollMonthId=${moment(
                 values?.payrollMonth
               ).format("MM")}`;
-              downloadFile(url, "Food_Allowence_Report", "xlsx", setLoading);
+              downloadFile(url, "Food_Allowance_Report", "xlsx", setLoading);
             }}
             printIcon={true}
             pdfExport={() => {

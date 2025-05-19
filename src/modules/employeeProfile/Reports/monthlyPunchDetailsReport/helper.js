@@ -53,6 +53,7 @@ export const column = (fromDate, toDate) => {
     strEmployeeName: "Employee Name",
     strDesignation: "Designation",
     strDepartment: "Department",
+    strSectionName: "Section",
     ...tempObj,
   };
 };

@@ -1,51 +1,40 @@
-import {
-  Avatar,
-  DataTable,
-  PButton,
-  PCard,
-  PCardBody,
-  PCardHeader,
-  PForm,
-  PInput,
-  PSelect,
-} from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
-
+import { Avatar, DataTable, PCard, PCardHeader, PForm } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag } from "antd";
-import { getWorkplaceDetails } from "common/api";
-import Loading from "../../../../common/loading/Loading";
+import { Form } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { debounce } from "lodash";
+import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-
-import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
-import { column } from "./helper";
 import { getDateOfYear } from "utility/dateFormatter";
 import { getPDFAction } from "utility/downloadFile";
 import PFilter from "utility/filter/PFilter";
 import { formatFilterValue } from "utility/filter/helper";
+import Loading from "../../../../common/loading/Loading";
+import { column } from "./helper";
 
 const EmMovementHistory = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { orgId, buId, wgId, employeeId, buName },
+    profileData: { buId, wId, wgId, buName },
+    tokenData,
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 101),
     []
   );
+
+  const decodedToken = tokenData
+    ? JSON.parse(atob(tokenData.split(".")[1]))
+    : null;
+
   // menu permission
   const employeeFeature: any = permission;
 
@@ -62,12 +51,8 @@ const EmMovementHistory = () => {
     total: 0,
   });
 
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
-  //   api states
-  const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -79,46 +64,6 @@ const EmMovementHistory = () => {
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  // workplace wise
-  const getWorkplaceGroup = () => {
-    workplaceGroup?.action({
-      urlKey: "WorkplaceGroupWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        empId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
-  };
-
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "WorkplaceWithRoleExtension",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        empId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
 
   type TLandingApi = {
     pagination?: {
@@ -143,21 +88,30 @@ const EmMovementHistory = () => {
       params: {
         BusinessUnitId: buId,
         IsXls: false,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
-        departments: formatFilterValue(values?.departmentId),
-        designations: formatFilterValue(values?.designationId),
+        WorkplaceGroupId: wgId,
+        WorkplaceId: wId,
+        departments: formatFilterValue(values?.department),
+        designations: formatFilterValue(values?.designation),
+        sections: formatFilterValue(values?.section),
         PageNo: pagination.current || 1,
         PageSize: pagination!.pageSize! > 1 ? pagination?.pageSize : 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.todate).format("YYYY-MM-DD"),
+        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         SearchText: searchText || "",
+        WorkplaceGroupList:
+          values?.workplaceGroup?.value == 0 ||
+          values?.workplaceGroup?.value == undefined
+            ? decodedToken.workplaceGroupList
+            : values?.workplaceGroup?.value.toString(),
+        WorkplaceList:
+          values?.workplace?.value == 0 || values?.workplace?.value == undefined
+            ? decodedToken.workplaceList
+            : values?.workplace?.value.toString(),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
     landingApiCall();
   }, []);
 
@@ -174,13 +128,13 @@ const EmMovementHistory = () => {
     {
       title: "Work. Group/Location",
       dataIndex: "workplaceGroupName",
-      width: 50,
+      width: 100,
       fixed: "left",
     },
     {
       title: "Workplace/Concern",
       dataIndex: "workplaceName",
-      width: 50,
+      width: 120,
       fixed: "left",
     },
     {
@@ -228,7 +182,7 @@ const EmMovementHistory = () => {
       title: "Duration (Day)",
       dataIndex: "rawDuration",
       //   render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
-      width: 30,
+      width: 100,
     },
     {
       title: "Reason",
@@ -241,12 +195,6 @@ const EmMovementHistory = () => {
       searchText: value,
     });
   }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -332,7 +280,6 @@ const EmMovementHistory = () => {
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
-                  // console.log(error?.message);
                 }
               };
               excelLanding();
@@ -340,95 +287,36 @@ const EmMovementHistory = () => {
             pdfExport={() => {
               const values = form.getFieldsValue(true);
               getPDFAction(
-                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
-                  values?.workplace?.value
-                }&WorkplaceGroupId=${
-                  values?.workplaceGroup?.value
-                }&FromDate=${moment(values?.fromDate).format(
+                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${wgId}&WorkplaceGroupId=${wId}&departments=${formatFilterValue(
+                  values?.department
+                )}&sections=${formatFilterValue(
+                  values?.section
+                )}&designations=${formatFilterValue(
+                  values?.designation
+                )}&FromDate=${moment(values?.fromDate).format(
                   "YYYY-MM-DD"
-                )}&ToDate=${moment(values?.todate).format("YYYY-MM-DD")}`,
+                )}&ToDate=${moment(values?.toDate).format(
+                  "YYYY-MM-DD"
+                )}&WorkplaceGroupList=${
+                  values?.workplaceGroup?.value == 0 ||
+                  values?.workplaceGroup?.value == undefined
+                    ? decodedToken.workplaceGroupList
+                    : values?.workplaceGroup?.value.toString()
+                }&WorkplaceList=${
+                  values?.workplace?.value == 0 ||
+                  values?.workplace?.value == undefined
+                    ? decodedToken.workplaceList
+                    : values?.workplace?.value.toString()
+                }`,
                 setLoading
               );
             }}
           />
-          {/* <PCardBody className="mb-3">
-            <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
-                    });
-                  }}
-                />
-              </Col>
-
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplaceGroup?.data || []}
-                  name="workplaceGroup"
-                  label="Workplace Group"
-                  placeholder="Workplace Group"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplaceGroup: op,
-                      workplace: undefined,
-                    });
-                    getWorkplace();
-                  }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PSelect
-                  options={workplace?.data || []}
-                  name="workplace"
-                  label="Workplace"
-                  placeholder="Workplace"
-                  disabled={+id ? true : false}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      workplace: op,
-                    });
-                    getWorkplaceDetails(value, setBuDetails);
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-
-              <Col
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton type="primary" action="submit" content="View" />
-              </Col>
-            </Row>
-          </PCardBody> */}
-          <PFilter form={form} landingApiCall={landingApiCall} />
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+          />
           <DataTable
             bordered
             data={landingApi?.data?.data || []}
