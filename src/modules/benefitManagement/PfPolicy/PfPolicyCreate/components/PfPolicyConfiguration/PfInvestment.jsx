@@ -3,8 +3,8 @@ import useConfigSelectionHook from "./useConfigSelectionHook";
 import { Checkbox, Col, Form, Row } from "antd";
 
 const PfInvestment = ({ form }) => {
-  const { paidAfterOpts, loadingPaidAfter } = useConfigSelectionHook(form, {
-    fetchPaidAfterEnum: true,
+  const { investmentOpts, loadingInvestment } = useConfigSelectionHook(form, {
+    fetchInvestmentEnum: true,
   });
 
   return (
@@ -29,6 +29,7 @@ const PfInvestment = ({ form }) => {
           </Col>
           <Col md={5} sm={12} xs={24}>
             <PSelect
+            options={investmentOpts}
               name="intMonthlyInvestmentWith"
               label="Monthly Investment With"
               placeholder="Select Monthly Investment With"
@@ -37,6 +38,7 @@ const PfInvestment = ({ form }) => {
                   intMonthlyInvestmentWith: value,
                 });
               }}
+              loading={loadingInvestment}
               rules={[
                 {
                   required: true,
