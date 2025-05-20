@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const useInvestmentType = (form) => {
-  const { wgId, wId } = useSelector(
+  const { wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -18,20 +18,8 @@ const useInvestmentType = (form) => {
   const [data, getData, loading, setData] = useAxiosGet({});
 
   const fetchInvestmentType = () => {
-    const formValues = form?.getFieldsValue(true);
 
-    const formattedParams = {
-      IntWorkPlaceGroupId: formValues.workplaceGroup?.value ?? wgId,
-      IntWorkPlaceId: formValues.workplace?.value ?? wId,
-      // StrStatus: formValues.status,
-    };
-
-    const filteredParams = Object.entries(formattedParams)
-      .filter(([_, value]) => value !== undefined && value !== null)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join("&");
-
-    const url = `/PfPolicy/GetPolicies?${filteredParams}`;
+    const url = `/InvestmentType/GetAll?accountId=${orgId}`;
 
     getData(url, (res) => {
       setData(res);

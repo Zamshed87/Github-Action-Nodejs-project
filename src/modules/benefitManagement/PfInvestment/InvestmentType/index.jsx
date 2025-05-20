@@ -8,7 +8,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import useInvestmentType from "./useInvestmentType";
-import CreateInvestmentType from "./CreateInvestmentType";
+import CreateEditInvestmentType from "./CreateEditInvestmentType";
 import { getHeader } from "./helper";
 
 const InvestmentType = () => {
@@ -75,7 +75,7 @@ const InvestmentType = () => {
         onCancel={() => {
           setOpenEdit({ open: false, data: {}, create: false });
         }}
-        components={<CreateInvestmentType data={openEdit.data} setOpenEdit={setOpenEdit} />}
+        components={<CreateEditInvestmentType data={openEdit.data} setOpenEdit={setOpenEdit} createInvestmentType={createInvestmentType} updateInvestmentType={updateInvestmentType} />}
         width={1000}
       />
     </>

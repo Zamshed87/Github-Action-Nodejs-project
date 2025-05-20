@@ -3,10 +3,10 @@ import axios from "axios";
 import { Flex, TableButton } from "Components";
 import { toast } from "react-toastify";
 
-const updatePolicyStatus = async (id) => {
+const updateStatus = async (id,status) => {
   try {
     const response = await axios.post(
-      `/PfPolicy/ActiveInactivePfPolicy?intPfConfigHeaderId=${id}`
+      `/InvestmentType/ActiveOrDeleteById?investmentTypeId=${id}&Active=${status}`,
     );
     toast.success(response?.data?.message || "Status updated successfully");
   } catch (error) {
@@ -22,39 +22,18 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
     align: "center",
   },
   {
-    title: "Policy Name",
-    dataIndex: "strPolicyName",
+    title: "Investment Type",
+    dataIndex: "investmentName",
     sorter: true,
     width: 100,
   },
   {
-    title: "Workplace Group",
-    dataIndex: "strWorkPlaceGroup",
-    sorter: true,
-    width: 120,
-  },
-  {
-    title: "Workplace",
-    dataIndex: "strWorkPlace",
-    sorter: true,
-    width: 100,
-  },
-  {
-    title: "Employment Type",
-    dataIndex: "strEmploymentTypeName",
+    title: "Comments",
+    dataIndex: "remark",
     render: (_, rec) => {
-      return rec?.isForAllEmploymentType
-        ? "All"
-        : rec?.employmentTypes?.map((item) => item.label).join(", ");
+      return rec.remark ?? "-";
     },
-    sorter: true,
     width: 120,
-  },
-  {
-    title: "PF Eligibility Depend on",
-    dataIndex: "strPfEligibilityDependOn",
-    sorter: true,
-    width: 150,
   },
   {
     title: "Status",
@@ -62,10 +41,10 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
     render: (_, rec) => {
       return (
         <Flex justify="center">
-          <Tooltip title={rec?.strStatus === "Active" ? "Active" : "Inactive"}>
+          <Tooltip title={rec?.isActive === "Active" ? "Active" : "Inactive"}>
             <Switch
               size="small"
-              checked={rec?.strStatus === "Active"}
+              checked={rec?.isActive === "Active"}
               onChange={(checked) => {
                 setData((prev) => {
                   const updatedList = [...prev.data];
@@ -77,7 +56,7 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
                   if (recIndex !== -1) {
                     updatedList[recIndex] = {
                       ...updatedList[recIndex],
-                      strStatus: checked ? "Active" : "Inactive",
+                      isActive: checked ? "Active" : "Inactive",
                     };
                   }
 
@@ -86,7 +65,7 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
                     data: updatedList,
                   };
                 });
-                updatePolicyStatus(rec.intPfConfigHeaderId);
+                updateStatus(rec.typeId, checked);
               }}
             />
           </Tooltip>
