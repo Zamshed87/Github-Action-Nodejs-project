@@ -73,7 +73,7 @@ function ChatIconBottomFixed() {
                 bottom: 0,
                 right: 0,
                 margin: "1px",
-                background: "#34a853",
+                background: "var(--primary-color)",
               }}
             >
               {+recentInboxUnseenMsgNumber + +recentGroupInboxUnseenMsgNumber <=

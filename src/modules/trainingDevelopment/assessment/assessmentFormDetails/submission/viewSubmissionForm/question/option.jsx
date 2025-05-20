@@ -9,7 +9,7 @@ const Option = ({ option = [] }) => {
           <div
             className=""
             style={{
-              border: "2px solid #34A853",
+              border: "2px solid var(--primary-color)",
               width: "12px",
               height: "12px",
               borderRadius: "100%",
@@ -24,7 +24,7 @@ const Option = ({ option = [] }) => {
               style={{
                 width: "6px",
                 height: "6px",
-                backgroundColor: "#34A853",
+                backgroundColor: "var(--primary-color)",
                 borderRadius: "100%",
                 flexShrink: 0,
               }}

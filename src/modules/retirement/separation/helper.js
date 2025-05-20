@@ -10,9 +10,7 @@ import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
 import { gray500, gray700, gray900 } from "../../../utility/customColor";
-import {
-  dateFormatter
-} from "../../../utility/dateFormatter";
+import { dateFormatter } from "../../../utility/dateFormatter";
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -38,7 +36,7 @@ export const getRoleAssigneToUser = async (buId, wgId, id, setter) => {
     if (res?.data) {
       setter && setter(res?.data);
     }
-  } catch (error) { }
+  } catch (error) {}
 };
 
 // separation create
@@ -198,29 +196,29 @@ export const separationApplicationLandingTableColumn = (
                   />
                   {item?.docArr?.length && item?.docArr?.[0] !== ""
                     ? item?.docArr.map((image, i) => (
-                      <p
-                        style={{
-                          margin: "6px 0 0",
-                          fontWeight: "400",
-                          fontSize: "12px",
-                          lineHeight: "18px",
-                          color: "#009cde",
-                          cursor: "pointer",
-                        }}
-                        key={i}
-                      >
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            dispatch(getDownlloadFileView_Action(image));
+                        <p
+                          style={{
+                            margin: "6px 0 0",
+                            fontWeight: "400",
+                            fontSize: "12px",
+                            lineHeight: "18px",
+                            color: "#009cde",
+                            cursor: "pointer",
                           }}
+                          key={i}
                         >
-                          <>
-                            <FilePresentOutlined /> {`Attachment_${i + 1}`}
-                          </>
-                        </span>
-                      </p>
-                    ))
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(getDownlloadFileView_Action(image));
+                            }}
+                          >
+                            <>
+                              <FilePresentOutlined /> {`Attachment_${i + 1}`}
+                            </>
+                          </span>
+                        </p>
+                      ))
                     : ""}
                 </div>
               </div>
@@ -277,11 +275,7 @@ export const separationApplicationLandingTableColumn = (
       title: "Created Date",
       dataIndex: "dteCreatedAt",
       render: (data) => (
-        <>
-          {data?.dteCreatedAt
-            ? dateFormatter(data?.dteCreatedAt)
-            : "N/A"}
-        </>
+        <>{data?.dteCreatedAt ? dateFormatter(data?.dteCreatedAt) : "N/A"}</>
       ),
       filter: false,
       fieldType: "date",
@@ -298,12 +292,61 @@ export const separationApplicationLandingTableColumn = (
                 title={
                   <div className="p-1">
                     <div className="mb-1">
-                      <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
-                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
-                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                      <table
+                        style={{
+                          border: `1px solid #475467`,
+                          borderCollapse: "collapse",
+                        }}
+                      >
+                        <th
+                          style={{
+                            border: `1px solid #475467`,
+                            margin: "10px",
+                            padding: "10px",
+                          }}
+                        >
+                          <p>
+                            <b>Charge Handover</b>
+                          </p>
+                        </th>
+                        <th
+                          style={{
+                            border: `1px solid #475467`,
+                            margin: "10px",
+                            padding: "10px",
+                          }}
+                        >
+                          <p>
+                            <b>Exit Interview</b>
+                          </p>
+                        </th>
                         <tr>
-                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
-                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td
+                            style={{
+                              border: `1px solid #475467`,
+                              textAlign: "center",
+                              padding: "5px 0",
+                            }}
+                          >
+                            {data?.isHandedOverDone === true ? (
+                              <Chips label="Done" classess="success p-2" />
+                            ) : (
+                              <Chips label="Not Done" classess="warning p-2" />
+                            )}
+                          </td>
+                          <td
+                            style={{
+                              border: `1px solid #475467`,
+                              textAlign: "center",
+                              padding: "5px 0",
+                            }}
+                          >
+                            {data?.isExitInterviewDone === true ? (
+                              <Chips label="Done" classess="success p-2" />
+                            ) : (
+                              <Chips label="Not Done" classess="warning p-2" />
+                            )}
+                          </td>
                         </tr>
                       </table>
                     </div>
@@ -326,11 +369,9 @@ export const separationApplicationLandingTableColumn = (
             {data?.approvalStatus === "Cancelled" && (
               <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {data?.approvalStatus
-              ?.toLowerCase()
-              .includes("approved") && (
-                <Chips label="Approved" classess="success p-2" />
-              )}
+            {data?.approvalStatus?.toLowerCase().includes("approved") && (
+              <Chips label="Approved" classess="success p-2" />
+            )}
             {data?.approvalStatus === "Withdrawn" && (
               <Chips label="Withdrawn" classess="danger p-2" />
             )}
@@ -344,7 +385,10 @@ export const separationApplicationLandingTableColumn = (
               <Chips label="Clearance Completed" classess="success p-2" />
             )}
             {data?.approvalStatus === "Final Settlement Completed" && (
-              <Chips label="Final Settlement Completed" classess="success p-2" />
+              <Chips
+                label="Final Settlement Completed"
+                classess="success p-2"
+              />
             )}
             {data?.approvalStatus === "Released" && (
               <Chips label="Released" classess="indigo p-2" />
@@ -364,12 +408,16 @@ export const separationApplicationLandingTableColumn = (
       render: (item) => (
         <div className="d-flex">
           <Tooltip title="View" arrow>
-            <button className="iconButton" type="button" style={{
-              height: "25px",
-              width: "25px"
-            }}>
+            <button
+              className="iconButton"
+              type="button"
+              style={{
+                height: "25px",
+                width: "25px",
+              }}
+            >
               <VisibilityOutlined
-                sx={{ color: "#34a853" }}
+                sx={{ color: "var(--primary-color)" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setId(item?.separationId);
@@ -381,12 +429,16 @@ export const separationApplicationLandingTableColumn = (
           </Tooltip>
           {item?.approvalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button" style={{
-                height: "25px",
-                width: "25px"
-              }}>
+              <button
+                className="iconButton"
+                type="button"
+                style={{
+                  height: "25px",
+                  width: "25px",
+                }}
+              >
                 <EditOutlined
-                  sx={{ color: "#34a853" }}
+                  sx={{ color: "var(--primary-color)" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!permission?.isEdit)
@@ -412,9 +464,7 @@ export const separationApplicationLandingTableColumn = (
 export const getSeparationLandingById = async (id, setter, setLoading) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(
-      `/separation/GetSeparationById/${id}`
-    );
+    const res = await axios.get(`/separation/GetSeparationById/${id}`);
 
     const modifyRes = [res?.data]?.map((itm) => {
       return {
@@ -584,10 +634,7 @@ export const searchData = (keywords, allData, setRowDto, setLoading) => {
 export const releasedEmployeeSeparation = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.post(
-      "/separation/ReleasedSeparation",
-      payload
-    );
+    const res = await axios.post("/separation/ReleasedSeparation", payload);
     cb && cb();
     setLoading && setLoading(false);
     toast.success(res?.data?.message || "Submitted Successfully", {

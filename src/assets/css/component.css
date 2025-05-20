@@ -407,7 +407,7 @@
 .btn-light-green:hover,
 .btn-light-green:focus {
   background: #e4f8dd;
-  border: 2px solid #34a853;
+  border: 2px solid var(--primary-color);
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgb(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -415,7 +415,7 @@
   font-size: 12px;
   letter-spacing: 0.2px;
   padding: 8px;
-  color: #34a853;
+  color: var(--primary-color);
 }
 
 .btn-save,
@@ -928,7 +928,7 @@ span.cross-chips-icon {
 }
 
 .Toastify__toast--info .Toastify__progress-bar {
-  background: #34a853;
+  background: var(--primary-color);
 }
 
 .Toastify__close-button--success {
@@ -940,7 +940,7 @@ span.cross-chips-icon {
 }
 
 .Toastify__close-button--info {
-  color: #34a853;
+  color: var(--primary-color);
 }
 
 .Toastify__toast--success::before {
@@ -976,7 +976,7 @@ span.cross-chips-icon {
   position: relative;
   content: "Success!";
   letter-spacing: 0.15px;
-  color: #34a853;
+  color: var(--primary-color);
   font-weight: bold;
   font-size: 16px;
   line-height: 24px;
@@ -1111,7 +1111,7 @@ span.cross-chips-icon {
 }
 
 .loadMoreBtn .OfferLetterLoadMoreBtn {
-  color: #34a853 !important;
+  color: var(--primary-color) !important;
 }
 
 /* .no-result */
@@ -2187,7 +2187,7 @@ p.uplaod-para:hover,
   .footer-employeeProfile-src-filter
   .master-filter-btn-group
   .btn-cancle {
-  color: #34a853;
+  color: var(--primary-color);
 }
 /* ==> search filter popover style end <== */
 

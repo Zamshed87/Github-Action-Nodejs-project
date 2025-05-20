@@ -119,7 +119,7 @@
   --success200: #cdf5db !important;
   --success300: #65d380 !important;
   --success400: #65d380 !important;
-  --success500: #34a853 !important;
+  --success500: var(--primary-color) !important;
   --success600: #34a44f !important;
   --success700: #299647 !important;
   --success800: #1f843c !important;

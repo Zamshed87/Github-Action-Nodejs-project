@@ -232,7 +232,11 @@ const CardTable = ({ propsObj }) => {
                           }}
                         >
                           <MuiIcon
-                            icon={<CheckCircle sx={{ color: "#34A853" }} />}
+                            icon={
+                              <CheckCircle
+                                sx={{ color: "var(--primary-color)" }}
+                              />
+                            }
                           />
                         </div>
                       </Tooltip>

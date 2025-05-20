@@ -167,9 +167,9 @@ const ManagementDashboardLanding = ({ setLoading }) => {
   const attendanceCircleChart = {
     options: {
       fill: {
-        colors: ["#34A853", "#FEC84B", "#F63D68"],
+        colors: ["var(--primary-color)", "#FEC84B", "#F63D68"],
       },
-      colors: ["#34A853", "#FEC84B", "#F63D68"],
+      colors: ["var(--primary-color)", "#FEC84B", "#F63D68"],
       plotOptions: {
         donut: {
           background: "red",
@@ -302,9 +302,9 @@ const ManagementDashboardLanding = ({ setLoading }) => {
   const empStatusCircleChart = {
     options: {
       fill: {
-        colors: ["#34A853", "#FEC84B", "#0BA5EC", "#F63D68"],
+        colors: ["var(--primary-color)", "#FEC84B", "#0BA5EC", "#F63D68"],
       },
-      colors: ["#34A853", "#FEC84B", "#0BA5EC", "#F63D68"],
+      colors: ["var(--primary-color)", "#FEC84B", "#0BA5EC", "#F63D68"],
       plotOptions: {
         donut: {
           background: "red",
@@ -358,9 +358,9 @@ const ManagementDashboardLanding = ({ setLoading }) => {
       },
     ],
     options: {
-      colors: ["#34A853", "#34A853"],
+      colors: ["var(--primary-color)", "var(--primary-color)"],
       fill: {
-        colors: ["#34A853", "#34A853"],
+        colors: ["var(--primary-color)", "var(--primary-color)"],
       },
       chart: {
         type: "bar",
@@ -641,7 +641,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
           show: false,
         },
       },
-      colors: ["#34A853", "#F97066"],
+      colors: ["var(--primary-color)", "#F97066"],
       tooltip: {
         y: {
           formatter: function (val) {
@@ -716,7 +716,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
           show: false,
         },
       },
-      colors: ["#34A853", "#F97066"],
+      colors: ["var(--primary-color)", "#F97066"],
       tooltip: {
         y: {
           formatter: function (val) {
@@ -1491,7 +1491,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                     {Object.keys(groupedData).map((workPlaceName, index) => (
                       <div key={index}>
                         <h3 style={{ color: "#4a5568", fontWeight: "bold" }}>
-                         Workplace Name: {workPlaceName}
+                          Workplace Name: {workPlaceName}
                         </h3>
                         <table className="table">
                           <thead>
@@ -1548,10 +1548,18 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                                   fontSize: "11px",
                                 }}
                               >
-                                Total Salary: {" "}
+                                Total Salary:{" "}
                               </td>
-                              <td style={{ fontWeight: "bold", fontSize:'11px' }}>
-                                 {formatMoney(groupedData[workPlaceName]?.reduce((acc, item) => acc + item.salary, 0))} ৳
+                              <td
+                                style={{ fontWeight: "bold", fontSize: "11px" }}
+                              >
+                                {formatMoney(
+                                  groupedData[workPlaceName]?.reduce(
+                                    (acc, item) => acc + item.salary,
+                                    0
+                                  )
+                                )}{" "}
+                                ৳
                               </td>
                             </tr>
                           </tbody>

@@ -73,7 +73,7 @@ export default function SingleRecentMessageCard({ item }) {
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div
                   style={{
-                    backgroundColor: "#34a853",
+                    backgroundColor: "var(--primary-color)",
                     height: "20px",
                     width: "20px",
                     borderRadius: "50%",

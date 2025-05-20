@@ -63,7 +63,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
           >
             <Divider
               orientation="left"
-              style={{ borderColor: "#34a853", fontWeight: "600" }}
+              style={{ borderColor: "var(--primary-color)", fontWeight: "600" }}
             >
               Final Settlement Due Summary
             </Divider>
@@ -123,7 +123,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
             <Divider
               orientation="left"
               style={{
-                borderColor: "#34a853",
+                borderColor: "var(--primary-color)",
                 marginTop: "20px",
                 fontWeight: "600",
               }}
@@ -194,7 +194,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
             <Divider
               orientation="left"
               style={{
-                borderColor: "#34a853",
+                borderColor: "var(--primary-color)",
                 marginTop: "20px",
                 fontWeight: "600",
               }}
@@ -225,7 +225,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
             <Divider
               orientation="left"
               style={{
-                borderColor: "#34a853",
+                borderColor: "var(--primary-color)",
                 marginTop: "20px",
                 fontWeight: "600",
               }}
@@ -267,7 +267,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
           >
             <Divider
               orientation="left"
-              style={{ borderColor: "#34a853", fontWeight: "600" }}
+              style={{ borderColor: "var(--primary-color)", fontWeight: "600" }}
             >
               Approval History Details
             </Divider>
@@ -301,7 +301,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
             <Divider
               orientation="left"
               style={{
-                borderColor: "#34a853",
+                borderColor: "var(--primary-color)",
                 marginTop: "20px",
                 fontWeight: "600",
               }}
@@ -342,7 +342,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
             <Divider
               orientation="left"
               style={{
-                borderColor: "#34a853",
+                borderColor: "var(--primary-color)",
                 marginTop: "20px",
                 fontWeight: "600",
               }}
@@ -354,7 +354,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
                 style={{
                   borderRadius: "10px",
                   padding: "10px",
-                  border: "1px solid #34a853",
+                  border: "1px solid var(--primary-color)",
                 }}
               >
                 <p>{singleFinalSettlementData?.remarks}</p>
