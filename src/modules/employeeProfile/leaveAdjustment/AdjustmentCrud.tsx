@@ -4,7 +4,7 @@ import { LightTooltip } from "common/LightTooltip";
 import { DataTable, PForm, PInput, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { debounce, get } from "lodash";
+import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -19,7 +19,7 @@ export const AdjustmentCrud = ({
   setIsEdit,
   landingApiCall,
 }: any) => {
-  const { orgId, buId, wId, employeeId, wgId, userName } = useSelector(
+  const { orgId, buId, wId, employeeId, wgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );

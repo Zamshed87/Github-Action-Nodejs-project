@@ -78,6 +78,9 @@ export const LeaveAdjustment = () => {
       onSuccess: (res: any) => {},
     });
   };
+  useEffect(() => {
+    landingApiCall();
+  }, []);
 
   const header: any = [
     {
@@ -225,6 +228,7 @@ export const LeaveAdjustment = () => {
           toDate: moment(todayDate()),
         }}
       >
+        {landingApi?.loading && <Loading />}
         <PCard>
           <PCardHeader
             title={`Leave Adjustment`}
@@ -317,7 +321,11 @@ export const LeaveAdjustment = () => {
           open={open}
           title={isEdit ? `View Adjustment` : `Create Adjustment`}
           width=""
-          onCancel={() => setOpen(false)}
+          onCancel={() => {
+            setOpen(false);
+            setIsEdit(false);
+            setSingleData(false);
+          }}
           maskClosable={false}
           components={
             <>
