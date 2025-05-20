@@ -299,13 +299,14 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
   CreateNUpdateShiftChangeRequest:
     "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
-  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   CalendarAssignFilter: "/Employee/CalendarAssignFilter",
   CalendarAssignBySupervisorFilter:
     "/Employee/CalendarAssignBySupervisorFilter",
