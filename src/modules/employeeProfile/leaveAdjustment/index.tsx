@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -8,7 +7,6 @@ import {
   PCardHeader,
   PForm,
   PInput,
-  PSelect,
   TableButton,
 } from "Components";
 import type { RangePickerProps } from "antd/es/date-picker";
@@ -16,27 +14,24 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { PModal } from "Components/Modal";
 import { AdjustmentCrud } from "./AdjustmentCrud";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 export const LeaveAdjustment = () => {
-  const { wId, employeeId, wgId, permissionList } = useSelector(
+  const { wId, permissionList } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
-  const history = useHistory();
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [singleData, setSingleData] = useState(false);
 
@@ -51,7 +46,13 @@ export const LeaveAdjustment = () => {
   // const leaveTypeApi = useApiRequest({});
   const deleteApi = useApiRequest({});
   const [open, setOpen] = useState(false);
-
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Leave Adjustment";
+    return () => {
+      document.title = "Peopledesk";
+    };
+  }, []);
   //   const debounce = useDebounce();
 
   // Form Instance

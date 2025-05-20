@@ -75,18 +75,16 @@ export const AdjustmentIOUReportLanding = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "IOULandingForAccounts",
+      urlKey: "GetAllIOULanding",
       method: "GET",
       params: {
-        businessUnitId: buId,
+        strReportType: "IOULandingForAccounts",
+        intBusinessUnitId: buId,
         workplaceGroupId: wgId,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         pageNo: pagination.current || 1,
         pageSize: pagination.pageSize || 100,
-        intIOUId: 0,
-        searchTxt: searchText,
-        workplaceId: wId,
       },
     });
   };
@@ -121,12 +119,7 @@ export const AdjustmentIOUReportLanding = () => {
   const header = [
     {
       title: "SL",
-      render: (_: any, rec: any, index: number) =>
-        getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
-          index,
-        }),
+      render: (_: any, rec: any, index: number) => index + 1,
       width: 25,
       fixed: "left",
       align: "center",
@@ -139,12 +132,12 @@ export const AdjustmentIOUReportLanding = () => {
     },
     {
       title: "Employee Name",
-      dataIndex: "employeeName",
+      dataIndex: "strEmployeeName",
       render: (_: any, rec: any) => {
         return (
           <div className="d-flex align-items-center">
-            <Avatar title={rec?.employeeName} />
-            <span className="ml-2">{rec?.employeeName}</span>
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
           </div>
         );
       },
@@ -153,13 +146,13 @@ export const AdjustmentIOUReportLanding = () => {
     },
     {
       title: "IOU Code",
-      dataIndex: "iouCode",
+      dataIndex: "strIOUCode",
       filter: false,
     },
     {
       title: "Application Date",
       dataIndex: "applicationDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.applicationDate),
+      render: (_: any, rec: any) => dateFormatter(rec?.dteApplicationDate),
     },
     {
       title: "From Date",
@@ -175,7 +168,7 @@ export const AdjustmentIOUReportLanding = () => {
 
     {
       title: "IOU",
-      dataIndex: "numIouAmount",
+      dataIndex: "numIOUAmount",
       className: "text-right",
       width: 45,
 
@@ -222,19 +215,19 @@ export const AdjustmentIOUReportLanding = () => {
       render: (_: any, rec: any) => {
         return (
           <div>
-            {rec?.status === "Approved" && (
+            {rec?.Status === "Approved" && (
               // <Chips label="Approved" classess="success p-2" />
               <Tag color="green">Approved</Tag>
             )}
-            {rec?.status === "Pending" && (
+            {rec?.Status === "Pending" && (
               // <Chips label="Pending" classess="warning p-2" />
               <Tag color="warning">Pending</Tag>
             )}
-            {rec?.status === "Process" && (
+            {rec?.Status === "Process" && (
               //   <Chips label="Process" classess="primary p-2" />
               <Tag color="processing">Process</Tag>
             )}
-            {rec?.status === "Rejected" && (
+            {rec?.Status === "Rejected" && (
               <>
                 {/* <Chips label="Rejected" classess="danger p-2 mr-2" /> */}
                 <Tag color="red">Rejected</Tag>
@@ -275,24 +268,24 @@ export const AdjustmentIOUReportLanding = () => {
       render: (_: any, rec: any) => (
         <div>
           {" "}
-          {rec?.adjustmentStatus === "Adjusted" && (
+          {rec?.AdjustmentStatus === "Adjusted" && (
             //   <Chips label="Adjusted" classess="success p-2" />
             <Tag color="green">Adjusted</Tag>
           )}
-          {rec?.adjustmentStatus === "Pending" && (
+          {rec?.AdjustmentStatus === "Pending" && (
             //   <Chips label="Pending" classess="warning p-2" />
             <Tag color="warning">Pending</Tag>
           )}
-          {rec?.adjustmentStatus === "Process" && (
+          {rec?.AdjustmentStatus === "Process" && (
             <Tag color="processing">Process</Tag>
 
             // <Chips label="Process" classess="primary p-2" />
           )}
-          {rec?.adjustmentStatus === "Completed" && (
+          {rec?.AdjustmentStatus === "Completed" && (
             // <Chips label="Completed" classess="indigo p-2" />
             <Tag color="cyan">Completed</Tag>
           )}
-          {rec?.adjustmentStatus === "Rejected" && (
+          {rec?.AdjustmentStatus === "Rejected" && (
             <>
               <Tag color="red">Rejected</Tag>
 
@@ -324,13 +317,15 @@ export const AdjustmentIOUReportLanding = () => {
       title: "Action",
       align: "center",
       render: (_: any, rec: any) =>
-        rec?.status === "Pending" && (
+        rec?.Status === "Pending" && (
           <TableButton
             buttonsList={[
               {
                 type: "edit",
                 onClick: () => {
-                  history?.push(`/profile/iOU/adjustmentReport/${rec?.iouId}`);
+                  history?.push(
+                    `/profile/iOU/adjustmentReport/${rec?.intIOUId}`
+                  );
                   //   setOpen(true);
                   //   setId(rec);
                 },
@@ -360,7 +355,7 @@ export const AdjustmentIOUReportLanding = () => {
         <PCard>
           {landingApi?.loading && <Loading />}
           <PCardHeader
-            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            title={`Total ${landingApi?.data?.length || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
@@ -410,20 +405,18 @@ export const AdjustmentIOUReportLanding = () => {
 
           <DataTable
             bordered
-            data={
-              landingApi?.data?.iouApplicationLandings?.length > 0
-                ? landingApi?.data?.iouApplicationLandings
-                : []
-            }
+            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
+            // pagination={{
+            //   pageSize: landingApi?.data?.pageSize,
+            //   total: landingApi?.data?.totalCount,
+            // }}
             onRow={(record) => ({
               onClick: () => {
-                history.push(`/profile/iOU/adjustmentReport/${record?.iouId}`);
+                history.push(
+                  `/profile/iOU/adjustmentReport/${record?.intIOUId}`
+                );
               },
 
               className: "pointer",

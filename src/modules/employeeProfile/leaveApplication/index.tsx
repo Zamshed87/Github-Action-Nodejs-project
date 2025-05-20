@@ -23,6 +23,9 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Leave Application";
+    return () => {
+      document.title = "Peopledesk";
+    };
   }, []);
   const {
     singleData,
