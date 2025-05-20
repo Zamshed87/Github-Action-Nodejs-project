@@ -198,6 +198,7 @@ const Homepage = () => {
     dispatch(setFirstLevelNameAction("Overview"));
     document.documentElement.style.setProperty("--primary-color", baseColor);
     document.documentElement.style.setProperty("--primary-color-dark", "black");
+    document.documentElement.style.setProperty("--primary-color-light", "red");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
