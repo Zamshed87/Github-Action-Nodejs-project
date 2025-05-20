@@ -25,6 +25,7 @@ import { DataState } from "../type";
 import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
 import { addHandler, createEditLatePunishmentConfig } from "./helper";
+import DeleteButton from "./components/DeleteButton";
 
 const GPCreateViewEdit = () => {
   const [form] = Form.useForm();
@@ -156,24 +157,7 @@ const GPCreateViewEdit = () => {
       title: "Action",
       dataIndex: "status",
       render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Delete">
-            <DeleteOutlined
-              style={{
-                color: "red",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                const filterData = data.filter(
-                  (item: any) => item.idx !== rec.idx
-                );
-                setData(filterData);
-              }}
-            />
-          </Tooltip>
-        </Flex>
+        <DeleteButton data={data} setData={setData} rec={rec} />
       ),
       align: "center",
       width: 40,
