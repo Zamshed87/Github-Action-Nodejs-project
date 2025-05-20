@@ -42,7 +42,7 @@
   margin: 40px 0 0;
 }
 .round.hollow div {
-  background-color: #34a853;
+  background-color: var(--primary-color);
   border-radius: 50%;
   color: white;
   font-size: 50%;
@@ -59,7 +59,7 @@
   display: block !important;
 }
 .popup-box .popup-head {
-  background-color: #34a853;
+  background-color: var(--primary-color);
   clear: both;
   color: #7b7b7b;
   display: inline-table;
@@ -163,7 +163,7 @@
 }
 
 .popup-messages abbr.timestamp {
-  background: #34a853 none repeat scroll 0 0;
+  background: var(--primary-color) none repeat scroll 0 0;
   color: #fff;
   padding: 0 11px;
 }
@@ -205,7 +205,7 @@
 }
 .popup-messages .direct-chat-img {
   border: 1px solid #fff;
-  background: #34a853 none repeat scroll 0 0;
+  background: var(--primary-color) none repeat scroll 0 0;
   border-radius: 50%;
   float: left;
   height: 40px;
@@ -214,7 +214,7 @@
 }
 .popup-messages .direct-chat-img-right {
   border: 1px solid #fff;
-  background: #34a853 none repeat scroll 0 0;
+  background: var(--primary-color) none repeat scroll 0 0;
   border-radius: 50%;
   float: right;
   height: 40px;
@@ -234,7 +234,7 @@
   height: 20px;
   margin: 0 8px;
   width: 20px;
-  background: #34a853;
+  background: var(--primary-color);
 }
 
 .popup-messages .direct-chat-msg {
@@ -320,7 +320,7 @@
 
 .direct-chat-text-right::after,
 .direct-chat-text-right::before {
-  border-color: transparent #34a853 transparent transparent;
+  border-color: transparent var(--primary-color) transparent transparent;
 }
 .direct-chat-text-right::after,
 .direct-chat-text-right::before {
@@ -328,7 +328,7 @@
   -moz-border-left-colors: none;
   -moz-border-right-colors: none;
   -moz-border-top-colors: none;
-  border-color: transparent #34a853 transparent transparent;
+  border-color: transparent var(--primary-color) transparent transparent;
   border-image: none;
   border-style: solid;
   border-width: medium;
@@ -347,7 +347,7 @@
   margin-left: 0px;
 }
 .popup-messages .direct-chat-text-right {
-  background: #34a853 none repeat scroll 0 0;
+  background: var(--primary-color) none repeat scroll 0 0;
   border-radius: 5px;
   color: white;
 }
@@ -445,7 +445,7 @@
 }
 
 .smallIconColorChatApp {
-  background-color: #34a853;
+  background-color: var(--primary-color);
   height: 15px;
   width: 15px;
   border-radius: 50%;
@@ -462,7 +462,7 @@
 }
 
 .group-create-button {
-  background: #34a853;
+  background: var(--primary-color);
   border: none;
   border-radius: 50%;
   height: 50px;

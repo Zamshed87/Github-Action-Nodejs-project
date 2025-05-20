@@ -888,7 +888,7 @@ export default function AddEditForm({
 //                                         fontSize: "14px",
 //                                         lineHeight: "19px",
 //                                         letterSpacing: "0.15px",
-//                                         color: "#34A853",
+//                                         color: "var(--primary-color)",
 //                                         marginRight: "10px",
 //                                       }}
 //                                       onClick={() => {

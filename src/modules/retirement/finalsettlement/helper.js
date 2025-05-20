@@ -321,10 +321,14 @@ export const getFinalSettlementLandingTableColumn = (
       render: (data) => (
         <div className="d-flex justify-content-evenly align-items-center">
           {data?.intFinalSettlementId !== null && (
-            <Tooltip placement="top" color={"#34a853"} title={"View"}>
+            <Tooltip
+              placement="top"
+              color={"var(--primary-color)"}
+              title={"View"}
+            >
               <PrimaryButton
                 type="button"
-                icon={<EyeTwoTone twoToneColor="#34a853" />}
+                icon={<EyeTwoTone twoToneColor="var(--primary-color)" />}
                 className={"iconButton"}
                 customStyle={{
                   height: "25px",
@@ -342,10 +346,14 @@ export const getFinalSettlementLandingTableColumn = (
             </Tooltip>
           )}
           {data?.intFinalSettlementId === null && (
-            <Tooltip placement="top" color={"#34a853"} title={"Generate"}>
+            <Tooltip
+              placement="top"
+              color={"var(--primary-color)"}
+              title={"Generate"}
+            >
               <PrimaryButton
                 type="button"
-                icon={<ProfileTwoTone twoToneColor="#34a853" />}
+                icon={<ProfileTwoTone twoToneColor="var(--primary-color)" />}
                 className={"iconButton"}
                 customStyle={{
                   height: "25px",
@@ -364,10 +372,16 @@ export const getFinalSettlementLandingTableColumn = (
           )}
           {(data?.strFinalSettlementStatus === "Rejected" ||
             data?.strFinalSettlementStatus === "Pending") && (
-            <Tooltip placement="top" color={"#34a853"} title={"Regenarate"}>
+            <Tooltip
+              placement="top"
+              color={"var(--primary-color)"}
+              title={"Regenarate"}
+            >
               <PrimaryButton
                 type="button"
-                icon={<ProfileFilled style={{ color: "#34a853" }} />}
+                icon={
+                  <ProfileFilled style={{ color: "var(--primary-color)" }} />
+                }
                 className={"iconButton"}
                 customStyle={{
                   height: "25px",
@@ -388,10 +402,14 @@ export const getFinalSettlementLandingTableColumn = (
           )}
           {(data?.strFinalSettlementStatus === "Rejected" ||
             data?.strFinalSettlementStatus === "Pending") && (
-            <Tooltip placement="top" color={"#34a853"} title={"Edit"}>
+            <Tooltip
+              placement="top"
+              color={"var(--primary-color)"}
+              title={"Edit"}
+            >
               <PrimaryButton
                 type="button"
-                icon={<EditTwoTone twoToneColor="#34a853" />}
+                icon={<EditTwoTone twoToneColor="var(--primary-color)" />}
                 className={"iconButton"}
                 customStyle={{
                   height: "25px",
@@ -412,7 +430,7 @@ export const getFinalSettlementLandingTableColumn = (
             data?.strFinalSettlementStatus === "Pending") && (
             <Tooltip
               placement="top"
-              color={"#34a853"}
+              color={"var(--primary-color)"}
               title={"Send For Approval"}
             >
               <button

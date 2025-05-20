@@ -33,7 +33,7 @@ export default function SingleSearchUserCard({ item }) {
               height: "40px",
               width: "40px",
               borderRadius: "50%",
-              border: "2px solid #34a853",
+              border: "2px solid var(--primary-color)",
             }}
             src="https://avatars.githubusercontent.com/u/57855533?s=400&u=dbe46684e54ed5be402bd63d447daf45e84d28bb&v=4"
             alt="iamgurdeepEmdadul Hauqe"

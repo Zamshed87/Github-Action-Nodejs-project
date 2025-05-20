@@ -309,24 +309,24 @@ h3.table-card-sub-title {
 }
 
 .ant-table-filter-trigger.active {
-  color: #34a853 !important;
+  color: var(--primary-color) !important;
 }
 .ant-table-filter-dropdown-btns .ant-btn-link {
-  color: #34a853 !important;
+  color: var(--primary-color) !important;
 }
 .ant-table-filter-dropdown-btns .ant-btn-primary {
-  background-color: #34a853 !important;
+  background-color: var(--primary-color) !important;
 }
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #34a853 !important;
-  border-color: #34a853 !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 .ant-dropdown-menu-title-content {
   color: var(--gray500) !important;
 }
 
 .ant-table-column-sorter-inner .active svg path {
-  fill: #34a853;
+  fill: var(--primary-color);
 }
 
 .ant-table-cell {

@@ -104,7 +104,7 @@
   padding-bottom: 20px;
 }
 .create-approval-form .modal-body2 .btn {
-  /* color: #34a853 !important; */
+  /* color: var(--primary-color) !important; */
   font-weight: 500;
 }
 .approval-view-table p {
@@ -114,7 +114,7 @@
   color: rgba(0, 0, 0, 0.7);
   margin-left: 13px;
 }
-.approval-view-table .table thead th{
+.approval-view-table .table thead th {
   border-bottom: 1px solid #dee2e6;
 }
 
@@ -141,11 +141,11 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 0;
 }
-.approval-view-table .table-card-styled table tbody tr:hover{
+.approval-view-table .table-card-styled table tbody tr:hover {
   box-shadow: none;
   cursor: auto;
 }
-.create-approval-form .modalFooter{
+.create-approval-form .modalFooter {
   padding-right: 25px;
   padding-top: 12px;
   padding-bottom: 12px;
