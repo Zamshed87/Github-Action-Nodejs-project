@@ -23,6 +23,7 @@ import training from "../../assets/images/training.svg";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import "./dashBoard.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
+import { colorThemes } from "common/colorThemes";
 
 const initData = {
   search: "",
@@ -34,12 +35,15 @@ const initData = {
 };
 
 const Homepage = () => {
-  const { strDisplayName, isOwner } = useSelector(
+  const { strDisplayName, isOwner, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const { menuList } = useSelector((state) => state?.auth, shallowEqual);
+  const { menuList, baseColor } = useSelector(
+    (state) => state?.auth,
+    shallowEqual
+  );
 
   const history = useHistory();
 
@@ -151,7 +155,7 @@ const Homepage = () => {
     } else if (label === "Retirement") {
       to = "/retirement/separation";
       image = assetRetirement;
-    }else if (label === "Log Monitor") {
+    } else if (label === "Log Monitor") {
       to = "/logMonitor/applicationNotificationLogs";
       image = assetLogMonitor;
     }
@@ -191,8 +195,17 @@ const Homepage = () => {
   };
 
   const dispatch = useDispatch();
+
+  const setColor = () => {
+    const theme = colorThemes[intAccountId] || colorThemes.default;
+    Object.entries(theme).forEach(([key, value]) =>
+      document.documentElement.style.setProperty(key, value)
+    );
+  };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
+
+    setColor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);

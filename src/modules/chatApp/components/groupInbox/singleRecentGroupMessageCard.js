@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { ProfilePicIconGroup } from "../../api";
 import {
   setPopUpStateAction,
-  setSelectedGroupDataAction
+  setSelectedGroupDataAction,
 } from "../../redux/Action";
 
 export default function SingleRecentGroupMessageCard({ item }) {
@@ -73,7 +73,7 @@ export default function SingleRecentGroupMessageCard({ item }) {
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div
                   style={{
-                    backgroundColor: "#34a853",
+                    backgroundColor: "var(--primary-color)",
                     height: "20px",
                     width: "20px",
                     borderRadius: "50%",

@@ -103,7 +103,7 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
         curve: "straight",
         colors: ["#F79009"],
       },
-      colors:["#F79009"],
+      colors: ["#F79009"],
       fill: {
         gradient: {
           enabled: true,
@@ -121,9 +121,9 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
       },
     ],
     options: {
-      colors: ["#34A853", "#34A853"],
+      colors: ["var(--primary-color)", "var(--primary-color)"],
       fill: {
-        colors: ["#34A853", "#34A853"],
+        colors: ["var(--primary-color)", "var(--primary-color)"],
       },
       chart: {
         type: "bar",
@@ -226,9 +226,9 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
   const genderCircleChart = {
     options: {
       fill: {
-        colors: ["#34A853", "#4E5BA6", "#F79009", "#F63D68"],
+        colors: ["var(--primary-color)", "#4E5BA6", "#F79009", "#F63D68"],
       },
-      colors: ["#34A853", "#4E5BA6", "#F79009", "#F63D68"],
+      colors: ["var(--primary-color)", "#4E5BA6", "#F79009", "#F63D68"],
       plotOptions: {
         donut: {
           background: "red",
@@ -488,7 +488,10 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
             </div>
           </div>
         </div>
-        <div className="leaveChart shadow-card-container m-0" style={{ padding: "12px" }}>
+        <div
+          className="leaveChart shadow-card-container m-0"
+          style={{ padding: "12px" }}
+        >
           <div>
             <h4
               style={{
@@ -549,7 +552,10 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
         </div>
       </div>
       <div className="employeeGrid">
-        <div className="salaryChart  shadow-card-container m-0" style={{paddingTop:"12px"}}>
+        <div
+          className="salaryChart  shadow-card-container m-0"
+          style={{ paddingTop: "12px" }}
+        >
           <div>
             <h4>Employee Turnover</h4>
             <p className="mt-1">
@@ -1140,7 +1146,7 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
       <div className="gridContainer2" style={{ maxHeight: "502px" }}>
         <div
           className="myEmployeeContainer shadow-card-container pb-0 m-0 h-100"
-          style={{ maxHeight: "502px", padding:"12px" }}
+          style={{ maxHeight: "502px", padding: "12px" }}
         >
           <div className="emp-container-header d-flex align-items-center justify-content-between">
             <div>
@@ -1636,7 +1642,10 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
             </div>
           </div>
         </div>
-        <div className="shadow-card-container pb-0 m-0" style={{ maxHeight: "502px", padding:"12px" }}>
+        <div
+          className="shadow-card-container pb-0 m-0"
+          style={{ maxHeight: "502px", padding: "12px" }}
+        >
           <div className="d-flex align-items-center justify-content-between">
             <div>
               <h4>Department Details</h4>
