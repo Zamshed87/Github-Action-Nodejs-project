@@ -3,7 +3,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import type { RangePickerProps } from "antd/es/date-picker";
@@ -29,13 +29,14 @@ import Loading from "common/loading/Loading";
 import { numberWithCommas } from "utility/numberWithCommas";
 import { LightTooltip } from "common/LightTooltip";
 import { InfoOutlined } from "@ant-design/icons";
+// import { getPDFAction } from "utility/downloadFile";
 // import { stripHtml } from "utility/stripHTML";
 export const AdjustmentIOUReportLanding = () => {
   // hook
   const dispatch = useDispatch();
   const history = useHistory();
   //   const [id, setId] = useState("");
-  //   const [open, setOpen] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   // redux
   const { buId, wgId, wId } = useSelector(
@@ -68,10 +69,7 @@ export const AdjustmentIOUReportLanding = () => {
     searchText?: string;
     excelDownload?: boolean;
   };
-  const landingApiCall = ({
-    pagination = {},
-    searchText = "",
-  }: TLandingApi = {}) => {
+  const landingApiCall = ({ pagination = {} }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
@@ -316,11 +314,11 @@ export const AdjustmentIOUReportLanding = () => {
     {
       title: "Action",
       align: "center",
-      render: (_: any, rec: any) =>
-        rec?.Status === "Pending" && (
-          <TableButton
-            buttonsList={[
-              {
+      render: (_: any, rec: any) => (
+        <TableButton
+          buttonsList={[
+            rec?.Status === "Pending" &&
+              ({
                 type: "edit",
                 onClick: () => {
                   history?.push(
@@ -329,10 +327,20 @@ export const AdjustmentIOUReportLanding = () => {
                   //   setOpen(true);
                   //   setId(rec);
                 },
-              },
-            ]}
-          />
-        ),
+              } as any),
+            // rec?.Status === "Approved" &&
+            //   ({
+            //     type: "print",
+            //     onClick: () => {
+            //       getPDFAction(
+            //         `/PdfAndExcelReport/IOUApplicationReport?strReportType=ViewById&intIOUId=${rec?.intIOUId}`,
+            //         setLoading
+            //       );
+            //     },
+            //   } as any),
+          ]}
+        />
+      ),
     },
   ];
   return employeeFeature?.isView ? (
@@ -356,12 +364,12 @@ export const AdjustmentIOUReportLanding = () => {
           {landingApi?.loading && <Loading />}
           <PCardHeader
             title={`Total ${landingApi?.data?.length || 0} employees`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-              form.setFieldsValue({
-                search: e?.target?.value,
-              });
-            }}
+            // onSearch={(e) => {
+            //   searchFunc(e?.target?.value);
+            //   form.setFieldsValue({
+            //     search: e?.target?.value,
+            //   });
+            // }}
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
