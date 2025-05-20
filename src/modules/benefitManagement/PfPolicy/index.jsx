@@ -80,17 +80,17 @@ const PFPolicy = () => {
             bordered
             data={data?.data || []}
             loading={loading}
-            pagination={{
-              pageSize: data?.pageSize,
-              total: data?.totalCount,
-              pageSizeOptions: ["25", "50", "100"],
-            }}
-            onChange={(pagination, _, __, extra) => {
-              if (extra.action === "paginate") {
-                fetchPfPolicy();
-                setPages(pagination);
-              }
-            }}
+            // pagination={{
+            //   pageSize: data?.pageSize,
+            //   total: data?.totalCount,
+            //   pageSizeOptions: ["25", "50", "100"],
+            // }}
+            // onChange={(pagination, _, __, extra) => {
+            //   if (extra.action === "paginate") {
+            //     fetchPfPolicy();
+            //     setPages(pagination);
+            //   }
+            // }}
           />
         </PCard>
       </PForm>
