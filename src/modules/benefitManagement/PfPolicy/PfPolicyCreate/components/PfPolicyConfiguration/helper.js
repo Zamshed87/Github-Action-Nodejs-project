@@ -5,7 +5,6 @@ export const detailsHeader = ({
   intPfEligibilityDependOn,
   action = true,
 }) => {
-  console.log("int", intPfEligibilityDependOn);
   const PEDO =
     intPfEligibilityDependOn?.value && intPfEligibilityDependOn?.value !== "0";
 

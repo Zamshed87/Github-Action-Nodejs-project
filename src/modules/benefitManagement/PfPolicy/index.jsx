@@ -95,7 +95,7 @@ const PFPolicy = () => {
         </PCard>
       </PForm>
       <PModal
-        title="Absent Punishment View"
+        title="PF Policy View"
         open={openView.open}
         onCancel={() => {
           setOpenView({ open: false, data: {} });
@@ -104,7 +104,7 @@ const PFPolicy = () => {
         width={1000}
       />
       <PModal
-        title="Absent Punishment Extend"
+        title="PF Policy Extend"
         open={openExtend.extend}
         onCancel={() => {
           setOpenExtend({ extend: false, data: {} });

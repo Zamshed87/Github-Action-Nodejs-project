@@ -65,9 +65,6 @@ const PolicyView = ({ data }) => {
               header={detailsHeader({
                 removeData: () => {},
                 intPfEligibilityDependOn,
-                intContributionDependOn: {
-                  value: data?.intContributionDependOn,
-                },
                 action: false,
               })}
             />
