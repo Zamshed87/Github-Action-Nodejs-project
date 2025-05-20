@@ -86,11 +86,11 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
           <Col md={24} sm={24} xs={24}>
             <PSelect
               options={workplaceDDL.data}
-              name="workplaceId"
+              name="intWorkPlaceId"
               label="Workplace"
               placeholder="Select Workplace"
               onChange={(value) => {
-                form.setFieldsValue({ workplace: value });
+                form.setFieldsValue({ intWorkPlaceId: value });
               }}
               loading={workplaceDDL.loading}
               rules={[{ required: true, message: "Workplace Is Required" }]}
