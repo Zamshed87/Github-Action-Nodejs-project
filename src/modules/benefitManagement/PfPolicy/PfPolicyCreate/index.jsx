@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
 
-const AbsentPunishmentConfiguration = () => {
+const PfPolicyCreate = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
@@ -118,4 +118,4 @@ const AbsentPunishmentConfiguration = () => {
   );
 };
 
-export default AbsentPunishmentConfiguration;
+export default PfPolicyCreate;
