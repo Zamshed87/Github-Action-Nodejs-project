@@ -3,7 +3,7 @@ import { PButton, PSelect } from "Components";
 import usePfPolicyFilters from "./usePfPolicyFilters";
 
 const PfPolicyFilters = ({form}) => {
-  const { workplaceGroupDDL, workplaceDDL, employmentTypeDDL, getWorkplaceDDL, getEmploymentTypeDDL } =
+  const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } =
     usePfPolicyFilters(form);
   return (
     <Row gutter={[10, 2]}>
@@ -18,7 +18,7 @@ const PfPolicyFilters = ({form}) => {
             getWorkplaceDDL();
           }}
           loading={workplaceGroupDDL.loading}
-          rules={[{ required: true, message: "Workplace Group Is Required" }]}
+          // rules={[{ required: true, message: "Workplace Group Is Required" }]}
         />
       </Col>
       <Col md={5} sm={12} xs={24}>
@@ -29,26 +29,35 @@ const PfPolicyFilters = ({form}) => {
           placeholder="Select Workplace"
           onChange={(_, op) => {
             form.setFieldsValue({ workplace: op });
-            getEmploymentTypeDDL();
           }}
           loading={workplaceDDL.loading}
-          rules={[{ required: true, message: "Workplace Is Required" }]}
+          // rules={[{ required: true, message: "Workplace Is Required" }]}
         />
       </Col>
-      <Col md={5} sm={12} xs={24}>
+      {/* <Col md={5} sm={12} xs={24}>
         <PSelect
-          options={employmentTypeDDL.data}
-          name="employmentType"
-          label="Employment Type"
-          placeholder="Select Employment Type"
-          onChange={(_, op) => {
-            form.setFieldsValue({ employmentType: op });
+          options={[
+            {
+              value: 0,
+              label: "All",
+            },
+            {
+              value: "Active",
+              label: "Active",
+            },
+            {
+              value: "Inactive",
+              label: "Inactive",
+            },
+          ]}
+          name="status"
+          label="Status"
+          placeholder="Select Status"
+          onChange={(value) => {
+            form.setFieldsValue({ status: value });
           }}
-          loading={employmentTypeDDL.loading}
-          rules={[{ required: true, message: "Employment Type Is Required" }]}
         />
-      </Col>
-
+      </Col> */}
       <Col style={{ marginTop: "23px" }}>
         <PButton type="primary" action="submit" content="View" />
       </Col>

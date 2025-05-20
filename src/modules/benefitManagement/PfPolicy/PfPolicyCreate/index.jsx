@@ -9,14 +9,17 @@ import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
 
-const AbsentPunishmentConfiguration = () => {
+const PfPolicyCreate = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
-    employerContributions: [],
+    companyContributions: [],
   });
   // redux
-  const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
+  const {
+    permissionList,
+    profileData: { buId, wgId },
+  } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -55,6 +58,7 @@ const AbsentPunishmentConfiguration = () => {
                     "intEmploymentTypeIds",
                     "intPfEligibilityDependOn",
                     "intEmployeeContributionPaidAfter",
+                    "isPFInvestment",
                     "intMonthlyInvestmentWith",
                     "intEmployeeContributionInFixedMonth",
                   ];
@@ -68,6 +72,8 @@ const AbsentPunishmentConfiguration = () => {
                         return;
                       }
                       const payload = {
+                        intBusinessUnitId: buId,
+                        intWorkPlaceGroupId: wgId,
                         strPolicyName: values?.strPolicyName,
                         strPolicyCode: values?.strPolicyCode,
                         intWorkPlaceId: values?.intWorkPlaceId,
@@ -76,15 +82,18 @@ const AbsentPunishmentConfiguration = () => {
                           values?.intPfEligibilityDependOn?.value,
                         employeeContributions: saveData?.employeeContributions,
                         ...saveData,
-                        intEmployeeContributionPaidAfter: values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth: values?.intEmployeeContributionInFixedMonth,
+                        intEmployeeContributionPaidAfter:
+                          values?.intEmployeeContributionPaidAfter?.value,
+                        intEmployeeContributionInFixedMonth:
+                          values?.intEmployeeContributionInFixedMonth,
                         isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith: values?.intMonthlyInvestmentWith,
+                        intMonthlyInvestmentWith:
+                          values?.intMonthlyInvestmentWith,
                       };
                       createPFPolicy(payload, setLoading, () => {
                         setSaveData({
                           employeeContributions: [],
-                          employerContributions: [],
+                          companyContributions: [],
                         });
                         form.resetFields();
                       });
@@ -109,4 +118,4 @@ const AbsentPunishmentConfiguration = () => {
   );
 };
 
-export default AbsentPunishmentConfiguration;
+export default PfPolicyCreate;
