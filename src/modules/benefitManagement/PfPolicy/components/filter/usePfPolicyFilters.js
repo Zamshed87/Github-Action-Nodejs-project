@@ -9,7 +9,6 @@ const usePfPolicyFilters = (form) => {
 
   const workplaceDDL = useApiRequest([]);
   const workplaceGroupDDL = useApiRequest([]);
-  const employmentTypeDDL = useApiRequest([]);
 
   const getWorkplaceGroupsDDL = () => {
     workplaceGroupDDL?.action({
@@ -47,27 +46,6 @@ const usePfPolicyFilters = (form) => {
       },
     });
   };
-  const getEmploymentTypeDDL = () => {
-    const { workplaceGroup, workplace } = form?.getFieldsValue(true) || {};
-
-    employmentTypeDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmploymentType",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.EmploymentType;
-          res[i].value = item?.Id;
-        });
-      },
-    });
-  };
 
   useEffect(() => {
     getWorkplaceGroupsDDL();
@@ -76,9 +54,7 @@ const usePfPolicyFilters = (form) => {
   return {
     workplaceGroupDDL,
     workplaceDDL,
-    employmentTypeDDL,
     getWorkplaceDDL,
-    getEmploymentTypeDDL,
   };
 };
 

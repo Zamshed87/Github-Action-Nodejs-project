@@ -13,7 +13,7 @@ const AbsentPunishmentConfiguration = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
-    employerContributions: [],
+    companyContributions: [],
   });
   // redux
   const {
@@ -58,6 +58,7 @@ const AbsentPunishmentConfiguration = () => {
                     "intEmploymentTypeIds",
                     "intPfEligibilityDependOn",
                     "intEmployeeContributionPaidAfter",
+                    "isPFInvestment",
                     "intMonthlyInvestmentWith",
                     "intEmployeeContributionInFixedMonth",
                   ];
@@ -92,7 +93,7 @@ const AbsentPunishmentConfiguration = () => {
                       createPFPolicy(payload, setLoading, () => {
                         setSaveData({
                           employeeContributions: [],
-                          employerContributions: [],
+                          companyContributions: [],
                         });
                         form.resetFields();
                       });

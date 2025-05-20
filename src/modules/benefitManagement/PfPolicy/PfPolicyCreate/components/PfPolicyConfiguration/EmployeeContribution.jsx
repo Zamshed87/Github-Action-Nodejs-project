@@ -26,7 +26,6 @@ const EmployeeContribution = ({
     `${prefix}intContributionDependOn`,
     form
   );
-  console.log(intContributionDependOn)
 
   const getRangeFromLabel = (value) => {
     switch (value?.value) {
@@ -138,6 +137,17 @@ const EmployeeContribution = ({
                           intPfEligibilityDependOn
                         )} Is Required`,
                       },
+                      {
+                        validator: (_, value) => {
+                          const rangeFrom = form.getFieldValue(`${prefix}intRangeFrom`);
+                          if (value && rangeFrom && Number(value) < Number(rangeFrom)) {
+                            return Promise.reject(
+                              new Error(`${getRangeToLabel(intPfEligibilityDependOn)} cannot be less than ${getRangeFromLabel(intPfEligibilityDependOn)}`)
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      },
                     ]}
                   />
                 </Col>
@@ -201,7 +211,6 @@ const EmployeeContribution = ({
             rowKey={(row, idx) => idx}
             header={detailsHeader({
               removeData,
-              intContributionDependOn,
               intPfEligibilityDependOn,
             })}
           />
