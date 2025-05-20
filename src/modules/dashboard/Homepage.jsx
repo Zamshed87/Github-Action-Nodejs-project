@@ -23,6 +23,7 @@ import training from "../../assets/images/training.svg";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import "./dashBoard.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
+import { colorThemes } from "common/colorThemes";
 
 const initData = {
   search: "",
@@ -34,7 +35,7 @@ const initData = {
 };
 
 const Homepage = () => {
-  const { strDisplayName, isOwner } = useSelector(
+  const { strDisplayName, isOwner, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -194,15 +195,17 @@ const Homepage = () => {
   };
 
   const dispatch = useDispatch();
+
+  const setColor = () => {
+    const theme = colorThemes[intAccountId] || colorThemes.default;
+    Object.entries(theme).forEach(([key, value]) =>
+      document.documentElement.style.setProperty(key, value)
+    );
+  };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
-    document.documentElement.style.setProperty("--primary-color", baseColor);
-    document.documentElement.style.setProperty("--primary-color-dark", "black");
-    document.documentElement.style.setProperty(
-      "--primary-color-light",
-      "white"
-    );
 
+    setColor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);
