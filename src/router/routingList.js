@@ -260,6 +260,12 @@ import GradeLanding from "modules/PayrollManagementSytem/grade";
 import JobLevelLanding from "modules/PayrollManagementSytem/jobLevel";
 import JobClassLanding from "modules/PayrollManagementSytem/jobclass";
 import PayscaleLanding from "modules/PayrollManagementSytem/payscale";
+const AbsentPunishment = lazy(() =>
+  import("../modules/punishmentConfiguration/AbsentPunishment/index.jsx")
+);
+const AbsentPunishmentConfiguration = lazy(() =>
+  import("../modules/punishmentConfiguration/AbsentPunishment/components/absentPunishmentConfiguration/index.jsx")
+);
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
 import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
@@ -1805,6 +1811,13 @@ const FinalSettlementEdit = lazy(() =>
 const ApplicationNotificationLogs = lazy(() =>
   import("../modules/logMonitor/applicationNotificationLog/index.jsx")
 );
+// Benefit Management Module
+const PFPolicy = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/index.jsx")
+);
+const PFPolicyCreate = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -3048,7 +3061,11 @@ export const routingList = [
   },
   {
     path: "/compensationAndBenefits/reports/salaryRequisitionReport",
-    component: SalaryRequisitionReport,
+    component: () => <SalaryRequisitionReport type={"salary"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/bonusRequisitionReport",
+    component: () => <SalaryRequisitionReport type={"bonus"} />,
   },
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
@@ -3261,6 +3278,14 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/payScaleSetup",
     component: PayscaleLanding,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment",
+    component: AbsentPunishment,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment/configuration",
+    component: AbsentPunishmentConfiguration,
   },
   {
     path: "/administration/payrollConfiguration/jobClass",
@@ -4356,6 +4381,14 @@ export const routingList = [
   {
     path: "/logMonitor/applicationNotificationLogs",
     component: ApplicationNotificationLogs,
+  },
+  {
+    path: "/bm/pfPolicy",
+    component: PFPolicy,
+  },
+  {
+    path: "/bm/pfPolicy/create",
+    component: PFPolicyCreate,
   },
 ];
 

@@ -299,10 +299,14 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
+  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
+  CreateNUpdateShiftChangeRequest:
+    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
-  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   CalendarAssignFilter: "/Employee/CalendarAssignFilter",
   CalendarAssignBySupervisorFilter:
     "/Employee/CalendarAssignBySupervisorFilter",
@@ -314,10 +318,6 @@ export const apiList = {
   DepositDisbursement: "/DepositDisbursement",
   DepositDetailReportByEmployee: "Deposit/DepositDetailReportByEmployee",
   GetEmpBasicInfoByDepartmentId: "/Employee/GetEmpBasicInfoByDepartmentId",
-  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
-  GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
-  CreateNUpdateShiftChangeRequest:
-    "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   GetWorkplaceWisePipelineStatusDdl:
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
   CreateLeavePolicy: "/LeavePolicy/Create",
@@ -352,4 +352,5 @@ export const apiList = {
   LeavePunishmentGetById: "/LeavePunishment/GetById",
   LeavePunishmentExtend: "/LeavePunishment/Extend",
   GetEmployeePfAmount: "/Employee/GetEmployeePfAmount",
+  GetFinalSettlementDueSalaryReport: "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
 };
