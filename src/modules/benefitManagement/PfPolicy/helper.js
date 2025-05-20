@@ -46,7 +46,7 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
     title: "Employment Type",
     dataIndex: "strEmploymentTypeName",
     render: (_,rec) => {
-      return rec?.isForAllEmploymentType ? "All" : rec?.employmentTypes?.map((item) => item.strEmploymentTypeName).join(", ");
+      return rec?.isForAllEmploymentType ? "All" : rec?.employmentTypes?.map((item) => item.label).join(", ");
     },
     sorter: true,
     width: 120,
