@@ -1,44 +1,26 @@
 import { Col, Form, Row } from "antd";
 import { PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
-import useConfigSelectionHook from "../PfPolicyConfiguration/useConfigSelectionHook";
+// import useConfigSelectionHook from "../PfPolicyConfiguration/useConfigSelectionHook";
 import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
-import { createAbsentPunishment } from "../../helper";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import Loading from "common/loading/Loading";
+import { createPFPolicy } from "../../PfPolicyCreate/helper";
 
 const PolicyExtend = ({ data, setOpenExtend }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [detail, setDetail] = useState({});
-  const {
-    workplaceDDL,
-    employmentTypeDDL,
-    empDesignationDDL,
-    getEmploymentTypeDDL,
-    getEmployeeDesignation,
-  } = useConfigSelectionHook(form);
+  // const {
+  //   workplaceDDL,
+  //   employmentTypeDDL,
+  //   empDesignationDDL,
+  //   getEmploymentTypeDDL,
+  //   getEmployeeDesignation,
+  // } = useConfigSelectionHook(form);
   const onCancel = () => {
     setOpenExtend({ extend: false, data: {} });
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get(
-          `/AbsentPunishment/GetDetailsById?policyId=${data?.policyId}`
-        );
-        setDetail(res?.data);
-        setLoading(false);
-      } catch (error) {
-        toast.error("Failed to fetch data");
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [data]);
 
   const onSubmit = () => {
     form.validateFields().then(async (values) => {
@@ -46,12 +28,8 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
         workplaceId: values?.workplaceId,
         employmentTypeList: values?.employmentTypeList,
         designationList: values?.designationList,
-        policyName: detail?.policyName,
-        policyDescription: detail?.policyDescription,
-        absentCalculationType: detail?.absentCalculationType,
-        absentPunishmentElementDto: detail?.absentPunishmentElementDetailsDto,
       };
-      await createAbsentPunishment(payload, setLoading);
+      await createPFPolicy(payload, setLoading);
       setOpenExtend({ extend: false, data: {} });
     }).catch((error) => { 
       toast.error("Please fill the form correctly");
@@ -62,7 +40,7 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
     <>
       {loading && <Loading />}
       <Form form={form} layout="vertical">
-        <Row gutter={[10, 2]}>
+        {/* <Row gutter={[10, 2]}>
           <Col md={24} sm={24} xs={24}>
             <PSelect
               options={workplaceDDL.data}
@@ -92,21 +70,8 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
               ]}
             />
           </Col>
-          <Col md={24} sm={24} xs={24}>
-            <PSelectWithAll
-              form={form}
-              name="designationList"
-              label="Employee Designation"
-              placeholder="Select Employee Designation"
-              options={empDesignationDDL.data}
-              loading={empDesignationDDL.loading}
-              advanceAllOption={true}
-              rules={[
-                { required: true, message: "Employee Designation is required" },
-              ]}
-            />
-          </Col>
-        </Row>
+         
+        </Row> */}
       </Form>
       <ModalFooter onCancel={onCancel} onSubmit={onSubmit} />
     </>

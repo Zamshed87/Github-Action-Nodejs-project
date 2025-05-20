@@ -6,11 +6,12 @@ export const detailsHeader = ({
   intContributionDependOn,
   action = true,
 }) => {
+  console.log("int", intPfEligibilityDependOn);
   const PEDO =
-    intContributionDependOn?.value && intContributionDependOn?.value !== "0";
+  intPfEligibilityDependOn?.value && intPfEligibilityDependOn?.value !== "0";
 
   const getDependOnTitle = (value) => {
-    switch (value?.value) {
+    switch (String(value?.value)) {
       case "1":
         return "Service Length";
       case "2":
@@ -23,7 +24,7 @@ export const detailsHeader = ({
   };
   const getEmpContributionTitle = (value) => {
     let label = "";
-    switch (value?.value) {
+    switch (String(value?.value)) {
       case "1":
         label = "% of Gross";
         break;
@@ -48,7 +49,7 @@ export const detailsHeader = ({
       ? [
           {
             title: getDependOnTitle(intPfEligibilityDependOn),
-            dataIndex: "intContributionDependOn",
+            dataIndex: "intPfEligibilityDependOn",
             render: (_, rec) => rec?.intRangeFrom ? `${rec.intRangeFrom} to ${rec.intRangeTo}` : "-",
           },
         ]
