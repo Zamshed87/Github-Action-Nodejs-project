@@ -39,7 +39,10 @@ const Homepage = () => {
     shallowEqual
   );
 
-  const { menuList } = useSelector((state) => state?.auth, shallowEqual);
+  const { menuList, baseColor } = useSelector(
+    (state) => state?.auth,
+    shallowEqual
+  );
 
   const history = useHistory();
 
@@ -151,7 +154,7 @@ const Homepage = () => {
     } else if (label === "Retirement") {
       to = "/retirement/separation";
       image = assetRetirement;
-    }else if (label === "Log Monitor") {
+    } else if (label === "Log Monitor") {
       to = "/logMonitor/applicationNotificationLogs";
       image = assetLogMonitor;
     }
@@ -193,6 +196,9 @@ const Homepage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
+    document.documentElement.style.setProperty("--primary-color", baseColor);
+    document.documentElement.style.setProperty("--primary-color-dark", "black");
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);

@@ -142,8 +142,8 @@
   --lineHeight24: 24px !important;
   --lineHeight28: 28px !important;
 
-  --primary-color: #299647 !important;
-  --primary-color-dark: #096529 !important;
+  --primary-color: #299647;
+  --primary-color-dark: #096529;
 
   --shadowOne: 0px 0.497024px 0.994048px rgba(0, 0, 0, 0.3),
     0px 0.497024px 1.49107px 0.497024px rgba(0, 0, 0, 0.15);
@@ -1063,6 +1063,6 @@ h6.count {
 .date-time-custom-css input {
   padding: 5px 10px !important;
 }
-.ant-pagination-item-ellipsis{
+.ant-pagination-item-ellipsis {
   display: flex !important;
 }
