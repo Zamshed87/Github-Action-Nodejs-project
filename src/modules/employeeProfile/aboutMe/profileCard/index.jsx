@@ -43,6 +43,8 @@ const ProfileCard = ({
   strProfileImageUrl,
   getEmpData,
   isOfficeAdmin = false,
+  isSelfService,
+  viewBtnHandler
 }) => {
   // this component is used from about me and employee landing page
   // accordion
@@ -147,8 +149,8 @@ const ProfileCard = ({
                 {getChipData(empBasic?.intEmployeeStatusId).label}
               </Tag>
             </div>
-            {isEditBtn && isOfficeAdmin && (
-              <div className="d-flex">
+            <div className="d-flex" style={{ alignItems: "center" }}>
+              {isEditBtn && isOfficeAdmin && (
                 <div
                   onClick={editBtnHandler}
                   className="about-edit-icon justify-content-end pointer"
@@ -157,8 +159,26 @@ const ProfileCard = ({
                     <EditOutlined sx={{ color: gray900, fontSize: "16px" }} />
                   </Avatar>
                 </div>
-              </div>
-            )}
+              )}
+              {isSelfService && (
+                <button
+                  style={{
+                    marginLeft: "10px",
+                    padding: "4px 12px",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    border: `1px solid ${gray900}`,
+                    background: "white",
+                    color: gray900,
+                  }}
+                  onClick={viewBtnHandler}
+                  type="button"
+                >
+                  View
+                </button>
+              )}
+            </div>
           </div>
           {orgIdsForBn.includes(orgId) && (
             <h4 className="name-about-info">

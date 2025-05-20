@@ -13,6 +13,7 @@ import {
 import { Tag } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import IConfirmModal from "common/IConfirmModal";
+import EmployeeViewModal from "./ViewModal";
 
 function AboutMe() {
   const dispatch = useDispatch();
@@ -26,6 +27,11 @@ function AboutMe() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const firstSegment = location.pathname.split("/")[1];
+  const selfService = firstSegment === "SelfService";
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [empBasic, setEmpBasic] = useState({});
@@ -59,6 +65,15 @@ function AboutMe() {
       setBankData("complete");
     }
   }, [empBasic]);
+
+  const handleViewClick = () => {
+    setIsOpen(true);
+  };
+
+  // Handler for closing the modal
+  const handleViewModalClose = () => {
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -113,6 +128,8 @@ function AboutMe() {
 
         <div className="container-about-info" style={{ marginTop: "18px" }}>
           <ProfileCard
+            isSelfService={selfService}
+            viewBtnHandler={handleViewClick}
             empBasic={empBasic?.employeeProfileLandingView}
             getEmpData={getEmpData}
             strProfileImageUrl={
@@ -131,6 +148,7 @@ function AboutMe() {
                 wgId={wgId}
                 buId={buId}
                 intAccountId={intAccountId}
+                isSelfService={selfService}
               />
             </div>
           </div>
@@ -152,6 +170,11 @@ function AboutMe() {
             empId={employeeId}
           />
         </div>
+        <EmployeeViewModal
+          visible={isOpen}
+          onClose={handleViewModalClose}
+          empData={empBasic}
+        />
       </div>
     </>
   );
