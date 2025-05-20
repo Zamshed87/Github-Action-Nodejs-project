@@ -795,7 +795,7 @@
 
 /* ant switch color */
 .ant-switch-checked {
-  background-color: var(--success500);
+  background-color: var(--primary-color);
 }
 
 .custom_quill .ql-mention-list-container ul {
