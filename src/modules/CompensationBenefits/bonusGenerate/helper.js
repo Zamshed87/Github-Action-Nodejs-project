@@ -30,7 +30,7 @@ export const getBonusGenerateLanding = async (
     if (res?.data) {
       setAllData && setAllData(res?.data);
       setter(res?.data);
-      cb?.(res?.data)
+      cb?.(res?.data);
       setLoading && setLoading(false);
     }
   } catch (error) {
@@ -265,7 +265,6 @@ export const createBonusGenExcelHandeler = ({
       E: 20,
       F: 25,
       J: 30,
-
     },
     commonCellRange: "A1:J1",
     CellAlignment: "right",
@@ -284,7 +283,6 @@ export const createBonusGenExcelHandeler = ({
 };
 
 const getExcelTableData = (row) => {
-  console.log("row",row)
   const data = row?.map((item, index) => {
     return [
       new Cell(
@@ -436,9 +434,16 @@ const bonusExcelFooter = (lastRow) => {
     " ",
     " ",
     " ",
-    numberWithCommas(lastRow.numSalary.toFixed(2)),
     " ",
+    " ",
+    " ",
+    " ",
+
+    numberWithCommas(lastRow.numSalary.toFixed(2)),
+
     numberWithCommas(lastRow.numBonusAmount.toFixed(2)),
+    " ",
+    " ",
     " ",
   ];
 };
