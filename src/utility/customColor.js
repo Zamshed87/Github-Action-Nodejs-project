@@ -1,6 +1,6 @@
 export const whiteColor = "#ffffff";
 export const blueColor = "#026AA2";
-export const greenColor = "#299647";
+export const greenColor = "var(--primary-color)";
 export const ratingColor = "rgb(250, 175, 0)!important";
 
 export const failColor = "#F04438";
@@ -52,7 +52,7 @@ export const success300 = "#65d380";
 export const success400 = "#65d380";
 export const success500 = "var(--primary-color)";
 export const success600 = "#34a44f";
-export const success700 = "#299647";
+export const success700 = "var(--primary-color)";
 export const success800 = "#1f843c";
 export const success900 = "#096529";
 

@@ -1241,7 +1241,7 @@ const ManagerDashboard = ({ fakeCardData = [], onRemoveCardHandeler }) => {
                     <td className="text-center">
                       <span
                         style={{
-                          color: "#299647",
+                          color: "var(--primary-color)",
                           background: "#E6F9E9",
                           borderRadius: "99px",
                           padding: "1px 8px",

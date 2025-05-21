@@ -204,7 +204,7 @@ h3.table-card-sub-title {
 
 /* Data grid table */
 .data-grid-table .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked {
-  color: green !important;
+  color: var(--primary-color);
   font-size: 12px !important;
 }
 .data-grid-table .css-r11z79-MuiDataGrid-root {

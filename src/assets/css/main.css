@@ -23,7 +23,7 @@
 --------------------------------------*/
 :root {
   --white: #ffffff !important;
-  --green: #229a16 !important;
+  --green: var(--primary-color);
   --blue: #00024e !important;
   --lightBlue: #1084f1 !important;
   --dropBy: #9fc5f8 !important;
@@ -62,7 +62,7 @@
   --leave: #b778dd !important;
   --movement: #ffafcc !important;
 
-  --success: #299647 !important;
+  --success: var(--primary-color);
   --success-bg: #e6f9e9 !important;
   --warning: #b54708 !important;
   --warning-bg: #fef0c7 !important;
@@ -121,8 +121,8 @@
   --success400: #65d380 !important;
   --success500: var(--primary-color) !important;
   --success600: #34a44f !important;
-  --success700: #299647 !important;
-  --success800: #1f843c !important;
+  --success700: var(--primary-color) !important;
+  --success800: var(--primary-color);
   --success900: #096529 !important;
 
   --poppinsFont: "Poppins", sans-serif !important;
@@ -142,7 +142,7 @@
   --lineHeight24: 24px !important;
   --lineHeight28: 28px !important;
 
-  --primary-color: #299647;
+  --primary-color: var(--primary-color);
   --primary-color-dark: #096529;
   --primary-color-light: #e6f9e9;
 
@@ -982,7 +982,7 @@ h6.count {
 }
 
 .tab-panel .css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
-  color: #299647 !important;
+  color: var(--primary-color) !important;
   font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
