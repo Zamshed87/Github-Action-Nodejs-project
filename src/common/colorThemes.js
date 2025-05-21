@@ -9,6 +9,11 @@ export const colorThemes = {
     "--primary-color-dark": "#141f60",
     "--primary-color-light": "#929ee5",
   },
+  4: {
+    "--primary-color": "#d53e3d",
+    "--primary-color-dark": "#461715",
+    "--primary-color-light": "#f7a285",
+  },
   12: {
     "--primary-color": "#333232",
     "--primary-color-dark": "#111111",
@@ -19,8 +24,13 @@ export const colorThemes = {
     "--primary-color-dark": "#0865b1",
     "--primary-color-light": "#b9d7ef",
   },
+  7: {
+    "--primary-color": "#428fcc",
+    "--primary-color-dark": "#0099ff",
+    "--primary-color-light": "#9ed0f2",
+  },
   default: {
-    "--primary-color": "var(--primary-color)",
+    "--primary-color": "#299647",
     "--primary-color-dark": "#096529",
     "--primary-color-light": "#e6f9e9",
   },
