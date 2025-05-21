@@ -1831,6 +1831,12 @@ const GPCreateViewEdit = lazy(() =>
     "../modules/benefitManagement/gratuityPolicy/GPCreateViewEdit/index.tsx"
   )
 );
+const PFInvestmentType = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
+);
+const PFInvestmentToOrganization = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -4378,11 +4384,11 @@ export const routingList = [
     component: ApplicationNotificationLogs,
   },
   {
-    path: "/bm/pfPolicy",
+    path: "/BenefitsManagement/providentFund/pfPolicy",
     component: PFPolicy,
   },
   {
-    path: "/bm/pfPolicy/create",
+    path: "/BenefitsManagement/providentFund/pfPolicy/create",
     component: PFPolicyCreate,
   },
   {
@@ -4392,6 +4398,14 @@ export const routingList = [
   {
     path: "/bm/gratuityPolicy/:type/:id",
     component: GPCreateViewEdit,
+  },
+  {
+    path: "/bm/pfInvestmentType",
+    component: PFInvestmentType,
+  },
+  {
+    path: "/bm/pfInvestmentToOrganization",
+    component: PFInvestmentToOrganization,
   },
 ];
 
