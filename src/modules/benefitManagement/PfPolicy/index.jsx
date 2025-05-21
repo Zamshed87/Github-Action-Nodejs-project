@@ -50,7 +50,7 @@ const PFPolicy = () => {
         {loading && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Total PF Policy ${data?.totalCount || 0}`}
+            title={`Total PF Policy`}
             // onSearch={(e) => {
             //   form.setFieldsValue({
             //     search: e?.target?.value,

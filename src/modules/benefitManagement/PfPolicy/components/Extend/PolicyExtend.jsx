@@ -8,7 +8,7 @@ import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 
-const PolicyExtend = ({ data, setOpenExtend,fetchPfPolicy }) => {
+const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -64,7 +64,7 @@ const PolicyExtend = ({ data, setOpenExtend,fetchPfPolicy }) => {
           intEmployeeContributionPaidAfter:
             data.intEmployeeContributionPaidAfter,
           intEmployeeContributionInFixedMonth:
-            data.intEmployeeContributionInFixedMonth ?? '',
+            data.intEmployeeContributionInFixedMonth ?? "",
           isPFInvestment: data.isPFInvestment,
           intMonthlyInvestmentWith: data.intMonthlyInvestmentWith,
         };
