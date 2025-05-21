@@ -37,11 +37,11 @@ const useInvestmentType = (form) => {
         remark: values?.remark,
       };
       const res = await axios.post(`/InvestmentType/Create`, payload);
-      toast.success(res?.data?.message || "Created Successfully");
+      toast.success(res?.data?.message?.[0] || "Created Successfully");
       setCreateUpdateLoading?.(false);
       resetData?.();
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
       setCreateUpdateLoading?.(false);
     }
   };
@@ -55,12 +55,12 @@ const useInvestmentType = (form) => {
         investmentName: values?.investmentName,
         remark: values?.remark,
       };
-      const res = await axios.post(`/InvestmentType/Update`, payload);
-      toast.success(res?.data?.message || "Updated Successfully");
+      const res = await axios.put(`/InvestmentType/Update`, payload);
+      toast.success(res?.data?.message?.[0] || "Updated Successfully");
       setCreateUpdateLoading?.(false);
       resetData?.();
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
       setCreateUpdateLoading?.(false);
     }
   };

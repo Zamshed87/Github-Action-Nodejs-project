@@ -3,10 +3,10 @@ import axios from "axios";
 import { Flex, TableButton } from "Components";
 import { toast } from "react-toastify";
 
-const updateStatus = async (id,status) => {
+const updateStatus = async (id, status) => {
   try {
-    const response = await axios.post(
-      `/InvestmentType/ActiveOrDeleteById?investmentTypeId=${id}&Active=${status}`,
+    const response = await axios.delete(
+      `/InvestmentType/ActiveOrDeleteById?investmentTypeId=${id}&Active=${status}`
     );
     toast.success(response?.data?.message || "Status updated successfully");
   } catch (error) {
@@ -49,8 +49,7 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
                 setData((prev) => {
                   const updatedList = [...prev.data];
                   const recIndex = updatedList.findIndex(
-                    (item) =>
-                      item.intPfConfigHeaderId === rec.intPfConfigHeaderId
+                    (item) => item.typeId === rec.typeId
                   );
 
                   if (recIndex !== -1) {
@@ -78,24 +77,25 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
     dataIndex: "",
     align: "center",
     render: (_, record) => {
-      return  <TableButton
-                  buttonsList={[
-                    {
-                      type: "edit",
-                      onClick: (e) => {
-                        if (!permission?.isEdit) {
-                          return toast.warn("You don't have permission");
-                          e.stopPropagation();
-                        }
-                        setOpenEdit({
-                          open: true,
-                          data: record,
-                          create: false,
-                        });
-                      },
-                    },
-                  ]}
-                />;
+      return (
+        <TableButton
+          buttonsList={[
+            {
+              type: "edit",
+              onClick: (e) => {
+                if (!permission?.isEdit) {
+                  return toast.warn("You don't have permission");
+                  e.stopPropagation();
+                }
+                setOpenEdit({
+                  open: true,
+                  data: record,
+                });
+              },
+            },
+          ]}
+        />
+      );
     },
     width: 140,
   },

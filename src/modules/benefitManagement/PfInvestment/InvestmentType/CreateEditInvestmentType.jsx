@@ -1,80 +1,83 @@
 import { Col, Form, Row } from "antd";
 import { ModalFooter } from "Components/Modal";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
-import Loading from "common/loading/Loading";
 import { PInput } from "Components";
 
 const CreateEditInvestmentType = ({
   data,
   setOpenEdit,
   createInvestmentType,
+  updateInvestmentType,
 }) => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const isEdit = !!data?.typeId;
 
   const onCancel = () => {
     setOpenEdit({ open: false, data: {}, create: false });
   };
 
   useEffect(() => {
-    if (data?.investmentName) {
+    if (isEdit) {
       form.setFieldsValue({
-        investmentName: data?.investmentName,
-        remark: data?.remark,
+        investmentName: data?.investmentName ?? "",
+        remark: data?.remark ?? "",
       });
     } else {
-      form.setFieldsValue({
-        investmentName: "",
-        remark: "",
-      });
+      form.resetFields();
     }
-  }, [data, form]);
+  }, [data, form, isEdit]);
 
   const onSubmit = () => {
     form
       .validateFields()
       .then(async (values) => {
         const payload = {
-          investmentName: values.investmentName,
-          remark: values.remark,
+          ...values,
+          ...(isEdit && {
+            typeId: data?.typeId,
+            businessUnitId: data?.businessUnitId,
+            workplaceGroupId: data?.workplaceGroupId,
+          }),
         };
-        await createInvestmentType(payload, setLoading, () => {
+
+        const callback = () => {
           form.resetFields();
           setOpenEdit({ open: false, data: {}, create: false });
-        });
+        };
+
+        if (isEdit) {
+          await updateInvestmentType(payload, callback);
+        } else {
+          await createInvestmentType(payload, callback);
+        }
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Please fill the form correctly");
       });
   };
 
   return (
     <>
-      {loading && <Loading />}
       <Form form={form} layout="vertical">
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24} xs={24}>
             <PInput
+              type="text"
               name="investmentName"
               label="Investment Name"
               placeholder="Enter Investment Name"
-              onChange={(value) => {
-                form.setFieldsValue({ investmentName: value });
-              }}
               rules={[
-                { required: true, message: "Investment Name Is Required" },
+                { required: true, message: "Investment Name is required" },
               ]}
             />
           </Col>
           <Col md={12} sm={24} xs={24}>
             <PInput
+              type="text"
               name="remark"
               label="Comment"
               placeholder="Enter Remark"
-              onChange={(value) => {
-                form.setFieldsValue({ remark: value });
-              }}
             />
           </Col>
         </Row>

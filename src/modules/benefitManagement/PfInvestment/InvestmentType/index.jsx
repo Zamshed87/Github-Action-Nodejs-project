@@ -16,7 +16,7 @@ const InvestmentType = () => {
   const [form] = Form.useForm();
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
-  const [openEdit, setOpenEdit] = useState({ open: false, data: {}, create: false });
+  const [openEdit, setOpenEdit] = useState({ open: false, data: {}, });
   const { data, setData, fetchInvestmentType, createInvestmentType, updateInvestmentType, createUpdateLoading, loading, pages, } =
     useInvestmentType(form);
 
@@ -32,7 +32,7 @@ const InvestmentType = () => {
       permission = item;
     }
   });
-
+  console.log("createUpdateLoading", createUpdateLoading);
   return permission?.isView ? (
     <>
       <PForm
@@ -53,7 +53,7 @@ const InvestmentType = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    setOpenEdit({ open: true, data: {}, create: true });
+                    setOpenEdit({ open: true, data: {}, });
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -73,7 +73,7 @@ const InvestmentType = () => {
         title={openEdit?.create ? "Create Investment Type" : "Update Investment Type"}
         open={openEdit.open}
         onCancel={() => {
-          setOpenEdit({ open: false, data: {}, create: false });
+          setOpenEdit({ open: false, data: {} });
         }}
         components={<CreateEditInvestmentType data={openEdit.data} setOpenEdit={setOpenEdit} createInvestmentType={createInvestmentType} updateInvestmentType={updateInvestmentType} />}
         width={1000}
