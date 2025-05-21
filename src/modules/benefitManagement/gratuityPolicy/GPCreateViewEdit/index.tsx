@@ -105,12 +105,25 @@ const GPCreateViewEdit = () => {
     };
 
     // have a need new useEffect to set the title
-    if (params?.type === "extend" || params?.type === "view") {
+    if (params?.type !== "create") {
       getgratuityPolicy(`/GratuityPolicy/${params?.id}`, (data: any) => {
         // Populate the form with the fetched data
-        // form.setFieldsValue({
-        //   lateCalculationType: data?.name,
-        // });
+        if (params?.type === "edit")
+          form.setFieldsValue({
+            strPolicyName: data?.strPolicyName,
+            workplace: {
+              label: data?.workplaceName,
+              value: data?.intWorkplaceId,
+            },
+            employmentType: {
+              label: data?.employmentTypeName,
+              value: data?.intEmploymentTypeId,
+            },
+            eligibilityDependOn: {
+              label: data?.eligibilityDependOnName,
+              value: data?.intEligibilityDependOn,
+            },
+          });
 
         setData(data?.gratuityPolicyDetails || []); // need to modify
       });
@@ -170,11 +183,21 @@ const GPCreateViewEdit = () => {
   ];
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
+  console.log(gratuityPolicy, "gratuityPolicy");
 
   return permission?.isCreate ? (
     <div>
       {(loading || gratuityPolicyLoader) && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={
+          params?.type === "edit"
+            ? {
+                strPolicyName: gratuityPolicy?.strPolicyName,
+              }
+            : {}
+        }
+      >
         <PCard>
           <PCardHeader
             backButton
