@@ -1,4 +1,3 @@
-import { PCardBody } from "Components";
 import usePfInvestmentConfig from "./usePfInvestmentConfig";
 
 const PfInvestmentDetails = ({ form }) => {
