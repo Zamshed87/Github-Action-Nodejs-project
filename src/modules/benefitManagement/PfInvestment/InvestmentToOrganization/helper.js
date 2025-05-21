@@ -22,7 +22,7 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
     align: "center",
   },
   {
-    title: "Investment Type",
+    title: "Investment To Organization",
     dataIndex: "organizationName",
     sorter: true,
     width: 100,

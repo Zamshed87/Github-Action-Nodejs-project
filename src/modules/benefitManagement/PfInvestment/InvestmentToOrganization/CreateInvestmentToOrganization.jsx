@@ -65,10 +65,10 @@ const CreateInvestmentToOrganization = ({
             <PInput
               type="text"
               name="organizationName"
-              label="Organization Name"
-              placeholder="Enter Organization Name"
+              label="Investment To Organization"
+              placeholder="Enter Investment To Organization Name"
               rules={[
-                { required: true, message: "Organization Name is required" },
+                { required: true, message: "Investment To Organization is required" },
               ]}
             />
           </Col>
