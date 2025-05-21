@@ -26,7 +26,13 @@ import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
 import { addHandler, createEditGratuityPolicy } from "./helper";
 import DeleteButton from "./components/DeleteButton";
-
+export interface GratuityPolicyDetailKey {
+  intServiceLengthStartInMonth: number;
+  intServiceLengthEndInMonth: number;
+  disbursementDependOnName: string;
+  numPercentageOrFixedAmount: number;
+  [key: string]: any; // Add additional properties if necessary
+}
 const GPCreateViewEdit = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
@@ -111,6 +117,7 @@ const GPCreateViewEdit = () => {
         if (params?.type === "edit")
           form.setFieldsValue({
             strPolicyName: data?.strPolicyName,
+            intPolicyId: data?.intPolicyId,
             workplace: {
               label: data?.workplaceName,
               value: data?.intWorkplaceId,
@@ -124,8 +131,14 @@ const GPCreateViewEdit = () => {
               value: data?.intEligibilityDependOn,
             },
           });
+        const gratuityPolicyDetails = data?.gratuityPolicyDetails.map(
+          (item: GratuityPolicyDetailKey) => ({
+            ...item,
+            idx: crypto.randomUUID(),
+          })
+        );
 
-        setData(data?.gratuityPolicyDetails || []); // need to modify
+        setData(gratuityPolicyDetails || []); // need to modify
       });
     }
     if (params?.type === "extend" || params?.type === "create") {
@@ -207,7 +220,7 @@ const GPCreateViewEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: "Save",
+                      content: params?.type === "edit" ? "Edit" : "Save",
                       // icon:
                       //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
@@ -215,6 +228,7 @@ const GPCreateViewEdit = () => {
                           .validateFields([])
                           .then(() => {
                             createEditGratuityPolicy(
+                              params?.type,
                               profileData,
                               form,
                               data,

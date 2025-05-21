@@ -65,6 +65,7 @@ const fieldsToReset = [
 ]; // dynamically computed array
 
 export const createEditGratuityPolicy = async (
+  type: string | undefined,
   profileData: any,
   form: FormInstance<any>,
   data: DataState,
@@ -78,7 +79,11 @@ export const createEditGratuityPolicy = async (
     console.log(values, "values");
     console.log(data, "data");
     const payload = mapGratuityPolicy(values, data);
-    const res = await axios.post(`/GratuityPolicy`, payload); // change
+    const url =
+      type === "edit"
+        ? "/GratuityPolicy" + values?.intPolicyId
+        : "/GratuityPolicy";
+    const res = await axios.post(url, payload); // change
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
@@ -101,6 +106,7 @@ const mapGratuityPolicy = (values: any, data: DataState) => {
     intEligibilityDependOn: values.eligibilityDependOn?.value,
     isActive: true,
     gratuityPolicyDetails: data.map((item) => ({
+      intPolicyDetailsId: item?.intPolicyDetailsId || 0,
       intServiceLengthStartInMonth: item.intServiceLengthStartInMonth,
       intServiceLengthEndInMonth: item.intServiceLengthEndInMonth,
       intDisbursementDependOnId: item.intDisbursementDependOnId,
