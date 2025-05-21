@@ -17,6 +17,7 @@ import employeeSelfService from "../../assets/images/employee-self-service.svg";
 import employeeManagement from "../../assets/images/employeeManagement.svg";
 import performance from "../../assets/images/performance.svg";
 import requirment from "../../assets/images/requirment.svg";
+import benefitManagement from "../../assets/images/employee-benefit.png";
 import speedometer from "../../assets/images/speedometer.svg";
 import task from "../../assets/images/task.svg";
 import training from "../../assets/images/training.svg";
@@ -158,6 +159,9 @@ const Homepage = () => {
     } else if (label === "Log Monitor") {
       to = "/logMonitor/applicationNotificationLogs";
       image = assetLogMonitor;
+    }else if (label === "Benefits Management") {
+      to = "/BenefitsManagement/providentFund/pfPolicy";
+      image = benefitManagement;
     }
     return { to, image };
   };
