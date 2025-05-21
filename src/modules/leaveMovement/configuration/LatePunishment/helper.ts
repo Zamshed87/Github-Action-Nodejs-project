@@ -254,9 +254,8 @@ const mapLatePunishmentPayload = (
         isConsecutiveDay: item.isConsecutiveDay || false,
         minimumLateTime: item.minimumLateTime || 0,
         maximumLateTime: item.maximumLateTime || 0,
-        lateTimeCalculatedBy: item.lateTimeCalculatedBy || 0,
-        lateTimeCalculatedByDescription:
-          item.lateTimeCalculatedByDescription || "",
+        lateTimeCalculatedBy: item.lateTimeCalculatedById || 0,
+        lateTimeCalculatedByDescription: item.lateTimeCalculatedBy || "",
         punishmentType: item.punishmentType || 0,
         punishmentTypeDescription: item.punishmentTypeDescription || "",
         leaveDeductType: item.leaveDeductType || 0,
