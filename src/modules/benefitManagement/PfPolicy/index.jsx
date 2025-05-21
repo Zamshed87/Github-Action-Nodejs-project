@@ -64,7 +64,7 @@ const PFPolicy = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/bm/pfPolicy/create");
+                    history.push("/BenefitsManagement/providentFund/pfPolicy/create");
                   } else {
                     toast.warn("You don't have permission");
                   }
