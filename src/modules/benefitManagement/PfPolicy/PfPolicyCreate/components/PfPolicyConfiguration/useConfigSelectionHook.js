@@ -70,9 +70,9 @@ const useConfigSelectionHook = (form, config = {}) => {
     if (fetchWorkplace) getWorkplaceDDL();
     if (fetchEmploymentType) getEmploymentTypeDDL();
     if (fetchEligibilityEnum)
-      fetchEligibility(getEnumData("PfEligibilityDepandOn", setEligibility));
+      fetchEligibility(getEnumData("PfEligibilityDependOn", setEligibility));
     if (fetchContributionEnum)
-      fetchContribution(getEnumData("PfContributionDepandOn", setContribution));
+      fetchContribution(getEnumData("PfContributionDependOn", setContribution));
     if (fetchPaidAfterEnum)
       fetchPaidAfter(
         getEnumData("EmployeeContributionPaidAfter", setPaidAfter)

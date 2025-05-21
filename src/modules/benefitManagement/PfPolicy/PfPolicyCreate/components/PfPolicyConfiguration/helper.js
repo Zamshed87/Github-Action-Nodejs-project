@@ -3,14 +3,13 @@ import { PButton } from "Components";
 export const detailsHeader = ({
   removeData,
   intPfEligibilityDependOn,
-  intContributionDependOn,
   action = true,
 }) => {
   const PEDO =
-    intContributionDependOn?.value && intContributionDependOn?.value !== "0";
+    intPfEligibilityDependOn?.value && intPfEligibilityDependOn?.value !== "0";
 
   const getDependOnTitle = (value) => {
-    switch (value?.value) {
+    switch (String(value?.value)) {
       case "1":
         return "Service Length";
       case "2":
@@ -21,23 +20,7 @@ export const detailsHeader = ({
         return "N/A";
     }
   };
-  const getEmpContributionTitle = (value) => {
-    let label = "";
-    switch (value?.value) {
-      case "1":
-        label = "% of Gross";
-        break;
-      case "2":
-        label = "Basic Salary";
-        break;
-      case "3":
-        label = "Amount";
-        break;
-      default:
-        return "N/A";
-    }
-    return `Employee Contribution (${label})`;
-  };
+
   return [
     {
       title: "SL",
@@ -48,8 +31,11 @@ export const detailsHeader = ({
       ? [
           {
             title: getDependOnTitle(intPfEligibilityDependOn),
-            dataIndex: "intContributionDependOn",
-            render: (_, rec) => rec?.intRangeFrom ? `${rec.intRangeFrom} to ${rec.intRangeTo}` : "-",
+            dataIndex: "intPfEligibilityDependOn",
+            render: (_, rec) =>
+              rec?.intRangeFrom
+                ? `${rec.intRangeFrom} to ${rec.intRangeTo}`
+                : "-",
           },
         ]
       : []),
@@ -58,8 +44,16 @@ export const detailsHeader = ({
       render: (_, rec) => rec?.strContributionDependOn ?? "-",
     },
     {
-      title: getEmpContributionTitle(intContributionDependOn),
+      title: "Employee Contribution",
       dataIndex: "numAppraisalValue",
+      render: (value, record) => {
+        // Add % only if intContributionDependOn is 1 (Gross)
+        console.log("intContributionDependOn", record.intContributionDependOn);
+        if (record.intContributionDependOn == 1) {
+          return `${value}%`;
+        }
+        return value;
+      },
     },
     ...(action
       ? [
