@@ -81,9 +81,11 @@ export const createEditGratuityPolicy = async (
     const payload = mapGratuityPolicy(values, data);
     const url =
       type === "edit"
-        ? "/GratuityPolicy" + values?.intPolicyId
+        ? "/GratuityPolicy/" + values?.intPolicyId
         : "/GratuityPolicy";
-    const res = await axios.post(url, payload); // change
+    const method = type === "edit" ? "put" : "post";
+
+    const res = await axios[method](url, payload);
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
