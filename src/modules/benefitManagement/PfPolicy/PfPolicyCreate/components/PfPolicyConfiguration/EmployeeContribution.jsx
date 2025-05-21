@@ -81,22 +81,22 @@ const EmployeeContribution = ({
       </h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={12} xs={24}>
+          {/* <Col md={4} sm={12} xs={24}>
             <Form.Item
-              name={`${prefix}consecutiveDay`}
+              name={`${prefix}contribution`}
               defaultValue={true}
               valuePropName="checked"
               style={{ marginTop: "16px", marginBottom: 0 }}
             >
               <Checkbox
                 onChange={(e) => {
-                  setPrefixedFieldValue("consecutiveDay", e.target.checked);
+                  setPrefixedFieldValue("contribution", e.target.checked);
                 }}
               >
                 {company ? "Company Contribution" : "Is Employee Contribution?"}
               </Checkbox>
             </Form.Item>
-          </Col>
+          </Col> */}
           {intPfEligibilityDependOn?.value &&
             intPfEligibilityDependOn?.value != "0" && (
               <>

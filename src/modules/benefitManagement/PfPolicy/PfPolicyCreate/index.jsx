@@ -67,12 +67,12 @@ const PfPolicyCreate = () => {
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (saveData.employeeContributions.length < 1) {
-                        toast.error(
-                          "Please add at least one employee contribution."
-                        );
+                
+                      if (saveData.employeeContributions.length < 1 && saveData.companyContributions.length < 1) {
+                        toast.error("Please add at least one employee or company contribution.");
                         return;
                       }
+
                       const payload = {
                         intBusinessUnitId: buId,
                         intWorkPlaceGroupId: wgId,
