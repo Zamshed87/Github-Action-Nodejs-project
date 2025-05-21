@@ -1834,6 +1834,9 @@ const GPCreateViewEdit = lazy(() =>
 const PFInvestmentType = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
 );
+const PFInvestmentToOrganization = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
+);
 export const routingList = [
   { path: "/", component: Homepage },
   { path: "/chat", component: Chat },
@@ -4399,6 +4402,10 @@ export const routingList = [
   {
     path: "/bm/pfInvestmentType",
     component: PFInvestmentType,
+  },
+  {
+    path: "/bm/pfInvestmentToOrganization",
+    component: PFInvestmentToOrganization,
   },
 ];
 

@@ -4,7 +4,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const useInvestmentType = (form) => {
+const useInvestmentOrganization = (form) => {
   const { wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -17,50 +17,50 @@ const useInvestmentType = (form) => {
   const [createUpdateLoading, setCreateUpdateLoading] = useState(false);
   const [data, getData, loading, setData] = useAxiosGet({});
 
-  const fetchInvestmentType = () => {
+  const fetchInvestmentOrganization = () => {
 
-    const url = `/InvestmentType/GetAll?accountId=${orgId}`;
+    const url = `/InvestmentOrganization/GetAll?accountId=${orgId}`;
 
     getData(url, (res) => {
       setData(res);
     });
   };
 
-  const createInvestmentType = async (values, resetData) => {
+  const createInvestmentOrganization = async (values, resetData) => {
     setCreateUpdateLoading?.(true);
     try {
       const formValues = form?.getFieldsValue(true);
       const payload = {
         businessUnitId: formValues?.businessUnit?.value,
         workplaceGroupId: formValues?.workplaceGroup?.value,
-        investmentName: values?.investmentName,
+        organizationName: values?.organizationName,
         remark: values?.remark,
       };
-      const res = await axios.post(`/InvestmentType/Create`, payload);
+      const res = await axios.post(`/InvestmentOrganization/Create`, payload);
       toast.success(res?.data?.message?.[0] || "Created Successfully");
       setCreateUpdateLoading?.(false);
       resetData?.();
-      fetchInvestmentType();
+      fetchInvestmentOrganization();
     } catch (error) {
       toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
       setCreateUpdateLoading?.(false);
     }
   };
-  const updateInvestmentType = async (values, resetData) => {
+  const updateInvestmentOrganization = async (values, resetData) => {
     setCreateUpdateLoading?.(true);
     try {
       const payload = {
-        typeId: values?.typeId,
+        investmentOrganizationId: values?.typeId,
         businessUnitId: values?.businessUnitId,
         workplaceGroupId: values?.workplaceGroupId,
-        investmentName: values?.investmentName,
+        organizationName: values?.organizationName,
         remark: values?.remark,
       };
-      const res = await axios.put(`/InvestmentType/Update`, payload);
+      const res = await axios.put(`/InvestmentOrganization/Update`, payload);
       toast.success(res?.data?.message?.[0] || "Updated Successfully");
       setCreateUpdateLoading?.(false);
       resetData?.();
-      fetchInvestmentType();
+      fetchInvestmentOrganization();
     } catch (error) {
       toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
       setCreateUpdateLoading?.(false);
@@ -68,15 +68,14 @@ const useInvestmentType = (form) => {
   };
 
   useEffect(() => {
-    fetchInvestmentType();
+    fetchInvestmentOrganization();
   }, [wgId, wId]);
-
   return {
     data,
     setData,
-    fetchInvestmentType,
-    createInvestmentType,
-    updateInvestmentType,
+    fetchInvestmentOrganization,
+    createInvestmentOrganization,
+    updateInvestmentOrganization,
     createUpdateLoading,
     loading,
     pages,
@@ -84,4 +83,4 @@ const useInvestmentType = (form) => {
   };
 };
 
-export default useInvestmentType;
+export default useInvestmentOrganization;

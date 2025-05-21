@@ -7,9 +7,9 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import useInvestmentType from "./useInvestmentType";
-import CreateEditInvestmentType from "./CreateEditInvestmentType";
 import { getHeader } from "./helper";
+import CreateEditInvestmentType from "./CreateEditInvestmentType";
+import useInvestmentType from "./useInvestmentType";
 
 const InvestmentType = () => {
   const dispatch = useDispatch();
@@ -32,7 +32,6 @@ const InvestmentType = () => {
       permission = item;
     }
   });
-  console.log("createUpdateLoading", createUpdateLoading);
   return permission?.isView ? (
     <>
       <PForm

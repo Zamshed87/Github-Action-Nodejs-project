@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 const updateStatus = async (id, status) => {
   try {
     const response = await axios.delete(
-      `/InvestmentType/ActiveOrDeleteById?investmentTypeId=${id}&Active=${status}`
+      `/InvestmentOrganization/ActiveOrDeleteById?InvestmentOrganizationId=${id}&Active=${status}`
     );
     toast.success(response?.data?.message?.[0] || "Status updated successfully");
   } catch (error) {
@@ -23,7 +23,7 @@ export const getHeader = (pages, setData, setOpenEdit, permission) => [
   },
   {
     title: "Investment Type",
-    dataIndex: "investmentName",
+    dataIndex: "organizationName",
     sorter: true,
     width: 100,
   },
