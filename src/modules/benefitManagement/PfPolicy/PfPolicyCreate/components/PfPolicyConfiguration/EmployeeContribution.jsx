@@ -36,7 +36,7 @@ const EmployeeContribution = ({
       case "3":
         return "Salary Range Start  (Amount)";
       default:
-        return "N/A";
+        return "";
     }
   };
   const getRangeToLabel = (value) => {
@@ -48,7 +48,7 @@ const EmployeeContribution = ({
       case "3":
         return "Salary Range End (Amount)";
       default:
-        return "N/A";
+        return "";
     }
   };
   const getEmployeeContributionLabel = (value) => {
@@ -64,7 +64,7 @@ const EmployeeContribution = ({
         label = "Fixed Amount";
         break;
       default:
-        label = "N/A";
+        label = " ";
     }
     return `Employee Contribution (${label})`;
   };
@@ -81,22 +81,22 @@ const EmployeeContribution = ({
       </h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={12} xs={24}>
+          {/* <Col md={4} sm={12} xs={24}>
             <Form.Item
-              name={`${prefix}consecutiveDay`}
+              name={`${prefix}contribution`}
               defaultValue={true}
               valuePropName="checked"
               style={{ marginTop: "16px", marginBottom: 0 }}
             >
               <Checkbox
                 onChange={(e) => {
-                  setPrefixedFieldValue("consecutiveDay", e.target.checked);
+                  setPrefixedFieldValue("contribution", e.target.checked);
                 }}
               >
                 {company ? "Company Contribution" : "Is Employee Contribution?"}
               </Checkbox>
             </Form.Item>
-          </Col>
+          </Col> */}
           {intPfEligibilityDependOn?.value &&
             intPfEligibilityDependOn?.value != "0" && (
               <>
