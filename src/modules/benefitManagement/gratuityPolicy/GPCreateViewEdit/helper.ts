@@ -16,7 +16,9 @@ const isOverlapping = (
 export const addHandler = (setData: any, data: DataState, form: any) => {
   const values = form.getFieldsValue(true);
 
-  if (values?.serviceLengthStart > values?.serviceLengthEnd) {
+  if (
+    values?.intServiceLengthStartInMonth > values?.intServiceLengthEndInMonth
+  ) {
     return toast.error(
       "Service Length end should be bigger than Service Length Start"
     );
@@ -24,8 +26,14 @@ export const addHandler = (setData: any, data: DataState, form: any) => {
 
   const { serviceLengthStart: newStart, serviceLengthEnd: newEnd } = values;
 
-  const isConflict = data.some(({ serviceLengthStart, serviceLengthEnd }) =>
-    isOverlapping(newStart, newEnd, serviceLengthStart, serviceLengthEnd)
+  const isConflict = data.some(
+    ({ intServiceLengthStartInMonth, intServiceLengthEndInMonth }) =>
+      isOverlapping(
+        newStart,
+        newEnd,
+        intServiceLengthStartInMonth,
+        intServiceLengthEndInMonth
+      )
   );
 
   if (isConflict) {
@@ -36,26 +44,27 @@ export const addHandler = (setData: any, data: DataState, form: any) => {
     ...data,
     {
       idx: crypto.randomUUID(),
-      serviceLengthStart: values?.serviceLengthStart,
-      serviceLengthEnd: values?.serviceLengthEnd,
+      intServiceLengthStartInMonth: values?.intServiceLengthStartInMonth,
+      intServiceLengthEndInMonth: values?.intServiceLengthEndInMonth,
       intServiceLengthInMonth:
-        values?.serviceLengthEnd - values?.serviceLengthStart,
+        values?.intServiceLengthEndInMonth -
+        values?.intServiceLengthStartInMonth,
       intDisbursementDependOnId: values?.disbursementDependOn?.value,
       disbursementDependOnName: values?.disbursementDependOn?.label,
-      numPercentage: values?.numPercentage,
+      numPercentageOrFixedAmount: values?.numPercentageOrFixedAmount,
     },
   ]);
   form.resetFields(fieldsToReset);
 };
 
 const fieldsToReset = [
-  "serviceLengthStart",
-  "serviceLengthEnd",
+  "intServiceLengthStartInMonth",
+  "intServiceLengthEndInMonth",
   "disbursementDependOn",
-  "numPercentage",
+  "numPercentageOrFixedAmount",
 ]; // dynamically computed array
 
-export const createEditLatePunishmentConfig = async (
+export const createEditGratuityPolicy = async (
   profileData: any,
   form: FormInstance<any>,
   data: DataState,
@@ -65,20 +74,11 @@ export const createEditLatePunishmentConfig = async (
 ) => {
   setLoading(true);
   try {
-    const { orgId, buId, wgId, wId, employeeId, intAccountId } = profileData;
     const values = form.getFieldsValue(true);
-
-    // const payload = mapLatePunishmentPayload(
-    //   values,
-    //   data,
-    //   "",
-    //   orgId,
-    //   buId,
-    //   wgId,
-    //   wId,
-    //   intAccountId
-    // );
-    const res = await axios.post(`/LatePunishmentpolicy`, {}); // change
+    console.log(values, "values");
+    console.log(data, "data");
+    const payload = mapGratuityPolicy(values, data);
+    const res = await axios.post(`/GratuityPolicy`, payload); // change
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
@@ -90,4 +90,21 @@ export const createEditLatePunishmentConfig = async (
   } finally {
     setLoading(false);
   }
+};
+
+const mapGratuityPolicy = (values: any, data: DataState) => {
+  return {
+    strPolicyName: values.strPolicyName,
+    intWorkplaceId: values.workplace?.intWorkplaceId ?? values.workplace?.value,
+    intEmploymentTypeId:
+      values.employmentType?.Id ?? values.employmentType?.value,
+    intEligibilityDependOn: values.eligibilityDependOn?.value,
+    isActive: true,
+    gratuityPolicyDetails: data.map((item) => ({
+      intServiceLengthStartInMonth: item.intServiceLengthStartInMonth,
+      intServiceLengthEndInMonth: item.intServiceLengthEndInMonth,
+      intDisbursementDependOnId: item.intDisbursementDependOnId,
+      numPercentageOrFixedAmount: item.numPercentageOrFixedAmount, // or item.numFixedAmount if needed
+    })),
+  };
 };

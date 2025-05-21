@@ -24,7 +24,7 @@ import { getSerial } from "Utils";
 import { DataState } from "../type";
 import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
-import { addHandler, createEditLatePunishmentConfig } from "./helper";
+import { addHandler, createEditGratuityPolicy } from "./helper";
 import DeleteButton from "./components/DeleteButton";
 
 const GPCreateViewEdit = () => {
@@ -67,7 +67,7 @@ const GPCreateViewEdit = () => {
   };
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () => permissionList.find((item) => item?.menuReferenceId === 30599),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -98,29 +98,31 @@ const GPCreateViewEdit = () => {
   };
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Late Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "Benefits Management";
     () => {
       document.title = "PeopleDesk";
     };
+
     // have a need new useEffect to set the title
     if (params?.type === "extend" || params?.type === "view") {
-      getgratuityPolicy(`/LatePunishmentpolicy/${params?.id}`, (data: any) => {
+      getgratuityPolicy(`/GratuityPolicy/${params?.id}`, (data: any) => {
         // Populate the form with the fetched data
         // form.setFieldsValue({
         //   lateCalculationType: data?.name,
         // });
 
-        setData(data?.elements || []); // need to modify
+        setData(data?.gratuityPolicyDetails || []); // need to modify
       });
     }
-
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      "intWorkplaceId",
-      "strWorkplace",
-      setWorkplaceDDL
-    );
+    if (params?.type === "extend" || params?.type === "create") {
+      getPeopleDeskAllDDL(
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+        "intWorkplaceId",
+        "strWorkplace",
+        setWorkplaceDDL
+      );
+    }
   }, [wgId]);
 
   const header = [
@@ -141,7 +143,10 @@ const GPCreateViewEdit = () => {
       dataIndex: "",
       render: (value: any, rec: any) => {
         return (
-          rec?.serviceLengthStart + " to " + rec?.serviceLengthEnd + " Month"
+          rec?.intServiceLengthStartInMonth +
+          " to " +
+          rec?.intServiceLengthEndInMonth +
+          " Month"
         );
       },
     },
@@ -151,7 +156,7 @@ const GPCreateViewEdit = () => {
     },
     {
       title: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
-      dataIndex: "numPercentage",
+      dataIndex: "numPercentageOrFixedAmount",
     },
     {
       title: "Action",
@@ -186,14 +191,14 @@ const GPCreateViewEdit = () => {
                         form
                           .validateFields([])
                           .then(() => {
-                            createEditLatePunishmentConfig(
+                            createEditGratuityPolicy(
                               profileData,
                               form,
                               data,
                               setLoading,
                               () => {
                                 history.push(
-                                  "/administration/latePunishmentPolicy"
+                                  "/BenefitsManagement/gratuity/gratuityPolicy"
                                 );
                               }
                             );

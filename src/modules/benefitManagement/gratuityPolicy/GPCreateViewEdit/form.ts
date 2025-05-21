@@ -76,7 +76,7 @@ export const GratuityPolicyForm = (
     {
       type: "number",
       label: "Service Length Start (Month)",
-      varname: "serviceLengthStart",
+      varname: "intServiceLengthStartInMonth",
       placeholder: "Enter Service Length Start (Month)",
       rules: [{ required: true, message: "Service Length Start is required!" }],
       col: 6,
@@ -84,7 +84,7 @@ export const GratuityPolicyForm = (
     {
       type: "number",
       label: "Service Length End (Month)",
-      varname: "serviceLengthEnd",
+      varname: "intServiceLengthEndInMonth",
       placeholder: "Enter Service Length End (Month)",
       rules: [{ required: true, message: "Service Length End is required!" }],
       col: 6,
@@ -119,7 +119,7 @@ export const GratuityPolicyForm = (
     {
       type: "number",
       label: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
-      varname: "numPercentage",
+      varname: "numPercentageOrFixedAmount",
       placeholder: "Enter Gratuity Disbursement",
       rules: [
         { required: true, message: "Gratuity Disbursement is required!" },
