@@ -1,8 +1,8 @@
 import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
-import usePfPolicyFilters from "./usePfPolicyFilters";
+import usePfPolicyFilters from "./usePfInvestmentFilters";
 
-const PfPolicyFilters = ({form}) => {
+const PfInvestmentFilters = ({form}) => {
   const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } =
     usePfPolicyFilters(form);
   return (
@@ -65,4 +65,4 @@ const PfPolicyFilters = ({form}) => {
   );
 };
 
-export default PfPolicyFilters;
+export default PfInvestmentFilters;

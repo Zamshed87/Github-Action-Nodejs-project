@@ -1,5 +1,5 @@
 import { PCardBody, PSelect } from "Components";
-import useConfigSelectionHook from "./usePfInvestmentConfig";
+import useConfigSelectionHook from "./useConfigSelectionHook";
 import { Checkbox, Col, Form, Row } from "antd";
 
 const PfInvestment = ({ form }) => {

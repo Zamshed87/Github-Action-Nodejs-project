@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
 
-const usePfPolicyFilters = (form) => {
+const usePfInvestmentFilters = (form) => {
   const {
     profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -58,4 +58,4 @@ const usePfPolicyFilters = (form) => {
   };
 };
 
-export default usePfPolicyFilters;
+export default usePfInvestmentFilters;
