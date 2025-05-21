@@ -50,7 +50,7 @@ const PFPolicy = () => {
         {loading && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Total PF Policy ${data?.totalCount || 0}`}
+            title={`Total PF Policy`}
             // onSearch={(e) => {
             //   form.setFieldsValue({
             //     search: e?.target?.value,
@@ -110,7 +110,7 @@ const PFPolicy = () => {
           setOpenExtend({ extend: false, data: {} });
         }}
         components={
-          <PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} />
+          <PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} fetchPfPolicy={fetchPfPolicy} />
         }
         width={800}
       />

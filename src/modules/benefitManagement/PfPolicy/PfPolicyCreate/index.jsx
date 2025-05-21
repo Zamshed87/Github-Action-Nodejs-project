@@ -8,8 +8,10 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
+import { useHistory } from "react-router-dom";
 
 const PfPolicyCreate = () => {
+  const history = useHistory();
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
@@ -30,14 +32,14 @@ const PfPolicyCreate = () => {
       permissionList.find((item) => item?.menuReferenceId === 30597)
     );
   }, [permissionList]);
-
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Absent Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "Benefits Management - PF Policy Create";
     return () => {
       document.title = "PeopleDesk";
-    };
+    };  
   }, []);
+
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -65,12 +67,12 @@ const PfPolicyCreate = () => {
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (saveData.employeeContributions.length < 1) {
-                        toast.error(
-                          "Please add at least one employee contribution."
-                        );
+                
+                      if (saveData.employeeContributions.length < 1 && saveData.companyContributions.length < 1) {
+                        toast.error("Please add at least one employee or company contribution.");
                         return;
                       }
+
                       const payload = {
                         intBusinessUnitId: buId,
                         intWorkPlaceGroupId: wgId,
@@ -96,6 +98,9 @@ const PfPolicyCreate = () => {
                           companyContributions: [],
                         });
                         form.resetFields();
+                        history.push(
+                          `/BenefitsManagement/providentFund/pfPolicy`
+                        );
                       });
                     })
                     .catch(() => {
