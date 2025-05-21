@@ -110,7 +110,7 @@ const PFPolicy = () => {
           setOpenExtend({ extend: false, data: {} });
         }}
         components={
-          <PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} />
+          <PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} fetchPfPolicy={fetchPfPolicy} />
         }
         width={800}
       />
