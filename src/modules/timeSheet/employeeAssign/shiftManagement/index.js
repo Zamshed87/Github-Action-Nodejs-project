@@ -71,7 +71,7 @@ function ShiftManagement() {
     shallowEqual
   );
   const colors = [
-    "#299647",
+    "var(--primary-color)",
     "#B54708",
     "#B42318",
     "#6927DA",
