@@ -264,7 +264,9 @@ const AbsentPunishment = lazy(() =>
   import("../modules/punishmentConfiguration/AbsentPunishment/index.jsx")
 );
 const AbsentPunishmentConfiguration = lazy(() =>
-  import("../modules/punishmentConfiguration/AbsentPunishment/components/absentPunishmentConfiguration/index.jsx")
+  import(
+    "../modules/punishmentConfiguration/AbsentPunishment/components/absentPunishmentConfiguration/index.jsx"
+  )
 );
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
@@ -1817,6 +1819,14 @@ const PFPolicy = lazy(() =>
 );
 const PFPolicyCreate = lazy(() =>
   import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
+);
+const GratuityPolicy = lazy(() =>
+  import("../modules/benefitManagement/gratuityPolicy/index.tsx")
+);
+const GPCreateViewEdit = lazy(() =>
+  import(
+    "../modules/benefitManagement/gratuityPolicy/GPCreateViewEdit/index.tsx"
+  )
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4389,6 +4399,14 @@ export const routingList = [
   {
     path: "/bm/pfPolicy/create",
     component: PFPolicyCreate,
+  },
+  {
+    path: "/bm/gratuityPolicy",
+    component: GratuityPolicy,
+  },
+  {
+    path: "/bm/gratuityPolicy/:type/:id",
+    component: GPCreateViewEdit,
   },
 ];
 

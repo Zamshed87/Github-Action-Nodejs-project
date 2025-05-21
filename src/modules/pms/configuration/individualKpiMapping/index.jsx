@@ -60,20 +60,27 @@ const IndividualKpiMapping = () => {
     useAxiosGet();
 
   useEffect(() => {
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`,
+    //   "intBusinessUnitId",
+    //   "strBusinessUnit",
+    //   setBusinessUnitDDL
+    // );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      "intDepartmentId",
+      "strDepartment",
+      setDepartmentDDL
     );
     // getData(initData, pages);
-    if (!isOfficeAdmin) {
-      GetSupervisorDepartmentsAndEmployeesDdl(
-        employeeId,
-        setDepartmentDDL,
-        setEmployeeDDL
-      );
-    }
+    // if (!isOfficeAdmin) {
+    //   GetSupervisorDepartmentsAndEmployeesDdl(
+    //     employeeId,
+    //     setDepartmentDDL,
+    //     setEmployeeDDL
+    //   );
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId]);
 
@@ -143,7 +150,7 @@ const IndividualKpiMapping = () => {
         values?.employee?.value || 0
       }&pageNo=${pages?.current}&pageSize=${pages?.pageSize}&targetType=${
         values?.targetType?.value || 0
-      }&supOrLineOrDottedSupId=${values?.supervisorName?.value || 0}`,
+      }`,
       (data) => {
         if (data) {
           setPages((prev) => ({
@@ -242,7 +249,7 @@ const IndividualKpiMapping = () => {
                 />
               </div>
             </div> */}
-            {isOfficeAdmin && (
+            {/* {isOfficeAdmin && (
               <>
                 <div className="col-lg-3">
                   <label>Supervisor Type</label>
@@ -301,7 +308,7 @@ const IndividualKpiMapping = () => {
                   </div>
                 </div>
               </>
-            )}
+            )} */}
 
             <div className="col-md-3">
               <div className="input-field-main">
