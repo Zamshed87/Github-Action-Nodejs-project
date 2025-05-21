@@ -192,7 +192,7 @@ const IndividualKpiMapping = () => {
                       fontSize: "14px",
                       padding: "0px 12px 0px 12px",
                       margin: "0px 5px 0px 5px",
-                      backgroundColor: "var(--success800)",
+                      backgroundColor: "var(--primary-color)",
                       color: "white",
                     }}
                     className="btn"
@@ -321,6 +321,13 @@ const IndividualKpiMapping = () => {
                   onChange={(valueOption) => {
                     setTableData([]);
                     setFieldValue("department", valueOption);
+                    setFieldValue("employee", []);
+                    getPeopleDeskAllDDL(
+                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllEmployeeByDepartmentId&accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&isView=true&IntDepartmentId=${valueOption?.value}`,
+                      "value",
+                      "label",
+                      setEmployeeDDL
+                    );
                   }}
                   styles={customStyles}
                 />
