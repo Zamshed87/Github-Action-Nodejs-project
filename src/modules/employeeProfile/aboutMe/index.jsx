@@ -8,6 +8,7 @@ import OverviewTab from "../employeeOverview/components/OverviewTab";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import {
   getEmployeeProfileViewData,
+  getEmployeeProfileViewPendingData,
   markAsComplete,
 } from "../employeeFeature/helper";
 import { Tag } from "antd";
@@ -35,6 +36,7 @@ function AboutMe() {
 
   const [loading, setLoading] = useState(false);
   const [empBasic, setEmpBasic] = useState({});
+  const [empBasicPending, setEmpBasicPending] = useState({});
   const [bankData, setBankData] = useState("empty");
   const [isBank, setIsBank] = useState(true);
   // const [hasBankData, setHasBankData] = useState(true);
@@ -45,6 +47,16 @@ function AboutMe() {
     getEmployeeProfileViewData(
       employeeId,
       setEmpBasic,
+      setLoading,
+      buId,
+      logWgId
+    );
+  };
+
+  const getEmpPendingData = () => {
+    getEmployeeProfileViewPendingData(
+      employeeId,
+      setEmpBasicPending,
       setLoading,
       buId,
       logWgId
@@ -68,6 +80,7 @@ function AboutMe() {
 
   const handleViewClick = () => {
     setIsOpen(true);
+    getEmpPendingData();
   };
 
   // Handler for closing the modal
@@ -128,6 +141,7 @@ function AboutMe() {
 
         <div className="container-about-info" style={{ marginTop: "18px" }}>
           <ProfileCard
+            getEmpPendingData={getEmpPendingData}
             isSelfService={selfService}
             viewBtnHandler={handleViewClick}
             empBasic={empBasic?.employeeProfileLandingView}
@@ -173,7 +187,7 @@ function AboutMe() {
         <EmployeeViewModal
           visible={isOpen}
           onClose={handleViewModalClose}
-          empData={empBasic}
+          empData={empBasicPending}
         />
       </div>
     </>

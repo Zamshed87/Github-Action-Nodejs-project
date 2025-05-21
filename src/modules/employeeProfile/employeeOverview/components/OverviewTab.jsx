@@ -14,7 +14,7 @@ import OAuth from "./OAuth/OAuth";
 import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter";
 import TrainingDevelopment from "./Experience/TrainingDevelopment";
 
-function OverviewTab({ empId, wgId, buId, intAccountId, isSelfService }) {
+function OverviewTab({ empId, wgId, buId, intAccountId }) {
   const [index, setIndex] = useState(0);
   const tabName = [
     { name: "General Info", id: 0 },

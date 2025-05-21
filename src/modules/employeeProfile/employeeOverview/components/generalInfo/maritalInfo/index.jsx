@@ -37,7 +37,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
   const [rowDto, setRowDto] = useState({});
-  const [singleData, setSingleData] = useState("");
+  const [singleData, setSingleData] = useState(null);
 
   const { employeeId, isOfficeAdmin, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -55,161 +55,16 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const saveHandler = (values) => {
-    if (singleData) {
-      const payload = {
-        partType: "MaritalStatus",
-        employeeId:
-          rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
-        autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
-        value: values?.materialStatus?.label || singleData?.label,
-        insertByEmpId: employeeId,
-        isActive: true,
-        bankId: 0,
-        bankName: "",
-        branchName: "",
-        routingNo: "",
-        specialContactTypeId: 0,
-        specialContactTypeName: "",
-        trainingName: "",
-        swiftCode: "",
-        accountName: "",
-        accountNo: "",
-        paymentGateway: "",
-        digitalBankingName: "",
-        digitalBankingNo: "",
-        addressTypeId: 0,
-        countryId: 0,
-        countryName: "",
-        divisionId: 0,
-        divisionName: "",
-        districtId: 0,
-        districtName: "",
-        postOfficeId: 0,
-        postOfficeName: "",
-        addressDetails: "",
-        companyName: "",
-        jobTitle: "",
-        location: "",
-        fromDate: todayDate(),
-        toDate: todayDate(),
-        fileUrlId: 0,
-        organizationName: rowDto?.employeeProfileLandingView?.strWorkplaceName,
-        description: "",
-        isForeign: true,
-        instituteName: "",
-        degree: "",
-        degreeId: 0,
-        fieldOfStudy: "",
-        cgpa: "",
-        outOf: "",
-        startDate: todayDate(),
-        endDate: todayDate(),
-        expirationDate: todayDate(),
-        name: "",
-        relationId: 0,
-        relationName: "",
-        phone: "",
-        email: "",
-        nid: "",
-        dateOfBirth: todayDate(),
-        remarks: "",
-      };
-      const callback = () => {
-        getEmployeeProfileViewData(
-          empId,
-          setRowDto,
-          setLoading,
-          businessUnit,
-          workplaceGroup
-        );
-        setStatus("empty");
-        setSingleData("");
-        setIsCreateForm(false);
-      };
-      updateEmployeeProfile(payload, setLoading, callback);
-    } else {
-      const payload = {
-        partType: "MaritalStatus",
-        employeeId:
-          rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
-        autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
-        value: values?.materialStatus?.label || singleData?.label,
-        insertByEmpId: employeeId,
-        isActive: true,
-        bankId: 0,
-        bankName: "",
-        branchName: "",
-        routingNo: "",
-        specialContactTypeId: 0,
-        specialContactTypeName: "",
-        trainingName: "",
-        swiftCode: "",
-        accountName: "",
-        accountNo: "",
-        paymentGateway: "",
-        digitalBankingName: "",
-        digitalBankingNo: "",
-        addressTypeId: 0,
-        countryId: 0,
-        countryName: "",
-        divisionId: 0,
-        divisionName: "",
-        districtId: 0,
-        districtName: "",
-        postOfficeId: 0,
-        postOfficeName: "",
-        addressDetails: "",
-        companyName: "",
-        jobTitle: "",
-        location: "",
-        fromDate: todayDate(),
-        toDate: todayDate(),
-        fileUrlId: 0,
-        organizationName: rowDto?.employeeProfileLandingView?.strWorkplaceName,
-        description: "",
-        isForeign: true,
-        instituteName: "",
-        degree: "",
-        degreeId: 0,
-        fieldOfStudy: "",
-        cgpa: "",
-        outOf: "",
-        startDate: todayDate(),
-        endDate: todayDate(),
-        expirationDate: todayDate(),
-        name: "",
-        relationId: 0,
-        relationName: "",
-        phone: "",
-        email: "",
-        nid: "",
-        dateOfBirth: todayDate(),
-        remarks: "",
-      };
-      const callback = () => {
-        getEmployeeProfileViewData(
-          empId,
-          setRowDto,
-          setLoading,
-          businessUnit,
-          workplaceGroup
-        );
-        setStatus("empty");
-        setSingleData("");
-        setIsCreateForm(false);
-      };
-      updateEmployeeProfile(payload, setLoading, callback);
-    }
-  };
+  // Helper: create the payload, pass in maritalStatusLabel (string)
+  const createPayload = (maritalStatusLabel) => {
+    const employeeBasicInfoId =
+      rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId;
 
-  const deleteHandler = (setFieldValue) => {
-    const payload = {
+    return {
       partType: "MaritalStatus",
-      employeeId:
-        rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
-      autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
-      value: "",
+      employeeId: employeeBasicInfoId,
+      autoId: employeeBasicInfoId,
+      value: maritalStatusLabel || "",
       insertByEmpId: employeeId,
       isActive: true,
       bankId: 0,
@@ -262,19 +117,37 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       dateOfBirth: todayDate(),
       remarks: "",
     };
-    const callback = () => {
-      getEmployeeProfileViewData(
-        empId,
-        setRowDto,
-        setLoading,
-        businessUnit,
-        workplaceGroup
-      );
-      setStatus("empty");
-      setSingleData("");
+  };
+
+  const refreshData = () => {
+    getEmployeeProfileViewData(
+      empId,
+      setRowDto,
+      setLoading,
+      businessUnit,
+      workplaceGroup
+    );
+    setStatus("empty");
+    setSingleData(null);
+    setIsCreateForm(false);
+  };
+
+  const saveHandler = (values) => {
+    const maritalLabel =
+      values?.materialStatus?.label || singleData?.label || "";
+    const payload = createPayload(maritalLabel);
+
+    updateEmployeeProfile(payload, setLoading, () => {
+      refreshData();
+    });
+  };
+
+  const deleteHandler = (setFieldValue) => {
+    const payload = createPayload("");
+    updateEmployeeProfile(payload, setLoading, () => {
+      refreshData();
       setFieldValue("materialStatus", "");
-    };
-    updateEmployeeProfile(payload, setLoading, callback);
+    });
   };
 
   return (
@@ -283,18 +156,14 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         enableReinitialize={true}
         initialValues={{
           ...initData,
-          materialStatus: singleData?.value
-            ? {
-                value: singleData?.value,
-                label: singleData?.label,
-              }
+          materialStatus: singleData
+            ? { value: singleData.value, label: singleData.label }
             : "",
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+          saveHandler(values);
+          resetForm(initData);
         }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -304,7 +173,6 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
 
               {isCreateForm ? (
                 <>
-                  {/* addEdit form */}
                   {status === "input" && (
                     <>
                       <h5>Marital Status</h5>
@@ -318,8 +186,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                             { value: 4, label: "Separated" },
                             { value: 5, label: "Divorced" },
                           ]}
-                          value={values?.materialStatus}
-                          label=""
+                          value={values.materialStatus}
                           onChange={(valueOption) => {
                             setFieldValue("materialStatus", valueOption);
                           }}
@@ -334,12 +201,11 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                         >
                           <button
                             type="button"
-                            // variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
                               setStatus("empty");
-                              setSingleData("");
+                              setSingleData(null);
                               setIsCreateForm(false);
                               setFieldValue("materialStatus", "");
                             }}
@@ -361,137 +227,71 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                 </>
               ) : (
                 <>
-                  {/* landing */}
                   {rowDto?.employeeProfileLandingView && !singleData && (
                     <>
-                      {rowDto?.employeeProfileLandingView?.strMaritalStatus ===
+                      {rowDto.employeeProfileLandingView.strMaritalStatus ===
                       "" ? (
-                        <>
-                          <h5>Marital Status</h5>
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ marginBottom: "25px", cursor: "pointer" }}
+                          onClick={() => {
+                            setStatus("input");
+                            setIsCreateForm(true);
+                          }}
+                        >
                           <div
-                            className="d-flex align-items-center"
-                            style={{ marginBottom: "25px", cursor: "pointer" }}
-                            onClick={() => {
-                              setStatus("input");
-                              setIsCreateForm(true);
-                            }}
+                            className="item"
+                            style={{ position: "relative", top: "-3px" }}
                           >
-                            <div
-                              className="item"
-                              style={{ position: "relative", top: "-3px" }}
-                            >
-                              <ControlPoint
-                                sx={{ color: success500, fontSize: "16px" }}
-                              />
-                            </div>
-                            <div className="item">
-                              <p>Add your marital status</p>
-                            </div>
+                            <ControlPoint
+                              sx={{ color: success500, fontSize: "16px" }}
+                            />
                           </div>
-                        </>
+                          <div className="item">
+                            <p>Add your marital status</p>
+                          </div>
+                        </div>
                       ) : (
-                        <>
-                          <div className="view">
-                            <div className="row">
-                              <div className="col-lg-1">
-                                <Avatar className="overviewAvatar">
-                                  <SupervisorAccount
-                                    sx={{
-                                      color: gray900,
-                                      fontSize: "18px",
-                                    }}
-                                  />
-                                </Avatar>
-                              </div>
-                              <div className="col-lg-10">
-                                <h4>
-                                  {
-                                    rowDto?.employeeProfileLandingView
-                                      ?.strMaritalStatus
-                                  }
-                                </h4>
-                                <small>Marital Status</small>
-                              </div>
-
-                              <div className="col-lg-1">
-                                <ActionMenu
-                                  color={gray900}
-                                  fontSize={"18px"}
-                                  options={[
-                                    ...(intAccountId === 5
-                                      ? !rowDto.isMarkCompleted || isOfficeAdmin
-                                        ? [
-                                            {
-                                              value: 1,
-                                              label: "Edit",
-                                              icon: (
-                                                <ModeEditOutlined
-                                                  sx={{
-                                                    marginRight: "10px",
-                                                    fontSize: "16px",
-                                                  }}
-                                                />
-                                              ),
-                                              onClick: () => {
-                                                setSingleData({
-                                                  value:
-                                                    rowDto
-                                                      ?.employeeProfileLandingView
-                                                      ?.strMaritalStatus ===
-                                                    "Single"
-                                                      ? 1
-                                                      : 2,
-                                                  label:
-                                                    rowDto
-                                                      ?.employeeProfileLandingView
-                                                      ?.strMaritalStatus,
-                                                });
-                                                setStatus("input");
-                                                setIsCreateForm(true);
-                                              },
-                                            },
-                                            {
-                                              value: 2,
-                                              label: "Delete",
-                                              icon: (
-                                                <DeleteOutline
-                                                  sx={{
-                                                    marginRight: "10px",
-                                                    fontSize: "16px",
-                                                  }}
-                                                />
-                                              ),
-                                              onClick: () => {
-                                                deleteHandler(setFieldValue);
-                                              },
-                                            },
-                                          ]
-                                        : []
-                                      : [
+                        <div className="view">
+                          <div className="row">
+                            <div className="col-lg-1">
+                              <Avatar className="overviewAvatar">
+                                <SupervisorAccount
+                                  sx={{ color: gray900, fontSize: "18px" }}
+                                />
+                              </Avatar>
+                            </div>
+                            <div className="col-lg-10">
+                              <h4>{rowDto.employeeProfileLandingView.strMaritalStatus}</h4>
+                              <small>Marital Status</small>
+                            </div>
+                            <div className="col-lg-1">
+                              <ActionMenu
+                                color={gray900}
+                                fontSize={"18px"}
+                                options={[
+                                  ...(intAccountId === 5
+                                    ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                      ? [
                                           {
                                             value: 1,
                                             label: "Edit",
                                             icon: (
                                               <ModeEditOutlined
-                                                sx={{
-                                                  marginRight: "10px",
-                                                  fontSize: "16px",
-                                                }}
+                                                sx={{ marginRight: "10px", fontSize: "16px" }}
                                               />
                                             ),
                                             onClick: () => {
                                               setSingleData({
                                                 value:
-                                                  rowDto
-                                                    ?.employeeProfileLandingView
-                                                    ?.strMaritalStatus ===
+                                                  rowDto.employeeProfileLandingView
+                                                    .strMaritalStatus ===
                                                   "Single"
                                                     ? 1
                                                     : 2,
                                                 label:
-                                                  rowDto
-                                                    ?.employeeProfileLandingView
-                                                    ?.strMaritalStatus,
+                                                  rowDto.employeeProfileLandingView
+                                                    .strMaritalStatus,
                                               });
                                               setStatus("input");
                                               setIsCreateForm(true);
@@ -502,23 +302,53 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                             label: "Delete",
                                             icon: (
                                               <DeleteOutline
-                                                sx={{
-                                                  marginRight: "10px",
-                                                  fontSize: "16px",
-                                                }}
+                                                sx={{ marginRight: "10px", fontSize: "16px" }}
                                               />
                                             ),
-                                            onClick: () => {
-                                              deleteHandler(setFieldValue);
-                                            },
+                                            onClick: () => deleteHandler(setFieldValue),
                                           },
-                                        ]),
-                                  ]}
-                                />
-                              </div>
+                                        ]
+                                      : []
+                                    : [
+                                        {
+                                          value: 1,
+                                          label: "Edit",
+                                          icon: (
+                                            <ModeEditOutlined
+                                              sx={{ marginRight: "10px", fontSize: "16px" }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            setSingleData({
+                                              value:
+                                                rowDto.employeeProfileLandingView
+                                                  .strMaritalStatus === "Single"
+                                                  ? 1
+                                                  : 2,
+                                              label:
+                                                rowDto.employeeProfileLandingView
+                                                  .strMaritalStatus,
+                                            });
+                                            setStatus("input");
+                                            setIsCreateForm(true);
+                                          },
+                                        },
+                                        {
+                                          value: 2,
+                                          label: "Delete",
+                                          icon: (
+                                            <DeleteOutline
+                                              sx={{ marginRight: "10px", fontSize: "16px" }}
+                                            />
+                                          ),
+                                          onClick: () => deleteHandler(setFieldValue),
+                                        },
+                                      ]),
+                                ]}
+                              />
                             </div>
                           </div>
-                        </>
+                        </div>
                       )}
                     </>
                   )}

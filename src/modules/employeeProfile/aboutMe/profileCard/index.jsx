@@ -44,7 +44,8 @@ const ProfileCard = ({
   getEmpData,
   isOfficeAdmin = false,
   isSelfService,
-  viewBtnHandler
+  viewBtnHandler,
+  getEmpPendingData
 }) => {
   // this component is used from about me and employee landing page
   // accordion
@@ -175,7 +176,7 @@ const ProfileCard = ({
                   onClick={viewBtnHandler}
                   type="button"
                 >
-                  View
+                  View Approval Data
                 </button>
               )}
             </div>
