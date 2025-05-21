@@ -27,7 +27,7 @@ const PfPolicyCreate = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30590)
+      permissionList.find((item) => item?.menuReferenceId === 30597)
     );
   }, [permissionList]);
 

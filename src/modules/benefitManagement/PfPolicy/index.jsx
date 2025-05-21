@@ -33,7 +33,7 @@ const PFPolicy = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30541) {
+    if (item?.menuReferenceId === 30597) {
       permission = item;
     }
   });
