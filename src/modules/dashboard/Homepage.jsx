@@ -156,7 +156,7 @@ const Homepage = () => {
       to = "/logMonitor/applicationNotificationLogs";
       image = assetLogMonitor;
     }else if (label === "Benefits Management") {
-      to = "/providentFund/pfPolicy";
+      to = "/BenefitsManagement/providentFund/pfPolicy";
       image = benefitManagement;
     }
     return { to, image };

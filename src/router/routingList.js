@@ -4384,11 +4384,11 @@ export const routingList = [
     component: ApplicationNotificationLogs,
   },
   {
-    path: "/providentFund/pfPolicy",
+    path: "/BenefitsManagement/providentFund/pfPolicy",
     component: PFPolicy,
   },
   {
-    path: "/providentFund/pfPolicy/create",
+    path: "/BenefitsManagement/providentFund/pfPolicy/create",
     component: PFPolicyCreate,
   },
   {
