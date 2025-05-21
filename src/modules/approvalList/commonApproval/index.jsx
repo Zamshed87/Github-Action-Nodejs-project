@@ -18,6 +18,7 @@ import {
   columnFinalSettlement,
   columnIncrement,
   columnOvertime,
+  columnsAboutMe,
   columnsAdvancedSalary,
   columnSalaryGenerate,
   columnsAsset,
@@ -359,6 +360,8 @@ const CommonApprovalComponent = () => {
               ? columnsSeparation(setViewData, setViewModal)
               : id == 32
               ? columnsAsset
+              : id == 33
+              ? columnsAboutMe
               : columnsDefault
           }
           bordered
