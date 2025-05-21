@@ -36,7 +36,7 @@ const EmployeeContribution = ({
       case "3":
         return "Salary Range Start  (Amount)";
       default:
-        return "N/A";
+        return "";
     }
   };
   const getRangeToLabel = (value) => {
@@ -48,7 +48,7 @@ const EmployeeContribution = ({
       case "3":
         return "Salary Range End (Amount)";
       default:
-        return "N/A";
+        return "";
     }
   };
   const getEmployeeContributionLabel = (value) => {
@@ -64,7 +64,7 @@ const EmployeeContribution = ({
         label = "Fixed Amount";
         break;
       default:
-        label = "N/A";
+        label = " ";
     }
     return `Employee Contribution (${label})`;
   };
