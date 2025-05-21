@@ -31,7 +31,7 @@ function Address({ empId }) {
       {loading && <Loading />}
       <h5>Address</h5>
       <ParmanentAddress getData={getData} empId={empId} />
-      <PresentAddress getData={getData} rowDto={rowDto} empId={empId} />
+      <PresentAddress getData={getData} empId={empId} />
       <OtherAddress getData={getData} rowDto={rowDto} empId={empId} />
     </>
   );

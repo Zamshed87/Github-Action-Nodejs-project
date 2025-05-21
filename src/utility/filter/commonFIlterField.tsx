@@ -25,7 +25,7 @@ const CommonFilterField = ({
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId, intAccountId } = profileData;
+  const { buId, wgId, wId, employeeId, orgId, intAccountId } = profileData;
 
   const workplaceGroup = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
@@ -132,7 +132,8 @@ const CommonFilterField = ({
         businessUnitId: buId,
         departmentId: department?.value || 0,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceId:
+          typeof workplace?.value == "string" ? wId : workplace?.value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {

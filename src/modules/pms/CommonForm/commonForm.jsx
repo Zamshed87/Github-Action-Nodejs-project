@@ -28,6 +28,8 @@ const CommonForm = ({ formConfig, form, children }) => {
       return <></>;
     } else if (field.type === "divider") {
       return <Divider />;
+    } else if (field.type === "header") {
+      return <h1>{field?.label}</h1>;
     } else {
       return (
         <PInput
