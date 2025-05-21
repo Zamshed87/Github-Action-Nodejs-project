@@ -24,9 +24,15 @@ import { getSerial } from "Utils";
 import { DataState } from "../type";
 import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
-import { addHandler, createEditLatePunishmentConfig } from "./helper";
+import { addHandler, createEditGratuityPolicy } from "./helper";
 import DeleteButton from "./components/DeleteButton";
-
+export interface GratuityPolicyDetailKey {
+  intServiceLengthStartInMonth: number;
+  intServiceLengthEndInMonth: number;
+  disbursementDependOnName: string;
+  numPercentageOrFixedAmount: number;
+  [key: string]: any; // Add additional properties if necessary
+}
 const GPCreateViewEdit = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
@@ -67,7 +73,7 @@ const GPCreateViewEdit = () => {
   };
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () => permissionList.find((item) => item?.menuReferenceId === 30599),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -98,29 +104,51 @@ const GPCreateViewEdit = () => {
   };
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Late Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "Benefits Management";
     () => {
       document.title = "PeopleDesk";
     };
-    // have a need new useEffect to set the title
-    if (params?.type === "extend" || params?.type === "view") {
-      getgratuityPolicy(`/LatePunishmentpolicy/${params?.id}`, (data: any) => {
-        // Populate the form with the fetched data
-        // form.setFieldsValue({
-        //   lateCalculationType: data?.name,
-        // });
 
-        setData(data?.elements || []); // need to modify
+    // have a need new useEffect to set the title
+    if (params?.type !== "create") {
+      getgratuityPolicy(`/GratuityPolicy/${params?.id}`, (data: any) => {
+        // Populate the form with the fetched data
+        if (params?.type === "edit")
+          form.setFieldsValue({
+            strPolicyName: data?.strPolicyName,
+            intPolicyId: data?.intPolicyId,
+            workplace: {
+              label: data?.workplaceName,
+              value: data?.intWorkplaceId,
+            },
+            employmentType: {
+              label: data?.employmentTypeName,
+              value: data?.intEmploymentTypeId,
+            },
+            eligibilityDependOn: {
+              label: data?.eligibilityDependOnName,
+              value: data?.intEligibilityDependOn,
+            },
+          });
+        const gratuityPolicyDetails = data?.gratuityPolicyDetails.map(
+          (item: GratuityPolicyDetailKey) => ({
+            ...item,
+            idx: crypto.randomUUID(),
+          })
+        );
+
+        setData(gratuityPolicyDetails || []); // need to modify
       });
     }
-
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      "intWorkplaceId",
-      "strWorkplace",
-      setWorkplaceDDL
-    );
+    if (params?.type === "extend" || params?.type === "create") {
+      getPeopleDeskAllDDL(
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+        "intWorkplaceId",
+        "strWorkplace",
+        setWorkplaceDDL
+      );
+    }
   }, [wgId]);
 
   const header = [
@@ -141,7 +169,10 @@ const GPCreateViewEdit = () => {
       dataIndex: "",
       render: (value: any, rec: any) => {
         return (
-          rec?.serviceLengthStart + " to " + rec?.serviceLengthEnd + " Month"
+          rec?.intServiceLengthStartInMonth +
+          " to " +
+          rec?.intServiceLengthEndInMonth +
+          " Month"
         );
       },
     },
@@ -151,7 +182,7 @@ const GPCreateViewEdit = () => {
     },
     {
       title: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
-      dataIndex: "numPercentage",
+      dataIndex: "numPercentageOrFixedAmount",
     },
     {
       title: "Action",
@@ -165,11 +196,21 @@ const GPCreateViewEdit = () => {
   ];
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
+  console.log(gratuityPolicy, "gratuityPolicy");
 
   return permission?.isCreate ? (
     <div>
       {(loading || gratuityPolicyLoader) && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={
+          params?.type === "edit"
+            ? {
+                strPolicyName: gratuityPolicy?.strPolicyName,
+              }
+            : {}
+        }
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -179,21 +220,22 @@ const GPCreateViewEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: "Save",
+                      content: params?.type === "edit" ? "Edit" : "Save",
                       // icon:
                       //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
                         form
                           .validateFields([])
                           .then(() => {
-                            createEditLatePunishmentConfig(
+                            createEditGratuityPolicy(
+                              params?.type,
                               profileData,
                               form,
                               data,
                               setLoading,
                               () => {
                                 history.push(
-                                  "/administration/latePunishmentPolicy"
+                                  "/BenefitsManagement/gratuity/gratuityPolicy"
                                 );
                               }
                             );

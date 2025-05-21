@@ -31,13 +31,11 @@ const GratuityPolicy = () => {
       pageSize: 25,
     }
   ) => {
-    getgratuityPolicy(
-      `/latePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
-    );
+    getgratuityPolicy(`/GratuityPolicy`);
   };
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Late Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "Benefits Management";
     () => {
       document.title = "PeopleDesk";
     };
@@ -45,7 +43,7 @@ const GratuityPolicy = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () => permissionList.find((item) => item?.menuReferenceId === 30599),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -56,15 +54,15 @@ const GratuityPolicy = () => {
     },
     {
       title: "Policy Name",
-      dataIndex: "name",
+      dataIndex: "strPolicyName",
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "strWorkplaceName",
     },
     {
       title: "Employment Type",
-      dataIndex: "employmentTypes",
+      dataIndex: "strEmploymentTypeName",
     },
     {
       title: "Action",
@@ -74,14 +72,17 @@ const GratuityPolicy = () => {
           <Tooltip placement="bottom" title="View">
             <button
               style={{
-                color: "green",
+                color: "var(--primary-color)",
                 fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
                 border: "none",
               }}
               onClick={() => {
-                history.push("/bm/gratuityPolicy/view/" + rec?.id);
+                history.push(
+                  "/BenefitsManagement/gratuity/gratuityPolicy/view/" +
+                    rec?.intPolicyId
+                );
               }}
             >
               View
@@ -91,14 +92,17 @@ const GratuityPolicy = () => {
           <Tooltip placement="bottom" title="Edit">
             <button
               style={{
-                color: "green",
+                color: "var(--primary-color)",
                 fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
                 border: "none",
               }}
               onClick={() => {
-                history.push("/bm/gratuityPolicy/edit/" + rec?.id);
+                history.push(
+                  "/BenefitsManagement/gratuity/gratuityPolicy/edit/" +
+                    rec?.intPolicyId
+                );
               }}
             >
               Edit
@@ -108,14 +112,17 @@ const GratuityPolicy = () => {
           <Tooltip placement="bottom" title="Extend">
             <button
               style={{
-                color: "green",
+                color: "var(--primary-color)",
                 fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
                 border: "none",
               }}
               onClick={() => {
-                history.push("/bm/gratuityPolicy/extend/" + rec?.id);
+                history.push(
+                  "/BenefitsManagement/gratuity/gratuityPolicy/extend/" +
+                    rec?.intPolicyId
+                );
               }}
             >
               Extend
@@ -130,19 +137,21 @@ const GratuityPolicy = () => {
 
   return permission?.isView ? (
     <div>
-      {gratuityPolicyLoader && <Loading />}
+      {/* {gratuityPolicyLoader && <Loading />} */}
 
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${gratuityPolicy?.totalCount || 0} Gratuity Policy`}
+            title={`Gratuity Policy`}
             buttonList={[
               {
                 type: "primary",
                 content: "Create Policy",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/bm/gratuityPolicy/create/0");
+                  history.push(
+                    "/BenefitsManagement/gratuity/gratuityPolicy/create/0"
+                  );
                 },
               },
             ]}

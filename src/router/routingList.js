@@ -1832,7 +1832,9 @@ const PFInvestmentType = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
 );
 const PFInvestmentToOrganization = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx"
+  )
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4407,11 +4409,11 @@ export const routingList = [
     component: PFPolicyCreate,
   },
   {
-    path: "/bm/gratuityPolicy",
+    path: "/BenefitsManagement/gratuity/gratuityPolicy",
     component: GratuityPolicy,
   },
   {
-    path: "/bm/gratuityPolicy/:type/:id",
+    path: "/BenefitsManagement/gratuity/gratuityPolicy/:type/:id",
     component: GPCreateViewEdit,
   },
   {
