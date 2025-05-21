@@ -1,86 +1,68 @@
 import { Col, Row } from "antd";
 import { PCardBody, PInput, PSelect } from "Components";
-import useConfigSelectionHook from "./usePfInvestmentConfig";
-import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
+import usePfInvestmentConfig from "./usePfInvestmentConfig";
 
 const PfInvestmentConfig = ({ form }) => {
-  const { workplaceDDL, employmentTypeDDL, eligibilityOpts, loadingEligibility, getEmploymentTypeDDL } =
-    useConfigSelectionHook(form, {
-      fetchWorkplace: true,
-      fetchEmploymentType: true,
-      fetchEligibilityEnum: true,
-    });
+  const {
+    investmentType,
+    investmentOrganization,
+    loadingInvestmentType,
+    loadingInvestmentOrganization,
+  } = usePfInvestmentConfig(form);
   return (
     <PCardBody className="mb-4">
       <Row gutter={[10, 2]}>
         <Col md={5} sm={12} xs={24}>
-          <PInput
-            type="text"
-            name="strPolicyName"
-            placeholder="Policy Name"
-            label="Policy Name"
-            rules={[
-              {
-                required: true,
-                message: "Policy Name Is Required",
-              },
-            ]}
-          />
-        </Col>
-        <Col md={5} sm={12} xs={24}>
-          <PInput
-            type="text"
-            name="strPolicyCode"
-            placeholder="Policy Code"
-            label="Policy Code"
-            rules={[
-              {
-                required: true,
-                message: "Policy Code Is Required",
-              },
-            ]}
-          />
-        </Col>
-        <Col md={5} sm={12} xs={24}>
           <PSelect
-            options={workplaceDDL.data}
-            name="intWorkPlaceId"
-            label="Workplace"
-            placeholder="Select Workplace"
+            name="investmentTypeId"
+            label="Investment Type"
+            placeholder="Select Investment Type"
             onChange={(value) => {
-              form.setFieldsValue({ workplace: value });
-              getEmploymentTypeDDL();
+              form.setFieldsValue({ investmentTypeId: value });
             }}
-            loading={workplaceDDL.loading}
-            rules={[{ required: true, message: "Workplace Is Required" }]}
-          />
-        </Col>
-        <Col md={5} sm={12} xs={24}>
-          <PSelectWithAll
-            form={form}
-            name="intEmploymentTypeIds"
-            label="Employment Type"
-            placeholder="Select Employment Type"
-            options={employmentTypeDDL.data}
-            loading={employmentTypeDDL.loading}
-            advanceAllOption={true}
-            rules={[{ required: true, message: "Employment Type is required" }]}
+            options={investmentType}
+            loading={loadingInvestmentType}
+            rules={[{ required: true, message: "Investment Type Is Required" }]}
           />
         </Col>
         <Col md={5} sm={12} xs={24}>
           <PSelect
-            options={eligibilityOpts}
-            name="intPfEligibilityDependOn"
-            label="PF Eligibility Depend On"
-            placeholder="Select PF Eligibility Depend on"
-            onChange={(_,op) => {
-              form.setFieldsValue({ intPfEligibilityDependOn: op });
+            name="investmentOrganizationId"
+            label="Investment Organization"
+            placeholder="Select Investment Organization"
+            onChange={(value) => {
+              form.setFieldsValue({ investmentOrganizationId: value });
             }}
-            loading={loadingEligibility}
+            options={investmentOrganization}
+            loading={loadingInvestmentOrganization}
+            rules={[{ required: true, message: "Investment Organization is required" }]}
+          />
+        </Col>
+        <Col md={5} sm={12} xs={24}>
+          <PInput
+            type="date"
+            name="investmentDate"
+            placeholder="Investment Date"
+            label="Investment Date"
             rules={[
               {
                 required: true,
-                message: "PF Eligibility Depend on Is Required",
+                message: "Investment Date Is Required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={5} sm={12} xs={24}>
+          <PInput
+            type="number"
+            min={1}
+            name="investmentAmount"
+            placeholder="Investment Amount"
+            label="Investment Amount"
+            rules={[
+              {
+                required: true,
+                message: "Investment Amount Is Required",
               },
             ]}
           />

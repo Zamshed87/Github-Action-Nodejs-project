@@ -10,18 +10,15 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import usePfPolicy from "./hooks/usePfPolicy";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import PolicyView from "./components/view/PolicyView";
-import PolicyExtend from "./components/Extend/PolicyExtend";
 import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
 
-const PFPolicy = () => {
+const PFInvestment = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [form] = Form.useForm();
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const [openExtend, setOpenExtend] = useState({ extend: false, data: {} });
   const { data, setData, fetchPfPolicy, loading, pages, setPages } =
     usePfPolicy(form);
 
@@ -64,7 +61,7 @@ const PFPolicy = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/bm/pfPolicy/create");
+                    history.push("/BenefitsManagement/providentFund/pfInvestment/create");
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -76,7 +73,7 @@ const PFPolicy = () => {
             <PfInvestmentFilters form={form} />
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setData, setOpenView, setOpenExtend)}
+            header={getHeader(pages, setData, setOpenView)}
             bordered
             data={data?.data || []}
             loading={loading}
@@ -100,19 +97,8 @@ const PFPolicy = () => {
         onCancel={() => {
           setOpenView({ open: false, data: {} });
         }}
-        components={<PolicyView data={openView.data} />}
+        components={<></>}
         width={1000}
-      />
-      <PModal
-        title="PF Policy Extend"
-        open={openExtend.extend}
-        onCancel={() => {
-          setOpenExtend({ extend: false, data: {} });
-        }}
-        components={
-          <PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} />
-        }
-        width={800}
       />
     </>
   ) : (
@@ -120,4 +106,4 @@ const PFPolicy = () => {
   );
 };
 
-export default PFPolicy;
+export default PFInvestment;
