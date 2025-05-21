@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
 
-const PfPolicyCreate = () => {
+const PfInvestmentCollection = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
@@ -27,7 +27,7 @@ const PfPolicyCreate = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30597)
+      permissionList.find((item) => item?.menuReferenceId === 30590)
     );
   }, [permissionList]);
 
@@ -118,4 +118,4 @@ const PfPolicyCreate = () => {
   );
 };
 
-export default PfPolicyCreate;
+export default PfInvestmentCollection;

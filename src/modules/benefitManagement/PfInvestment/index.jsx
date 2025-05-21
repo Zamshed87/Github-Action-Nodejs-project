@@ -7,12 +7,12 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import PfPolicyFilters from "./components/filter/PfPolicyFilters";
 import usePfPolicy from "./hooks/usePfPolicy";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import PolicyView from "./components/view/PolicyView";
 import PolicyExtend from "./components/Extend/PolicyExtend";
+import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
 
 const PFPolicy = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const PFPolicy = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30597) {
+    if (item?.menuReferenceId === 30541) {
       permission = item;
     }
   });
@@ -73,7 +73,7 @@ const PFPolicy = () => {
             ]}
           />
           <PCardBody className="mb-3">
-            <PfPolicyFilters form={form} />
+            <PfInvestmentFilters form={form} />
           </PCardBody>
           <DataTable
             header={getHeader(pages, setData, setOpenView, setOpenExtend)}
