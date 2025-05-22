@@ -1,14 +1,18 @@
 import PfPolicyConfig from "./PfInvestmentConfig";
-import PfInvestment from "./PfInvestment";
+import PfInvestmentDetails from "./PfInvestmentDetails";
 
-const PfPolicyConfiguration = ({ form }) => {
+const PfInvestmentConfiguration = ({ form }) => {
 
   return (
-    <>
+    <div className="d-flex">
+      <div style={{ flex: "70%", marginRight: "1rem" }}>
       <PfPolicyConfig form={form} />
-      <PfInvestment form={form} />
-    </>
+      </div>
+      <div style={{ flex: "20%" }}>
+          <PfInvestmentDetails form={form} />
+        </div>
+      </div>
   );
 };
 
-export default PfPolicyConfiguration;
+export default PfInvestmentConfiguration;

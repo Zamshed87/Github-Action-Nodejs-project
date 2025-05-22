@@ -16,7 +16,7 @@ const updatePolicyStatus = async (id) => {
     );
   }
 };
-export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
+export const getHeader = (pages,setData, setOpenView) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -111,7 +111,6 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
           content="Extend"
           type="primary"
           onClick={() => {
-            setOpenExtend?.({ extend: true, data: record });
           }}
         />
       </div>
