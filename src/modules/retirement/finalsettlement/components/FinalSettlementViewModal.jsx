@@ -283,7 +283,7 @@ export default function FinalSettlementViewModal({
               orientation="left"
               style={{ borderColor: "var(--primary-color)", fontWeight: "600" }}
             >
-              Approval History Details
+              Clearance History Details
             </Divider>
             <DataTable
               bordered
