@@ -60,8 +60,8 @@ const PfInvestmentFilters = ({ form }) => {
         <PSelect
           options={[
             {
-              value: "Inactive",
-              label: "Inactive",
+              value: "InActive",
+              label: "InActive",
             },
             {
               value: "Not Started",
@@ -75,6 +75,10 @@ const PfInvestmentFilters = ({ form }) => {
               value: "Matured",
               label: "Matured",
             },
+            {
+              value: "Profit Shared",
+              label: "Profit Shared",
+            },
           ]}
           name="status"
           label="Status"
@@ -82,6 +86,7 @@ const PfInvestmentFilters = ({ form }) => {
           onChange={(value) => {
             form.setFieldsValue({ status: value });
           }}
+          rules={[{ required: true, message: "Status Is Required" }]}
         />
       </Col>
       <Col style={{ marginTop: "23px" }}>

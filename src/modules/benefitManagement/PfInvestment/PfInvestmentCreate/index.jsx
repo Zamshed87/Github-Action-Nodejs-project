@@ -8,9 +8,11 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { toast } from "react-toastify";
 import { createPFInvestment } from "./helper";
 import PfInvestmentConfiguration from "./components/PfPolicyConfiguration";
+import { useHistory } from "react-router-dom";
 
 const PfInvestmentCreate = () => {
   const [form] = Form.useForm();
+  const history = useHistory();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
     companyContributions: [],
@@ -45,7 +47,7 @@ const PfInvestmentCreate = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`PF Policy`}
+            title={`PF Investment Create`}
             buttonList={[
               {
                 type: "primary",
@@ -67,6 +69,7 @@ const PfInvestmentCreate = () => {
                         remark: values.remark ?? "",
                       };
                       createPFInvestment(payload, setLoading, () => {
+                        history.push("/BenefitsManagement/providentFund/pfInvestment");
                         form.resetFields();
                       });
                     })

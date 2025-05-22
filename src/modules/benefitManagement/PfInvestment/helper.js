@@ -1,25 +1,8 @@
-import { Switch, Tooltip } from "antd";
-import axios from "axios";
+import Chips from "common/Chips";
 import { Flex, PButton } from "Components";
 import moment from "moment";
-import { toast } from "react-toastify";
 
-const updatePolicyStatus = async (id) => {
-  try {
-    const response = await axios.post(
-      `/PfPolicy/ActiveInactivePfPolicy?intPfConfigHeaderId=${id}`
-    );
-    toast.success(
-      response?.data?.message || "Status updated successfully"
-    );
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message || "Failed to update status"
-    );
-  }
-};
-
-export const getHeader = (pages,setData, setOpenView) => [
+export const getHeader = (pages, setData, setOpenView) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -67,64 +50,97 @@ export const getHeader = (pages,setData, setOpenView) => [
   },
   {
     title: "Status",
-    dataIndex: "isActive",
-    width: 50,
+    dataIndex: "strStatus",
     align: "center",
+    width: 80,
     render: (_, rec) => {
+      const getChipClass = (status) => {
+        switch (status) {
+          case "Inactive":
+            return "default";
+          case "Not Started":
+            return "warning";
+          case "Running":
+            return "primary";
+          case "Matured":
+            return "success";
+          case "Profit Shared":
+            return "info";
+          default:
+            return "default";
+        }
+      };
+
       return (
-        <Flex justify="center">
-          <Tooltip title={rec?.strStatus === "Active" ? "Active" : "Inactive"}>
-            <Switch
-              size="small"
-              checked={rec?.strStatus === "Active"}
-              onChange={(checked) => {
-                setData((prev) => {
-                  const updatedList = [...prev.data];
-                  const recIndex = updatedList.findIndex(
-                    (item) => item.intPfConfigHeaderId === rec.intPfConfigHeaderId
-                  );
-
-                  if (recIndex !== -1) {
-                    updatedList[recIndex] = {
-                      ...updatedList[recIndex],
-                      strStatus: checked ? "Active" : "Inactive",
-                    };
-                  }
-
-                  return {
-                    ...prev,
-                    data: updatedList,
-                  };
-                });
-                updatePolicyStatus(rec.intPfConfigHeaderId);
-              }}
-            />
-          </Tooltip>
+        <Flex align="center" gap={8} justify="center">
+          <Chips label={rec?.status} classess={getChipClass(rec?.status)} />
         </Flex>
       );
     },
   },
   {
     title: "Action",
-    dataIndex: "",
     align: "center",
-    render: (_, record) => (
-      <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <PButton
-          content="View"
-          type="primary-outline"
-          onClick={() => {
-            setOpenView?.({ open: true, data: record });
+    width: 130,
+    render: (_, record) => {
+      const status = record?.status;
+  
+      const showEdit = status === "Not Started";
+      const showCollection = ["Running", "Matured"].includes(status);
+      const showInactive = status !== "InActive";
+  
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 4,
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-        <PButton
-          content="Extend"
-          type="primary"
-          onClick={() => {
-          }}
-        />
-      </div>
-    ),
-    width: 140,
-  },
+        >
+          <PButton
+            content="View"
+            type="primary-outline"
+            onClick={() => {
+              setOpenView?.({ open: true, data: record });
+            }}
+          />
+  
+          {showEdit && (
+            <>
+              <div style={{ height: "10px", width: "2px", backgroundColor: "black" }} />
+              <PButton
+                content="Edit"
+                type="primary-outline"
+                onClick={() => {}}
+              />
+            </>
+          )}
+  
+          {showCollection && (
+            <>
+              <div style={{ height: "10px", width: "2px", backgroundColor: "black" }} />
+              <PButton
+                content="Collection"
+                type="primary-outline"
+                onClick={() => {}}
+              />
+            </>
+          )}
+  
+          {showInactive && (
+            <>
+              <div style={{ height: "10px", width: "2px", backgroundColor: "black" }} />
+              <PButton
+                content="Inactive"
+                type="primary-outline"
+                onClick={() => {}}
+              />
+            </>
+          )}
+        </div>
+      );
+    },
+  }  
 ];
