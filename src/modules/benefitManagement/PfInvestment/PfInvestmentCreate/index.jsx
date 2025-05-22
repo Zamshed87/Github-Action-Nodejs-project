@@ -6,7 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import { createPFPolicy } from "./helper";
+import { createPFInvestment } from "./helper";
 import PfInvestmentConfiguration from "./components/PfPolicyConfiguration";
 
 const PfInvestmentCreate = () => {
@@ -18,7 +18,7 @@ const PfInvestmentCreate = () => {
   // redux
   const {
     permissionList,
-    profileData: { buId, wgId },
+    profileData: { buId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
@@ -27,13 +27,13 @@ const PfInvestmentCreate = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30590)
+      permissionList.find((item) => item?.menuReferenceId === 30598)
     );
   }, [permissionList]);
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Absent Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "PF Investment Creation";
     return () => {
       document.title = "PeopleDesk";
     };
@@ -51,50 +51,22 @@ const PfInvestmentCreate = () => {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
-                  const commonFields = [
-                    "strPolicyName",
-                    "strPolicyCode",
-                    "intWorkPlaceId",
-                    "intEmploymentTypeIds",
-                    "intPfEligibilityDependOn",
-                    "intEmployeeContributionPaidAfter",
-                    "isPFInvestment",
-                    "intMonthlyInvestmentWith",
-                    "intEmployeeContributionInFixedMonth",
-                  ];
                   form
-                    .validateFields(commonFields)
+                    .validateFields()
                     .then((values) => {
-                      if (saveData.employeeContributions.length < 1) {
-                        toast.error(
-                          "Please add at least one employee contribution."
-                        );
-                        return;
-                      }
                       const payload = {
-                        intBusinessUnitId: buId,
-                        intWorkPlaceGroupId: wgId,
-                        strPolicyName: values?.strPolicyName,
-                        strPolicyCode: values?.strPolicyCode,
-                        intWorkPlaceId: values?.intWorkPlaceId,
-                        intEmploymentTypeIds: values?.intEmploymentTypeIds,
-                        intPfEligibilityDependOn:
-                          values?.intPfEligibilityDependOn?.value,
-                        employeeContributions: saveData?.employeeContributions,
-                        ...saveData,
-                        intEmployeeContributionPaidAfter:
-                          values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth:
-                          values?.intEmployeeContributionInFixedMonth,
-                        isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith:
-                          values?.intMonthlyInvestmentWith,
+                        businessUnitId: buId,
+                        investmentTypeId: values.investmentTypeId,
+                        investmentOrganizationId:
+                          values.investmentOrganizationId,
+                        investmentDate: values.investmentDate,
+                        investmentAmount: values.investmentAmount,
+                        expectedROI: values.expectedROI,
+                        investmentDuration: values.investmentDuration,
+                        maturityDate: values.maturityDate,
+                        remark: values.remark ?? "",
                       };
-                      createPFPolicy(payload, setLoading, () => {
-                        setSaveData({
-                          employeeContributions: [],
-                          companyContributions: [],
-                        });
+                      createPFInvestment(payload, setLoading, () => {
                         form.resetFields();
                       });
                     })

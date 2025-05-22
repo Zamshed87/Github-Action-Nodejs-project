@@ -1,53 +1,79 @@
 import { Row, Col } from "antd";
-import { PButton, PSelect } from "Components";
+import { PButton, PInput, PSelect } from "Components";
 import usePfPolicyFilters from "./usePfInvestmentFilters";
 
-const PfInvestmentFilters = ({form}) => {
-  const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } =
-    usePfPolicyFilters(form);
+const PfInvestmentFilters = ({ form }) => {
+  const { investmentType, loadingInvestmentType } = usePfPolicyFilters(form);
+
   return (
     <Row gutter={[10, 2]}>
-      <Col md={5} sm={12} xs={24}>
-        <PSelect
-          options={workplaceGroupDDL.data}
-          name="workplaceGroup"
-          label="Workplace Group"
-          placeholder="Select Workplace Group"
-          onChange={(_, op) => {
-            form.setFieldsValue({ workplaceGroup: op });
-            getWorkplaceDDL();
+      <Col md={4} sm={12} xs={24}>
+        <PInput
+          type="date"
+          name="FromDateF"
+          format={"YYYY-MM-DD"}
+          onChange={(_, date) => {
+            form.setFieldsValue({ FromDate: date });
           }}
-          loading={workplaceGroupDDL.loading}
-          // rules={[{ required: true, message: "Workplace Group Is Required" }]}
+          placeholder="From Date"
+          label="From Date"
+          rules={[
+            {
+              required: true,
+              message: "From Date Is Required",
+            },
+          ]}
         />
       </Col>
-      <Col md={5} sm={12} xs={24}>
-        <PSelect
-          options={workplaceDDL.data}
-          name="workplace"
-          label="Workplace"
-          placeholder="Select Workplace"
-          onChange={(_, op) => {
-            form.setFieldsValue({ workplace: op });
+      <Col md={4} sm={12} xs={24}>
+        <PInput
+          type="date"
+          name="ToDateF"
+          format={"YYYY-MM-DD"}
+          onChange={(_, date) => {
+            form.setFieldsValue({ ToDate: date });
           }}
-          loading={workplaceDDL.loading}
-          // rules={[{ required: true, message: "Workplace Is Required" }]}
+          placeholder="To Date"
+          label="To Date"
+          rules={[
+            {
+              required: true,
+              message: "To Date Is Required",
+            },
+          ]}
         />
       </Col>
-      {/* <Col md={5} sm={12} xs={24}>
+      <Col md={4} sm={12} xs={24}>
+        <PSelect
+          options={investmentType}
+          name="InvestmentTypeId"
+          label="Investment Type"
+          placeholder="Select Investment Type"
+          onChange={(value) => {
+            form.setFieldsValue({ InvestmentTypeId: value });
+          }}
+          loading={loadingInvestmentType}
+          rules={[{ required: true, message: "Investment Type Is Required" }]}
+        />
+      </Col>
+      <Col md={4} sm={12} xs={24}>
         <PSelect
           options={[
             {
-              value: 0,
-              label: "All",
-            },
-            {
-              value: "Active",
-              label: "Active",
-            },
-            {
               value: "Inactive",
               label: "Inactive",
+            },
+            {
+              value: "Not Started",
+              label: "Not Started",
+            },
+            {
+              value: "Running",
+              label: "Running",
+            },
+            {
+              value: "Matured",
+              label: "Matured",
             },
           ]}
           name="status"
@@ -57,7 +83,7 @@ const PfInvestmentFilters = ({form}) => {
             form.setFieldsValue({ status: value });
           }}
         />
-      </Col> */}
+      </Col>
       <Col style={{ marginTop: "23px" }}>
         <PButton type="primary" action="submit" content="View" />
       </Col>

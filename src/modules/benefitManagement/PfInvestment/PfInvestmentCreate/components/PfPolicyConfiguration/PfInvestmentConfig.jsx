@@ -189,12 +189,6 @@ const PfInvestmentConfig = ({ form }) => {
             name="remark"
             placeholder="Comments"
             label="Comments"
-            rules={[
-              {
-                required: true,
-                message: "Comments Is Required",
-              },
-            ]}
           />
         </Col>
       </Row>
