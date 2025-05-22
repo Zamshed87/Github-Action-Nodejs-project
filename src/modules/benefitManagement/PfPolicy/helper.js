@@ -2,20 +2,30 @@ import { Switch, Tooltip } from "antd";
 import axios from "axios";
 import { Flex, PButton } from "Components";
 import { toast } from "react-toastify";
-const updatePolicyStatus = async (id) => {
-  try {
-    const response = await axios.post(
-      `/PfPolicy/ActiveInactivePfPolicy?intPfConfigHeaderId=${id}`
-    );
-    toast.success(
-      response?.data?.message || "Status updated successfully"
-    );
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message || "Failed to update status"
-    );
+
+const updatePolicyStatusLocally = (list, policyId, newStatus) => {
+  const updatedList = [...list];
+  const index = updatedList.findIndex(
+    (item) => item.intPfConfigHeaderId === policyId
+  );
+
+  if (index !== -1) {
+    updatedList[index] = {
+      ...updatedList[index],
+      strStatus: newStatus,
+    };
   }
+
+  return updatedList;
 };
+
+const togglePfPolicyStatus = async (id) => {
+  const response = await axios.post(
+    `/PfPolicy/ActiveInactivePfPolicy?intPfConfigHeaderId=${id}`
+  );
+  return response?.data;
+};
+
 export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
   {
     title: "SL",
@@ -61,32 +71,43 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
     title: "Status",
     dataIndex: "isActive",
     render: (_, rec) => {
+      const isActive = rec?.strStatus === "Active";
       return (
         <Flex justify="center">
-          <Tooltip title={rec?.strStatus === "Active" ? "Active" : "Inactive"}>
+          <Tooltip title={isActive ? "Active" : "Inactive"}>
             <Switch
               size="small"
-              checked={rec?.strStatus === "Active"}
-              onChange={(checked) => {
-                setData((prev) => {
-                  const updatedList = [...prev.data];
-                  const recIndex = updatedList.findIndex(
-                    (item) => item.intPfConfigHeaderId === rec.intPfConfigHeaderId
-                  );
+              checked={isActive}
+              onChange={async (checked) => {
+                const newStatus = checked ? "Active" : "Inactive";
 
-                  if (recIndex !== -1) {
-                    updatedList[recIndex] = {
-                      ...updatedList[recIndex],
-                      strStatus: checked ? "Active" : "Inactive",
-                    };
-                  }
+                // Optimistically update UI
+                setData((prev) => ({
+                  ...prev,
+                  data: updatePolicyStatusLocally(
+                    prev.data,
+                    rec.intPfConfigHeaderId,
+                    newStatus
+                  ),
+                }));
 
-                  return {
+                // API request and rollback on error
+                try {
+                  const result = await togglePfPolicyStatus(rec.intPfConfigHeaderId);
+                  toast.success(result?.message || "Status updated successfully");
+                } catch (error) {
+                  setData((prev) => ({
                     ...prev,
-                    data: updatedList,
-                  };
-                });
-                updatePolicyStatus(rec.intPfConfigHeaderId);
+                    data: updatePolicyStatusLocally(
+                      prev.data,
+                      rec.intPfConfigHeaderId,
+                      isActive ? "Inactive" : "Active" // rollback
+                    ),
+                  }));
+                  toast.error(
+                    error?.response?.data?.message || "Failed to update status"
+                  );
+                }
               }}
             />
           </Tooltip>
