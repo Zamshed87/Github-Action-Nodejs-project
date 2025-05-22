@@ -154,8 +154,9 @@ export const addHandler = (
       isConsecutiveDay: values.isConsecutiveDay,
       minimumLateTime: values.minimumLateTime || 0,
       maximumLateTime: values.maximumLateTime || 0,
-      lateTimeCalculatedBy: values.calculatedBy?.label || values.calculatedBy,
-      lateTimeCalculatedById: values.calculatedBy?.value || null,
+      lateTimeCalculatedByDescription:
+        values.calculatedBy?.label || values.calculatedBy,
+      lateTimeCalculatedBy: values.calculatedBy?.value || null,
       punishmentType: values.punishmentType?.value || 0,
       punishmentTypeDescription: values.punishmentType?.label || "-",
       leaveDeductType: values.leaveDeductType?.value || 0,
@@ -254,8 +255,9 @@ const mapLatePunishmentPayload = (
         isConsecutiveDay: item.isConsecutiveDay || false,
         minimumLateTime: item.minimumLateTime || 0,
         maximumLateTime: item.maximumLateTime || 0,
-        lateTimeCalculatedBy: item.lateTimeCalculatedById || 0,
-        lateTimeCalculatedByDescription: item.lateTimeCalculatedBy || "",
+        lateTimeCalculatedBy: item.lateTimeCalculatedBy || 0,
+        lateTimeCalculatedByDescription:
+          item.lateTimeCalculatedByDescription || "",
         punishmentType: item.punishmentType || 0,
         punishmentTypeDescription: item.punishmentTypeDescription || "",
         leaveDeductType: item.leaveDeductType || 0,

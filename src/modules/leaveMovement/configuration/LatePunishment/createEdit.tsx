@@ -250,7 +250,7 @@ const CreateEditLatePunishmentConfig = () => {
     },
     {
       title: "Late Time Calculated by",
-      dataIndex: "lateTimeCalculatedBy",
+      dataIndex: "lateTimeCalculatedByDescription",
     },
     {
       title: "Punishment Type",
@@ -276,32 +276,36 @@ const CreateEditLatePunishmentConfig = () => {
       title: "% of Amount (Based on 1 day)",
       dataIndex: "amountOrPercentage",
     },
-    {
-      title: "Action",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Delete">
-            <DeleteOutlined
-              style={{
-                color: "red",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                const filterData = data.filter(
-                  (item: any) => item.idx !== rec.idx
-                );
-                setData(filterData);
-              }}
-            />
-          </Tooltip>
-        </Flex>
-      ),
-      align: "center",
-      width: 40,
-    },
+    ...(params?.type !== "view"
+      ? [
+          {
+            title: "Action",
+            dataIndex: "status",
+            render: (_: any, rec: any) => (
+              <Flex justify="center">
+                <Tooltip placement="bottom" title="Delete">
+                  <DeleteOutlined
+                    style={{
+                      color: "red",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      margin: "0 5px",
+                    }}
+                    onClick={() => {
+                      const filterData = data.filter(
+                        (item: any) => item.idx !== rec.idx
+                      );
+                      setData(filterData);
+                    }}
+                  />
+                </Tooltip>
+              </Flex>
+            ),
+            align: "center",
+            width: 40,
+          },
+        ]
+      : []),
   ];
 
   const headerLeaveDeduction = [
@@ -314,31 +318,35 @@ const CreateEditLatePunishmentConfig = () => {
       dataIndex: "leaveTypeName",
       key: "leaveTypeName",
     },
-    {
-      title: "Action",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <Flex justify="center">
-          <Tooltip placement="bottom" title="Delete">
-            <DeleteOutlined
-              style={{
-                color: "red",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                const filterData = leaveDeductionData.filter(
-                  (item: any) => item.leaveTypeId !== rec.leaveTypeId
-                );
-                setLeaveDeductionData(filterData);
-              }}
-            />
-          </Tooltip>
-        </Flex>
-      ),
-      align: "center",
-    },
+    ...(params?.type !== "view"
+      ? [
+          {
+            title: "Action",
+            dataIndex: "status",
+            render: (_: any, rec: any) => (
+              <Flex justify="center">
+                <Tooltip placement="bottom" title="Delete">
+                  <DeleteOutlined
+                    style={{
+                      color: "red",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      margin: "0 5px",
+                    }}
+                    onClick={() => {
+                      const filterData = leaveDeductionData.filter(
+                        (item: any) => item.leaveTypeId !== rec.leaveTypeId
+                      );
+                      setLeaveDeductionData(filterData);
+                    }}
+                  />
+                </Tooltip>
+              </Flex>
+            ),
+            align: "center",
+          },
+        ]
+      : []),
   ];
 
   const CustomCheckbox = () => {
@@ -476,7 +484,7 @@ const CreateEditLatePunishmentConfig = () => {
           />
         )}
 
-        {isDeductionSeqShow() && (
+        {params?.type !== "view" && isDeductionSeqShow() && (
           <div className="mt-3 mb-5">
             <PCard>
               <PCardBody>
