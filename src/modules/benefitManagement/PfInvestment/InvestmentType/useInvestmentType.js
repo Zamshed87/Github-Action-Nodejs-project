@@ -1,0 +1,86 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+
+const useInvestmentType = (form) => {
+  const { buId,wgId, wId, orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: 25,
+    total: 0,
+  });
+  const [createUpdateLoading, setCreateUpdateLoading] = useState(false);
+  const [data, getData, loading, setData] = useAxiosGet({});
+
+  const fetchInvestmentType = () => {
+
+    const url = `/InvestmentType/GetAll?accountId=${orgId}`;
+
+    getData(url, (res) => {
+      setData(res);
+    });
+  };
+
+  const createInvestmentType = async (values, resetData) => {
+    setCreateUpdateLoading?.(true);
+    try {
+      const payload = {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        investmentName: values?.investmentName,
+        remark: values?.remark,
+      };
+      const res = await axios.post(`/InvestmentType/Create`, payload);
+      toast.success(res?.data?.message?.[0] || "Created Successfully");
+      setCreateUpdateLoading?.(false);
+      resetData?.();
+      fetchInvestmentType();
+    } catch (error) {
+      toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
+      setCreateUpdateLoading?.(false);
+    }
+  };
+  const updateInvestmentType = async (values, resetData) => {
+    setCreateUpdateLoading?.(true);
+    try {
+      const payload = {
+        typeId: values?.typeId,
+        businessUnitId: values?.businessUnitId,
+        workplaceGroupId: values?.workplaceGroupId,
+        investmentName: values?.investmentName,
+        remark: values?.remark,
+      };
+      const res = await axios.put(`/InvestmentType/Update`, payload);
+      toast.success(res?.data?.message?.[0] || "Updated Successfully");
+      setCreateUpdateLoading?.(false);
+      resetData?.();
+      fetchInvestmentType();
+    } catch (error) {
+      toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
+      setCreateUpdateLoading?.(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvestmentType();
+  }, [wgId, wId]);
+
+  return {
+    data,
+    setData,
+    fetchInvestmentType,
+    createInvestmentType,
+    updateInvestmentType,
+    createUpdateLoading,
+    loading,
+    pages,
+    setPages,
+  };
+};
+
+export default useInvestmentType;

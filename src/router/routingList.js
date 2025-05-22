@@ -1823,6 +1823,12 @@ const PFPolicy = lazy(() =>
 const PFPolicyCreate = lazy(() =>
   import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
 );
+const PFInvestment = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/index.jsx")
+);
+const PFInvestmentCreate = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx")
+);
 const GratuityPolicy = lazy(() =>
   import("../modules/benefitManagement/gratuityPolicy/index.tsx")
 );
@@ -1830,6 +1836,12 @@ const GPCreateViewEdit = lazy(() =>
   import(
     "../modules/benefitManagement/gratuityPolicy/GPCreateViewEdit/index.tsx"
   )
+);
+const PFInvestmentType = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
+);
+const PFInvestmentToOrganization = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4378,12 +4390,20 @@ export const routingList = [
     component: ApplicationNotificationLogs,
   },
   {
-    path: "/bm/pfPolicy",
+    path: "/BenefitsManagement/providentFund/pfPolicy",
     component: PFPolicy,
   },
   {
-    path: "/bm/pfPolicy/create",
+    path: "/BenefitsManagement/providentFund/pfPolicy/create",
     component: PFPolicyCreate,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment",
+    component: PFInvestment,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment/create",
+    component: PFInvestmentCreate,
   },
   {
     path: "/bm/gratuityPolicy",
@@ -4392,6 +4412,14 @@ export const routingList = [
   {
     path: "/bm/gratuityPolicy/:type/:id",
     component: GPCreateViewEdit,
+  },
+  {
+    path: "/bm/pfInvestmentType",
+    component: PFInvestmentType,
+  },
+  {
+    path: "/bm/pfInvestmentToOrganization",
+    component: PFInvestmentToOrganization,
   },
 ];
 

@@ -6,7 +6,8 @@ const PfInvestment = ({ form }) => {
   const { investmentOpts, loadingInvestment } = useConfigSelectionHook(form, {
     fetchInvestmentEnum: true,
   });
-
+  const isPFInvestment = Form.useWatch(`isPFInvestment`, form);
+  console.log("isPFInvestment", isPFInvestment);
   return (
     <>
       <h3 className="mb-3">PF Investment</h3>
@@ -21,26 +22,28 @@ const PfInvestment = ({ form }) => {
               <Checkbox>Is PF Investment?</Checkbox>
             </Form.Item>
           </Col>
-          <Col md={5} sm={12} xs={24}>
-            <PSelect
-              options={investmentOpts}
-              name="intMonthlyInvestmentWith"
-              label="Monthly Investment With"
-              placeholder="Select Monthly Investment With"
-              onChange={(value) => {
-                form.setFieldsValue({
-                  intMonthlyInvestmentWith: value,
-                });
-              }}
-              loading={loadingInvestment}
-              rules={[
-                {
-                  required: true,
-                  message: "Monthly Investment With Is Required",
-                },
-              ]}
-            />
-          </Col>
+          {isPFInvestment && (
+            <Col md={5} sm={12} xs={24}>
+              <PSelect
+                options={investmentOpts}
+                name="intMonthlyInvestmentWith"
+                label="Monthly Investment With"
+                placeholder="Select Monthly Investment With"
+                onChange={(value) => {
+                  form.setFieldsValue({
+                    intMonthlyInvestmentWith: value,
+                  });
+                }}
+                loading={loadingInvestment}
+                rules={[
+                  {
+                    required: true,
+                    message: "Monthly Investment With Is Required",
+                  },
+                ]}
+              />
+            </Col>
+          )}
         </Row>
       </PCardBody>
     </>

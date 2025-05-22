@@ -1,16 +1,11 @@
 import { PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
-import { Col, Form, Row } from "antd";
+import { Col, Row } from "antd";
 
 const EmployeeContributionPfPayment = ({ form }) => {
   const { paidAfterOpts, loadingPaidAfter } = useConfigSelectionHook(form, {
     fetchPaidAfterEnum: true,
   });
-
-  const intEmployeeContributionPaidAfter = Form.useWatch(
-    `intEmployeeContributionPaidAfter`,
-    form
-  );
 
   return (
     <>
@@ -35,29 +30,26 @@ const EmployeeContributionPfPayment = ({ form }) => {
               ]}
             />
           </Col>
-          {intEmployeeContributionPaidAfter?.value == "2" && (
-            <Col md={5} sm={12} xs={24}>
-              <PInput
-                type="number"
-                min={1}
-                name="intEmployeeContributionInFixedMonth"
-                label="Month (From Employee PF Contribution)"
-                placeholder="Select Month (From Employee PF Contribution)"
-                onChange={(value) => {
-                  form.setFieldsValue({
-                    intEmployeeContributionInFixedMonth: value,
-                  });
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message:
-                      "Month (From Employee PF Contribution) Is Required",
-                  },
-                ]}
-              />
-            </Col>
-          )}
+          <Col md={5} sm={12} xs={24}>
+            <PInput
+              type="number"
+              min={1}
+              name="intEmployeeContributionInFixedMonth"
+              label="Month (From Employee PF Contribution)"
+              placeholder="Select Month (From Employee PF Contribution)"
+              onChange={(value) => {
+                form.setFieldsValue({
+                  intEmployeeContributionInFixedMonth: value,
+                });
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: "Month (From Employee PF Contribution) Is Required",
+                },
+              ]}
+            />
+          </Col>
         </Row>
       </PCardBody>
     </>

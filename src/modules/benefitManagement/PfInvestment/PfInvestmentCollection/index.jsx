@@ -8,10 +8,8 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
-import { useHistory } from "react-router-dom";
 
-const PfPolicyCreate = () => {
-  const history = useHistory();
+const PfInvestmentCollection = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
@@ -29,17 +27,17 @@ const PfPolicyCreate = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30597)
+      permissionList.find((item) => item?.menuReferenceId === 30590)
     );
   }, [permissionList]);
+
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy Create";
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Absent Punishment";
     return () => {
       document.title = "PeopleDesk";
-    };  
+    };
   }, []);
-
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -67,12 +65,12 @@ const PfPolicyCreate = () => {
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                
-                      if (saveData.employeeContributions.length < 1 && saveData.companyContributions.length < 1) {
-                        toast.error("Please add at least one employee or company contribution.");
+                      if (saveData.employeeContributions.length < 1) {
+                        toast.error(
+                          "Please add at least one employee contribution."
+                        );
                         return;
                       }
-
                       const payload = {
                         intBusinessUnitId: buId,
                         intWorkPlaceGroupId: wgId,
@@ -98,9 +96,6 @@ const PfPolicyCreate = () => {
                           companyContributions: [],
                         });
                         form.resetFields();
-                        history.push(
-                          `/BenefitsManagement/providentFund/pfPolicy`
-                        );
                       });
                     })
                     .catch(() => {
@@ -123,4 +118,4 @@ const PfPolicyCreate = () => {
   );
 };
 
-export default PfPolicyCreate;
+export default PfInvestmentCollection;

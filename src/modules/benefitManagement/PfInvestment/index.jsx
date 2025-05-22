@@ -7,50 +7,56 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import PfPolicyFilters from "./components/filter/PfPolicyFilters";
-import usePfPolicy from "./hooks/usePfPolicy";
+import usePfInvestments from "./hooks/usePfInvestments";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import PolicyView from "./components/view/PolicyView";
-import PolicyExtend from "./components/Extend/PolicyExtend";
+import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
+import moment from "moment";
 
-const PFPolicy = () => {
+const PFInvestment = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [form] = Form.useForm();
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const [openExtend, setOpenExtend] = useState({ extend: false, data: {} });
-  const { data, setData, fetchPfPolicy, loading, pages, setPages } =
-    usePfPolicy(form);
+  const { data, setData, fetchPfInvestment, loading, pages } =
+  usePfInvestments(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy";
+    document.title = "Benefits Management - PF Investment";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30597) {
+    if (item?.menuReferenceId === 30598) {
       permission = item;
     }
   });
-
+  
+  const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
+  const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
+  
   return permission?.isView ? (
     <>
       <PForm
         form={form}
-        initialValues={{}}
+        initialValues={{
+          FromDateF: moment(startOfMonth, "YYYY-MM-DD"),
+          FromDate: startOfMonth,
+          ToDateF: moment(endOfMonth, "YYYY-MM-DD"),
+          ToDate: endOfMonth,
+        }}
         onFinish={() => {
-          fetchPfPolicy();
+          fetchPfInvestment();
         }}
       >
         {loading && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Total PF Policy`}
+            title={`Total PF Investment`}
             // onSearch={(e) => {
             //   form.setFieldsValue({
             //     search: e?.target?.value,
@@ -64,7 +70,7 @@ const PFPolicy = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/BenefitsManagement/providentFund/pfPolicy/create");
+                    history.push("/BenefitsManagement/providentFund/pfInvestment/create");
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -73,10 +79,10 @@ const PFPolicy = () => {
             ]}
           />
           <PCardBody className="mb-3">
-            <PfPolicyFilters form={form} />
+            <PfInvestmentFilters form={form} />
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setData, setOpenView, setOpenExtend)}
+            header={getHeader(pages, setData, setOpenView)}
             bordered
             data={data?.data || []}
             loading={loading}
@@ -100,19 +106,8 @@ const PFPolicy = () => {
         onCancel={() => {
           setOpenView({ open: false, data: {} });
         }}
-        components={<PolicyView data={openView.data} />}
+        components={<></>}
         width={1000}
-      />
-      <PModal
-        title="PF Policy Extend"
-        open={openExtend.extend}
-        onCancel={() => {
-          setOpenExtend({ extend: false, data: {} });
-        }}
-        components={
-          <PolicyExtend data={openExtend.data} setOpenExtend={setOpenExtend} fetchPfPolicy={fetchPfPolicy} />
-        }
-        width={800}
       />
     </>
   ) : (
@@ -120,4 +115,4 @@ const PFPolicy = () => {
   );
 };
 
-export default PFPolicy;
+export default PFInvestment;
