@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const usePfPolicy = (form) => {
-  const { wgId, wId } = useSelector(
+const usePfInvestments = (form) => {
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -14,32 +14,29 @@ const usePfPolicy = (form) => {
   });
   const [data, getData, loading, setData] = useAxiosGet({});
 
-  const fetchPfPolicy = () => {
+  const fetchPfInvestment = () => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      IntWorkPlaceGroupId: formValues.workplaceGroup?.value ?? wgId,
-      IntWorkPlaceId: formValues.workplace?.value ?? wId,
-      // StrStatus: formValues.status,
+      BusinessUnitId: buId,
+      FromDate: formValues?.FromDate,
+      ToDate: formValues?.ToDate,
+      InvestmentTypeId: formValues?.InvestmentTypeId,
+      Status: formValues.status,
     };
 
     const filteredParams = Object.entries(formattedParams)
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
-
-    const url = `/PfPolicy/GetPolicies?${filteredParams}`;
+    const url = `/PFInvestment/GetAll?${filteredParams}`;
 
     getData(url, (res) => {
       setData(res);
     });
   };
 
-  useEffect(() => {
-    fetchPfPolicy();
-  }, [wgId, wId]);
-
-  return { data, setData, fetchPfPolicy, loading, pages, setPages };
+  return { data, setData, fetchPfInvestment, loading, pages, setPages };
 };
 
-export default usePfPolicy;
+export default usePfInvestments;

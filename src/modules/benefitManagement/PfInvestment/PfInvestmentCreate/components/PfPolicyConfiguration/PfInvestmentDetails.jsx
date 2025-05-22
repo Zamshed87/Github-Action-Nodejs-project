@@ -1,43 +1,57 @@
-import usePfInvestmentConfig from "./usePfInvestmentConfig";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { shallowEqual, useSelector } from "react-redux";
+import { getPFData } from "../../helper";
 
-const PfInvestmentDetails = ({ form }) => {
-  const { investmentOpts, loadingInvestment } = usePfInvestmentConfig(form, {
-    fetchInvestmentEnum: true,
-  });
+const PfInvestmentDetails = () => {
+  const {
+    profileData: { intAccountId },
+  } = useSelector((store) => store?.auth, shallowEqual);
+  const location = useLocation();
+  const isEdit = location.pathname.includes("/edit");
+
+  const [loading, setLoading] = useState(false);
+  const [pfData, setPfData] = useState(null);
+
+  useEffect(() => {
+    if (intAccountId) {
+      getPFData(intAccountId, setLoading, setPfData);
+    }
+  }, [intAccountId]);
+
+  const labelsMap = {
+    "Total Employee Contribution Amount": pfData?.totalEmpContribution,
+    "Total Company Contribution Amount": pfData?.totalCompContribution,
+    "Total PF Profit Amount": pfData?.totalPFProfitAmount,
+    "Total PF Amount": pfData?.totalPFAmount,
+    "Total PF Invested Amount": pfData?.totalPFInvestAmount,
+    "Total PF Available Amount": pfData?.totalPFAvailableAmount,
+  };
+
+  const rows = Object.keys(labelsMap);
+
+  const filteredRows = isEdit
+    ? rows.filter((row) => row === "Total PF Profit Amount")
+    : rows;
 
   return (
-    <table
-      style={{ width: "100%", borderCollapse: "collapse" }}
-    >
+    <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <tbody>
-        <tr>
-          <td style={styles.td}>Total Employee Contribution Amount</td>
-          <td style={styles.td}>Info.</td>
-        </tr>
-        <tr>
-          <td style={styles.td}>Total Company Contribution Amount</td>
-          <td style={styles.td}>Info.</td>
-        </tr>
-        <tr>
-          <td style={styles.td}>Total PF Profit Amount</td>
-          <td style={styles.td}>Info.</td>
-        </tr>
-        <tr>
-          <td style={styles.td}>Total PF Amount</td>
-          <td style={styles.td}>Info.</td>
-        </tr>
-        <tr>
-          <td style={styles.td}>Total PF Invested Amount</td>
-          <td style={styles.td}>Info.</td>
-        </tr>
-        <tr>
-          <td style={styles.td}>Total PF Available Amount</td>
-          <td style={styles.td}>Info.</td>
-        </tr>
+        {filteredRows.map((label) => (
+          <tr key={label}>
+            <td style={styles.td}>{label}</td>
+            <td style={styles.td}>
+              {loading
+                ? "Loading..."
+                : labelsMap[label]?.toLocaleString() ?? "-"}
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
 };
+
 const styles = {
   th: {
     border: "1px solid #ccc",
@@ -50,4 +64,5 @@ const styles = {
     padding: "8px",
   },
 };
+
 export default PfInvestmentDetails;
