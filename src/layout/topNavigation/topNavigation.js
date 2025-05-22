@@ -17,13 +17,14 @@ import QuickAccess from "./QuickAccess";
 import ResourcesDropdown from "./ResourcesDropdown";
 import url from "./notification.mp3";
 import { useAudio } from "./useAudio";
+import { colorThemes } from "common/colorThemes";
 
 export default function TopNavigation({
   setIsOpenSidebar,
   isOpenSidebar,
   isHideDropdown,
 }) {
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -53,8 +54,14 @@ export default function TopNavigation({
   // useEffect(() => {
   //   getTotalNotificationsCount(employeeId, orgId, setMyCount);
   // }, []);
-
+  const setColor = () => {
+    const theme = colorThemes[intAccountId] || colorThemes.default;
+    Object.entries(theme).forEach(([key, value]) =>
+      document.documentElement.style.setProperty(key, value)
+    );
+  };
   useEffect(() => {
+    setColor();
     notificationCount();
   }, []);
 

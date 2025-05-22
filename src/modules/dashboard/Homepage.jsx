@@ -24,7 +24,6 @@ import training from "../../assets/images/training.svg";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import "./dashBoard.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
-import { colorThemes } from "common/colorThemes";
 
 const initData = {
   search: "",
@@ -200,16 +199,9 @@ const Homepage = () => {
 
   const dispatch = useDispatch();
 
-  const setColor = () => {
-    const theme = colorThemes[intAccountId] || colorThemes.default;
-    Object.entries(theme).forEach(([key, value]) =>
-      document.documentElement.style.setProperty(key, value)
-    );
-  };
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
 
-    setColor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);
