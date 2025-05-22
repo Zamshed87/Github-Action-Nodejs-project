@@ -107,7 +107,7 @@ export default function EmployeeDetails({ employee, loading, singleFinalSettleme
         </Descriptions.Item>
 
         <Descriptions.Item label="Employment Type">
-          {employee.StrEmployeeTypeName || "N/A"}
+          {employee.strEmployeeTypeName || "N/A"}
         </Descriptions.Item>
 
         <Descriptions.Item label="Separation Application">
