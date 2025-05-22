@@ -4406,6 +4406,10 @@ export const routingList = [
     component: PFInvestmentCreate,
   },
   {
+    path: "/BenefitsManagement/providentFund/pfInvestment/edit",
+    component: PFInvestmentCreate,
+  },
+  {
     path: "/bm/gratuityPolicy",
     component: GratuityPolicy,
   },

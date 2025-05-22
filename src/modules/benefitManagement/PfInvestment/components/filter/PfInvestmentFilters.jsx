@@ -7,7 +7,7 @@ const PfInvestmentFilters = ({ form }) => {
 
   return (
     <Row gutter={[10, 2]}>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PInput
           type="date"
           name="FromDateF"
@@ -25,7 +25,7 @@ const PfInvestmentFilters = ({ form }) => {
           ]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PInput
           type="date"
           name="ToDateF"
@@ -43,7 +43,7 @@ const PfInvestmentFilters = ({ form }) => {
           ]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PSelect
           options={investmentType}
           name="InvestmentTypeId"
@@ -56,7 +56,7 @@ const PfInvestmentFilters = ({ form }) => {
           rules={[{ required: true, message: "Investment Type Is Required" }]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PSelect
           options={[
             {

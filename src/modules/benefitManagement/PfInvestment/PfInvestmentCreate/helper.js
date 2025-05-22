@@ -22,7 +22,7 @@ export const getPFData = async (accountId, setLoading, setData) => {
     const res = await axios.get(
       `/PFInvestment/GetPFData?AccountId=${accountId}`,
     );
-    toast.success(res?.data?.message || "Data retrieved successfully");
+    // toast.success(res?.data?.message || "Data retrieved successfully");
     setData?.(res?.data?.data || []);
     setLoading?.(false);
   } catch (error) {

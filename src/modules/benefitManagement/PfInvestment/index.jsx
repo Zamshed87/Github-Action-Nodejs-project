@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
 import moment from "moment";
+import PfInvestmentDetails from "./PfInvestmentCreate/components/PfPolicyConfiguration/PfInvestmentDetails";
 
 const PFInvestment = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const PFInvestment = () => {
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
   const { data, setData, fetchPfInvestment, loading, pages } =
-  usePfInvestments(form);
+    usePfInvestments(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -35,10 +36,10 @@ const PFInvestment = () => {
       permission = item;
     }
   });
-  
+
   const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
   const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
-  
+
   return permission?.isView ? (
     <>
       <PForm
@@ -70,7 +71,9 @@ const PFInvestment = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/BenefitsManagement/providentFund/pfInvestment/create");
+                    history.push(
+                      "/BenefitsManagement/providentFund/pfInvestment/create"
+                    );
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -79,7 +82,14 @@ const PFInvestment = () => {
             ]}
           />
           <PCardBody className="mb-3">
-            <PfInvestmentFilters form={form} />
+            <div className="d-flex justify-content-between">
+              <div style={{ width: "60%" }}>
+              <PfInvestmentFilters form={form} />
+              </div>
+              <div style={{ width: "40%" }}>
+              <PfInvestmentDetails landing />
+              </div>
+            </div>
           </PCardBody>
           <DataTable
             header={getHeader(pages, setData, setOpenView)}

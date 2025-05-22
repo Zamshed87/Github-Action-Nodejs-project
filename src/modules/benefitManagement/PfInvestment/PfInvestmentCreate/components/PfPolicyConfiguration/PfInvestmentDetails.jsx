@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
 import { getPFData } from "../../helper";
 
-const PfInvestmentDetails = () => {
+const PfInvestmentDetails = ({ landing = false }) => {
   const {
     profileData: { intAccountId },
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -19,31 +19,64 @@ const PfInvestmentDetails = () => {
     }
   }, [intAccountId]);
 
-  const labelsMap = {
+  const allFields = {
     "Total Employee Contribution Amount": pfData?.totalEmpContribution,
     "Total Company Contribution Amount": pfData?.totalCompContribution,
     "Total PF Profit Amount": pfData?.totalPFProfitAmount,
     "Total PF Amount": pfData?.totalPFAmount,
     "Total PF Invested Amount": pfData?.totalPFInvestAmount,
     "Total PF Available Amount": pfData?.totalPFAvailableAmount,
+    "Total PF Loan Amount": pfData?.totalPFLoanAmount,
   };
 
-  const rows = Object.keys(labelsMap);
+  // Decide fields based on context
+  let fieldKeys;
+  if (landing) {
+    fieldKeys = [
+      "Total PF Amount",
+      "Total PF Invested Amount",
+      "Total PF Loan Amount",
+      "Total PF Available Amount",
+    ];
+  } else {
+    fieldKeys = isEdit
+      ? ["Total PF Profit Amount"]
+      : Object.keys(allFields);
+  }
 
-  const filteredRows = isEdit
-    ? rows.filter((row) => row === "Total PF Profit Amount")
-    : rows;
+  if (landing) {
+    return (
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            {fieldKeys.map((label) => (
+              <th key={label} style={styles.landingTh}>
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {fieldKeys.map((label) => (
+              <td key={label} style={styles.landingTd}>
+                {loading ? "Loading..." : allFields[label]?.toLocaleString() ?? "Info."}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    );
+  }
 
   return (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <tbody>
-        {filteredRows.map((label) => (
+        {fieldKeys.map((label) => (
           <tr key={label}>
-            <td style={styles.td}>{label}</td>
-            <td style={styles.td}>
-              {loading
-                ? "Loading..."
-                : labelsMap[label]?.toLocaleString() ?? "-"}
+            <td style={styles.verticalLabel}>{label}</td>
+            <td style={styles.verticalInfo}>
+              <strong>{loading ? "Loading..." : allFields[label]?.toLocaleString() ?? "Info."}</strong>
             </td>
           </tr>
         ))}
@@ -53,15 +86,31 @@ const PfInvestmentDetails = () => {
 };
 
 const styles = {
-  th: {
+  landingTh: {
     border: "1px solid #ccc",
-    padding: "8px",
-    backgroundColor: "#f5f5f5",
-    textAlign: "left",
+    fontSize: ".8rem",
+    padding: "6px",
+    backgroundColor: "#f0f0f0",
+    textAlign: "center",
   },
-  td: {
+  landingTd: {
+    fontSize: ".8rem",
     border: "1px solid #ccc",
-    padding: "8px",
+    padding: "6px",
+    textAlign: "center",
+  },
+  verticalLabel: {
+    fontSize: ".8rem",
+    border: "1px solid #ccc",
+    padding: "6px",
+    width: "60%",
+  },
+  verticalInfo: {
+    fontSize: ".8rem",
+    border: "1px solid #ccc",
+    padding: "6px",
+    textAlign: "right",
+    width: "40%",
   },
 };
 
