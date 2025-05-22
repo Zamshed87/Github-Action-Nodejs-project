@@ -174,7 +174,7 @@ function AboutMe() {
               setConfirmationMOdal,
               confirmationMOdal,
               // setHasBankData,
-              // hasBankData,
+              // hasBankData, 
               setIsBank,
               isBank,
               setBankData,
