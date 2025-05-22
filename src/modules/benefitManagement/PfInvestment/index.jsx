@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
 import moment from "moment";
-import PfInvestmentDetails from "./PfInvestmentCreate/components/PfPolicyConfiguration/PfInvestmentDetails";
+import PfInvestmentDetails from "./PfInvestmentCreate/components/PfInvestmentConfig/PfInvestmentDetails";
 
 const PFInvestment = () => {
   const dispatch = useDispatch();
@@ -92,7 +92,7 @@ const PFInvestment = () => {
             </div>
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setData, setOpenView)}
+            header={getHeader(pages, setOpenView, history)}
             bordered
             data={data?.data || []}
             loading={loading}

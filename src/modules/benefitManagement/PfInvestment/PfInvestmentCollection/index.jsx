@@ -6,15 +6,12 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
+import PfInvestmentCollectionForm from "./components/PfInvestmentCollectionForm";
 
 const PfInvestmentCollection = () => {
   const [form] = Form.useForm();
-  const [saveData, setSaveData] = useState({
-    employeeContributions: [],
-    companyContributions: [],
-  });
+  const [saveData, setSaveData] = useState([]);
   // redux
   const {
     permissionList,
@@ -27,13 +24,13 @@ const PfInvestmentCollection = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30590)
+      permissionList.find((item) => item?.menuReferenceId === 30598)
     );
   }, [permissionList]);
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Absent Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "PF Investment Collection";
     return () => {
       document.title = "PeopleDesk";
     };
@@ -45,7 +42,7 @@ const PfInvestmentCollection = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`PF Policy`}
+            title={`PF Investment Collection`}
             buttonList={[
               {
                 type: "primary",
@@ -91,10 +88,7 @@ const PfInvestmentCollection = () => {
                           values?.intMonthlyInvestmentWith,
                       };
                       createPFPolicy(payload, setLoading, () => {
-                        setSaveData({
-                          employeeContributions: [],
-                          companyContributions: [],
-                        });
+                        setSaveData([]);
                         form.resetFields();
                       });
                     })
@@ -105,7 +99,7 @@ const PfInvestmentCollection = () => {
               },
             ]}
           />
-          <PfPolicyConfiguration
+          <PfInvestmentCollectionForm
             form={form}
             saveData={saveData}
             setSaveData={setSaveData}

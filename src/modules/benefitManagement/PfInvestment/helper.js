@@ -7,7 +7,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import { FaEye } from "react-icons/fa";
 import { RxCrossCircled } from "react-icons/rx";
 
-export const getHeader = (pages, setData, setOpenView) => [
+export const getHeader = (pages, setOpenView, history) => [
   {
     title: "SL",
     render: (_, __, index) =>

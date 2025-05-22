@@ -7,7 +7,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
 import { createPFInvestment } from "./helper";
-import PfInvestmentConfiguration from "./components/PfPolicyConfiguration";
+import PfInvestmentConfiguration from "./components/PfInvestmentConfig";
 import { useHistory } from "react-router-dom";
 
 const PfInvestmentCreate = () => {
