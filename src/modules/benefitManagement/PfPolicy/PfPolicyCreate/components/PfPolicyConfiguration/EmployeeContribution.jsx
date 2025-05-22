@@ -26,7 +26,6 @@ const EmployeeContribution = ({
     `${prefix}intContributionDependOn`,
     form
   );
-  console.log(intContributionDependOn)
 
   const getRangeFromLabel = (value) => {
     switch (value?.value) {
@@ -37,7 +36,7 @@ const EmployeeContribution = ({
       case "3":
         return "Salary Range Start  (Amount)";
       default:
-        return "N/A";
+        return "";
     }
   };
   const getRangeToLabel = (value) => {
@@ -49,7 +48,7 @@ const EmployeeContribution = ({
       case "3":
         return "Salary Range End (Amount)";
       default:
-        return "N/A";
+        return "";
     }
   };
   const getEmployeeContributionLabel = (value) => {
@@ -65,7 +64,7 @@ const EmployeeContribution = ({
         label = "Fixed Amount";
         break;
       default:
-        label = "N/A";
+        label = " ";
     }
     return `Employee Contribution (${label})`;
   };
@@ -82,22 +81,22 @@ const EmployeeContribution = ({
       </h3>
       <PCardBody className="mb-4">
         <Row gutter={[10, 2]}>
-          <Col md={4} sm={12} xs={24}>
+          {/* <Col md={4} sm={12} xs={24}>
             <Form.Item
-              name={`${prefix}consecutiveDay`}
+              name={`${prefix}contribution`}
               defaultValue={true}
               valuePropName="checked"
               style={{ marginTop: "16px", marginBottom: 0 }}
             >
               <Checkbox
                 onChange={(e) => {
-                  setPrefixedFieldValue("consecutiveDay", e.target.checked);
+                  setPrefixedFieldValue("contribution", e.target.checked);
                 }}
               >
                 {company ? "Company Contribution" : "Is Employee Contribution?"}
               </Checkbox>
             </Form.Item>
-          </Col>
+          </Col> */}
           {intPfEligibilityDependOn?.value &&
             intPfEligibilityDependOn?.value != "0" && (
               <>
@@ -137,6 +136,17 @@ const EmployeeContribution = ({
                         message: `${getRangeToLabel(
                           intPfEligibilityDependOn
                         )} Is Required`,
+                      },
+                      {
+                        validator: (_, value) => {
+                          const rangeFrom = form.getFieldValue(`${prefix}intRangeFrom`);
+                          if (value && rangeFrom && Number(value) < Number(rangeFrom)) {
+                            return Promise.reject(
+                              new Error(`${getRangeToLabel(intPfEligibilityDependOn)} cannot be less than ${getRangeFromLabel(intPfEligibilityDependOn)}`)
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                   />
@@ -201,7 +211,6 @@ const EmployeeContribution = ({
             rowKey={(row, idx) => idx}
             header={detailsHeader({
               removeData,
-              intContributionDependOn,
               intPfEligibilityDependOn,
             })}
           />

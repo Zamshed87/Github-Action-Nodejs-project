@@ -71,9 +71,12 @@ export const detailsHeader = (setDetailList, absentCalculationType, action=true)
       render: (val) => val ?? "-",
     },
     {
-      title: "% of Amount",
+      title: "Amount",
       dataIndex: "amountDeductionAmountOrPercentage",
-      render: (val) => `${val}%`,
+      render: (_, rec) => {
+        console.log(rec?.amountDeductionType);
+        return rec?.amountDeductionType == 3 ? rec.amountDeductionAmountOrPercentage : `${rec?.amountDeductionAmountOrPercentage} %`;
+      },
     },
     ...(action
       ? [

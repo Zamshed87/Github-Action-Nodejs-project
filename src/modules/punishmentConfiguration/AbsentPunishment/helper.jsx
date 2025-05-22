@@ -48,6 +48,8 @@ export const getHeader = (pages, setData, setOpenView, setOpenExtend) => [
   {
     title: "Status",
     dataIndex: "isActive",
+    align: "center",
+    width: 40,
     render: (_, rec) => {
       return (
         <Flex justify="center">

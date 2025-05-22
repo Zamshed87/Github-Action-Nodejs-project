@@ -8,15 +8,20 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
+import { useHistory } from "react-router-dom";
 
-const AbsentPunishmentConfiguration = () => {
+const PfPolicyCreate = () => {
+  const history = useHistory();
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState({
     employeeContributions: [],
-    employerContributions: [],
+    companyContributions: [],
   });
   // redux
-  const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
+  const {
+    permissionList,
+    profileData: { buId, wgId },
+  } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -24,17 +29,17 @@ const AbsentPunishmentConfiguration = () => {
 
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30590)
+      permissionList.find((item) => item?.menuReferenceId === 30597)
     );
   }, [permissionList]);
-
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Absent Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "Benefits Management - PF Policy Create";
     return () => {
       document.title = "PeopleDesk";
-    };
+    };  
   }, []);
+
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -55,19 +60,22 @@ const AbsentPunishmentConfiguration = () => {
                     "intEmploymentTypeIds",
                     "intPfEligibilityDependOn",
                     "intEmployeeContributionPaidAfter",
+                    "isPFInvestment",
                     "intMonthlyInvestmentWith",
                     "intEmployeeContributionInFixedMonth",
                   ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (saveData.employeeContributions.length < 1) {
-                        toast.error(
-                          "Please add at least one employee contribution."
-                        );
+                
+                      if (saveData.employeeContributions.length < 1 && saveData.companyContributions.length < 1) {
+                        toast.error("Please add at least one employee or company contribution.");
                         return;
                       }
+
                       const payload = {
+                        intBusinessUnitId: buId,
+                        intWorkPlaceGroupId: wgId,
                         strPolicyName: values?.strPolicyName,
                         strPolicyCode: values?.strPolicyCode,
                         intWorkPlaceId: values?.intWorkPlaceId,
@@ -76,17 +84,23 @@ const AbsentPunishmentConfiguration = () => {
                           values?.intPfEligibilityDependOn?.value,
                         employeeContributions: saveData?.employeeContributions,
                         ...saveData,
-                        intEmployeeContributionPaidAfter: values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth: values?.intEmployeeContributionInFixedMonth,
+                        intEmployeeContributionPaidAfter:
+                          values?.intEmployeeContributionPaidAfter?.value,
+                        intEmployeeContributionInFixedMonth:
+                          values?.intEmployeeContributionInFixedMonth,
                         isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith: values?.intMonthlyInvestmentWith,
+                        intMonthlyInvestmentWith:
+                          values?.intMonthlyInvestmentWith,
                       };
                       createPFPolicy(payload, setLoading, () => {
                         setSaveData({
                           employeeContributions: [],
-                          employerContributions: [],
+                          companyContributions: [],
                         });
                         form.resetFields();
+                        history.push(
+                          `/BenefitsManagement/providentFund/pfPolicy`
+                        );
                       });
                     })
                     .catch(() => {
@@ -109,4 +123,4 @@ const AbsentPunishmentConfiguration = () => {
   );
 };
 
-export default AbsentPunishmentConfiguration;
+export default PfPolicyCreate;
