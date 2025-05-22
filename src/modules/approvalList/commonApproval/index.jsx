@@ -46,10 +46,12 @@ import ViewFormComponent from "./utils/ViewFormComponent";
 import { getFilteredValues } from "./filterValues";
 import { SearchOutlined } from "@mui/icons-material";
 import { debounce } from "lodash";
+import { getEmployeeProfileViewPendingData } from "modules/employeeProfile/employeeFeature/helper";
+import EmployeeViewModal from "modules/employeeProfile/aboutMe/ViewModal";
 
 const CommonApprovalComponent = () => {
   // redux
-  const { orgId, employeeId, wId, buId, wgId } = useSelector(
+  const { orgId, employeeId, wId, buId, wgId, logWgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -72,6 +74,8 @@ const CommonApprovalComponent = () => {
   const [filterData, setFilterData] = useState({});
   const [page, setpage] = useState({ pageSize: 25, pageNo: 1 });
   const [totalRecords, setTotalRecords] = useState(0);
+  const [empBasicPending, setEmpBasicPending] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
 
   const [filteredWId, setFilteredWId] = useState(wId);
   const [filteredWgId, setFilteredWgId] = useState(wgId);
@@ -85,6 +89,25 @@ const CommonApprovalComponent = () => {
       setFilteredWgId(workplaceGroup);
     }
   }, [wId, wgId]);
+
+  const getEmpPendingData = (empId) => {
+    getEmployeeProfileViewPendingData(
+      empId,
+      setEmpBasicPending,
+      setLoading,
+      buId,
+      logWgId
+    );
+  };
+
+   const handleViewModalClose = () => {
+    setIsOpen(false);
+  };
+
+   const handleViewClick = (empId) => {
+    setIsOpen(true);
+    getEmpPendingData(empId);
+  };
 
   useEffect(() => {
     const fetchData = debounce(() => {
@@ -361,7 +384,7 @@ const CommonApprovalComponent = () => {
               : id == 32
               ? columnsAsset
               : id == 33
-              ? columnsAboutMe
+              ? columnsAboutMe(handleViewClick)
               : columnsDefault
           }
           bordered
@@ -400,6 +423,11 @@ const CommonApprovalComponent = () => {
           setViewData,
         }}
       />
+        <EmployeeViewModal
+          visible={isOpen}
+          onClose={handleViewModalClose}
+          empData={empBasicPending}
+        />
     </div>
   );
 };

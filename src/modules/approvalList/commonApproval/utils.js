@@ -4,11 +4,12 @@ import { dateFormatter } from "utility/dateFormatter";
 import { EyeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
-import { Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
 import { convertTo12HourFormat } from "utility/timeFormatter";
+import React from "react";
 
 export const columnsDefault = [
   {
@@ -117,7 +118,7 @@ export const columnsAsset = [
   },
 ];
 
-export const columnsAboutMe = [
+export const columnsAboutMe = (handleViewClick) => [
   {
     title: "SL",
     align: "center",
@@ -159,9 +160,20 @@ export const columnsAboutMe = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
+  {
+    title: "Action",
+    key: "action",
+    width: 100,
+    align: "center",
+    render: (_, record) => {
+      return (
+        <Button type="dashed" cyan onClick={() => handleViewClick(record?.applicationInformation?.employeeId)}>
+          View
+        </Button>
+      );
+    },
+  },
 ];
-
-
 
 export const columnFinalSettlement = [
   {

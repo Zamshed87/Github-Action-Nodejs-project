@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Modal,
-  Tabs,
-  Descriptions,
-  List,
-  Empty,
-  Typography,
-} from "antd";
+import { Modal, Tabs, Descriptions, List, Empty, Typography } from "antd";
 import {
   MailOutlined,
   PhoneOutlined,
@@ -53,7 +46,7 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
       onCancel={onClose}
       footer={null}
       width={1000}
-       bodyStyle={{ maxHeight: "75vh", overflowY: "auto", paddingTop: 0 }}
+      bodyStyle={{ maxHeight: "75vh", overflowY: "auto", paddingTop: 0 }}
     >
       <Tabs
         defaultActiveKey="1"
@@ -136,18 +129,14 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
               style={descriptionItemStyle}
             >
               <MailOutlined style={{ marginRight: 8 }} />
-              <a href={`mailto:${employeeProfileLandingView?.strOfficeMail}`}>
-                {employeeProfileLandingView?.strOfficeMail || "N/A"}
-              </a>
+              {employeeProfileLandingView?.strOfficeMail || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Personal Email"
               style={descriptionItemStyle}
             >
               <MailOutlined style={{ marginRight: 8 }} />
-              <a href={`mailto:${employeeProfileLandingView?.strPersonalMail}`}>
-                {employeeProfileLandingView?.strPersonalMail || "N/A"}
-              </a>
+              {employeeProfileLandingView?.strPersonalMail || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Office Mobile"
