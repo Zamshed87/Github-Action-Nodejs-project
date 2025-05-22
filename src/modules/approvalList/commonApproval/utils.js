@@ -4,11 +4,12 @@ import { dateFormatter } from "utility/dateFormatter";
 import { EyeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
-import { Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
 import { convertTo12HourFormat } from "utility/timeFormatter";
+import React from "react";
 
 export const columnsDefault = [
   {
@@ -114,6 +115,63 @@ export const columnsAsset = [
     render: (status) => (
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
+  },
+];
+
+export const columnsAboutMe = (handleViewClick) => [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+    width: "30px",
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Created Date",
+    width: "90px",
+    dataIndex: "dteCreatedAt",
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+  {
+    title: "Action",
+    key: "action",
+    width: 100,
+    align: "center",
+    render: (_, record) => {
+      return (
+        <Button type="dashed" cyan onClick={() => handleViewClick(record?.applicationInformation?.employeeId)}>
+          View
+        </Button>
+      );
+    },
   },
 ];
 

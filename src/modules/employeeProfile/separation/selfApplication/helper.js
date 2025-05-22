@@ -674,7 +674,6 @@ export const interViewQuestionSave = async (
         questions: fieldsArr.map((field) => {
           const id = `field-${field.id}`;
           const answer = values[id];
-
           return {
             id: field.id,
             answer: field.typeName === "Checkbox" ? answer : [answer] || [],
@@ -683,11 +682,13 @@ export const interViewQuestionSave = async (
       },
     };
 
-    const res = await axios.post(`/ExitInterview/SubmitExitInterview`, payload);
-    cb && cb();
-    toast.success(res?.data?.Message, { toastId: 1 });
+    const res = await axios.post("/ExitInterview/SubmitExitInterview", payload);
+    toast.success(res?.data?.message || "Interview submitted successfully", {
+      toastId: 1,
+    });
+    cb && cb(res); // pass res here so caller can use it
   } catch (error) {
-    toast.warn(error?.response?.data?.Message || "Something went wrong", {
+    toast.warn(error?.response?.data?.message || "Something went wrong", {
       toastId: 1,
     });
   } finally {

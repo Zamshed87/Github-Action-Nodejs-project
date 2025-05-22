@@ -1,11 +1,10 @@
 import axios from "axios";
-import { get } from "lodash";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const usePfInvestmentConfig = (form, config = {}) => {
+const usePfInvestmentConfig = () => {
   const {
     profileData: { orgId, buId, wgId },
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -24,8 +23,9 @@ const usePfInvestmentConfig = (form, config = {}) => {
     loadingInvestmentOrganization,
     setInvestmentOrganization,
   ] = useAxiosGet([]);
+
   const getInvestmentType = () => {
-    const url = `/InvestmentType/GetAll?accountId=${orgId}`;
+    const url = `/InvestmentType/GetInvestmentTypeDDL?accountId=${orgId}`;
     fetchInvestmentType(url, (res) => {
       const mappedTypes = res?.data?.map((item) => ({
         ...item,
@@ -36,7 +36,7 @@ const usePfInvestmentConfig = (form, config = {}) => {
     });
   }
   const getInvestmentOrganization = () => {
-    const url = `/InvestmentOrganization/GetAll?accountId=${orgId}`;
+    const url = `/InvestmentOrganization/GetInvestmentOrganizationDDL?accountId=${orgId}`;
     fetchInvestmentOrganization(url, (res) => {
       const mappedOrgs = res?.data?.map((item) => ({
         ...item,

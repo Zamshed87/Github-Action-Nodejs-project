@@ -7,10 +7,11 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import usePfPolicy from "./hooks/usePfPolicy";
+import usePfInvestments from "./hooks/usePfInvestments";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
+import moment from "moment";
 
 const PFInvestment = () => {
   const dispatch = useDispatch();
@@ -19,35 +20,43 @@ const PFInvestment = () => {
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const { data, setData, fetchPfPolicy, loading, pages, setPages } =
-    usePfPolicy(form);
+  const { data, setData, fetchPfInvestment, loading, pages } =
+  usePfInvestments(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy";
+    document.title = "Benefits Management - PF Investment";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30541) {
+    if (item?.menuReferenceId === 30598) {
       permission = item;
     }
   });
-
+  
+  const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
+  const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
+  
   return permission?.isView ? (
     <>
       <PForm
         form={form}
-        initialValues={{}}
+        initialValues={{
+          FromDateF: moment(startOfMonth, "YYYY-MM-DD"),
+          FromDate: startOfMonth,
+          ToDateF: moment(endOfMonth, "YYYY-MM-DD"),
+          ToDate: endOfMonth,
+        }}
         onFinish={() => {
-          fetchPfPolicy();
+          fetchPfInvestment();
         }}
       >
         {loading && <Loading />}
         <PCard>
           <PCardHeader
-            title={`Total PF Policy ${data?.totalCount || 0}`}
+            title={`Total PF Investment`}
             // onSearch={(e) => {
             //   form.setFieldsValue({
             //     search: e?.target?.value,
