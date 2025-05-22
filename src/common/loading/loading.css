@@ -3,7 +3,7 @@
   left: 0;
   top: 0;
   display: block;
-  z-index: 99999999999;
+  z-index: 99999999999 !important;
   height: 100%;
   width: 100%;
   background: rgb(0 0 0 / 5%);

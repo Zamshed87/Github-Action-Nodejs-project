@@ -24,26 +24,30 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
       .validateFields()
       .then((values) => {
         if (absentCalculationType == 1 && detailList.length == 1) {
-          toast.error("You can only add one element when each day is selected.");
+          toast.error(
+            "You can only add one element when each day is selected."
+          );
           return;
         }
         const dayStart = parseInt(values?.dayRange?.[0].format("DD"));
         const dayEnd = parseInt(values?.dayRange?.[1].format("DD"));
-  
+
         // Check for duplicate or overlapping ranges
         const isOverlap = (prevDetailList) =>
           prevDetailList.some(
             (item) =>
-              !(dayEnd < parseInt(item.dayRangeStartDay) ||
-                dayStart > parseInt(item.dayRangeEndDay))
+              !(
+                dayEnd < parseInt(item.dayRangeStartDay) ||
+                dayStart > parseInt(item.dayRangeEndDay)
+              )
           );
-  
+
         setDetailList((prev) => {
           if (isOverlap(prev)) {
             toast.error("This day range overlaps with an existing one.");
             return prev;
           }
-  
+
           const detail = {
             eachDayCountBy: parseInt(values.eachDayCountBy?.format("DD")),
             dayRange: `${dayStart} - ${dayEnd}`,
@@ -55,7 +59,7 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
             amountDeductionAmountOrPercentage:
               values.amountDeductionAmountOrPercentage,
           };
-  
+
           // Reset only relevant fields
           form.resetFields([
             "eachDayCountBy",
@@ -64,7 +68,7 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
             "amountDeductionType",
             "amountDeductionAmountOrPercentage",
           ]);
-  
+
           return [...prev, detail];
         });
       })
@@ -72,7 +76,14 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
         toast.error("Please fill all required fields.");
       });
   };
-  
+
+  const getAmountDeductionLabel = (typeValue) => {
+    if (typeValue == 3) {
+      return "Fixed Amount";
+    } else {
+      return "% of Amount (Based on 1 day)";
+    }
+  };
 
   return (
     <>
@@ -102,10 +113,7 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
                 form.setFieldsValue({ workplace: value });
                 getEmploymentTypeDDL();
                 getEmployeeDesignation();
-                form.resetFields([
-                  "employmentTypeList",
-                  "designationList",
-                ]);
+                form.resetFields(["employmentTypeList", "designationList"]);
               }}
               loading={workplaceDDL.loading}
               rules={[{ required: true, message: "Workplace Is Required" }]}
@@ -235,18 +243,20 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
             <PInput
               type="number"
               name="amountDeductionAmountOrPercentage"
-              label={`% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"}`}
-              placeholder={`% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"}`}
+              label={getAmountDeductionLabel(amountDeductionType?.value)}
+              placeholder={getAmountDeductionLabel(amountDeductionType?.value)}
               min={1}
               rules={[
                 {
                   required: true,
-                  message:
-                   `% of Amount ${amountDeductionType?.value == 3 ? "Fixed Amount" : "(Based on 1 day)"} is Required`,
+                  message: `${getAmountDeductionLabel(
+                    amountDeductionType?.value
+                  )} is Required`,
                 },
               ]}
             />
           </Col>
+
           <Col style={{ marginTop: "23px" }}>
             <PButton
               type="primary"

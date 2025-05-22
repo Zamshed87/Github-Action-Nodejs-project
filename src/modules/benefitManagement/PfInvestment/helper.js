@@ -1,7 +1,9 @@
 import { Switch, Tooltip } from "antd";
 import axios from "axios";
 import { Flex, PButton } from "Components";
+import moment from "moment";
 import { toast } from "react-toastify";
+
 const updatePolicyStatus = async (id) => {
   try {
     const response = await axios.post(
@@ -16,7 +18,8 @@ const updatePolicyStatus = async (id) => {
     );
   }
 };
-export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
+
+export const getHeader = (pages,setData, setOpenView) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -25,41 +28,48 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
     align: "center",
   },
   {
-    title: "Policy Name",
-    dataIndex: "strPolicyName",
-    sorter: true,
-    width: 100,
-  },
-  {
-    title: "Workplace Group",
-    dataIndex: "strWorkPlaceGroup",
-    sorter: true,
-    width: 120,
-  },
-  {
-    title: "Workplace",
-    dataIndex: "strWorkPlace",
-    sorter: true,
-    width: 100,
-  },
-  {
-    title: "Employment Type",
-    dataIndex: "strEmploymentTypeName",
-    render: (_,rec) => {
-      return rec?.isForAllEmploymentType ? "All" : rec?.employmentTypes?.map((item) => item.label).join(", ");
-    },
-    sorter: true,
-    width: 120,
-  },
-  {
-    title: "PF Eligibility Depend on",
-    dataIndex: "strPfEligibilityDependOn",
-    sorter: true,
+    title: "Investment Name",
+    dataIndex: "investmentName",
     width: 150,
+  },
+  {
+    title: "Organization Investment Name",
+    dataIndex: "orgInvestmentName",
+    width: 180,
+  },
+  {
+    title: "Investment Date",
+    dataIndex: "investmentDate",
+    render: (date) => moment(date).format("YYYY-MM-DD"),
+    width: 140,
+  },
+  {
+    title: "Investment Amount",
+    dataIndex: "investmentAmount",
+    render: (amount) => amount?.toLocaleString(),
+    width: 140,
+  },
+  {
+    title: "Expected ROI (%)",
+    dataIndex: "expectedROI",
+    width: 120,
+  },
+  {
+    title: "Duration (Years)",
+    dataIndex: "investmentDuration",
+    width: 120,
+  },
+  {
+    title: "Maturity Date",
+    dataIndex: "maturityDate",
+    render: (date) => moment(date).format("YYYY-MM-DD"),
+    width: 140,
   },
   {
     title: "Status",
     dataIndex: "isActive",
+    width: 50,
+    align: "center",
     render: (_, rec) => {
       return (
         <Flex justify="center">
@@ -111,7 +121,6 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
           content="Extend"
           type="primary"
           onClick={() => {
-            setOpenExtend?.({ extend: true, data: record });
           }}
         />
       </div>

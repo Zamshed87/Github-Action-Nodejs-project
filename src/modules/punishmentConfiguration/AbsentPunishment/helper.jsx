@@ -3,20 +3,36 @@ import axios from "axios";
 import { Flex, PButton } from "Components";
 import { toast } from "react-toastify";
 
-const updatePolicyStatus = async (policyId, status) => {
-  try {
-    const response = await axios.post(
-      `/AbsentPunishment/ActiveNInactive?policyId=${policyId}&isActive=${status}`
-    );
-    toast.success(
-      response?.data?.message?.[0] || "Status updated successfully"
-    );
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message?.[0] || "Failed to update status"
-    );
+/**
+ * 🔁 Update the isActive status for a policy in the list
+ */
+const updateListStatus = (list, policyId, newStatus) => {
+  const updatedList = [...list];
+  const index = updatedList.findIndex(item => item.policyId === policyId);
+
+  if (index !== -1) {
+    updatedList[index] = {
+      ...updatedList[index],
+      isActive: newStatus,
+    };
   }
+
+  return updatedList;
 };
+
+/**
+ * 📡 API call to update the active status
+ */
+const updatePolicyStatus = async (policyId, status) => {
+  const response = await axios.post(
+    `/AbsentPunishment/ActiveNInactive?policyId=${policyId}&isActive=${status}`
+  );
+  return response?.data;
+};
+
+/**
+ * 📋 Table headers
+ */
 export const getHeader = (pages, setData, setOpenView, setOpenExtend) => [
   {
     title: "SL",
@@ -48,63 +64,67 @@ export const getHeader = (pages, setData, setOpenView, setOpenExtend) => [
   {
     title: "Status",
     dataIndex: "isActive",
-    render: (_, rec) => {
-      return (
-        <Flex justify="center">
-          <Tooltip title={rec?.isActive ? "Active" : "Inactive"}>
-            <Switch
-              size="small"
-              checked={rec?.isActive}
-              onChange={(checked) => {
-                setData((prev) => {
-                  const updatedList = [...prev.absentPunishmentList];
-                  const recIndex = updatedList.findIndex(
-                    (item) => item.policyId === rec.policyId
-                  );
+    align: "center",
+    width: 40,
+    render: (_, rec) => (
+      <Flex justify="center">
+        <Tooltip title={rec?.isActive ? "Active" : "Inactive"}>
+          <Switch
+            size="small"
+            checked={rec?.isActive}
+            onChange={async (checked) => {
+              // 🔄 Optimistically update UI
+              setData(prev => ({
+                ...prev,
+                absentPunishmentList: updateListStatus(
+                  prev.absentPunishmentList,
+                  rec.policyId,
+                  checked
+                ),
+              }));
 
-                  if (recIndex !== -1) {
-                    updatedList[recIndex] = {
-                      ...updatedList[recIndex],
-                      isActive: checked,
-                    };
-                  }
-
-                  return {
-                    ...prev,
-                    absentPunishmentList: updatedList,
-                  };
-                });
-                updatePolicyStatus(rec.policyId, checked);
-              }}
-            />
-          </Tooltip>
-        </Flex>
-      );
-    },
+              // 📡 Backend update with rollback on failure
+              try {
+                const result = await updatePolicyStatus(rec.policyId, checked);
+                toast.success(result?.message?.[0] || "Status updated successfully");
+              } catch (error) {
+                // 🔁 Revert UI change if API fails
+                setData(prev => ({
+                  ...prev,
+                  absentPunishmentList: updateListStatus(
+                    prev.absentPunishmentList,
+                    rec.policyId,
+                    !checked
+                  ),
+                }));
+                toast.error(
+                  error?.response?.data?.message?.[0] || "Failed to update status"
+                );
+              }
+            }}
+          />
+        </Tooltip>
+      </Flex>
+    ),
   },
-
   {
     title: "Action",
     dataIndex: "",
     align: "center",
+    width: 140,
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
         <PButton
           content="View"
           type="primary-outline"
-          onClick={() => {
-            setOpenView({ open: true, data: record });
-          }}
+          onClick={() => setOpenView({ open: true, data: record })}
         />
         <PButton
           content="Extend"
           type="primary"
-          onClick={() => {
-            setOpenExtend({ extend: true, data: record });
-          }}
+          onClick={() => setOpenExtend({ extend: true, data: record })}
         />
       </div>
     ),
-    width: 140,
   },
 ];
