@@ -6,8 +6,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
 import { createPFPolicy } from "./helper";
+import PfInvestmentConfiguration from "./components/PfPolicyConfiguration";
 
 const PfInvestmentCreate = () => {
   const [form] = Form.useForm();
@@ -105,7 +105,7 @@ const PfInvestmentCreate = () => {
               },
             ]}
           />
-          <PfPolicyConfiguration
+          <PfInvestmentConfiguration
             form={form}
             saveData={saveData}
             setSaveData={setSaveData}
