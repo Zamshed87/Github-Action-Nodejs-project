@@ -1,60 +1,38 @@
 import { useEffect } from "react";
-import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const usePfInvestmentFilters = (form) => {
   const {
-    profileData: { orgId, buId, wgId, wId, employeeId },
+    profileData: { orgId, buId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
-  const workplaceDDL = useApiRequest([]);
-  const workplaceGroupDDL = useApiRequest([]);
-
-  const getWorkplaceGroupsDDL = () => {
-    workplaceGroupDDL?.action({
-      urlKey: "WorkplaceGroupIdAll",
-      method: "GET",
-      params: {
-        accountId: orgId,
-        businessUnitId: buId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
+  const [
+    investmentType,
+    fetchInvestmentType,
+    loadingInvestmentType,
+    setInvestmentType,
+  ] = useAxiosGet([]);
+  
+  const getInvestmentType = () => {
+    const url = `/InvestmentType/GetInvestmentTypeDDL?accountId=${orgId}`;
+    fetchInvestmentType(url, (res) => {
+      const mappedTypes = res?.data?.map((item) => ({
+        ...item,
+        value: item.typeId,
+        label: item.investmentName,
+      }));
+      setInvestmentType(mappedTypes);
     });
-  };
-
-  const getWorkplaceDDL = () => {
-    const { workplaceGroup } = form?.getFieldsValue(true) || {};
-    workplaceDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value || wgId,
-        intId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
-    });
-  };
+  }
 
   useEffect(() => {
-    getWorkplaceGroupsDDL();
+    getInvestmentType();
   }, [orgId, buId, wgId, wId]);
 
   return {
-    workplaceGroupDDL,
-    workplaceDDL,
-    getWorkplaceDDL,
+    investmentType,
+    loadingInvestmentType,
   };
 };
 
