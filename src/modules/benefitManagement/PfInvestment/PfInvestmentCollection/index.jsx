@@ -6,16 +6,20 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import { createPFPolicy } from "./helper";
+import { createInvestmentCollection } from "./helper";
 import PfInvestmentCollectionForm from "./components/PfInvestmentCollectionForm";
+import { useLocation } from "react-router-dom";
 
 const PfInvestmentCollection = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState([]);
+  const location = useLocation();
+  const record = location.state?.state?.data || {};
+
   // redux
   const {
     permissionList,
-    profileData: { buId, wgId },
+    profileData: { buId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
@@ -49,45 +53,24 @@ const PfInvestmentCollection = () => {
                 content: "Save",
                 onClick: () => {
                   const commonFields = [
-                    "strPolicyName",
-                    "strPolicyCode",
-                    "intWorkPlaceId",
-                    "intEmploymentTypeIds",
-                    "intPfEligibilityDependOn",
-                    "intEmployeeContributionPaidAfter",
-                    "isPFInvestment",
-                    "intMonthlyInvestmentWith",
-                    "intEmployeeContributionInFixedMonth",
+                    
                   ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (saveData.employeeContributions.length < 1) {
+                      if (saveData.length < 1) {
                         toast.error(
-                          "Please add at least one employee contribution."
+                          "Please add at least one PF Investment Tracking."
                         );
                         return;
                       }
                       const payload = {
-                        intBusinessUnitId: buId,
-                        intWorkPlaceGroupId: wgId,
-                        strPolicyName: values?.strPolicyName,
-                        strPolicyCode: values?.strPolicyCode,
-                        intWorkPlaceId: values?.intWorkPlaceId,
-                        intEmploymentTypeIds: values?.intEmploymentTypeIds,
-                        intPfEligibilityDependOn:
-                          values?.intPfEligibilityDependOn?.value,
-                        employeeContributions: saveData?.employeeContributions,
-                        ...saveData,
-                        intEmployeeContributionPaidAfter:
-                          values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth:
-                          values?.intEmployeeContributionInFixedMonth,
-                        isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith:
-                          values?.intMonthlyInvestmentWith,
+                        businessUnitId: buId,
+                        investmentId: record?.investmentId,
+                        isCollectionComplete: values?.isCollectionComplete,
+                        rowData: saveData
                       };
-                      createPFPolicy(payload, setLoading, () => {
+                      createInvestmentCollection(payload, setLoading, () => {
                         setSaveData([]);
                         form.resetFields();
                       });

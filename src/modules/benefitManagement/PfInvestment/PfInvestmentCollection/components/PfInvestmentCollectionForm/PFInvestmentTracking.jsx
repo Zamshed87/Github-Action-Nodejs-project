@@ -44,7 +44,19 @@ const PFInvestmentTracking = ({ form, data, addData, removeData }) => {
             placeholder="Amount of Interest"
             label="Amount of Interest"
             onChange={handleAmountChange}
-            rules={[{ required: true, message: "Amount of Interest Is Required" }]}
+            rules={[{ required: true, message: "Amount of Interest Is Required" },
+              {
+                validator: (_, value) => {
+                  const collectionAmount = form.getFieldValue(`collectionAmount`);
+                  if (value && collectionAmount && Number(value) > Number(collectionAmount)) {
+                    return Promise.reject(
+                      new Error(`Amount of Interest can't be greater than Total Amount`)
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           />
         </Col>
         <Col md={3} sm={6} xs={12}>

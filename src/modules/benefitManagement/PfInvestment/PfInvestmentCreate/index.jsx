@@ -8,15 +8,16 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { toast } from "react-toastify";
 import { createPFInvestment } from "./helper";
 import PfInvestmentConfiguration from "./components/PfInvestmentConfig";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import moment from "moment";
 
 const PfInvestmentCreate = () => {
   const [form] = Form.useForm();
   const history = useHistory();
-  const [saveData, setSaveData] = useState({
-    employeeContributions: [],
-    companyContributions: [],
-  });
+  const location = useLocation();
+  const record = location.state?.state?.data || {};
+  const isEdit = location.pathname.includes("/edit");
+
   // redux
   const {
     permissionList,
@@ -43,7 +44,33 @@ const PfInvestmentCreate = () => {
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={
+          isEdit
+            ? {
+                expectedROI: record?.expectedROI ?? 0,
+                investmentAmount: record?.investmentAmount ?? 0,
+                investmentDate: record?.investmentDate
+                  ? moment(record?.investmentDate)
+                  : "",
+                investmentDuration: record?.investmentDuration ?? 0,
+                investmentTypeId: {
+                  value: record?.investmentTypeId,
+                  label: record?.investmentName,
+                },
+                maturityDate: record?.maturityDate
+                  ? moment(record?.maturityDate)
+                  : "",
+                investmentOrganizationId: {
+                  value: record?.orgInvestmentId,
+                  label: record?.orgInvestmentName,
+                },
+                remark: record?.remark ?? "",
+              }
+            : {}
+        }
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -69,7 +96,9 @@ const PfInvestmentCreate = () => {
                         remark: values.remark ?? "",
                       };
                       createPFInvestment(payload, setLoading, () => {
-                        history.push("/BenefitsManagement/providentFund/pfInvestment");
+                        history.push(
+                          "/BenefitsManagement/providentFund/pfInvestment"
+                        );
                         form.resetFields();
                       });
                     })
@@ -80,11 +109,7 @@ const PfInvestmentCreate = () => {
               },
             ]}
           />
-          <PfInvestmentConfiguration
-            form={form}
-            saveData={saveData}
-            setSaveData={setSaveData}
-          />
+          <PfInvestmentConfiguration form={form} />
         </PCard>
       </PForm>
     </div>

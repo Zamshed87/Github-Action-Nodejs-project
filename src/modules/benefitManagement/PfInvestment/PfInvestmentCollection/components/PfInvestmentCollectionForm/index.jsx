@@ -10,14 +10,17 @@ const PfInvestmentCollectionForm = ({ form, saveData, setSaveData }) => {
   };
   const addData = () => {
     form
-      .validateFields(["collectionDate",
-          "collectionAmount",
-          "interestAmount",
-          "principalAmount",
-          "remark"])
+      .validateFields([
+        "collectionDate",
+        "collectionAmount",
+        "interestAmount",
+        "principalAmount",
+        "remark",
+      ])
       .then((values) => {
         const collectionDate = form.getFieldValue("collectionDate");
-        console.log("Form Values:", collectionDate);
+        console.log("collectionDate:", collectionDate); // ✅ correct
+
         const newEntry = {
           ...values,
           rowId: 0,
@@ -26,6 +29,7 @@ const PfInvestmentCollectionForm = ({ form, saveData, setSaveData }) => {
 
         // Optional: Clear the form after adding
         form.resetFields([
+          "collectionDateFake",
           "collectionDate",
           "collectionAmount",
           "interestAmount",
@@ -44,19 +48,15 @@ const PfInvestmentCollectionForm = ({ form, saveData, setSaveData }) => {
         <div style={{ width: "60%" }}>
           <InvestmentDetailsTable />
         </div>
-        <div style={{ width: "30%", display: "flex", justifyContent: "center" }}>
+        <div
+          style={{ width: "30%", display: "flex", justifyContent: "center" }}
+        >
           <Form.Item
-            name="consecutiveDay"
+            name="isCollectionComplete"
             valuePropName="checked"
             style={{ marginTop: 23, marginBottom: 0 }}
           >
-            <Checkbox
-              onChange={(e) =>
-                form.setFieldsValue({ consecutiveDay: e.target.checked })
-              }
-            >
-              Is Collection Complete?
-            </Checkbox>
+            <Checkbox>Is Collection Complete?</Checkbox>
           </Form.Item>
         </div>
       </div>

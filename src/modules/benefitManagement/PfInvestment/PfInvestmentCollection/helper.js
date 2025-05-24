@@ -1,14 +1,14 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const createPFPolicy = async (
+export const createInvestmentCollection = async (
   payload,
   setLoading,
   resetData,
 ) => {
   setLoading?.(true);
   try {
-    const res = await axios.post(`/PfPolicy/Save
+    const res = await axios.post(`/PFInvestment/CreateCollection
 `, payload);
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading?.(false);

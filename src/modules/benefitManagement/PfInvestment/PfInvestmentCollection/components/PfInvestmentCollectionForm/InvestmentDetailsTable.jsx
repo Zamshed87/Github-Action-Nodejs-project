@@ -6,23 +6,23 @@ const InvestmentDetailsTable = () => {
 
   // Extracting data from the record
   const {
-    investmentName = "Info.",
-    orgInvestmentName = "Info.",
-    investmentDate = "Info.",
-    investmentAmount = "Info.",
-    expectedROI = "Info.",
-    investmentDuration = "Info.",
-    maturityDate = "Info.",
-    status = "Info.",
+    investmentName,
+    orgInvestmentName,
+    investmentDate,
+    investmentAmount,
+    expectedROI,
+    investmentDuration,
+    maturityDate,
+    status,
   } = record;
 
   // Format dates for display
-  const formattedInvestmentDate = investmentDate !== "Info."
+  const formattedInvestmentDate = investmentDate
     ? new Date(investmentDate).toLocaleDateString()
-    : "Info.";
-  const formattedMaturityDate = maturityDate !== "Info."
+    : "N/A";
+  const formattedMaturityDate = maturityDate
     ? new Date(maturityDate).toLocaleDateString()
-    : "Info.";
+    : "N/A";
 
   const headersTop = [
     "Investment Type",
@@ -42,7 +42,7 @@ const InvestmentDetailsTable = () => {
     investmentName,
     orgInvestmentName,
     formattedInvestmentDate,
-    investmentAmount.toLocaleString(),
+    investmentAmount?.toLocaleString(),
   ];
 
   const bottomRowData = [
