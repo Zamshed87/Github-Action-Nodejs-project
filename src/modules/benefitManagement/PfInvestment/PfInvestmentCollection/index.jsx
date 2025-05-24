@@ -6,7 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import { createInvestmentCollection } from "./helper";
+import { createInvestmentCollection, getInvestmentCollection } from "./helper";
 import PfInvestmentCollectionForm from "./components/PfInvestmentCollectionForm";
 import { useLocation } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const PfInvestmentCollection = () => {
   const [saveData, setSaveData] = useState([]);
   const location = useLocation();
   const record = location.state?.state?.data || {};
-
+  console.log("record", record);
   // redux
   const {
     permissionList,
@@ -25,6 +25,12 @@ const PfInvestmentCollection = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [permission, setPermission] = useState(null);
+
+  useEffect(() => {
+    if (record?.investmentHeaderId) {
+      getInvestmentCollection(record?.investmentHeaderId, setLoading, setSaveData);
+    }
+  }, [record?.investmentHeaderId]);
 
   useEffect(() => {
     setPermission(
@@ -52,11 +58,8 @@ const PfInvestmentCollection = () => {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
-                  const commonFields = [
-                    
-                  ];
                   form
-                    .validateFields(commonFields)
+                    .validateFields(['isCollectionComplete'])
                     .then((values) => {
                       if (saveData.length < 1) {
                         toast.error(
@@ -66,9 +69,9 @@ const PfInvestmentCollection = () => {
                       }
                       const payload = {
                         businessUnitId: buId,
-                        investmentId: record?.investmentId,
+                        investmentId: record?.investmentHeaderId,
                         isCollectionComplete: values?.isCollectionComplete,
-                        rowData: saveData
+                        rowData: saveData,
                       };
                       createInvestmentCollection(payload, setLoading, () => {
                         setSaveData([]);

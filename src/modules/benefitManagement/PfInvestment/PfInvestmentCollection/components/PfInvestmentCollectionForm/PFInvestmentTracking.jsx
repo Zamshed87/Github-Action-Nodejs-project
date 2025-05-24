@@ -19,6 +19,7 @@ const PFInvestmentTracking = ({ form, data, addData, removeData }) => {
           <PInput
             type="date"
             name="collectionDateFake"
+            format={"YYYY-MM-DD"}
             placeholder="Date"
             onChange={(value,dateString) => {
               form.setFieldsValue({ collectionDate: dateString });

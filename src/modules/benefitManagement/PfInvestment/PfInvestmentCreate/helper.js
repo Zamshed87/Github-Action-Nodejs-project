@@ -8,7 +8,22 @@ export const createPFInvestment = async (payload, setLoading, resetData) => {
       `/PFInvestment/Create`,
       payload
     );
-    toast.success(res?.data?.message?.[0] || "Submitted Successfully");
+    toast.success(res?.data?.message?.[0] || "Created Successfully");
+    setLoading?.(false);
+    resetData?.();
+  } catch (error) {
+    toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
+    setLoading?.(false);
+  }
+};
+export const createPFInvestmentEdit = async (payload, setLoading, resetData) => {
+  setLoading?.(true);
+  try {
+    const res = await axios.post(
+      `/PFInvestment/Edit`,
+      payload
+    );
+    toast.success(res?.data?.message?.[0] || "Edited Successfully");
     setLoading?.(false);
     resetData?.();
   } catch (error) {

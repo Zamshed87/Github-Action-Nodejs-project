@@ -6,7 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import { createPFInvestment } from "./helper";
+import { createPFInvestment, createPFInvestmentEdit } from "./helper";
 import PfInvestmentConfiguration from "./components/PfInvestmentConfig";
 import { useHistory, useLocation } from "react-router-dom";
 import moment from "moment";
@@ -95,12 +95,22 @@ const PfInvestmentCreate = () => {
                         maturityDate: values.maturityDate,
                         remark: values.remark ?? "",
                       };
-                      createPFInvestment(payload, setLoading, () => {
-                        history.push(
-                          "/BenefitsManagement/providentFund/pfInvestment"
-                        );
-                        form.resetFields();
-                      });
+                      if (isEdit) {
+                        payload.investmentId = record?.investmentId;
+                        createPFInvestmentEdit(payload, setLoading, () => {
+                          history.push(
+                            "/BenefitsManagement/providentFund/pfInvestment"
+                          );
+                          form.resetFields();
+                        });
+                      } else {
+                        createPFInvestment(payload, setLoading, () => {
+                          history.push(
+                            "/BenefitsManagement/providentFund/pfInvestment"
+                          );
+                          form.resetFields();
+                        });
+                      }
                     })
                     .catch(() => {
                       toast.error("Please fill all required fields.");
