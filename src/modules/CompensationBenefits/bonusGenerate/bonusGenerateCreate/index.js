@@ -42,6 +42,7 @@ import {
   getEmployeeListForBonusGenerateOrRegenerate,
   onGenerateOrReGenerateBonus,
 } from "./helper";
+import MultiCheckedSelect from "common/MultiCheckedSelect";
 
 const initialValues = {
   bonusSystemType: { value: 1, label: "Bonus Generator" },
@@ -88,6 +89,7 @@ const BonusGenerateCreate = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [singleData, setSingleData] = useState(null);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [hrPositionDDL, setHrPositionDDL] = useState([]);
 
   const { orgId, buId, employeeId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
@@ -485,6 +487,15 @@ const BonusGenerateCreate = () => {
                       // isDisabled={isEdit}
                       onChange={(valueOption) => {
                         setFieldValue("workplace", valueOption);
+                        const ids = valueOption
+                          ?.map((item) => item?.intWorkplaceId)
+                          .join(",");
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${ids}&BusinessUnitId=${buId}&intId=0`,
+                          "PositionId",
+                          "PositionName",
+                          setHrPositionDDL
+                        );
                       }}
                       styles={{
                         ...customStyles,
@@ -525,6 +536,24 @@ const BonusGenerateCreate = () => {
                       placeholder=""
                       touched={touched}
                     />
+                  </div>
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>HR Position</label>
+                      <MultiCheckedSelect
+                        name="hrPosition"
+                        options={hrPositionDDL || []}
+                        value={values?.hrPosition}
+                        onChange={(valueOption) => {
+                          setFieldValue("hrPosition", valueOption);
+                        }}
+                        isShowAllSelectedItem={false}
+                        errors={errors}
+                        placeholder="HR Position"
+                        touched={touched}
+                        setFieldValue={setFieldValue}
+                      />
+                    </div>
                   </div>
 
                   {/* marketing setup */}
