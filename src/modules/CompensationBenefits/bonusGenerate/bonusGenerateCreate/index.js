@@ -116,6 +116,9 @@ const BonusGenerateCreate = () => {
   const [territoryDDL, setTerritoryDDL] = useState([]);
 
   const [, getBonusInformation, loadingOnGetBonusInformation] = useAxiosPost();
+  const [, getHrPositionAuto] = useAxiosGet([]);
+  const [, getWorkplaceAuto] = useAxiosGet([]);
+
   const [
     employeeList,
     getEmployeeList,
@@ -226,6 +229,30 @@ const BonusGenerateCreate = () => {
         setAreaDDL,
         setTerritoryDDL,
       });
+      getWorkplaceAuto(
+        `/Employee/BonusGenerateQueryAll?strPartName=WorkplaceListByBonusHeaderId&intBonusHeaderId=${location?.state?.bonusObj?.intBonusHeaderId}`,
+        (data) => {
+          const wPlace =
+            data?.map((item) => ({
+              value: item.intWorkPlaceId,
+              label: item.strWorkPlaceName,
+            })) || [];
+          setFieldValue("workplace", wPlace);
+          setWorkplaceDDL(wPlace);
+        }
+      );
+      getHrPositionAuto(
+        `/Employee/BonusGenerateQueryAll?strPartName=HrPositionListByBonusHeaderId&intBonusHeaderId=${location?.state?.bonusObj?.intBonusHeaderId}`,
+        (data) => {
+          const hrPositions =
+            data?.map((item) => ({
+              value: item.intHRPositionId,
+              label: item.strHRPostionName,
+            })) || [];
+          setFieldValue("hrPosition", hrPositions);
+          setHrPositionDDL(hrPositions);
+        }
+      );
     }
   }, [orgId, buId, wgId, singleData, params]);
 
@@ -871,11 +898,12 @@ const BonusGenerateCreate = () => {
                           type="button"
                           disabled={
                             !values?.bonusSystemType ||
-                            !values?.bonusName ||
+                            !values?.bonusName?.value ||
                             !values?.effectiveDate ||
                             !values?.workplace
                           }
                           onClick={() => {
+                            console.log(values?.bonusName);
                             if (+params?.id) {
                               if (!isSameWgEmployee) {
                                 return toast.warning(
