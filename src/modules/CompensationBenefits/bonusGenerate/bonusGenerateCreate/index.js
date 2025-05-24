@@ -42,6 +42,7 @@ import {
   getEmployeeListForBonusGenerateOrRegenerate,
   onGenerateOrReGenerateBonus,
 } from "./helper";
+import MultiCheckedSelect from "common/MultiCheckedSelect";
 
 const initialValues = {
   bonusSystemType: { value: 1, label: "Bonus Generator" },
@@ -88,6 +89,7 @@ const BonusGenerateCreate = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [singleData, setSingleData] = useState(null);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [hrPositionDDL, setHrPositionDDL] = useState([]);
 
   const { orgId, buId, employeeId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
@@ -114,6 +116,10 @@ const BonusGenerateCreate = () => {
   const [territoryDDL, setTerritoryDDL] = useState([]);
 
   const [, getBonusInformation, loadingOnGetBonusInformation] = useAxiosPost();
+  const [, getHrPositionAuto] = useAxiosGet([]);
+  const [, getWorkplaceAuto] = useAxiosGet([]);
+  const [oldWplace, setoldWplace] = useState([]);
+
   const [
     employeeList,
     getEmployeeList,
@@ -224,6 +230,31 @@ const BonusGenerateCreate = () => {
         setAreaDDL,
         setTerritoryDDL,
       });
+      getWorkplaceAuto(
+        `/Employee/BonusGenerateQueryAll?strPartName=WorkplaceListByBonusHeaderId&intBonusHeaderId=${location?.state?.bonusObj?.intBonusHeaderId}`,
+        (data) => {
+          const wPlace =
+            data?.map((item) => ({
+              value: item.intWorkPlaceId,
+              label: item.strWorkPlaceName,
+            })) || [];
+          setFieldValue("workplace", wPlace);
+          setoldWplace(wPlace);
+          // setWorkplaceDDL(wPlace);
+        }
+      );
+      getHrPositionAuto(
+        `/Employee/BonusGenerateQueryAll?strPartName=HrPositionListByBonusHeaderId&intBonusHeaderId=${location?.state?.bonusObj?.intBonusHeaderId}`,
+        (data) => {
+          const hrPositions =
+            data?.map((item) => ({
+              value: item.intHRPositionId,
+              label: item.strHRPostionName,
+            })) || [];
+          setFieldValue("hrPosition", hrPositions);
+          setHrPositionDDL(hrPositions);
+        }
+      );
     }
   }, [orgId, buId, wgId, singleData, params]);
 
@@ -485,6 +516,27 @@ const BonusGenerateCreate = () => {
                       // isDisabled={isEdit}
                       onChange={(valueOption) => {
                         setFieldValue("workplace", valueOption);
+                        const ids = valueOption
+                          ?.map((item) => item?.intWorkplaceId)
+                          .join(",");
+                        let oldid = "";
+                        if (+params?.id) {
+                          oldid = oldWplace
+                            ?.map((item) => item?.value)
+                            .join(",");
+                        }
+                        const resultWplace = [ids, oldid]
+                          .filter(Boolean)
+                          .join(",");
+                        console.log(valueOption, "valueOption");
+                        console.log(oldWplace, "oldWplace");
+                        console.log(resultWplace, "resultWplace");
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${resultWplace}&BusinessUnitId=${buId}&intId=0`,
+                          "PositionId",
+                          "PositionName",
+                          setHrPositionDDL
+                        );
                       }}
                       styles={{
                         ...customStyles,
@@ -525,6 +577,24 @@ const BonusGenerateCreate = () => {
                       placeholder=""
                       touched={touched}
                     />
+                  </div>
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>HR Position</label>
+                      <MultiCheckedSelect
+                        name="hrPosition"
+                        options={hrPositionDDL || []}
+                        value={values?.hrPosition}
+                        onChange={(valueOption) => {
+                          setFieldValue("hrPosition", valueOption);
+                        }}
+                        isShowAllSelectedItem={false}
+                        errors={errors}
+                        placeholder="HR Position"
+                        touched={touched}
+                        setFieldValue={setFieldValue}
+                      />
+                    </div>
                   </div>
 
                   {/* marketing setup */}
@@ -842,11 +912,12 @@ const BonusGenerateCreate = () => {
                           type="button"
                           disabled={
                             !values?.bonusSystemType ||
-                            !values?.bonusName ||
+                            !values?.bonusName?.value ||
                             !values?.effectiveDate ||
                             !values?.workplace
                           }
                           onClick={() => {
+                            console.log(values?.bonusName);
                             if (+params?.id) {
                               if (!isSameWgEmployee) {
                                 return toast.warning(
