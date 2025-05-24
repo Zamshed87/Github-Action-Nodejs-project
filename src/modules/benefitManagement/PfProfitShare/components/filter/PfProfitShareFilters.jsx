@@ -6,9 +6,10 @@ const PfProfitShareFilters = ({ form }) => {
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
         <PInput
-          type="date"
+          type="month"
           name="fromDate"
           label="From Date"
+          format={"YYYY-MM"}
           placeholder="Select From Date"
           onChange={(value) => {
             form.setFieldsValue({ fromDate: value });
@@ -17,9 +18,10 @@ const PfProfitShareFilters = ({ form }) => {
       </Col>
       <Col md={5} sm={12} xs={24}>
         <PInput
-          type="date"
+          type="month"
           name="toDate"
           label="To Date"
+          format={"YYYY-MM"}
           placeholder="Select To Date"
           onChange={(value) => {
             form.setFieldsValue({ toDate: value });

@@ -19,10 +19,21 @@ const PFInvestment = () => {
   const history = useHistory();
   const [form] = Form.useForm();
 
-  const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
+  const {
+    permissionList,
+    profileData: { buId },
+  } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const { data, setData, fetchPfInvestment, loading, pages } =
-    usePfInvestments(form);
+  const {
+    data,
+    setData,
+    fetchPfInvestment,
+    loading,
+    pages,
+    otherLoading,
+    setOtherLoading,
+    inActivatePfInvestment,
+  } = usePfInvestments(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -54,7 +65,7 @@ const PFInvestment = () => {
           fetchPfInvestment();
         }}
       >
-        {loading && <Loading />}
+        {loading || (otherLoading && <Loading />)}
         <PCard>
           <PCardHeader
             title={`Total PF Investment`}
@@ -84,15 +95,20 @@ const PFInvestment = () => {
           <PCardBody className="mb-3">
             <div className="d-flex justify-content-between">
               <div style={{ width: "60%" }}>
-              <PfInvestmentFilters form={form} />
+                <PfInvestmentFilters form={form} />
               </div>
               <div style={{ width: "40%" }}>
-              <PfInvestmentDetails landing />
+                <PfInvestmentDetails landing />
               </div>
             </div>
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setOpenView, history)}
+            header={getHeader(
+              pages,
+              setOpenView,
+              history,
+              inActivatePfInvestment,
+            )}
             bordered
             data={data?.data || []}
             loading={loading}

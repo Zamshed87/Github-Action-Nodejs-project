@@ -7,7 +7,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import { FaEye } from "react-icons/fa";
 import { RxCrossCircled } from "react-icons/rx";
 
-export const getHeader = (pages, setOpenView, history) => [
+export const getHeader = (pages, setOpenView, history, inActivatePfInvestment) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -89,11 +89,11 @@ export const getHeader = (pages, setOpenView, history) => [
     width: 130,
     render: (_, record) => {
       const status = record?.status;
-  
+
       const showEdit = status === "Not Started";
       const showCollection = ["Running", "Matured"].includes(status);
-      const showInactive = status !== "InActive";
-  
+      const showInactive = status == "Not Started" || status !== "InActive" && !showCollection; 
+
       const iconBtnStyle = {
         backgroundColor: "var(--primary-color)",
         border: "none",
@@ -107,7 +107,7 @@ export const getHeader = (pages, setOpenView, history) => [
         color: "#fff",
         padding: 0,
       };
-  
+
       return (
         <div
           style={{
@@ -126,7 +126,7 @@ export const getHeader = (pages, setOpenView, history) => [
               <FaEye size={16} />
             </button>
           </Tooltip>
-  
+
           {showEdit && (
             <Tooltip title="Edit">
               <button
@@ -146,27 +146,37 @@ export const getHeader = (pages, setOpenView, history) => [
               </button>
             </Tooltip>
           )}
-  
+
           {showCollection && (
             <Tooltip title="Collection">
-              <button style={iconBtnStyle} onClick={() => {
-                history.push(
-                  `/BenefitsManagement/providentFund/pfInvestment/collection`,
-                  {
-                    state: {
-                      data: record,
-                    },
-                  }
-                )
-              }}>
+              <button
+                style={iconBtnStyle}
+                onClick={() => {
+                  history.push(
+                    `/BenefitsManagement/providentFund/pfInvestment/collection`,
+                    {
+                      state: {
+                        data: record,
+                      },
+                    }
+                  );
+                }}
+              >
                 <GiTakeMyMoney size={16} />
               </button>
             </Tooltip>
           )}
-  
+
           {showInactive && (
             <Tooltip title="Mark as Inactive">
-              <button style={iconBtnStyle} onClick={() => {}}>
+              <button
+                style={iconBtnStyle}
+                onClick={() => {
+                  inActivatePfInvestment(
+                    record?.investmentHeaderId,
+                  );
+                }}
+              >
                 <RxCrossCircled size={16} />
               </button>
             </Tooltip>
@@ -174,5 +184,5 @@ export const getHeader = (pages, setOpenView, history) => [
         </div>
       );
     },
-  }
+  },
 ];
