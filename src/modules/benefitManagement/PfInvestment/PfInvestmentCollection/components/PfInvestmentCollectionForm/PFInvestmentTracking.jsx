@@ -1,6 +1,7 @@
 import { DataTable, PButton, PCardBody, PInput } from "Components";
 import { Col, Row } from "antd";
 import { detailsHeader } from "./helper";
+import { date } from "yup";
 
 const PFInvestmentTracking = ({ form, data, addData, removeData }) => {
   const handleAmountChange = () => {
@@ -17,9 +18,11 @@ const PFInvestmentTracking = ({ form, data, addData, removeData }) => {
         <Col md={3} sm={6} xs={12}>
           <PInput
             type="date"
-            name="collectionDate"
+            name="collectionDateFake"
             placeholder="Date"
-            
+            onChange={(value,dateString) => {
+              form.setFieldsValue({ collectionDate: dateString });
+            }}
             label="Collection Date"
             rules={[{ required: true, message: "Date Is Required" }]}
           />

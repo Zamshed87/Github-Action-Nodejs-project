@@ -10,8 +10,14 @@ const PfInvestmentCollectionForm = ({ form, saveData, setSaveData }) => {
   };
   const addData = () => {
     form
-      .validateFields()
+      .validateFields(["collectionDate",
+          "collectionAmount",
+          "interestAmount",
+          "principalAmount",
+          "remark"])
       .then((values) => {
+        const collectionDate = form.getFieldValue("collectionDate");
+        console.log("Form Values:", collectionDate);
         const newEntry = {
           ...values,
           rowId: 0,
