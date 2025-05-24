@@ -39,10 +39,10 @@ export const individualKpiMappingTableColumn = ({
       title: "Supervisor",
       dataIndex: "supervisorName",
     },
-    {
-      title: "KPI Assigned Type",
-      dataIndex: "supervisorName",
-    },
+    // {
+    //   title: "KPI Assigned Type",
+    //   dataIndex: "supervisorName",
+    // },
     {
       title: "Total KPIs",
       dataIndex: "employeeWiseKpi",

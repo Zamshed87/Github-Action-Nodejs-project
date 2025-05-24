@@ -32,7 +32,7 @@ const InvestmentType = () => {
       permission = item;
     }
   });
-  return !permission?.isView ? (
+  return permission?.isView ? (
     <>
       <PForm
         form={form}
@@ -51,7 +51,7 @@ const InvestmentType = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  if (!permission?.isCreate) {
+                  if (permission?.isCreate) {
                     setOpenEdit({ open: true, data: {}, });
                   } else {
                     toast.warn("You don't have permission");

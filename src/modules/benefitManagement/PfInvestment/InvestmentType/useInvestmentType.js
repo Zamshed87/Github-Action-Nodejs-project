@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const useInvestmentType = (form) => {
-  const { wgId, wId, orgId } = useSelector(
+  const { buId,wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -29,10 +29,9 @@ const useInvestmentType = (form) => {
   const createInvestmentType = async (values, resetData) => {
     setCreateUpdateLoading?.(true);
     try {
-      const formValues = form?.getFieldsValue(true);
       const payload = {
-        businessUnitId: formValues?.businessUnit?.value,
-        workplaceGroupId: formValues?.workplaceGroup?.value,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
         investmentName: values?.investmentName,
         remark: values?.remark,
       };
