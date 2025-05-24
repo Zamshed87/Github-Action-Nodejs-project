@@ -118,6 +118,7 @@ const BonusGenerateCreate = () => {
   const [, getBonusInformation, loadingOnGetBonusInformation] = useAxiosPost();
   const [, getHrPositionAuto] = useAxiosGet([]);
   const [, getWorkplaceAuto] = useAxiosGet([]);
+  const [oldWplace, setoldWplace] = useState([]);
 
   const [
     employeeList,
@@ -238,7 +239,8 @@ const BonusGenerateCreate = () => {
               label: item.strWorkPlaceName,
             })) || [];
           setFieldValue("workplace", wPlace);
-          setWorkplaceDDL(wPlace);
+          setoldWplace(wPlace);
+          // setWorkplaceDDL(wPlace);
         }
       );
       getHrPositionAuto(
@@ -517,8 +519,20 @@ const BonusGenerateCreate = () => {
                         const ids = valueOption
                           ?.map((item) => item?.intWorkplaceId)
                           .join(",");
+                        let oldid = "";
+                        if (+params?.id) {
+                          oldid = oldWplace
+                            ?.map((item) => item?.value)
+                            .join(",");
+                        }
+                        const resultWplace = [ids, oldid]
+                          .filter(Boolean)
+                          .join(",");
+                        console.log(valueOption, "valueOption");
+                        console.log(oldWplace, "oldWplace");
+                        console.log(resultWplace, "resultWplace");
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${ids}&BusinessUnitId=${buId}&intId=0`,
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${resultWplace}&BusinessUnitId=${buId}&intId=0`,
                           "PositionId",
                           "PositionName",
                           setHrPositionDDL
