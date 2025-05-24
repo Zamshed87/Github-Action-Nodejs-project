@@ -7,11 +7,11 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import PfPolicyFilters from "./components/filter/PfPolicyFilters";
 import usePfPolicy from "./hooks/usePfPolicy";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import PolicyView from "./components/view/PolicyView";
+import PfProfitShareFilters from "./components/filter/PfProfitShareFilters";
 
 const PfProfitShare = () => {
   const dispatch = useDispatch();
@@ -20,12 +20,12 @@ const PfProfitShare = () => {
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const { data, setData, fetchPfPolicy, loading, pages, setPages } =
+  const { data, fetchPfPolicy, loading, pages } =
     usePfPolicy(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy";
+    document.title = "Benefits Management - PF Profit Share";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -71,10 +71,10 @@ const PfProfitShare = () => {
             ]}
           />
           <PCardBody className="mb-3">
-            <PfPolicyFilters form={form} />
+            <PfProfitShareFilters form={form} />
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setData, setOpenView)}
+            header={getHeader(pages, setOpenView)}
             bordered
             data={data?.data || []}
             loading={loading}
@@ -93,7 +93,7 @@ const PfProfitShare = () => {
         </PCard>
       </PForm>
       <PModal
-        title="PF Policy View"
+        title="PF Profit Share View"
         open={openView.open}
         onCancel={() => {
           setOpenView({ open: false, data: {} });

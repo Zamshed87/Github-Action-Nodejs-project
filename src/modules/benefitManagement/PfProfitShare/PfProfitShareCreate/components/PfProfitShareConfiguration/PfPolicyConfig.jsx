@@ -1,5 +1,5 @@
 import { Col, Row } from "antd";
-import { PCardBody, PInput, PSelect } from "Components";
+import { PButton, PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
 import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
@@ -85,6 +85,9 @@ const PfPolicyConfig = ({ form }) => {
             ]}
           />
         </Col>
+          <Col style={{ marginTop: "23px" }}>
+                <PButton type="primary" action="submit" content="View" />
+              </Col>
       </Row>
     </PCardBody>
   );

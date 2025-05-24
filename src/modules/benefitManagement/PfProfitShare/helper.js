@@ -1,142 +1,69 @@
-import { Switch, Tooltip } from "antd";
-import axios from "axios";
-import { Flex, PButton } from "Components";
-import { toast } from "react-toastify";
+import { PButton } from "Components";
 
-const updatePolicyStatusLocally = (list, policyId, newStatus) => {
-  const updatedList = [...list];
-  const index = updatedList.findIndex(
-    (item) => item.intPfConfigHeaderId === policyId
-  );
-
-  if (index !== -1) {
-    updatedList[index] = {
-      ...updatedList[index],
-      strStatus: newStatus,
-    };
-  }
-
-  return updatedList;
-};
-
-const togglePfPolicyStatus = async (id) => {
-  const response = await axios.post(
-    `/PfPolicy/ActiveInactivePfPolicy?intPfConfigHeaderId=${id}`
-  );
-  return response?.data;
-};
-
-export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
+export const getHeader = (pages, setOpenView) => [
   {
     title: "SL",
     render: (_, __, index) =>
       (pages?.current - 1) * pages?.pageSize + index + 1,
-    width: 25,
     align: "center",
+    width: 20,
   },
   {
-    title: "Policy Name",
-    dataIndex: "strPolicyName",
-    sorter: true,
-    width: 100,
+    title: "Profit Share Date",
+    dataIndex: "profitShareDate",
+    render: (value) => value ?? "-",
+
   },
   {
-    title: "Workplace Group",
-    dataIndex: "strWorkPlaceGroup",
-    sorter: true,
-    width: 120,
+    title: "Total Employee Contribution",
+    dataIndex: "totalEmployeeContribution",
+    render: (value) => value?.toLocaleString() ?? "-",
   },
   {
-    title: "Workplace",
-    dataIndex: "strWorkPlace",
-    sorter: true,
-    width: 100,
+    title: "Total Employer Contribution",
+    dataIndex: "totalEmployerContribution",
+    render: (value) => value?.toLocaleString() ?? "-",
   },
   {
-    title: "Employment Type",
-    dataIndex: "strEmploymentTypeName",
-    render: (_,rec) => {
-      return rec?.isForAllEmploymentType ? "All" : rec?.employmentTypes?.map((item) => item.label).join(", ");
-    },
-    sorter: true,
-    width: 120,
+    title: "Total Profit Earned",
+    dataIndex: "totalProfitEarned",
+    render: (value) => value?.toLocaleString() ?? "-",
   },
   {
-    title: "PF Eligibility Depend on",
-    dataIndex: "strPfEligibilityDependOn",
-    sorter: true,
-    width: 150,
+    title: "Total PF Balance",
+    dataIndex: "totalPfBalance",
+    render: (value) => value?.toLocaleString() ?? "-",
+  },
+  {
+    title: "Total Profit Share Amount",
+    dataIndex: "totalProfitShareAmount",
+    render: (value) => value?.toLocaleString() ?? "-",
+  },
+  {
+    title: "Total Profit Share %",
+    dataIndex: "totalProfitSharePercentage",
+    render: (value) => (value != null ? `${value}%` : "-"),
   },
   {
     title: "Status",
-    dataIndex: "isActive",
-    render: (_, rec) => {
-      const isActive = rec?.strStatus === "Active";
-      return (
-        <Flex justify="center">
-          <Tooltip title={isActive ? "Active" : "Inactive"}>
-            <Switch
-              size="small"
-              checked={isActive}
-              onChange={async (checked) => {
-                const newStatus = checked ? "Active" : "Inactive";
-
-                // Optimistically update UI
-                setData((prev) => ({
-                  ...prev,
-                  data: updatePolicyStatusLocally(
-                    prev.data,
-                    rec.intPfConfigHeaderId,
-                    newStatus
-                  ),
-                }));
-
-                // API request and rollback on error
-                try {
-                  const result = await togglePfPolicyStatus(rec.intPfConfigHeaderId);
-                  toast.success(result?.message || "Status updated successfully");
-                } catch (error) {
-                  setData((prev) => ({
-                    ...prev,
-                    data: updatePolicyStatusLocally(
-                      prev.data,
-                      rec.intPfConfigHeaderId,
-                      isActive ? "Inactive" : "Active" // rollback
-                    ),
-                  }));
-                  toast.error(
-                    error?.response?.data?.message || "Failed to update status"
-                  );
-                }
-              }}
-            />
-          </Tooltip>
-        </Flex>
-      );
-    },
+    dataIndex: "strStatus",
   },
   {
     title: "Action",
-    dataIndex: "",
     align: "center",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
         <PButton
           content="View"
           type="primary-outline"
-          onClick={() => {
-            setOpenView?.({ open: true, data: record });
-          }}
+          onClick={() => setOpenView?.({ open: true, data: record })}
         />
         <PButton
-          content="Extend"
+          content="Edit"
           type="primary"
-          onClick={() => {
-            setOpenExtend?.({ extend: true, data: record });
-          }}
+          onClick={() =>{} }
         />
       </div>
     ),
-    width: 140,
   },
 ];
