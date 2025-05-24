@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const usePfInvestments = (form) => {
-  const { buId, wgId, wId } = useSelector(
+  const { buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -21,7 +21,7 @@ const usePfInvestments = (form) => {
       BusinessUnitId: buId,
       FromDate: formValues?.FromDate,
       ToDate: formValues?.ToDate,
-      InvestmentTypeId: formValues?.InvestmentTypeId,
+      InvestmentTypeId: formValues?.InvestmentTypeId?.join(",") || '',
       Status: formValues.status,
     };
 

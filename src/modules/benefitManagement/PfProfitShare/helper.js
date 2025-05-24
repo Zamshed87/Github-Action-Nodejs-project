@@ -12,45 +12,54 @@ export const getHeader = (pages, setOpenView) => [
     title: "Profit Share Date",
     dataIndex: "profitShareDate",
     render: (value) => value ?? "-",
-
+    width: 100,
   },
   {
     title: "Total Employee Contribution",
     dataIndex: "totalEmployeeContribution",
     render: (value) => value?.toLocaleString() ?? "-",
+    width: 120,
   },
   {
     title: "Total Employer Contribution",
     dataIndex: "totalEmployerContribution",
     render: (value) => value?.toLocaleString() ?? "-",
+    width: 120,
   },
   {
     title: "Total Profit Earned",
     dataIndex: "totalProfitEarned",
     render: (value) => value?.toLocaleString() ?? "-",
+    width: 100,
   },
   {
     title: "Total PF Balance",
     dataIndex: "totalPfBalance",
     render: (value) => value?.toLocaleString() ?? "-",
+    width: 100,
   },
   {
     title: "Total Profit Share Amount",
     dataIndex: "totalProfitShareAmount",
     render: (value) => value?.toLocaleString() ?? "-",
+    width: 120,
   },
   {
     title: "Total Profit Share %",
     dataIndex: "totalProfitSharePercentage",
     render: (value) => (value != null ? `${value}%` : "-"),
+    width: 100,
   },
   {
     title: "Status",
     dataIndex: "strStatus",
+    width: 
+    60,
   },
   {
     title: "Action",
     align: "center",
+    width: 120,
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
         <PButton
