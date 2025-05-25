@@ -174,7 +174,7 @@ function AboutMe() {
               setConfirmationMOdal,
               confirmationMOdal,
               // setHasBankData,
-              // hasBankData, 
+              // hasBankData,
               setIsBank,
               isBank,
               setBankData,
@@ -188,6 +188,7 @@ function AboutMe() {
           visible={isOpen}
           onClose={handleViewModalClose}
           empData={empBasicPending}
+          originalData={empBasic}
         />
       </div>
     </>

@@ -18,7 +18,27 @@ const formatDate = (dateStr) => {
   }
 };
 
-const EmployeeViewModal = ({ visible, onClose, empData }) => {
+// Helper to get diff map between two objects (for shallow & nested objects)
+function getDiffMap(original = {}, modified = {}) {
+  const diffMap = {};
+  for (const key in modified) {
+    if (
+      modified[key] &&
+      typeof modified[key] === "object" &&
+      !Array.isArray(modified[key])
+    ) {
+      const nestedDiff = getDiffMap(original[key], modified[key]);
+      diffMap[key] = Object.values(nestedDiff).some(Boolean)
+        ? nestedDiff
+        : false;
+    } else {
+      diffMap[key] = modified[key] !== original[key];
+    }
+  }
+  return diffMap;
+}
+
+const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
   if (!empData) return null;
 
   const {
@@ -36,8 +56,19 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
     userVm,
   } = empData;
 
+  const {
+    employeeProfileLandingView: originalEmployeeProfileLandingView = {},
+  } = originalData || {};
+
+  const diffMap = getDiffMap(
+    originalEmployeeProfileLandingView,
+    employeeProfileLandingView
+  );
+
   const descriptionItemStyle = { paddingBottom: 12, fontSize: 14 };
   const labelStyle = { fontWeight: 600, fontSize: 14 };
+
+  const highlightStyle = { backgroundColor: "#fff8e1" }; // light yellow highlight
 
   return (
     <Modal
@@ -72,87 +103,156 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
             contentStyle={{ fontSize: 14, paddingBottom: 12 }}
             style={{ background: "#fafafa", borderRadius: 6, padding: 16 }}
           >
-            <Descriptions.Item label="Name" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Name"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strEmployeeName ? highlightStyle : {}),
+              }}
+            >
               <Text strong>
                 {employeeProfileLandingView?.strEmployeeName || "N/A"}
               </Text>
             </Descriptions.Item>
             <Descriptions.Item
               label="Employee Code"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strEmployeeCode ? highlightStyle : {}),
+              }}
             >
               {employeeProfileLandingView?.strEmployeeCode || "N/A"}
             </Descriptions.Item>
-            <Descriptions.Item label="Designation" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Designation"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strDesignation ? highlightStyle : {}),
+              }}
+            >
               {employeeProfileLandingView?.strDesignation || "N/A"}
             </Descriptions.Item>
-            <Descriptions.Item label="Department" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Department"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strDepartment ? highlightStyle : {}),
+              }}
+            >
               {employeeProfileLandingView?.strDepartment || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Date of Birth"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.dteDateOfBirth ? highlightStyle : {}),
+              }}
             >
               <CalendarOutlined style={{ marginRight: 8 }} />
               {formatDate(employeeProfileLandingView?.dteDateOfBirth)}
             </Descriptions.Item>
-            <Descriptions.Item label="Gender" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Gender"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strGender ? highlightStyle : {}),
+              }}
+            >
               {employeeProfileLandingView?.strGender || "N/A"}
             </Descriptions.Item>
-            <Descriptions.Item label="Religion" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Religion"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strReligion ? highlightStyle : {}),
+              }}
+            >
               {employeeProfileLandingView?.strReligion || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Marital Status"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strMaritalStatus ? highlightStyle : {}),
+              }}
             >
               {employeeProfileLandingView?.strMaritalStatus || "N/A"}
             </Descriptions.Item>
-            <Descriptions.Item label="Blood Group" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Blood Group"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strBloodGroup ? highlightStyle : {}),
+              }}
+            >
               {employeeProfileLandingView?.strBloodGroup || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Joining Date"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.dteJoiningDate ? highlightStyle : {}),
+              }}
             >
               <CalendarOutlined style={{ marginRight: 8 }} />
               {formatDate(employeeProfileLandingView?.dteJoiningDate)}
             </Descriptions.Item>
             <Descriptions.Item
               label="Employment Type"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strEmploymentType ? highlightStyle : {}),
+              }}
             >
               {employeeProfileLandingView?.strEmploymentType || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Office Email"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strOfficeMail ? highlightStyle : {}),
+              }}
             >
               <MailOutlined style={{ marginRight: 8 }} />
               {employeeProfileLandingView?.strOfficeMail || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Personal Email"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strPersonalMail ? highlightStyle : {}),
+              }}
             >
               <MailOutlined style={{ marginRight: 8 }} />
               {employeeProfileLandingView?.strPersonalMail || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Office Mobile"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strOfficeMobile ? highlightStyle : {}),
+              }}
             >
               <PhoneOutlined style={{ marginRight: 8 }} />
               {employeeProfileLandingView?.strOfficeMobile || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Personal Mobile"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strPersonalMobile ? highlightStyle : {}),
+              }}
             >
               <PhoneOutlined style={{ marginRight: 8 }} />
               {employeeProfileLandingView?.strPersonalMobile || "N/A"}
             </Descriptions.Item>
-            <Descriptions.Item label="Status" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Status"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strEmployeeStatus ? highlightStyle : {}),
+              }}
+            >
               <Text
                 type={
                   employeeProfileLandingView?.strEmployeeStatus === "Active"
@@ -163,23 +263,37 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
                 {employeeProfileLandingView?.strEmployeeStatus || "N/A"}
               </Text>
             </Descriptions.Item>
-            <Descriptions.Item label="Workplace" style={descriptionItemStyle}>
+            <Descriptions.Item
+              label="Workplace"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strWorkplaceName ? highlightStyle : {}),
+              }}
+            >
               {employeeProfileLandingView?.strWorkplaceName || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Business Unit"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strBusinessUnitName ? highlightStyle : {}),
+              }}
             >
               {employeeProfileLandingView?.strBusinessUnitName || "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Payroll Group"
-              style={descriptionItemStyle}
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.strPayrollGroupName ? highlightStyle : {}),
+              }}
             >
               {employeeProfileLandingView?.strPayrollGroupName || "N/A"}
             </Descriptions.Item>
           </Descriptions>
         </TabPane>
+
+        {/* Other tabs remain unchanged */}
 
         {/* Addresses */}
         <TabPane tab="Addresses" key="2">
@@ -230,53 +344,6 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
           )}
         </TabPane>
 
-        {/* Bank Details */}
-        <TabPane tab="Bank Details" key="3">
-          {empEmployeeBankDetail &&
-          Object.keys(empEmployeeBankDetail).length > 0 ? (
-            <Descriptions
-              bordered
-              column={1}
-              size="small"
-              labelStyle={labelStyle}
-              contentStyle={{ fontSize: 14, paddingBottom: 12 }}
-              style={{ background: "#fafafa", borderRadius: 6, padding: 16 }}
-            >
-              <Descriptions.Item
-                label="Account Name"
-                style={descriptionItemStyle}
-              >
-                {empEmployeeBankDetail.strAccountName || "N/A"}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label="Account No"
-                style={descriptionItemStyle}
-              >
-                {empEmployeeBankDetail.strAccountNo || "N/A"}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label="Bank/Wallet Name"
-                style={descriptionItemStyle}
-              >
-                {empEmployeeBankDetail.strBankWalletName || "N/A"}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label="Branch Name"
-                style={descriptionItemStyle}
-              >
-                {empEmployeeBankDetail.strBranchName || "N/A"}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label="Routing No"
-                style={descriptionItemStyle}
-              >
-                {empEmployeeBankDetail.strRoutingNo || "N/A"}
-              </Descriptions.Item>
-            </Descriptions>
-          ) : (
-            <Empty description="No bank details available" />
-          )}
-        </TabPane>
 
         {/* Education */}
         <TabPane tab="Education" key="4">
@@ -322,9 +389,9 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
         </TabPane>
 
         {/* Job Experience */}
-        <TabPane tab="Job Experience" key="5">
+        <TabPane tab="Work Experience" key="5">
           {empJobExperience.length === 0 ? (
-            <Empty description="No job experience found" />
+            <Empty description="No work experience found" />
           ) : (
             <List
               itemLayout="vertical"
@@ -357,7 +424,7 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
         </TabPane>
 
         {/* Training */}
-        <TabPane tab="Training" key="6">
+        <TabPane tab="Training And Development" key="6">
           {empEmployeeTraining.length === 0 ? (
             <Empty description="No training records found" />
           ) : (
@@ -394,18 +461,18 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
           )}
         </TabPane>
 
-        {/* Relatives Contact */}
         <TabPane tab="Relatives Contact" key="7">
           {empEmployeeRelativesContact.length === 0 ? (
             <Empty description="No relatives contact found" />
           ) : (
             <List
+              itemLayout="vertical"
               dataSource={empEmployeeRelativesContact}
               renderItem={(rel) => (
                 <List.Item
                   key={
-                    rel.intEmployeeRelativeId ||
-                    rel.intEmployeeRelativesContactId
+                    rel.intEmployeeRelativesContactId ||
+                    rel.intEmployeeRelativeId
                   }
                   style={{
                     marginBottom: 16,
@@ -416,10 +483,25 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
                   }}
                 >
                   <List.Item.Meta
-                    title={<Text strong>{rel.strRelativeName || "Name"}</Text>}
-                    description={rel.strRelation || "Relation"}
+                    title={
+                      <Text strong>
+                        {rel.strGrantorNomineeType || "Contact"}
+                      </Text>
+                    }
+                    description={<Text>{rel.strRelativesName || "Name"}</Text>}
                   />
-                  <div>Contact: {rel.strContactNumber || "N/A"}</div>
+                  <div>Relation: {rel.strRelationship || "N/A"}</div>
+                  <div>Contact: {rel.strPhone || "N/A"}</div>
+                  {rel.strEmail && <div>Email: {rel.strEmail}</div>}
+                  {rel.strAddress && <div>Address: {rel.strAddress}</div>}
+                  {rel.strNid && <div>NID: {rel.strNid}</div>}
+                  {rel.strRemarks && <div>Remarks: {rel.strRemarks}</div>}
+                  {rel.dteDateOfBirth && (
+                    <div>
+                      Date of Birth:{" "}
+                      {new Date(rel.dteDateOfBirth).toLocaleDateString()}
+                    </div>
+                  )}
                 </List.Item>
               )}
             />
@@ -463,7 +545,7 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
         </TabPane>
 
         {/* Photo Identity */}
-        <TabPane tab="Photo Identity" key="9">
+        <TabPane tab="Identity" key="9">
           {empEmployeePhotoIdentity ? (
             <Descriptions
               bordered
@@ -473,6 +555,15 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
               contentStyle={{ fontSize: 14, paddingBottom: 12 }}
               style={{ background: "#fafafa", borderRadius: 6, padding: 16 }}
             >
+              <Descriptions.Item label="NID" style={descriptionItemStyle}>
+                {empEmployeePhotoIdentity.strNid || "N/A"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Birth ID" style={descriptionItemStyle}>
+                {empEmployeePhotoIdentity.strBirthId || "N/A"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Passport" style={descriptionItemStyle}>
+                {empEmployeePhotoIdentity.strPassport || "N/A"}
+              </Descriptions.Item>
               <Descriptions.Item
                 label="Nationality"
                 style={descriptionItemStyle}
@@ -488,100 +579,11 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
               <Descriptions.Item label="Active" style={descriptionItemStyle}>
                 {empEmployeePhotoIdentity.isActive ? "Yes" : "No"}
               </Descriptions.Item>
-              <Descriptions.Item
-                label="Created At"
-                style={descriptionItemStyle}
-              >
-                {formatDate(empEmployeePhotoIdentity.dteCreatedAt)}
-              </Descriptions.Item>
             </Descriptions>
           ) : (
             <Empty description="No photo identity info available" />
           )}
         </TabPane>
-
-        {/* Holiday Assignment */}
-        <TabPane tab="Holiday Assignment" key="10">
-          {holidayassignviewmodel ? (
-            <Descriptions
-              bordered
-              column={1}
-              size="small"
-              labelStyle={labelStyle}
-              contentStyle={{ fontSize: 14, paddingBottom: 12 }}
-              style={{ background: "#fafafa", borderRadius: 6, padding: 16 }}
-            >
-              <Descriptions.Item
-                label="Holiday Group Name"
-                style={descriptionItemStyle}
-              >
-                {holidayassignviewmodel.strHolidayGroupName || "N/A"}
-              </Descriptions.Item>
-              <Descriptions.Item
-                label="Effective Date"
-                style={descriptionItemStyle}
-              >
-                {formatDate(holidayassignviewmodel.dteEffectiveDate)}
-              </Descriptions.Item>
-              <Descriptions.Item label="Year" style={descriptionItemStyle}>
-                {holidayassignviewmodel.intYear || "N/A"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Active" style={descriptionItemStyle}>
-                {holidayassignviewmodel.isActive ? "Yes" : "No"}
-              </Descriptions.Item>
-            </Descriptions>
-          ) : (
-            <Empty description="No holiday assignment info" />
-          )}
-        </TabPane>
-
-        {/* Offday Assignment */}
-        <TabPane tab="Offday Assignment" key="11">
-          {offdayassignviewmodel ? (
-            <Descriptions
-              bordered
-              column={1}
-              size="small"
-              labelStyle={labelStyle}
-              contentStyle={{ fontSize: 14, paddingBottom: 12 }}
-              style={{ background: "#fafafa", borderRadius: 6, padding: 16 }}
-            >
-              <Descriptions.Item
-                label="Effective Date"
-                style={descriptionItemStyle}
-              >
-                {formatDate(offdayassignviewmodel.dteEffectiveDate)}
-              </Descriptions.Item>
-              <Descriptions.Item label="Saturday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isSaturday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Sunday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isSunday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Monday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isMonday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tuesday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isTuesday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Wednesday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isWednesday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Thursday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isThursday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Friday" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isFriday ? "Yes" : "No"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Active" style={descriptionItemStyle}>
-                {offdayassignviewmodel.isActive ? "Yes" : "No"}
-              </Descriptions.Item>
-            </Descriptions>
-          ) : (
-            <Empty description="No offday assignment info" />
-          )}
-        </TabPane>
-
         {/* User Info */}
         <TabPane tab="User Info" key="12">
           {userVm ? (
@@ -604,9 +606,7 @@ const EmployeeViewModal = ({ visible, onClose, empData }) => {
                 style={descriptionItemStyle}
               >
                 <MailOutlined style={{ marginRight: 8 }} />
-                <a href={`mailto:${userVm.officeMail}`}>
-                  {userVm.officeMail || "N/A"}
-                </a>
+                {userVm.officeMail || "N/A"}
               </Descriptions.Item>
               <Descriptions.Item
                 label="Personal Mobile"

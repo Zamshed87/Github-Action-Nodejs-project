@@ -46,7 +46,10 @@ import ViewFormComponent from "./utils/ViewFormComponent";
 import { getFilteredValues } from "./filterValues";
 import { SearchOutlined } from "@mui/icons-material";
 import { debounce } from "lodash";
-import { getEmployeeProfileViewPendingData } from "modules/employeeProfile/employeeFeature/helper";
+import {
+  getEmployeeProfileViewData,
+  getEmployeeProfileViewPendingData,
+} from "modules/employeeProfile/employeeFeature/helper";
 import EmployeeViewModal from "modules/employeeProfile/aboutMe/ViewModal";
 
 const CommonApprovalComponent = () => {
@@ -76,6 +79,7 @@ const CommonApprovalComponent = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [empBasicPending, setEmpBasicPending] = useState({});
   const [isOpen, setIsOpen] = useState(false);
+  const [empBasic, setEmpBasic] = useState({});
 
   const [filteredWId, setFilteredWId] = useState(wId);
   const [filteredWgId, setFilteredWgId] = useState(wgId);
@@ -90,6 +94,16 @@ const CommonApprovalComponent = () => {
     }
   }, [wId, wgId]);
 
+  const getEmpData = () => {
+    getEmployeeProfileViewData(
+      employeeId,
+      setEmpBasic,
+      setLoading,
+      buId,
+      logWgId
+    );
+  };
+
   const getEmpPendingData = (empId) => {
     getEmployeeProfileViewPendingData(
       empId,
@@ -100,13 +114,14 @@ const CommonApprovalComponent = () => {
     );
   };
 
-   const handleViewModalClose = () => {
+  const handleViewModalClose = () => {
     setIsOpen(false);
   };
 
-   const handleViewClick = (empId) => {
+  const handleViewClick = (empId) => {
     setIsOpen(true);
     getEmpPendingData(empId);
+    getEmpData();
   };
 
   useEffect(() => {
@@ -423,11 +438,12 @@ const CommonApprovalComponent = () => {
           setViewData,
         }}
       />
-        <EmployeeViewModal
-          visible={isOpen}
-          onClose={handleViewModalClose}
-          empData={empBasicPending}
-        />
+      <EmployeeViewModal
+        visible={isOpen}
+        onClose={handleViewModalClose}
+        empData={empBasicPending}
+        originalData={empBasic}
+      />
     </div>
   );
 };
