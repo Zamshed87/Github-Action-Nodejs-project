@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal, Tabs, Descriptions, List, Empty, Typography } from "antd";
 import {
   MailOutlined,
@@ -18,7 +17,6 @@ const formatDate = (dateStr) => {
   }
 };
 
-// Helper to get diff map between two objects (for shallow & nested objects)
 function getDiffMap(original = {}, modified = {}) {
   const diffMap = {};
   for (const key in modified) {
@@ -44,15 +42,12 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
   const {
     employeeProfileLandingView,
     empEmployeeAddress = [],
-    empEmployeeBankDetail,
     empEmployeeEducation = [],
     empJobExperience = [],
     empEmployeeTraining = [],
     empEmployeeRelativesContact = [],
     empSocialMedia = [],
     empEmployeePhotoIdentity,
-    holidayassignviewmodel,
-    offdayassignviewmodel,
     userVm,
   } = empData;
 
@@ -81,7 +76,7 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
     >
       <Tabs
         defaultActiveKey="1"
-        type="line"
+        type="card"
         size="middle"
         tabBarStyle={{
           position: "sticky",
