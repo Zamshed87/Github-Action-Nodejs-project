@@ -1,13 +1,17 @@
-import PfPolicyConfig from "./PfPolicyConfig";
+import { PCardBody } from "Components";
+import PfProfitShareFilter from "./PfProfitShareFilter";
 import ProfitShareCalculation from "./ProfitShareCalculation";
 
 const PfProfitShareConfiguration = ({ form }) => {
-
   return (
-    <>
-      <PfPolicyConfig form={form} />
-     <ProfitShareCalculation form={form} />
-    </>
+    <PCardBody styles={{display: "flex", gap: "20px"}}>
+      <div style={{ flex: 1 }}>
+      <PfProfitShareFilter form={form} />
+      </div>
+      <div style={{ flex: 1 }}>
+      <ProfitShareCalculation form={form} />
+      </div>
+    </PCardBody>
   );
 };
 

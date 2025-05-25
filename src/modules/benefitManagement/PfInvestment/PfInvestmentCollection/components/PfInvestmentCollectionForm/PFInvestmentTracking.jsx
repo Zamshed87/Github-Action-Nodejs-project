@@ -1,9 +1,7 @@
-import { DataTable, PButton, PCardBody, PInput } from "Components";
+import { PButton, PCardBody, PInput } from "Components";
 import { Col, Row } from "antd";
-import { detailsHeader } from "./helper";
-import { date } from "yup";
 
-const PFInvestmentTracking = ({ form, data, addData, removeData }) => {
+const PFInvestmentTracking = ({ form, addData }) => {
   const handleAmountChange = () => {
     const collectionAmount = form.getFieldValue("collectionAmount") || 0;
     const interestAmount = form.getFieldValue("interestAmount") || 0;
@@ -88,18 +86,7 @@ const PFInvestmentTracking = ({ form, data, addData, removeData }) => {
           </Col>
         </Row>
       </PCardBody>
-      {data?.length > 0 && (
-        <PCardBody className="mb-4">
-          <DataTable
-            bordered
-            data={data || []}
-            rowKey={(row, idx) => idx}
-            header={detailsHeader({
-              removeData,
-            })}
-          />
-        </PCardBody>
-      )}
+     
     </>
   );
 };

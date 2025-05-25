@@ -2,8 +2,15 @@ import { Checkbox, Form } from "antd";
 import InvestmentDetailsTable from "./InvestmentDetailsTable";
 import PFInvestmentTracking from "./PFInvestmentTracking";
 import { toast } from "react-toastify";
+import { DataTable, PCardBody } from "Components";
+import { detailsHeader } from "./helper";
 
-const PfInvestmentCollectionForm = ({ form, saveData, setSaveData }) => {
+const PfInvestmentCollectionForm = ({
+  form,
+  saveData,
+  setSaveData,
+  isViewMode,
+}) => {
   const removeData = (index) => {
     const newData = saveData?.filter((_, i) => i !== index);
     setSaveData(newData);
@@ -51,21 +58,31 @@ const PfInvestmentCollectionForm = ({ form, saveData, setSaveData }) => {
         <div
           style={{ width: "30%", display: "flex", justifyContent: "center" }}
         >
-          <Form.Item
-            name="isCollectionComplete"
-            valuePropName="checked"
-            style={{ marginTop: 23, marginBottom: 0 }}
-          >
-            <Checkbox>Is Collection Complete?</Checkbox>
-          </Form.Item>
+          {!isViewMode && (
+            <Form.Item
+              name="isCollectionComplete"
+              valuePropName="checked"
+              style={{ marginTop: 23, marginBottom: 0 }}
+            >
+              <Checkbox>Is Collection Complete?</Checkbox>
+            </Form.Item>
+          )}
         </div>
       </div>
-      <PFInvestmentTracking
-        form={form}
-        data={saveData}
-        addData={() => addData()}
-        removeData={(index) => removeData(index)}
-      />
+      {!isViewMode && <PFInvestmentTracking form={form} addData={addData} />}
+      {saveData?.length > 0 && (
+        <PCardBody className="mb-4">
+          <DataTable
+            bordered
+            data={saveData || []}
+            rowKey={(row, idx) => idx}
+            header={detailsHeader({
+              removeData,
+              action:!isViewMode,
+            })}
+          />
+        </PCardBody>
+      )}
     </>
   );
 };

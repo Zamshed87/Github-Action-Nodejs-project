@@ -7,7 +7,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import { FaEye } from "react-icons/fa";
 import { RxCrossCircled } from "react-icons/rx";
 
-export const getHeader = (pages, setOpenView, history, inActivatePfInvestment) => [
+export const getHeader = (pages, history, inActivatePfInvestment) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -121,7 +121,16 @@ export const getHeader = (pages, setOpenView, history, inActivatePfInvestment) =
           <Tooltip title="View">
             <button
               style={iconBtnStyle}
-              onClick={() => setOpenView?.({ open: true, data: record })}
+              onClick={() => {
+                history.push(
+                  `/BenefitsManagement/providentFund/pfInvestment/view`,
+                  {
+                    state: {
+                      data: record,
+                    },
+                  }
+                );
+              }}
             >
               <FaEye size={16} />
             </button>

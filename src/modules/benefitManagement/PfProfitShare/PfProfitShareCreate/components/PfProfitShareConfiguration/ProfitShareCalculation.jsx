@@ -4,8 +4,8 @@ import { Col } from "react-bootstrap";
 
 const ProfitShareCalculation = ({ form }) => {
   return (
-    <Row gutter={[10, 2]}>
-      <Col md={5} sm={12} xs={24}>
+    <Row gutter={[5, 2]}>
+      <Col md={4} sm={12} xs={24}>
         <PSelect
           options={[
             { value: 1, label: "Percentage" },
@@ -20,19 +20,13 @@ const ProfitShareCalculation = ({ form }) => {
           }}
         />
       </Col>
-      <Col md={5} sm={12} xs={24}>
+      <Col md={4} sm={12} xs={24}>
         <PInput
           type="number"
           min={0}
-          name="strPolicyName"
-          placeholder="Policy Name"
-          label="Policy Name"
-          rules={[
-            {
-              required: true,
-              message: "Policy Name Is Required",
-            },
-          ]}
+          name="profitShare"
+          placeholder="Profit Share"
+          label="Profit Share"
         />
       </Col>
       <Col style={{ marginTop: "23px" }}>

@@ -14,8 +14,8 @@ const PfInvestmentCollection = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState([]);
   const location = useLocation();
+  const isViewMode = location.pathname.includes("view");
   const record = location.state?.state?.data || {};
-  console.log("record", record);
   // redux
   const {
     permissionList,
@@ -28,7 +28,11 @@ const PfInvestmentCollection = () => {
 
   useEffect(() => {
     if (record?.investmentHeaderId) {
-      getInvestmentCollection(record?.investmentHeaderId, setLoading, setSaveData);
+      getInvestmentCollection(
+        record?.investmentHeaderId,
+        setLoading,
+        setSaveData
+      );
     }
   }, [record?.investmentHeaderId]);
 
@@ -40,11 +44,11 @@ const PfInvestmentCollection = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "PF Investment Collection";
+    document.title = `PF Investment ${isViewMode ? "View" : "Collection"}`;
     return () => {
       document.title = "PeopleDesk";
     };
-  }, []);
+  }, [isViewMode]);
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -52,14 +56,14 @@ const PfInvestmentCollection = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`PF Investment Collection`}
+            title={`PF Investment ${isViewMode ? "View" : "Collection"}`}
             buttonList={[
-              {
+              !isViewMode && {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
                   form
-                    .validateFields(['isCollectionComplete'])
+                    .validateFields(["isCollectionComplete"])
                     .then((values) => {
                       if (saveData.length < 1) {
                         toast.error(
@@ -89,6 +93,7 @@ const PfInvestmentCollection = () => {
             form={form}
             saveData={saveData}
             setSaveData={setSaveData}
+            isViewMode={isViewMode}
           />
         </PCard>
       </PForm>

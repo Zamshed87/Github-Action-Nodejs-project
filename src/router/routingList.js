@@ -4419,6 +4419,10 @@ export const routingList = [
     component: PFInvestmentCreate,
   },
   {
+    path: "/BenefitsManagement/providentFund/pfInvestment/view",
+    component: PFInvestmentCollection,
+  },
+  {
     path: "/BenefitsManagement/providentFund/pfInvestment/collection",
     component: PFInvestmentCollection,
   },

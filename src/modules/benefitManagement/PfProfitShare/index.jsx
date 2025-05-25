@@ -62,7 +62,7 @@ const PfProfitShare = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/BenefitsManagement/providentFund/pfPolicy/create");
+                    history.push("/BenefitsManagement/providentFund/pfProfitShare/create");
                   } else {
                     toast.warn("You don't have permission");
                   }

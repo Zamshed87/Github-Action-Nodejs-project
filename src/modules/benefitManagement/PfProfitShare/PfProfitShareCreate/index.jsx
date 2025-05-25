@@ -13,10 +13,7 @@ import { useHistory } from "react-router-dom";
 const PfProfitShareCreate = () => {
   const history = useHistory();
   const [form] = Form.useForm();
-  const [saveData, setSaveData] = useState({
-    employeeContributions: [],
-    companyContributions: [],
-  });
+  const [saveData, setSaveData] = useState();
   // redux
   const {
     permissionList,
@@ -34,7 +31,7 @@ const PfProfitShareCreate = () => {
   }, [permissionList]);
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy Create";
+    document.title = "Benefits Management - PF Profit Share Create";
     return () => {
       document.title = "PeopleDesk";
     };  
@@ -47,22 +44,14 @@ const PfProfitShareCreate = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`PF Policy`}
+            title={`PF Profit Share Create`}
             buttonList={[
               {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
                   const commonFields = [
-                    "strPolicyName",
-                    "strPolicyCode",
-                    "intWorkPlaceId",
-                    "intEmploymentTypeIds",
-                    "intPfEligibilityDependOn",
-                    "intEmployeeContributionPaidAfter",
-                    "isPFInvestment",
-                    "intMonthlyInvestmentWith",
-                    "intEmployeeContributionInFixedMonth",
+                    
                   ];
                   form
                     .validateFields(commonFields)
@@ -74,23 +63,7 @@ const PfProfitShareCreate = () => {
                       }
 
                       const payload = {
-                        intBusinessUnitId: buId,
-                        intWorkPlaceGroupId: wgId,
-                        strPolicyName: values?.strPolicyName,
-                        strPolicyCode: values?.strPolicyCode,
-                        intWorkPlaceId: values?.intWorkPlaceId,
-                        intEmploymentTypeIds: values?.intEmploymentTypeIds,
-                        intPfEligibilityDependOn:
-                          values?.intPfEligibilityDependOn?.value,
-                        employeeContributions: saveData?.employeeContributions,
-                        ...saveData,
-                        intEmployeeContributionPaidAfter:
-                          values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth:
-                          values?.intEmployeeContributionInFixedMonth,
-                        isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith:
-                          values?.intMonthlyInvestmentWith,
+                        
                       };
                       createPFPolicy(payload, setLoading, () => {
                         setSaveData({
