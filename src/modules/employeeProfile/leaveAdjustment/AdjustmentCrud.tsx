@@ -34,22 +34,6 @@ export const AdjustmentCrud = ({
   const detailsApi = useApiRequest({});
   const createEditApi = useApiRequest({});
   const getById = useApiRequest({});
-  //   getBUnitDDL.action({
-  //     urlKey: "BusinessUnitWithRoleExtension",
-  //     method: "GET",
-  //     params: {
-  //       workplaceGroupId: wgId,
-  //       businessUnitId: buId,
-  //       empId: employeeId || 0,
-  //       accountId: orgId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item, i) => {
-  //         res[i].label = item?.strBusinessUnit;
-  //         res[i].value = item?.intBusinessUnitId;
-  //       });
-  //     },
-  //   });
   const [form] = Form.useForm();
   const getBeneficiaryTypes = () => {
     beneficiaryType?.action({
@@ -70,6 +54,7 @@ export const AdjustmentCrud = ({
       params: {
         employeeId: id,
         date: todayDate(),
+        isAdmin: true,
       },
       onSuccess: (res) => {
         res.forEach((item: any, idx: any) => {
@@ -393,6 +378,10 @@ export const AdjustmentCrud = ({
                       }
                       rules={[
                         {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+                        {
                           required: beneficiary?.value != "3",
                           message: "Adjust From Balance is required",
                         },
@@ -518,6 +507,11 @@ export const AdjustmentCrud = ({
                         </>
                       }
                       rules={[
+                        {
+                          message: "Number must be positive",
+                          pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                        },
+
                         {
                           required: beneficiary?.value != "2",
                           message: "Adjust To Balance is required",
