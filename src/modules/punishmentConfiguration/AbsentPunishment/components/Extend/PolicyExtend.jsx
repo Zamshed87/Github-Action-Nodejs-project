@@ -90,7 +90,7 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
               placeholder="Select Employment Type"
               options={employmentTypeDDL.data}
               loading={employmentTypeDDL.loading}
-              advanceAllOption={true}
+              AllValueZero={true}
               rules={[
                 { required: true, message: "Employment Type is required" },
               ]}
@@ -104,7 +104,7 @@ const PolicyExtend = ({ data, setOpenExtend }) => {
               placeholder="Select Employee Designation"
               options={empDesignationDDL.data}
               loading={empDesignationDDL.loading}
-              advanceAllOption={true}
+              AllValueZero={true}
               rules={[
                 { required: true, message: "Employee Designation is required" },
               ]}
