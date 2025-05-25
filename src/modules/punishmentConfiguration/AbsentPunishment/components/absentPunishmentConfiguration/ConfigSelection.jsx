@@ -127,7 +127,7 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
               placeholder="Select Employment Type"
               options={employmentTypeDDL.data}
               loading={employmentTypeDDL.loading}
-              advanceAllOption={true}
+              AllValueZero={true}
               rules={[
                 { required: true, message: "Employment Type is required" },
               ]}
@@ -141,7 +141,7 @@ const ConfigSelection = ({ form, detailList, setDetailList }) => {
               placeholder="Select Employee Designation"
               options={empDesignationDDL.data}
               loading={empDesignationDDL.loading}
-              advanceAllOption={true}
+              AllValueZero={true}
               rules={[
                 { required: true, message: "Employee Designation is required" },
               ]}
