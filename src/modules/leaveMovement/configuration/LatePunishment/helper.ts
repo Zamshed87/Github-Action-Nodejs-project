@@ -25,11 +25,8 @@ function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
     const oldMax = policy.maximumLateTime;
     const newMin = values.minimumLateTime;
     const newMax = values.maximumLateTime;
-    console.log(oldMin, oldMax);
-    console.log(newMin, newMax);
 
     const isOverlapping = Math.max(oldMin, newMin) <= Math.min(oldMax, newMax);
-    console.log(isOverlapping);
 
     if (isOverlapping) {
       toast.error(
@@ -37,36 +34,52 @@ function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
       );
       return false;
     }
-    console.log(policy.eachDayCountBy, "policy.eachDayCountBy");
-    console.log(policy.eachDayCountById, "policy.eachDayCountById");
   }
 }
+const isDateRangeOverlap = (
+  startA: Date,
+  endA: Date,
+  startB: Date,
+  endB: Date
+): boolean => {
+  return !(endA < startB || startA > endB);
+};
 
-function isDayRangeOverlapping(data: any[], values: any): boolean {
-  // if (!Array.isArray(values?.dayRange)) return false;
-  const [newStart, newEnd] = [
-    new Date(values.dayRange[0]).getUTCDate(),
-    new Date(values.dayRange[1]).getUTCDate(),
-  ];
-  const conflictingPolicies = data.filter(
-    (policy) => policy.lateCalculationTypeId === 2
-  );
+function isDayRangeOverlapping(data: any[], values: any): any {
+  const [newStartISO, newEndISO] = values.dayRange;
+  const newStartDate = new Date(newStartISO);
+  const newEndDate = new Date(newEndISO);
 
-  for (const policy of conflictingPolicies) {
-    const [oldStart, oldEnd] = policy.dayRangeId;
+  const hasOverlap = data.some((item) => {
+    const range = item.dayRangeId;
+    if (!range || range.length < 2) return false;
 
-    const isOverlapping =
-      Math.max(newStart, oldStart) <= Math.min(newEnd, oldEnd);
+    const [startDay, endDay] = range;
 
-    if (isOverlapping) {
-      toast.error(
-        `Day Range [${newStart}, ${newEnd}] overlaps with existing range [${oldStart}, ${oldEnd}]`
-      );
-      return true;
-    }
+    // Clone newStartDate to create proper base
+    const baseDate = new Date(newStartDate);
+    const existingStartDate = new Date(baseDate);
+    const existingEndDate = new Date(baseDate);
+
+    existingStartDate.setDate(
+      baseDate.getDate() - (baseDate.getDate() - startDay)
+    );
+    existingEndDate.setDate(baseDate.getDate() - (baseDate.getDate() - endDay));
+
+    return isDateRangeOverlap(
+      newStartDate,
+      newEndDate,
+      existingStartDate,
+      existingEndDate
+    );
+  });
+
+  if (hasOverlap) {
+    toast.error("Day range overlaps with an existing policy.");
+    return false;
   }
 
-  return false; // ✅ No conflicts
+  return true; // No overlap, safe to proceed
 }
 
 function isTimeBasedOverlaped(data: any[], values: any): boolean {
@@ -109,7 +122,7 @@ export const addHandler = (
   }
   if (
     values.lateCalculationType?.value === 2 &&
-    isDayRangeOverlapping(data, values)
+    !isDayRangeOverlapping(data, values)
   ) {
     return null;
   }
@@ -119,12 +132,7 @@ export const addHandler = (
   ) {
     return null;
   }
-  console.log(values, "values22");
-  const dayRange: string = values?.dayRange
-    ?.map((date: string) => new Date(date).getUTCDate())
-    .join("-");
-
-  console.log("values.eachDayCountBy", values.eachDayCountBy?.label);
+  const [startDateStr, endDateStr] = values?.dayRange || [];
 
   setData([
     ...data,
@@ -144,7 +152,11 @@ export const addHandler = (
       lateCalculationType: values.lateCalculationType?.value || null,
       eachDayCountBy: values.eachDayCountBy?.label || values.eachDayCountBy,
       eachDayCountById: values.eachDayCountBy?.value || null,
-      dayRange: dayRange,
+      startDay: startDateStr
+        ? new Date(startDateStr).getUTCDate().toString()
+        : "",
+      endDay: endDateStr ? new Date(endDateStr).getUTCDate().toString() : "",
+      // dayRange: dayRange,
       dayRangeId: values.dayRange
         ? [
             new Date(values.dayRange[0]).getUTCDate(),
@@ -250,8 +262,8 @@ const mapLatePunishmentPayload = (
         lateCalculationTypeDescription:
           item.lateCalculationTypeDescription || "",
         eachDayCountBy: item.eachDayCountById || 0,
-        startDay: item.dayRange ? parseInt(item.dayRange.split("-")[0]) : 0,
-        endDay: item.dayRange ? parseInt(item.dayRange.split("-")[1]) : 0,
+        startDay: item.startDay || 0,
+        endDay: item.endDay || 0,
         isConsecutiveDay: item.isConsecutiveDay || false,
         minimumLateTime: item.minimumLateTime || 0,
         maximumLateTime: item.maximumLateTime || 0,
@@ -310,7 +322,6 @@ export const addLeaveDeductions = (
   data: LeaveDeductionDataState,
   values: any
 ) => {
-  console.log("values", values);
   setData([
     ...data,
     {
