@@ -41,7 +41,7 @@ export default function BonusSetupLanding() {
     strReligionNameList: [],
     strEmploymentTypeList: [],
     hrPositionNameList: [],
-    strBonusSetupGroupCodeList:[]
+    strBonusSetupGroupCodeList: [],
   };
 
   let permission = null;
@@ -158,7 +158,6 @@ export default function BonusSetupLanding() {
     );
   };
 
-
   useEffect(() => {
     setHeaderList({});
     getData(pages);
@@ -229,9 +228,7 @@ export default function BonusSetupLanding() {
       },
       {
         title: "Service Length Type",
-        render: (item) => (
-          <>{item?.isServiceLengthInDays ? "Days" : "Month"}</>
-        ),
+        render: (item) => <>{item?.isServiceLengthInDays ? "Days" : "Month"}</>,
         sort: true,
         filter: false,
       },
@@ -258,7 +255,7 @@ export default function BonusSetupLanding() {
               : item?.intMaximumServiceLengthDays || "-"}
           </>
         ),
-        sort: true, 
+        sort: true,
         filter: false,
       },
       {
@@ -276,8 +273,17 @@ export default function BonusSetupLanding() {
       {
         title: "Divided by Service Length",
         dataIndex: "isDividedbyServiceLength",
-        render: (data) => <>{data?.isDividedbyServiceLength ? "True" : "False"}</>,
+        render: (data) => (
+          <>{data?.isDividedbyServiceLength ? "True" : "False"}</>
+        ),
         sort: true,
+        filter: false,
+      },
+      {
+        title: "with tax?",
+        dataIndex: "isWithTax",
+        sort: true,
+        render: (data) => <>{data?.isWithTax ? "Yes" : "No"}</>,
         filter: false,
       },
       {
