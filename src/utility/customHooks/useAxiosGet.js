@@ -22,7 +22,7 @@ const useAxiosGet = (initValue) => {
       });
   };
 
-  return [res, getData, loading, setRes, error];
+  return [res, getData, loading, setRes, error, setLoading];
 };
 
 export default useAxiosGet;

@@ -6,15 +6,18 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import { createPFInvestment } from "./helper";
-import PfInvestmentConfiguration from "./components/PfPolicyConfiguration";
+import { createPFInvestment, createPFInvestmentEdit } from "./helper";
+import PfInvestmentConfiguration from "./components/PfInvestmentConfig";
+import { useHistory, useLocation } from "react-router-dom";
+import moment from "moment";
 
 const PfInvestmentCreate = () => {
   const [form] = Form.useForm();
-  const [saveData, setSaveData] = useState({
-    employeeContributions: [],
-    companyContributions: [],
-  });
+  const history = useHistory();
+  const location = useLocation();
+  const record = location.state?.state?.data || {};
+  const isEdit = location.pathname.includes("/edit");
+
   // redux
   const {
     permissionList,
@@ -41,11 +44,37 @@ const PfInvestmentCreate = () => {
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={
+          isEdit
+            ? {
+                expectedROI: record?.expectedROI ?? 0,
+                investmentAmount: record?.investmentAmount ?? 0,
+                investmentDate: record?.investmentDate
+                  ? moment(record?.investmentDate)
+                  : "",
+                investmentDuration: record?.investmentDuration ?? 0,
+                investmentTypeId: {
+                  value: record?.investmentTypeId,
+                  label: record?.investmentName,
+                },
+                maturityDate: record?.maturityDate
+                  ? moment(record?.maturityDate)
+                  : "",
+                investmentOrganizationId: {
+                  value: record?.orgInvestmentId,
+                  label: record?.orgInvestmentName,
+                },
+                remark: record?.remark ?? "",
+              }
+            : {}
+        }
+      >
         <PCard>
           <PCardHeader
             backButton
-            title={`PF Policy`}
+            title={`PF Investment Create`}
             buttonList={[
               {
                 type: "primary",
@@ -66,9 +95,22 @@ const PfInvestmentCreate = () => {
                         maturityDate: values.maturityDate,
                         remark: values.remark ?? "",
                       };
-                      createPFInvestment(payload, setLoading, () => {
-                        form.resetFields();
-                      });
+                      if (isEdit) {
+                        payload.investmentId = record?.investmentId;
+                        createPFInvestmentEdit(payload, setLoading, () => {
+                          history.push(
+                            "/BenefitsManagement/providentFund/pfInvestment"
+                          );
+                          form.resetFields();
+                        });
+                      } else {
+                        createPFInvestment(payload, setLoading, () => {
+                          history.push(
+                            "/BenefitsManagement/providentFund/pfInvestment"
+                          );
+                          form.resetFields();
+                        });
+                      }
                     })
                     .catch(() => {
                       toast.error("Please fill all required fields.");
@@ -77,11 +119,7 @@ const PfInvestmentCreate = () => {
               },
             ]}
           />
-          <PfInvestmentConfiguration
-            form={form}
-            saveData={saveData}
-            setSaveData={setSaveData}
-          />
+          <PfInvestmentConfiguration form={form} />
         </PCard>
       </PForm>
     </div>

@@ -21,14 +21,14 @@ const InvestmentType = () => {
     useInvestmentType(form);
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy";
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Administration - Investment Types";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30541) {
+    if (item?.menuReferenceId === 30602) {
       permission = item;
     }
   });
