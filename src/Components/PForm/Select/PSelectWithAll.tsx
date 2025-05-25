@@ -17,7 +17,7 @@ interface PSelectWithAllProps {
   loading?: boolean;
   rules?: any[];
   returnFullObject?: boolean;
-  advanceAllOption?: boolean;
+  AllValueZero?: boolean;
 }
 
 const RAW_ALL_VALUE = "All";
@@ -32,10 +32,10 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
   loading = false,
   rules = [],
   returnFullObject = false,
-  advanceAllOption = false,
+  AllValueZero = false,
 }) => {
   const allValues = options.map((opt) => opt.value);
-  const allOption: OptionType = advanceAllOption
+  const allOption: OptionType = AllValueZero
     ? { label: RAW_ALL_VALUE, value: ADVANCED_ALL_VALUE }
     : { label: RAW_ALL_VALUE, value: RAW_ALL_VALUE };
 
@@ -47,16 +47,16 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
   useEffect(() => {
     let selected = selectedValues;
 
-    if (!advanceAllOption && selected.includes(RAW_ALL_VALUE)) {
+    if (!AllValueZero && selected.includes(RAW_ALL_VALUE)) {
       selected = allValues;
     }
 
     const formValue = returnFullObject
-      ? options.filter((opt) => selected.includes(opt.value))
-      : selected;
+    ? options.filter((opt) => selected.includes(opt.value))
+    : selected;
 
     form.setFieldsValue({ [name]: formValue });
-  }, [selectedValues, allValues, form, name, options, returnFullObject, advanceAllOption]);
+  }, [selectedValues, allValues, form, name, options, returnFullObject, AllValueZero]);
 
   useEffect(() => {
     if (!watchedValue || watchedValue.length === 0) {
@@ -66,7 +66,7 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
   
   
   const handleChange = (selected: (string | number)[]) => {
-    if (advanceAllOption) {
+    if (AllValueZero) {
       if (selected.includes(ADVANCED_ALL_VALUE)) {
         setSelectedValues([ADVANCED_ALL_VALUE]);
       } else {
@@ -87,14 +87,14 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
   };
 
   const getDisplayValue = (): (string | number)[] => {
-    if (!advanceAllOption && selectedValues.includes(RAW_ALL_VALUE)) {
+    if (!AllValueZero && selectedValues.includes(RAW_ALL_VALUE)) {
       return allValues;
     }
     return selectedValues;
   };
 
   const getOptionDisabled = (value: string | number): boolean => {
-    if (advanceAllOption) {
+    if (AllValueZero) {
       return selectedValues.includes(ADVANCED_ALL_VALUE) && value !== ADVANCED_ALL_VALUE;
     }
     return selectedValues.includes(RAW_ALL_VALUE) && value !== RAW_ALL_VALUE;

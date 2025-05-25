@@ -185,7 +185,7 @@ export const CalendarAssign = () => {
       },
       sorter: true,
       fixed: "left",
-      width: 75,
+      width: 105,
     },
     {
       title: "Employee ID",

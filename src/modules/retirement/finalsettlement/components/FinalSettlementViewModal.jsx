@@ -9,7 +9,12 @@ import Chips from "common/Chips";
 import { dateFormatter } from "utility/dateFormatter";
 import Loading from "common/loading/Loading";
 
-export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
+export default function FinalSettlementViewModal({
+  id,
+  empId,
+  clearanceId,
+  landingApi,
+}) {
   const { orgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -52,10 +57,10 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
       }
     );
   }, [id]);
-  console.log("singleFinalSettlementData", singleFinalSettlementData);
+
   return (
     <>
-    {loading && <Loading />}
+      {loading && <Loading />}
       <EmployeeDetails
         loading={getSingleEmployeeLoading}
         employee={empBasic}
@@ -278,7 +283,7 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
               orientation="left"
               style={{ borderColor: "#34a853", fontWeight: "600" }}
             >
-              Approval History Details
+              Clearance History Details
             </Divider>
             <DataTable
               bordered
@@ -370,6 +375,19 @@ export default function FinalSettlementViewModal({ id, empId, clearanceId }) {
               </div>
             )}
           </Card>
+        </Col>
+        <Col>
+          <>
+            {loading && <Loading />}
+            <div className="sme-scrollable-table mt-2">
+              <div
+                className="scroll-table scroll-table-height"
+                dangerouslySetInnerHTML={{
+                  __html: landingApi?.data,
+                }}
+              ></div>
+            </div>
+          </>
         </Col>
       </Row>
     </>

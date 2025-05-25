@@ -21,18 +21,18 @@ const InvestmentToOrganization = () => {
     useInvestmentOrganization(form);
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy";
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Administration - Investable Organization";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30541) {
+    if (item?.menuReferenceId === 30603) {
       permission = item;
     }
   });
-  return !permission?.isView ? (
+  return permission?.isView ? (
     <>
       <PForm
         form={form}
@@ -51,7 +51,7 @@ const InvestmentToOrganization = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  if (!permission?.isCreate) {
+                  if (permission?.isCreate) {
                     setOpenEdit({ open: true, data: {}, });
                   } else {
                     toast.warn("You don't have permission");

@@ -322,4 +322,5 @@ export const apiList = {
     "/ApprovalConfiguration/GetWorkplaceWisePipelineStatusDdl",
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
   OffdayLandingFilter: "/Employee/OffdayLandingFilter",
+   GetFinalSettlementDueSalaryReport: "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
 };
