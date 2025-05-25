@@ -8,11 +8,12 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { toast } from "react-toastify";
 import { createInvestmentCollection, getInvestmentCollection } from "./helper";
 import PfInvestmentCollectionForm from "./components/PfInvestmentCollectionForm";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const PfInvestmentCollection = () => {
   const [form] = Form.useForm();
   const [saveData, setSaveData] = useState([]);
+  const history = useHistory();
   const location = useLocation();
   const isViewMode = location.pathname.includes("view");
   const record = location.state?.state?.data || {};
@@ -80,6 +81,9 @@ const PfInvestmentCollection = () => {
                       createInvestmentCollection(payload, setLoading, () => {
                         setSaveData([]);
                         form.resetFields();
+                        history.push(
+                          "/BenefitsManagement/providentFund/pfInvestment"
+                        );
                       });
                     })
                     .catch(() => {

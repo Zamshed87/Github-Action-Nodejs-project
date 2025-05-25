@@ -15,7 +15,7 @@ const PFInvestmentTracking = ({ form, addData }) => {
         <Row gutter={[10, 2]}>
         <Col md={3} sm={6} xs={12}>
           <PInput
-            type="date"
+            type="Collection Date"
             name="collectionDateFake"
             format={"YYYY-MM-DD"}
             placeholder="Date"
