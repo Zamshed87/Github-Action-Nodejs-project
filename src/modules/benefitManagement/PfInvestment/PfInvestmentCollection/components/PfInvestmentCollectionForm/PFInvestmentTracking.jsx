@@ -15,10 +15,10 @@ const PFInvestmentTracking = ({ form, addData }) => {
         <Row gutter={[10, 2]}>
         <Col md={3} sm={6} xs={12}>
           <PInput
-            type="Collection Date"
+            type="date"
             name="collectionDateFake"
             format={"YYYY-MM-DD"}
-            placeholder="Date"
+            placeholder="Collection Date"
             onChange={(value,dateString) => {
               form.setFieldsValue({ collectionDate: dateString });
             }}
