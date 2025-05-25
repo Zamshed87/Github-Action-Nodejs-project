@@ -1,25 +1,13 @@
-import { Switch, Tooltip } from "antd";
-import axios from "axios";
-import { Flex, PButton } from "Components";
+import { Tooltip } from "antd";
+import Chips from "common/Chips";
+import { Flex } from "Components";
 import moment from "moment";
-import { toast } from "react-toastify";
+import { TbEdit } from "react-icons/tb";
+import { GiTakeMyMoney } from "react-icons/gi";
+import { FaEye } from "react-icons/fa";
+import { RxCrossCircled } from "react-icons/rx";
 
-const updatePolicyStatus = async (id) => {
-  try {
-    const response = await axios.post(
-      `/PfPolicy/ActiveInactivePfPolicy?intPfConfigHeaderId=${id}`
-    );
-    toast.success(
-      response?.data?.message || "Status updated successfully"
-    );
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message || "Failed to update status"
-    );
-  }
-};
-
-export const getHeader = (pages,setData, setOpenView) => [
+export const getHeader = (pages, history, inActivatePfInvestment) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -30,101 +18,180 @@ export const getHeader = (pages,setData, setOpenView) => [
   {
     title: "Investment Name",
     dataIndex: "investmentName",
-    width: 150,
+    width: 100,
   },
   {
     title: "Organization Investment Name",
     dataIndex: "orgInvestmentName",
-    width: 180,
+    width: 140,
   },
   {
     title: "Investment Date",
     dataIndex: "investmentDate",
     render: (date) => moment(date).format("YYYY-MM-DD"),
-    width: 140,
+    width: 100,
   },
   {
     title: "Investment Amount",
     dataIndex: "investmentAmount",
     render: (amount) => amount?.toLocaleString(),
-    width: 140,
+    width: 100,
   },
   {
     title: "Expected ROI (%)",
     dataIndex: "expectedROI",
-    width: 120,
+    width: 100,
   },
   {
-    title: "Duration (Years)",
+    title: "Duration (Months)",
     dataIndex: "investmentDuration",
-    width: 120,
+    width: 80,
   },
   {
     title: "Maturity Date",
     dataIndex: "maturityDate",
     render: (date) => moment(date).format("YYYY-MM-DD"),
-    width: 140,
+    width: 100,
   },
   {
     title: "Status",
-    dataIndex: "isActive",
-    width: 50,
+    dataIndex: "strStatus",
     align: "center",
+    width: 80,
     render: (_, rec) => {
+      const getChipClass = (status) => {
+        switch (status) {
+          case "Inactive":
+            return "default";
+          case "Not Started":
+            return "warning";
+          case "Running":
+            return "primary";
+          case "Matured":
+            return "success";
+          case "Profit Shared":
+            return "info";
+          default:
+            return "default";
+        }
+      };
+
       return (
-        <Flex justify="center">
-          <Tooltip title={rec?.strStatus === "Active" ? "Active" : "Inactive"}>
-            <Switch
-              size="small"
-              checked={rec?.strStatus === "Active"}
-              onChange={(checked) => {
-                setData((prev) => {
-                  const updatedList = [...prev.data];
-                  const recIndex = updatedList.findIndex(
-                    (item) => item.intPfConfigHeaderId === rec.intPfConfigHeaderId
-                  );
-
-                  if (recIndex !== -1) {
-                    updatedList[recIndex] = {
-                      ...updatedList[recIndex],
-                      strStatus: checked ? "Active" : "Inactive",
-                    };
-                  }
-
-                  return {
-                    ...prev,
-                    data: updatedList,
-                  };
-                });
-                updatePolicyStatus(rec.intPfConfigHeaderId);
-              }}
-            />
-          </Tooltip>
+        <Flex align="center" gap={8} justify="center">
+          <Chips label={rec?.status} classess={getChipClass(rec?.status)} />
         </Flex>
       );
     },
   },
   {
     title: "Action",
-    dataIndex: "",
     align: "center",
-    render: (_, record) => (
-      <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <PButton
-          content="View"
-          type="primary-outline"
-          onClick={() => {
-            setOpenView?.({ open: true, data: record });
+    width: 130,
+    render: (_, record) => {
+      const status = record?.status;
+
+      const showEdit = status === "Not Started";
+      const showCollection = ["Running", "Matured"].includes(status);
+      const showInactive = status == "Not Started" || status !== "InActive" && !showCollection; 
+
+      const iconBtnStyle = {
+        backgroundColor: "var(--primary-color)",
+        border: "none",
+        borderRadius: "50%",
+        width: "32px",
+        height: "32px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        color: "#fff",
+        padding: 0,
+      };
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-        <PButton
-          content="Extend"
-          type="primary"
-          onClick={() => {
-          }}
-        />
-      </div>
-    ),
-    width: 140,
+        >
+          <Tooltip title="View">
+            <button
+              style={iconBtnStyle}
+              onClick={() => {
+                history.push(
+                  `/BenefitsManagement/providentFund/pfInvestment/view`,
+                  {
+                    state: {
+                      data: record,
+                    },
+                  }
+                );
+              }}
+            >
+              <FaEye size={16} />
+            </button>
+          </Tooltip>
+
+          {showEdit && (
+            <Tooltip title="Edit">
+              <button
+                style={iconBtnStyle}
+                onClick={() =>
+                  history.push(
+                    `/BenefitsManagement/providentFund/pfInvestment/edit`,
+                    {
+                      state: {
+                        data: record,
+                      },
+                    }
+                  )
+                }
+              >
+                <TbEdit size={16} />
+              </button>
+            </Tooltip>
+          )}
+
+          {showCollection && (
+            <Tooltip title="Collection">
+              <button
+                style={iconBtnStyle}
+                onClick={() => {
+                  history.push(
+                    `/BenefitsManagement/providentFund/pfInvestment/collection`,
+                    {
+                      state: {
+                        data: record,
+                      },
+                    }
+                  );
+                }}
+              >
+                <GiTakeMyMoney size={16} />
+              </button>
+            </Tooltip>
+          )}
+
+          {showInactive && (
+            <Tooltip title="Mark as Inactive">
+              <button
+                style={iconBtnStyle}
+                onClick={() => {
+                  inActivatePfInvestment(
+                    record?.investmentHeaderId,
+                  );
+                }}
+              >
+                <RxCrossCircled size={16} />
+              </button>
+            </Tooltip>
+          )}
+        </div>
+      );
+    },
   },
 ];

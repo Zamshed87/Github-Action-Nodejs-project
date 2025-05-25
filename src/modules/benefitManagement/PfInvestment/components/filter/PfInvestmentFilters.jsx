@@ -1,13 +1,15 @@
-import { Row, Col } from "antd";
+import { Row, Col, Form } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import usePfPolicyFilters from "./usePfInvestmentFilters";
+import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
 const PfInvestmentFilters = ({ form }) => {
   const { investmentType, loadingInvestmentType } = usePfPolicyFilters(form);
-
+  const tut = Form.useWatch("InvestmentTypeId", form);
+  console.log(tut)
   return (
     <Row gutter={[10, 2]}>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PInput
           type="date"
           name="FromDateF"
@@ -25,7 +27,7 @@ const PfInvestmentFilters = ({ form }) => {
           ]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PInput
           type="date"
           name="ToDateF"
@@ -43,25 +45,27 @@ const PfInvestmentFilters = ({ form }) => {
           ]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
-        <PSelect
-          options={investmentType}
+      <Col md={5} sm={12} xs={24}>
+        <PSelectWithAll
+          form={form}
           name="InvestmentTypeId"
           label="Investment Type"
           placeholder="Select Investment Type"
           onChange={(value) => {
             form.setFieldsValue({ InvestmentTypeId: value });
           }}
+          options={investmentType}
           loading={loadingInvestmentType}
+          AllValueZero
           rules={[{ required: true, message: "Investment Type Is Required" }]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={5} sm={12} xs={24}>
         <PSelect
           options={[
             {
-              value: "Inactive",
-              label: "Inactive",
+              value: "InActive",
+              label: "InActive",
             },
             {
               value: "Not Started",
@@ -75,6 +79,10 @@ const PfInvestmentFilters = ({ form }) => {
               value: "Matured",
               label: "Matured",
             },
+            {
+              value: "Profit Shared",
+              label: "Profit Shared",
+            },
           ]}
           name="status"
           label="Status"
@@ -82,6 +90,7 @@ const PfInvestmentFilters = ({ form }) => {
           onChange={(value) => {
             form.setFieldsValue({ status: value });
           }}
+          rules={[{ required: true, message: "Status Is Required" }]}
         />
       </Col>
       <Col style={{ marginTop: "23px" }}>
