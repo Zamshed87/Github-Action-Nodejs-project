@@ -233,10 +233,17 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       intMaximumServiceLengthMonth: values?.maxServiceLengthMonth || 0,
       intMinimumServiceLengthDays: values?.minServiceLengthDay || 0,
       intMaximumServiceLengthDays: values?.maxServiceLengthDay || 0,
-      strBonusPercentageOn: values?.bounsDependOn?.value ? values?.bounsDependOn?.value == 1 ? "Gross" : "Basic" : values?.bounsDependOn == 1 ? "Gross" : "Basic" ,
+      strBonusPercentageOn: values?.bounsDependOn?.value
+        ? values?.bounsDependOn?.value == 1
+          ? "Gross"
+          : "Basic"
+        : values?.bounsDependOn == 1
+        ? "Gross"
+        : "Basic",
       numBonusPercentage: values?.bonusPercentage || 0,
       isDividedbyServiceLength: values?.isDividedByLength || false,
       intCreatedBy: employeeId || 0,
+      isWithTax: values?.isWithTax || false,
     }));
 
     CreateUpdateBounsSetup?.action({
@@ -269,7 +276,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
     dispatch(setFirstLevelNameAction("Administration"));
     document.title = "Bonus Setup";
   }, [dispatch]);
-
 
   useEffect(() => {
     const formData = {
@@ -318,6 +324,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       maxServiceLengthMonth: headerData?.intMaximumServiceLengthMonth || 0,
       maxServiceLengthDay: headerData?.intMaximumServiceLengthDays,
       isDividedByLength: headerData?.isDividedbyServiceLength,
+      isWithTax: headerData?.isWithTax,
     };
     if (headerData) {
       form.setFieldsValue(formData);
@@ -529,7 +536,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   </>
                 ) : (
                   <>
-                    <Col md={6} sm={12} className="mt-2">
+                    <Col md={3} sm={12} className="mt-2">
                       <PInput
                         type="number"
                         name="minServiceLengthMonth"
@@ -550,7 +557,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                         min={0}
                       />
                     </Col>
-                    <Col md={6} sm={12} className="mt-2">
+                    <Col md={3} sm={12} className="mt-2">
                       <PInput
                         type="number"
                         name="maxServiceLengthMonth"
@@ -594,6 +601,19 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                     form.setFieldsValue({});
                   }
                 }}
+              />
+            </Col>
+            <Col md={6} sm={24} style={{ marginTop: "30px" }}>
+              <PInput
+                label="is With Tax?"
+                type="checkbox"
+                name="isWithTax"
+                layout="horizontal"
+                // onChange={(e) => {
+                //   if (e.target.checked) {
+                //     form.setFieldsValue({});
+                //   }
+                // }}
               />
             </Col>
           </Row>
