@@ -41,17 +41,19 @@ const PFInvestment = () => {
     }
   });
 
-  const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
-  const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
+  const startOfYear = moment().startOf("year").format("YYYY-MM-DD");
+  const endOfYear = moment().endOf("year").format("YYYY-MM-DD");  
 
   return permission?.isView ? (
     <PForm
       form={form}
       initialValues={{
-        FromDateF: moment(startOfMonth, "YYYY-MM-DD"),
-        FromDate: startOfMonth,
-        ToDateF: moment(endOfMonth, "YYYY-MM-DD"),
-        ToDate: endOfMonth,
+        FromDateF: moment(startOfYear, "YYYY-MM-DD"),
+        FromDate: startOfYear,
+        ToDateF: moment(endOfYear, "YYYY-MM-DD"),
+        ToDate: endOfYear,
+        InvestmentTypeId: [0],
+        status: "Running"
       }}
       onFinish={() => {
         fetchPfInvestment();

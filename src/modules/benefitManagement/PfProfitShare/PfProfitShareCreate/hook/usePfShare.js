@@ -32,7 +32,8 @@ const usePfShare = (form) => {
     const url = `/PFProfitShare/Get?${filteredParams}`;
 
     getData(url, (res) => {
-      setData(res);
+      console.log("res", res);
+      setData(res?.detailsData || []);
     });
   };
 
