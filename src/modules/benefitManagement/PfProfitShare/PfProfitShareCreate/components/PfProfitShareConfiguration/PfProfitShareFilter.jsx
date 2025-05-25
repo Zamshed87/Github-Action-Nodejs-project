@@ -1,9 +1,23 @@
 import { Col, Row } from "antd";
-import { PButton, PInput } from "Components";
+import { PButton, PInput, PSelect } from "Components";
 
 const PfProfitShareFilter = ({ form }) => {
   return (
       <Row gutter={[10, 2]}>
+         <Col md={6} sm={12} xs={24}>
+        <PSelect
+          options={[
+            { value: 1, label: "Date Wise" },
+            { value: 2, label: "Investment Wise" },
+          ]}
+          name="profitShareType"
+          label="Profit Share Type"
+          placeholder="Select Profit Share Type"
+          onChange={(value) => {
+            form.setFieldsValue({ profitShareType: value });
+          }}
+        />
+      </Col>
         <Col md={6} sm={12} xs={24}>
           <PInput
             type="month"

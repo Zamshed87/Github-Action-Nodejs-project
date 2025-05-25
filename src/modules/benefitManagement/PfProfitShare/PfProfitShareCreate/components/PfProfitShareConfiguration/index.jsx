@@ -4,12 +4,12 @@ import ProfitShareCalculation from "./ProfitShareCalculation";
 
 const PfProfitShareConfiguration = ({ form }) => {
   return (
-    <PCardBody styles={{display: "flex", gap: "20px"}}>
+    <PCardBody styles={{ display: "flex", gap: "20px" }}>
       <div style={{ flex: 1 }}>
-      <PfProfitShareFilter form={form} />
+        <PfProfitShareFilter form={form} />
       </div>
       <div style={{ flex: 1 }}>
-      <ProfitShareCalculation form={form} />
+        <ProfitShareCalculation form={form} />
       </div>
     </PCardBody>
   );

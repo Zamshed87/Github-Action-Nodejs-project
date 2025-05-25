@@ -4443,11 +4443,11 @@ export const routingList = [
     component: GPCreateViewEdit,
   },
   {
-    path: "/bm/pfInvestmentType",
+    path: "/administration/configuration/investmentType",
     component: PFInvestmentType,
   },
   {
-    path: "/bm/pfInvestmentToOrganization",
+    path: "/administration/configuration/investableOrganization",
     component: PFInvestmentToOrganization,
   },
 ];
