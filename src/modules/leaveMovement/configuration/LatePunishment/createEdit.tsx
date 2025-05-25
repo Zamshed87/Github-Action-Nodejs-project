@@ -1,4 +1,4 @@
-import { Checkbox, Col, DatePicker, Form, Row, Tooltip } from "antd";
+import { Checkbox, Col, Form, Row, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import {
   DataTable,
@@ -12,30 +12,26 @@ import {
 } from "Components";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import {
-  useHistory,
-  useParams,
-  useParams as UseParams,
-} from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
+import { DeleteOutlined } from "@mui/icons-material";
+import { getPeopleDeskAllDDL } from "common/api";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { useApiRequest } from "Hooks";
 import CommonForm from "modules/pms/CommonForm/commonForm";
+import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { getSerial } from "Utils";
+import { LatePunishment } from "./form";
 import {
   addHandler,
   addLeaveDeductions,
   createEditLatePunishmentConfig,
 } from "./helper";
-import { getPeopleDeskAllDDL } from "common/api";
-import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
-import { DataState, LatePunishmentData, LeaveDeductionDataState } from "./type";
 import RangeDatePicker from "./RangeDatePicker";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { DeleteOutlined } from "@mui/icons-material";
+import { DataState, LeaveDeductionDataState } from "./type";
 import View from "./view";
-import { toast } from "react-toastify";
-import { LatePunishment } from "./form";
 
 const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
@@ -231,6 +227,9 @@ const CreateEditLatePunishmentConfig = () => {
       title: "Day Range",
       dataIndex: "dayRange",
       fixed: "left",
+      render: (value: any, rec: any) => {
+        return rec?.startDay + " - " + rec?.endDay + " days";
+      },
     },
     {
       title: "Consecutive Day?",
