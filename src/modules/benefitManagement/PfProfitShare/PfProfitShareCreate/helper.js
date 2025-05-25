@@ -1,15 +1,14 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const createPFPolicy = async (
-  payload,
-  setLoading,
-  resetData,
-) => {
+export const createPFPolicy = async (payload, setLoading, resetData) => {
   setLoading?.(true);
   try {
-    const res = await axios.post(`/PfPolicy/Save
-`, payload);
+    const res = await axios.post(
+      `/PfPolicy/Save
+`,
+      payload
+    );
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading?.(false);
     resetData?.();
@@ -25,71 +24,72 @@ export const getHeader = (pages) => [
     render: (_, __, index) =>
       (pages?.current - 1) * pages?.pageSize + index + 1,
     align: "center",
-    width: 20,
+    width: 50,
   },
   {
     title: "Workplace Group",
-    dataIndex: "workplaceGroup",
-    key: "workplaceGroup",
+    dataIndex: "workplaceGroupName",
+    render: (text) => text ?? "-",
   },
   {
     title: "Workplace",
-    dataIndex: "workplace",
-    key: "workplace",
+    dataIndex: "workplaceName",
+    render: (text) => text ?? "-",
   },
   {
     title: "Employee Name",
     dataIndex: "employeeName",
-    key: "employeeName",
+    render: (text) => text ?? "-",
   },
   {
     title: "Designation",
-    dataIndex: "designation",
-    key: "designation",
+    dataIndex: "designationName",
+    render: (text) => text ?? "-",
   },
   {
     title: "Department",
-    dataIndex: "department",
-    key: "department",
+    dataIndex: "departmentName",
+    render: (text) => text ?? "-",
   },
   {
     title: "Employee Contribution",
     dataIndex: "employeeContribution",
-    key: "employeeContribution",
+    render: (text) => text ?? "-",
   },
   {
     title: "Company Contribution",
     dataIndex: "companyContribution",
-    key: "companyContribution",
+    render: (text) => text ?? "-",
   },
   {
     title: "Emp. Profit",
     dataIndex: "employeeProfit",
-    key: "employeeProfit",
+    render: (text) => text ?? "-",
   },
   {
     title: "Comp. Profit",
     dataIndex: "companyProfit",
-    key: "companyProfit",
+    render: (text) => text ?? "-",
   },
   {
     title: "Total PF Amount",
-    dataIndex: "totalPfAmount",
-    key: "totalPfAmount",
+    dataIndex: "totalPFAmount",
+    render: (text) => text ?? "-",
   },
   {
     title: "Running Profit Share",
     dataIndex: "runningProfitShare",
-    key: "runningProfitShare",
+    render: (text) => text ?? "-",
   },
   {
     title: "Emp. Profit Share",
     dataIndex: "employeeProfitShare",
-    key: "employeeProfitShare",
+    render: (text) => text ?? "-",
   },
   {
     title: "Comp. Profit Share",
     dataIndex: "companyProfitShare",
-    key: "companyProfitShare",
+    render: (text) => text ?? "-",
   },
 ];
+

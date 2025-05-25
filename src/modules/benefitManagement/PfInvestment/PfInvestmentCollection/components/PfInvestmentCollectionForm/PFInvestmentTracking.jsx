@@ -18,7 +18,7 @@ const PFInvestmentTracking = ({ form, addData }) => {
             type="date"
             name="collectionDateFake"
             format={"YYYY-MM-DD"}
-            placeholder="Date"
+            placeholder="Collection Date"
             onChange={(value,dateString) => {
               form.setFieldsValue({ collectionDate: dateString });
             }}

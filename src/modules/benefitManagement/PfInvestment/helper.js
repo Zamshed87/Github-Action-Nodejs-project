@@ -92,7 +92,7 @@ export const getHeader = (pages, history, inActivatePfInvestment) => [
 
       const showEdit = status === "Not Started";
       const showCollection = ["Running", "Matured"].includes(status);
-      const showInactive = status == "Not Started" || status !== "InActive" && !showCollection; 
+      const showInactive = status == "Not Started" || status !== "InActive" && !showCollection;
 
       const iconBtnStyle = {
         backgroundColor: "var(--primary-color)",
