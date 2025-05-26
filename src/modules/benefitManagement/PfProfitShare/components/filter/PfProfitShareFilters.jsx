@@ -10,9 +10,9 @@ const PfProfitShareFilters = ({ form }) => {
           label="Status"
           placeholder="Select Status"
           options={[
-            { value: 0, label: 'Pending' },
+            { value: 0, label: 'Unapproved' },
             { value: 1, label: 'Approved' },
-            { value: 2, label: 'Unapproved' },
+            { value: 2, label: 'Pending' },
           ]}
           onChange={(value) => {
             form.setFieldsValue({ status: value });

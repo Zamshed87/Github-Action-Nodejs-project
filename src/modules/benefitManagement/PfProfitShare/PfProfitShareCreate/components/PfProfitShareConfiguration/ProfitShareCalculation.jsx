@@ -12,7 +12,7 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
   // 3 => "Fixed Amount"
 
   const handleCalculate = () => {
-    if(!data?.detailsData || data?.detailsData?.length < 1) {
+    if (!data?.detailsData || data?.detailsData?.length < 1) {
       toast.error(
         "There are no records to calculate profit share. Please click on the view button to load the records."
       );
@@ -66,7 +66,7 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
               }),
             };
           });
-        } else if (shareType === 3) {
+        } else if (shareType === 4) {
           setData((prev) => {
             const fixedAmount = Number(profitShare);
             return {
@@ -93,14 +93,36 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
       })
       .catch((error) => {});
   };
+  const getProfitShareString = () => {
+    let label = "Profit Share";
+    switch (shareType) {
+      case 1:
+          label = `${label} (%)`;
+        break;
+      case 2:
+          label = `${label} (Proportionately With Fixed Amount)`;
+        break;
+      case 3:
+          label = `${label} (Proportionately With Balance Amount)`;
+        break;
+      case 4:
+          label = `${label} (Fixed Amount)`;
+        break;
+      default:
+        label = `${label}`;
+        break;
+    }
+    return label;
+  };
   return (
     <Row gutter={[5, 2]}>
-      <Col md={6} sm={12} xs={24}>
+      <Col md={8} sm={12} xs={24}>
         <PSelect
           options={[
             { value: 1, label: "Percentage" },
-            { value: 2, label: "Proportionately" },
-            { value: 3, label: "Fixed Amount" },
+            { value: 2, label: "Proportionately With Fixed Amount" },
+            { value: 3, label: "Proportionately With Balance Amount" },
+            { value: 4, label: "Fixed Amount" },
           ]}
           name="profitShareType"
           label="Profit Share Type"
@@ -127,16 +149,18 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
       </Col>
       <Col md={6} sm={12} xs={24}>
         <PInput
-          type="text"
+          type="number"
           name="profitShare"
-          placeholder="Profit Share"
-          label="Profit Share"
+          placeholder="Enter Profit Share"
+          min={0}
+          label={getProfitShareString()}
           rules={[
             {
               required: true,
               message: "Profit Share is required",
             },
           ]}
+          disabled={shareType === 3}
         />
       </Col>
       <Col style={{ marginTop: "23px" }}>
@@ -145,6 +169,7 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
           action="button"
           content="Calculate"
           onClick={handleCalculate}
+          disabled={shareType === 3}
         />
       </Col>
     </Row>

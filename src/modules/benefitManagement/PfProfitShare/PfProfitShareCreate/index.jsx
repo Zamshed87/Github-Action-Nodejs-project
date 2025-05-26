@@ -7,9 +7,8 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
 import PfProfitShareConfiguration from "./components/PfProfitShareConfiguration";
-import { createPFPolicy } from "./helper";
+import { createPFProfitShare, getHeader } from "./helper";
 import { useHistory } from "react-router-dom";
-import { getHeader } from "./helper";
 import usePfShare from "./hook/usePfShare";
 
 const PfProfitShareCreate = () => {
@@ -18,6 +17,7 @@ const PfProfitShareCreate = () => {
   // redux
   const {
     permissionList,
+    profileData: { buId, intAccountId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
@@ -50,23 +50,37 @@ const PfProfitShareCreate = () => {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
-                  const commonFields = [];
+                  const commonFields = [
+                    "fromDateF",
+                    "toDateF",
+                    'fromDate',
+                    'toDate',
+                    'profitShareType',
+                    'profitShare',
+                  ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (' ') {
+                      if(!data?.detailsData || data?.detailsData?.length < 1) {
                         toast.error(
-                          "Please add at least one employee or company contribution."
+                          "There are no records to save."
                         );
                         return;
                       }
 
-                      const payload = {};
-                      createPFPolicy(payload, setLoading, () => {
-                        
+                      const payload = {
+                        accountId: intAccountId,
+                        businessUnitId: buId,
+                        fromDate: values?.fromDate,
+                        toDate: values?.toDate,
+                        totalProfitAmount: data?.totalProfitAmount,
+                        profitShareTypeId: values?.profitShareType,
+                        profitSharePercentage: values?.profitShare ? Number(values?.profitShare) : 0,
+                      };
+                      createPFProfitShare(payload, setLoading, () => {
                         form.resetFields();
                         history.push(
-                          `/BenefitsManagement/providentFund/pfPolicy`
+                          `/BenefitsManagement/providentFund/pfProfitShare`
                         );
                       });
                     })
