@@ -1,6 +1,6 @@
 import { DataTable } from "Components";
 
-const PolicyView = ({ data }) => {
+const ProfitShareView = ({ data }) => {
   let intPfEligibilityDependOn = { value: data?.intPfEligibilityDependOn };
   return (
     <>
@@ -46,4 +46,4 @@ const PolicyView = ({ data }) => {
   );
 };
 
-export default PolicyView;
+export default ProfitShareView;

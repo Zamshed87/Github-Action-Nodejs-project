@@ -18,78 +18,84 @@ export const createPFPolicy = async (payload, setLoading, resetData) => {
   }
 };
 
-export const getHeader = (pages) => [
-  {
-    title: "SL",
-    render: (_, __, index) =>
-      (pages?.current - 1) * pages?.pageSize + index + 1,
-    align: "center",
-    width: 50,
-  },
-  {
-    title: "Workplace Group",
-    dataIndex: "workplaceGroupName",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Workplace",
-    dataIndex: "workplaceName",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Employee Name",
-    dataIndex: "employeeName",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Designation",
-    dataIndex: "designationName",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Department",
-    dataIndex: "departmentName",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Employee Contribution",
-    dataIndex: "employeeContribution",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Company Contribution",
-    dataIndex: "companyContribution",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Emp. Profit",
-    dataIndex: "employeeProfit",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Comp. Profit",
-    dataIndex: "companyProfit",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Total PF Amount",
-    dataIndex: "totalPFAmount",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Running Profit Share",
-    dataIndex: "runningProfitShare",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Emp. Profit Share",
-    dataIndex: "employeeProfitShare",
-    render: (text) => text ?? "-",
-  },
-  {
-    title: "Comp. Profit Share",
-    dataIndex: "companyProfitShare",
-    render: (text) => text ?? "-",
-  },
-];
-
+export const getHeader = (pages) => {
+ 
+  return [
+    {
+      title: "SL",
+      render: (_, __, index) =>
+        (pages?.current - 1) * pages?.pageSize + index + 1,
+      align: "center",
+      width: 20,
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroupName",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplaceName",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "employeeName",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Designation",
+      dataIndex: "designationName",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Department",
+      dataIndex: "departmentName",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Employee Contribution",
+      dataIndex: "employeeContribution",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Company Contribution",
+      dataIndex: "companyContribution",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Emp. Profit",
+      dataIndex: "employeeProfit",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Comp. Profit",
+      dataIndex: "companyProfit",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Total PF Amount",
+      dataIndex: "totalPFAmount",
+      render: (text) => text ?? "-",
+    },
+    {
+      title: "Running Profit Share",
+      dataIndex: "runningProfitShare",
+      render: (value) => {
+        return value ?? "-";
+      },
+    },
+    {
+      title: "Emp. Profit Share",
+      dataIndex: "employeeProfitShare",
+      render: (value) => {
+        return value ?? "-";
+      },
+    },
+    {
+      title: "Comp. Profit Share",
+      dataIndex: "companyProfitShare",
+      render: (text) => text ?? "-",
+    },
+  ];
+};

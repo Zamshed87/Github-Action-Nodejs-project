@@ -6,7 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import PfPolicyConfiguration from "./components/PfProfitShareConfiguration";
+import PfProfitShareConfiguration from "./components/PfProfitShareConfiguration";
 import { createPFPolicy } from "./helper";
 import { useHistory } from "react-router-dom";
 import { getHeader } from "./helper";
@@ -15,11 +15,9 @@ import usePfShare from "./hook/usePfShare";
 const PfProfitShareCreate = () => {
   const history = useHistory();
   const [form] = Form.useForm();
-  const [saveData, setSaveData] = useState();
   // redux
   const {
     permissionList,
-    profileData: { buId, wgId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
@@ -56,7 +54,7 @@ const PfProfitShareCreate = () => {
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (saveData.length < 1 && saveData.length < 1) {
+                      if (' ') {
                         toast.error(
                           "Please add at least one employee or company contribution."
                         );
@@ -65,10 +63,7 @@ const PfProfitShareCreate = () => {
 
                       const payload = {};
                       createPFPolicy(payload, setLoading, () => {
-                        setSaveData({
-                          employeeContributions: [],
-                          companyContributions: [],
-                        });
+                        
                         form.resetFields();
                         history.push(
                           `/BenefitsManagement/providentFund/pfPolicy`
@@ -82,10 +77,9 @@ const PfProfitShareCreate = () => {
               },
             ]}
           />
-          <PfPolicyConfiguration
+          <PfProfitShareConfiguration
             form={form}
-            saveData={saveData}
-            setSaveData={setSaveData}
+            setData={setData}
             fetchPfShare={fetchPfShare}
           />
           <DataTable
@@ -93,12 +87,12 @@ const PfProfitShareCreate = () => {
             bordered
             data={data?.detailsData || []}
             loading={loading}
+            scroll={{ x: 1800 }}
             // pagination={{
             //   pageSize: data?.pageSize,
             //   total: data?.totalCount,
             //   pageSizeOptions: ["25", "50", "100"],
             // }}
-            // scroll={{ x: 2000 }}
             // onChange={(pagination, _, __, extra) => {
             //   if (extra.action === "paginate") {
             //     fetchPfShare();

@@ -7,10 +7,10 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import usePfPolicy from "./hooks/usePfPolicy";
+import usePfProfitShare from "./hooks/usePfProfitShare";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import PolicyView from "./components/view/PolicyView";
+import ProfitShareView from "./components/view/ProfitShareView";
 import PfProfitShareFilters from "./components/filter/PfProfitShareFilters";
 
 const PfProfitShare = () => {
@@ -20,8 +20,8 @@ const PfProfitShare = () => {
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const { data, fetchPfPolicy, loading, pages } =
-    usePfPolicy(form);
+  const { data, fetchPfProfitShare, loading, pages } =
+    usePfProfitShare(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -42,7 +42,7 @@ const PfProfitShare = () => {
         form={form}
         initialValues={{}}
         onFinish={() => {
-          fetchPfPolicy();
+          fetchPfProfitShare();
         }}
       >
         {loading && <Loading />}
@@ -53,7 +53,7 @@ const PfProfitShare = () => {
             //   form.setFieldsValue({
             //     search: e?.target?.value,
             //   });
-            //   fetchPfPolicy({ search: e.target.value });
+            //   fetchPfProfitShare({ search: e.target.value });
             // }}
             buttonList={[
               {
@@ -85,7 +85,7 @@ const PfProfitShare = () => {
             // }}
             // onChange={(pagination, _, __, extra) => {
             //   if (extra.action === "paginate") {
-            //     fetchPfPolicy();
+            //     fetchPfProfitShare();
             //     setPages(pagination);
             //   }
             // }}
@@ -98,7 +98,7 @@ const PfProfitShare = () => {
         onCancel={() => {
           setOpenView({ open: false, data: {} });
         }}
-        components={<PolicyView data={openView.data} />}
+        components={<ProfitShareView data={openView.data} />}
         width={1000}
       />
     </>
