@@ -20,7 +20,7 @@ const PfProfitShare = () => {
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const { data, fetchPfProfitShare, loading, pages } =
+  const { data, fetchPfProfitShare, loading, pages, setPages } =
     usePfProfitShare(form);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const PfProfitShare = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30597) {
+    if (item?.menuReferenceId === 30599) {
       permission = item;
     }
   });
@@ -62,7 +62,9 @@ const PfProfitShare = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/BenefitsManagement/providentFund/pfProfitShare/create");
+                    history.push(
+                      "/BenefitsManagement/providentFund/pfProfitShare/create"
+                    );
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -78,17 +80,17 @@ const PfProfitShare = () => {
             bordered
             data={data?.data || []}
             loading={loading}
-            // pagination={{
-            //   pageSize: data?.pageSize,
-            //   total: data?.totalCount,
-            //   pageSizeOptions: ["25", "50", "100"],
-            // }}
-            // onChange={(pagination, _, __, extra) => {
-            //   if (extra.action === "paginate") {
-            //     fetchPfProfitShare();
-            //     setPages(pagination);
-            //   }
-            // }}
+            pagination={{
+              pageSize: data?.pageSize,
+              total: data?.totalCount,
+              pageSizeOptions: ["25", "50", "100"],
+            }}
+            onChange={(pagination, _, __, extra) => {
+              if (extra.action === "paginate") {
+                fetchPfProfitShare();
+                setPages(pagination);
+              }
+            }}
           />
         </PCard>
       </PForm>

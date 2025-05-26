@@ -26,7 +26,7 @@ const PfProfitShareCreate = () => {
     usePfShare(form);
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30597)
+      permissionList.find((item) => item?.menuReferenceId === 30599)
     );
   }, [permissionList]);
   useEffect(() => {
