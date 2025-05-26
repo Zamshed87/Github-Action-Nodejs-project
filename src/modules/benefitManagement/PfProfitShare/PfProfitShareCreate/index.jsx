@@ -86,24 +86,25 @@ const PfProfitShareCreate = () => {
             form={form}
             saveData={saveData}
             setSaveData={setSaveData}
+            fetchPfShare={fetchPfShare}
           />
           <DataTable
             header={getHeader(pages)}
             bordered
-            data={data?.data || []}
+            data={data?.detailsData || []}
             loading={loading}
-            pagination={{
-              pageSize: data?.pageSize,
-              total: data?.totalCount,
-              pageSizeOptions: ["25", "50", "100"],
-            }}
-            scroll={{ x: 2000 }}
-            onChange={(pagination, _, __, extra) => {
-              if (extra.action === "paginate") {
-                fetchPfShare();
-                setPages(pagination);
-              }
-            }}
+            // pagination={{
+            //   pageSize: data?.pageSize,
+            //   total: data?.totalCount,
+            //   pageSizeOptions: ["25", "50", "100"],
+            // }}
+            // scroll={{ x: 2000 }}
+            // onChange={(pagination, _, __, extra) => {
+            //   if (extra.action === "paginate") {
+            //     fetchPfShare();
+            //     setPages(pagination);
+            //   }
+            // }}
           />
         </PCard>
       </PForm>
