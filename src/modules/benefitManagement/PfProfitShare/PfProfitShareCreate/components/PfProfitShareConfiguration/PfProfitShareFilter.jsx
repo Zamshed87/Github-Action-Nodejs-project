@@ -57,7 +57,6 @@ const PfProfitShareFilter = ({ form, fetchPfShare }) => {
             const endOfMonth = moment(value, "YYYY-MM")
               .endOf("month")
               .format("YYYY-MM-DD");
-            console.log("End of Month:", endOfMonth);
             form.setFieldsValue({ toDate: endOfMonth });
           }}
         />

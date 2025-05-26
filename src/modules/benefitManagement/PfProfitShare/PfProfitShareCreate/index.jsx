@@ -79,6 +79,7 @@ const PfProfitShareCreate = () => {
           />
           <PfProfitShareConfiguration
             form={form}
+            data={data}
             setData={setData}
             fetchPfShare={fetchPfShare}
           />
@@ -88,17 +89,17 @@ const PfProfitShareCreate = () => {
             data={data?.detailsData || []}
             loading={loading}
             scroll={{ x: 1800 }}
-            // pagination={{
-            //   pageSize: data?.pageSize,
-            //   total: data?.totalCount,
-            //   pageSizeOptions: ["25", "50", "100"],
-            // }}
-            // onChange={(pagination, _, __, extra) => {
-            //   if (extra.action === "paginate") {
-            //     fetchPfShare();
-            //     setPages(pagination);
-            //   }
-            // }}
+            pagination={{
+              pageSize: data?.pageSize,
+              total: data?.totalCount,
+              pageSizeOptions: ["25", "50", "100"],
+            }}
+            onChange={(pagination, _, __, extra) => {
+              if (extra.action === "paginate") {
+                fetchPfShare();
+                setPages(pagination);
+              }
+            }}
           />
         </PCard>
       </PForm>

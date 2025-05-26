@@ -1,8 +1,8 @@
-import { Form, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
-import { Col } from "react-bootstrap";
+import { toast } from "react-toastify";
 
-const ProfitShareCalculation = ({ form, setData }) => {
+const ProfitShareCalculation = ({ form, data, setData }) => {
   const shareType = Form.useWatch("profitShareType", form);
   const profitShare = Form.useWatch("profitShare", form);
 
@@ -12,6 +12,12 @@ const ProfitShareCalculation = ({ form, setData }) => {
   // 3 => "Fixed Amount"
 
   const handleCalculate = () => {
+    if(!data?.detailsData || data?.detailsData?.length < 1) {
+      toast.error(
+        "There are no records to calculate profit share. Please click on the view button to load the records."
+      );
+      return;
+    }
     form
       .validateFields(["profitShareType", "profitShare"])
       .then(() => {
@@ -60,7 +66,7 @@ const ProfitShareCalculation = ({ form, setData }) => {
               }),
             };
           });
-        }else if (shareType === 3) {
+        } else if (shareType === 3) {
           setData((prev) => {
             const fixedAmount = Number(profitShare);
             return {
@@ -73,7 +79,7 @@ const ProfitShareCalculation = ({ form, setData }) => {
                 const companyProfitShare =
                   ((rec?.companyContribution + rec?.companyProfit) /
                     rec?.totalPFAmount) *
-                    fixedAmount;
+                  fixedAmount;
                 return {
                   ...rec,
                   runningProfitShare: fixedAmount?.toFixed(6),
@@ -84,13 +90,12 @@ const ProfitShareCalculation = ({ form, setData }) => {
             };
           });
         }
-
       })
       .catch((error) => {});
   };
   return (
     <Row gutter={[5, 2]}>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={6} sm={12} xs={24}>
         <PSelect
           options={[
             { value: 1, label: "Percentage" },
@@ -102,6 +107,15 @@ const ProfitShareCalculation = ({ form, setData }) => {
           placeholder="Select Profit Share Type"
           onChange={(value) => {
             form.setFieldsValue({ profitShareType: value });
+            setData((prev) => ({
+              ...prev,
+              detailsData: prev?.detailsData?.map((rec) => ({
+                ...rec,
+                runningProfitShare: null,
+                employeeProfitShare: null,
+                companyProfitShare: null,
+              })),
+            }));
           }}
           rules={[
             {
@@ -111,7 +125,7 @@ const ProfitShareCalculation = ({ form, setData }) => {
           ]}
         />
       </Col>
-      <Col md={4} sm={12} xs={24}>
+      <Col md={6} sm={12} xs={24}>
         <PInput
           type="text"
           name="profitShare"
