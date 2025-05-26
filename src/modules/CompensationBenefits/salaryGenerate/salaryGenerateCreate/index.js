@@ -169,7 +169,6 @@ const SalaryGenerateCreate = () => {
               });
               const workplaceIds =
                 workplaces?.length > 0 ? workplaces?.map((i) => i?.value) : [];
-              console.log({ workplaceIds });
               setSelectedWorkplaces(workplaceIds);
               setFieldValue("workplace", workplaceIds);
               setFieldValue("hrPosition", hrPositions);
@@ -813,7 +812,6 @@ const SalaryGenerateCreate = () => {
                             selectedValues = [individualOption.value];
                             selectedOptions = [individualOption];
                           }
-                          console.log({ selectedValues });
 
                           setSelectedWorkplaces(selectedValues);
                           const valuesStr = selectedValues.join(",");
