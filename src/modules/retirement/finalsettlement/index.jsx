@@ -168,8 +168,6 @@ export default function FinalSettlementLanding() {
 
   const landingApi = useApiRequest({});
 
-  console.log("id", id);
-
   const salaryReport = (separationId) => {
     landingApi.action({
       urlKey: "GetFinalSettlementDueSalaryReport",
@@ -180,14 +178,6 @@ export default function FinalSettlementLanding() {
       },
     });
   };
-
-  // useEffect(() => {
-  //   if (id) {
-  //     salaryReport();
-  //   }
-  // }, [id]);
-
-  console.log("salaryReport", salaryReport?.data);
 
   return (
     <>
