@@ -167,7 +167,11 @@ const SalaryGenerateCreate = () => {
                     : "",
                 };
               });
-              setFieldValue("workplace", workplaces);
+              const workplaceIds =
+                workplaces?.length > 0 ? workplaces?.map((i) => i?.value) : [];
+              console.log({ workplaceIds });
+              setSelectedWorkplaces(workplaceIds);
+              setFieldValue("workplace", workplaceIds);
               setFieldValue("hrPosition", hrPositions);
               setHrPositionDDL(hrPositions);
             }
@@ -793,12 +797,11 @@ const SalaryGenerateCreate = () => {
                                 !selectedWorkplaces.includes(opt.value)),
                           })) || []
                         }
-                        name="workplace"
+                        // name="workplace"
                         showSearch
                         filterOption={true}
                         placeholder="Workplace"
                         onChange={(value, options) => {
-                          console.log("value", value);
                           let selectedValues = value;
                           let selectedOptions = options;
 
@@ -810,10 +813,11 @@ const SalaryGenerateCreate = () => {
                             selectedValues = [individualOption.value];
                             selectedOptions = [individualOption];
                           }
+                          console.log({ selectedValues });
 
                           setSelectedWorkplaces(selectedValues);
                           const valuesStr = selectedValues.join(",");
-                          setFieldValue("workplace", valuesStr);
+                          // setFieldValue("workplace", valuesStr);
 
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,
