@@ -7,10 +7,10 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import usePfPolicy from "./hooks/usePfPolicy";
+import usePfProfitShare from "./hooks/usePfProfitShare";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import PolicyView from "./components/view/PolicyView";
+import ProfitShareView from "./components/view/ProfitShareView";
 import PfProfitShareFilters from "./components/filter/PfProfitShareFilters";
 
 const PfProfitShare = () => {
@@ -20,8 +20,8 @@ const PfProfitShare = () => {
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
-  const { data, fetchPfPolicy, loading, pages } =
-    usePfPolicy(form);
+  const { data, fetchPfProfitShare, loading, pages, setPages } =
+    usePfProfitShare(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -31,7 +31,7 @@ const PfProfitShare = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30597) {
+    if (item?.menuReferenceId === 30599) {
       permission = item;
     }
   });
@@ -42,7 +42,7 @@ const PfProfitShare = () => {
         form={form}
         initialValues={{}}
         onFinish={() => {
-          fetchPfPolicy();
+          fetchPfProfitShare();
         }}
       >
         {loading && <Loading />}
@@ -53,7 +53,7 @@ const PfProfitShare = () => {
             //   form.setFieldsValue({
             //     search: e?.target?.value,
             //   });
-            //   fetchPfPolicy({ search: e.target.value });
+            //   fetchPfProfitShare({ search: e.target.value });
             // }}
             buttonList={[
               {
@@ -62,7 +62,9 @@ const PfProfitShare = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/BenefitsManagement/providentFund/pfProfitShare/create");
+                    history.push(
+                      "/BenefitsManagement/providentFund/pfProfitShare/create"
+                    );
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -78,17 +80,17 @@ const PfProfitShare = () => {
             bordered
             data={data?.data || []}
             loading={loading}
-            // pagination={{
-            //   pageSize: data?.pageSize,
-            //   total: data?.totalCount,
-            //   pageSizeOptions: ["25", "50", "100"],
-            // }}
-            // onChange={(pagination, _, __, extra) => {
-            //   if (extra.action === "paginate") {
-            //     fetchPfPolicy();
-            //     setPages(pagination);
-            //   }
-            // }}
+            pagination={{
+              pageSize: data?.pageSize,
+              total: data?.totalCount,
+              pageSizeOptions: ["25", "50", "100"],
+            }}
+            onChange={(pagination, _, __, extra) => {
+              if (extra.action === "paginate") {
+                fetchPfProfitShare();
+                setPages(pagination);
+              }
+            }}
           />
         </PCard>
       </PForm>
@@ -98,7 +100,7 @@ const PfProfitShare = () => {
         onCancel={() => {
           setOpenView({ open: false, data: {} });
         }}
-        components={<PolicyView data={openView.data} />}
+        components={<ProfitShareView data={openView.data} />}
         width={1000}
       />
     </>

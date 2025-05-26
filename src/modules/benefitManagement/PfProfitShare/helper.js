@@ -11,30 +11,31 @@ export const getHeader = (pages, setOpenView) => [
   {
     title: "Profit Share Date",
     dataIndex: "profitShareDate",
-    render: (value) => value ?? "-",
-    width: 100,
+    render: (value) =>
+      value ? new Date(value).toLocaleDateString() : "-",
+    width: 120,
   },
   {
-    title: "Total Employee Contribution",
-    dataIndex: "totalEmployeeContribution",
+    title: "Employee Contribution",
+    dataIndex: "employeeContribution",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 120,
   },
   {
-    title: "Total Employer Contribution",
-    dataIndex: "totalEmployerContribution",
+    title: "Company Contribution",
+    dataIndex: "companyContribution",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 120,
   },
   {
-    title: "Total Profit Earned",
-    dataIndex: "totalProfitEarned",
+    title: "Employee Profit",
+    dataIndex: "employeeProfit",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 100,
   },
   {
-    title: "Total PF Balance",
-    dataIndex: "totalPfBalance",
+    title: "Company Profit",
+    dataIndex: "companyProfit",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 100,
   },
@@ -42,24 +43,24 @@ export const getHeader = (pages, setOpenView) => [
     title: "Total Profit Share Amount",
     dataIndex: "totalProfitShareAmount",
     render: (value) => value?.toLocaleString() ?? "-",
-    width: 120,
+    width: 140,
   },
   {
-    title: "Total Profit Share %",
-    dataIndex: "totalProfitSharePercentage",
+    title: "Profit Share %",
+    dataIndex: "profitPercentage",
     render: (value) => (value != null ? `${value}%` : "-"),
     width: 100,
   },
   {
     title: "Status",
-    dataIndex: "strStatus",
-    width: 
-    60,
+    dataIndex: "status",
+    render: (value) => value ?? "-",
+    width: 100,
   },
   {
     title: "Action",
     align: "center",
-    width: 120,
+    width: 140,
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
         <PButton
@@ -70,7 +71,7 @@ export const getHeader = (pages, setOpenView) => [
         <PButton
           content="Edit"
           type="primary"
-          onClick={() =>{} }
+          onClick={() => {}}
         />
       </div>
     ),

@@ -9,7 +9,7 @@ const usePfShare = (form) => {
   );
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 5000,
+    pageSize: 25,
     total: 0,
   });
   const [data, getData, loading, setData, error, setLoading] = useAxiosGet({});
