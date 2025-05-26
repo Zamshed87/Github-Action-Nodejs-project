@@ -1,4 +1,5 @@
 import { PButton } from "Components";
+import moment from "moment";
 
 export const detailsHeader = ({
   removeData,
@@ -13,6 +14,9 @@ export const detailsHeader = ({
     {
       title: "Collection Date",
       dataIndex: "collectionDate",
+      render: (date) => {
+        return date ? moment(date).format("YYYY-MM-DD") : "-";
+      }
     },
     {
       title: "Collection Amount",

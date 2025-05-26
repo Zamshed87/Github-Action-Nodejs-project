@@ -3,13 +3,13 @@ import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const usePfShare = (form) => {
-  const { wgId, wId, accountId } = useSelector(
+  const { wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 25,
+    pageSize: 5000,
     total: 0,
   });
   const [data, getData, loading, setData, error, setLoading] = useAxiosGet({});
@@ -18,7 +18,7 @@ const usePfShare = (form) => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      AccountId:accountId,
+      AccountId: intAccountId,
       FromDate: formValues.fromDate,
       ToDate: formValues.toDate,
       PageNo: pages.current,
@@ -32,7 +32,7 @@ const usePfShare = (form) => {
     const url = `/PFProfitShare/Get?${filteredParams}`;
 
     getData(url, (res) => {
-      setData(res);
+      setData(res?.data || []);
     });
   };
 

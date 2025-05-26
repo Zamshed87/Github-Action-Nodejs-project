@@ -42,9 +42,32 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
   const fullOptions: OptionType[] = [allOption, ...options];
 
   const [selectedValues, setSelectedValues] = useState<(string | number)[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const watchedValue = useWatch(name, form);
+  
+  console.log("watchedValue", watchedValue);
 
+  // Initialize selectedValues from form's initial/current value
   useEffect(() => {
+    if (watchedValue && !isInitialized) {
+      if (AllValueZero && watchedValue.includes(ADVANCED_ALL_VALUE)) {
+        setSelectedValues([ADVANCED_ALL_VALUE]);
+      } else if (!AllValueZero && (
+        watchedValue.includes(RAW_ALL_VALUE) || 
+        (Array.isArray(watchedValue) && watchedValue.length === allValues.length)
+      )) {
+        setSelectedValues([RAW_ALL_VALUE, ...allValues]);
+      } else {
+        setSelectedValues(watchedValue || []);
+      }
+      setIsInitialized(true);
+    }
+  }, [watchedValue, allValues, AllValueZero, isInitialized]);
+
+  // Handle form value updates
+  useEffect(() => {
+    if (!isInitialized) return;
+
     let selected = selectedValues;
 
     if (!AllValueZero && selected.includes(RAW_ALL_VALUE)) {
@@ -52,18 +75,22 @@ const PSelectWithAll: React.FC<PSelectWithAllProps> = ({
     }
 
     const formValue = returnFullObject
-    ? options.filter((opt) => selected.includes(opt.value))
-    : selected;
+      ? options.filter((opt) => selected.includes(opt.value))
+      : selected;
 
-    form.setFieldsValue({ [name]: formValue });
-  }, [selectedValues, allValues, form, name, options, returnFullObject, AllValueZero]);
+    // Only update form if the value actually changed to prevent infinite loops
+    const currentFormValue = form.getFieldValue(name);
+    if (JSON.stringify(currentFormValue) !== JSON.stringify(formValue)) {
+      form.setFieldsValue({ [name]: formValue });
+    }
+  }, [selectedValues, allValues, form, name, options, returnFullObject, AllValueZero, isInitialized]);
 
+  // Reset when form is cleared
   useEffect(() => {
-    if (!watchedValue || watchedValue.length === 0) {
+    if (isInitialized && (!watchedValue || watchedValue.length === 0)) {
       setSelectedValues([]);
     }
-  }, [watchedValue]);
-  
+  }, [watchedValue, isInitialized]);
   
   const handleChange = (selected: (string | number)[]) => {
     if (AllValueZero) {
