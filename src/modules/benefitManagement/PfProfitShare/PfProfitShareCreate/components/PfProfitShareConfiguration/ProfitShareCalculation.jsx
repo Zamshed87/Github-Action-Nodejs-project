@@ -15,12 +15,12 @@ const ProfitShareCalculation = ({ form, setData }) => {
     form
       .validateFields(["profitShareType", "profitShare"])
       .then(() => {
-        const percentage = Number(profitShare) / 100;
         if (shareType === 1) {
+          const percentage = Number(profitShare) / 100;
           setData((prev) => {
             return {
               ...prev,
-              detailsData:prev?.detailsData?.map((rec) => {
+              detailsData: prev?.detailsData?.map((rec) => {
                 const runningProfitShare = rec?.totalPFAmount * percentage;
                 const employeeProfitShare =
                   (rec?.employeeContribution + rec?.employeeProfit) *
@@ -34,9 +34,57 @@ const ProfitShareCalculation = ({ form, setData }) => {
                   companyProfitShare: companyProfitShare?.toFixed(6),
                 };
               }),
-            } 
+            };
+          });
+        } else if (shareType === 2) {
+          setData((prev) => {
+            const totalEmp = prev?.totalCount;
+            const distributedAmount = Number(profitShare) / totalEmp;
+            return {
+              ...prev,
+              detailsData: prev?.detailsData?.map((rec) => {
+                const employeeProfitShare =
+                  ((rec?.employeeContribution + rec?.employeeProfit) /
+                    rec?.totalPFAmount) *
+                  distributedAmount;
+                const companyProfitShare =
+                  ((rec?.companyContribution + rec?.companyProfit) /
+                    rec?.totalPFAmount) *
+                  distributedAmount;
+                return {
+                  ...rec,
+                  runningProfitShare: distributedAmount?.toFixed(6),
+                  employeeProfitShare: employeeProfitShare?.toFixed(6),
+                  companyProfitShare: companyProfitShare?.toFixed(6),
+                };
+              }),
+            };
+          });
+        }else if (shareType === 3) {
+          setData((prev) => {
+            const fixedAmount = Number(profitShare);
+            return {
+              ...prev,
+              detailsData: prev?.detailsData?.map((rec) => {
+                const employeeProfitShare =
+                  ((rec?.employeeContribution + rec?.employeeProfit) /
+                    rec?.totalPFAmount) *
+                  fixedAmount;
+                const companyProfitShare =
+                  ((rec?.companyContribution + rec?.companyProfit) /
+                    rec?.totalPFAmount) *
+                    fixedAmount;
+                return {
+                  ...rec,
+                  runningProfitShare: fixedAmount?.toFixed(6),
+                  employeeProfitShare: employeeProfitShare?.toFixed(6),
+                  companyProfitShare: companyProfitShare?.toFixed(6),
+                };
+              }),
+            };
           });
         }
+
       })
       .catch((error) => {});
   };
