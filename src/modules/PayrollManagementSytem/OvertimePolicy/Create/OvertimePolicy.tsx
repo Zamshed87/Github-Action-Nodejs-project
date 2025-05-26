@@ -608,10 +608,10 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       }}
                       disabled={state?.intOtconfigId}
                       rules={[
-                        orgId === 9 && {
+                        orgId === 9 ? {
                           required: true,
                           message: "Please Select Calendar Name!",
-                        },
+                        }: null,
                       ]}
                     />
                   </Col>
