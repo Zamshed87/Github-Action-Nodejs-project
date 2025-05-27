@@ -251,7 +251,10 @@ export const columns = (rowDto, setRowDto, setFieldValue, rowDtoHandler) => {
               value={item?.numActualBonuaAmount}
               type="number"
               // disabled={!item?.isChecked}
+
               onChange={(e) => {
+                rowDtoHandler("isManualBounsEdit", index, true);
+
                 // console.log({ e })
                 if (e.target.value) {
                   rowDtoHandler("numActualBonuaAmount", index, e.target.value);
