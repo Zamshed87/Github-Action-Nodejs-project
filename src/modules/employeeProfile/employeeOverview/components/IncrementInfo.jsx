@@ -45,6 +45,7 @@ const IncrementInfo = ({ index, tabIndex, empId }) => {
                         <th>Increment Date</th>
                         <th>Increment Amount</th>
                         <th>Gross Salary</th>
+                        <th>Old Gross Salary</th>
                       </tr>
                     </thead>
                   ) : (
@@ -86,7 +87,7 @@ const IncrementInfo = ({ index, tabIndex, empId }) => {
                                     : "",
                               }}
                             >
-                              <div className="text-right">
+                              <div className="text-left">
                                 {data?.numIncrementAmount}
                               </div>
                             </td>
@@ -98,7 +99,7 @@ const IncrementInfo = ({ index, tabIndex, empId }) => {
                                     : "",
                               }}
                             >
-                              <div className="text-right">
+                              <div className="text-left">
                                 {numberWithCommas(data?.numCurrentGrossAmount)}
                               </div>
                             </td>
@@ -110,7 +111,7 @@ const IncrementInfo = ({ index, tabIndex, empId }) => {
                                     : "",
                               }}
                             >
-                              <div className="text-right">
+                              <div className="text-left">
                                 {numberWithCommas(data?.numOldGrossAmount)}
                               </div>
                             </td>
