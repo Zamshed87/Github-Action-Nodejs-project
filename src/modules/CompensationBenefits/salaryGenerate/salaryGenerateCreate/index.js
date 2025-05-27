@@ -969,7 +969,7 @@ const SalaryGenerateCreate = () => {
                           !values?.monthYear ||
                           !values?.fromDate ||
                           !values?.toDate ||
-                          !values?.workplace?.length > 0
+                          !selectedWorkplaces?.length > 0
                         }
                       >
                         View
@@ -1042,7 +1042,7 @@ const SalaryGenerateCreate = () => {
                         disabled={
                           !values?.salaryTpe ||
                           !values?.monthYear ||
-                          !values?.workplace?.length > 0
+                          !selectedWorkplaces?.length > 0
                         }
                       >
                         View
