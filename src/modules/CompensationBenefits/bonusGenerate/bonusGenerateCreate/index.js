@@ -43,6 +43,11 @@ import {
   onGenerateOrReGenerateBonus,
 } from "./helper";
 import MultiCheckedSelect from "common/MultiCheckedSelect";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import { PModal } from "Components/Modal";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
+import axios from "axios";
+import { PButton } from "Components";
 
 const initialValues = {
   bonusSystemType: { value: 1, label: "Bonus Generator" },
@@ -107,13 +112,13 @@ const BonusGenerateCreate = () => {
 
   // DDL
   const [bonusNameDDL, setBonusNameDDL] = useState([]);
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  const [open, setOpen] = useState(false);
 
-  const [wingDDL, setWingDDL] = useState([]);
-  const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  const [regionDDL, setRegionDDL] = useState([]);
-  const [areaDDL, setAreaDDL] = useState([]);
-  const [territoryDDL, setTerritoryDDL] = useState([]);
+  const [, setWingDDL] = useState([]);
+  const [, setSoleDepoDDL] = useState([]);
+  const [, setRegionDDL] = useState([]);
+  const [, setAreaDDL] = useState([]);
+  const [, setTerritoryDDL] = useState([]);
 
   const [, getBonusInformation, loadingOnGetBonusInformation] = useAxiosPost();
   const [, getHrPositionAuto] = useAxiosGet([]);
@@ -263,18 +268,25 @@ const BonusGenerateCreate = () => {
     (itm) => wgName === itm?.strWorkplaceGroup
   );
 
-  // const mergedData = rowDto.reduce((acc, cur) => {
-  //   if (!acc[cur.intEmployeeId]) {
-  //     // If the id doesn't exist in the accumulator, add it with all properties
-  //     acc[cur.intEmployeeId] = { ...cur };
-  //   } else {
-  //     // If the id exists, merge properties while keeping all previous properties
-  //     acc[cur.intEmployeeId] = { ...acc[cur.intEmployeeId], ...cur };
-  //   }
-  //   return acc;
-  // }, {});
+  const getSearchEmployeeListActiveInactive = (v, values) => {
+    if (v?.length < 2) return [];
 
-  // const updatedRowDto = Object.values(mergedData);
+    return axios
+      .get(
+        `/Employee/CommonEmployeeDDL?workplaceGroupId=${wgId}&searchText=${v}&businessUnitId=${buId}`
+      )
+      .then((res) => {
+        const modifiedData = res?.data?.map((item) => {
+          return {
+            ...item,
+            value: item?.employeeId,
+            label: item?.employeeName,
+          };
+        });
+        return modifiedData;
+      })
+      .catch((err) => []);
+  };
 
   // marketingArea Check
   const isSameMaketingAreaHandler = (rowDto, value, property) => {
@@ -310,58 +322,6 @@ const BonusGenerateCreate = () => {
       effectiveDate: singleData
         ? dateFormatterForInput(singleData?.dteEffectedDateTime)
         : todayDate(),
-      wing:
-        +params?.id &&
-        isSameMaketingAreaHandler(rowDto, singleData?.intWingId, "intWingId")
-          ? {
-              value: singleData?.intWingId,
-              label: singleData?.WingName,
-            }
-          : "",
-      soleDepo:
-        +params?.id &&
-        isSameMaketingAreaHandler(
-          rowDto,
-          singleData?.intSoleDepoId,
-          "intSoleDepo"
-        )
-          ? {
-              value: singleData?.intSoleDepoId,
-              label: singleData?.SoleDepoName,
-            }
-          : "",
-      region:
-        +params?.id &&
-        isSameMaketingAreaHandler(
-          rowDto,
-          singleData?.intRegionId,
-          "intRegionId"
-        )
-          ? {
-              value: singleData?.intRegionId,
-              label: singleData?.RegionName,
-            }
-          : "",
-      area:
-        +params?.id &&
-        isSameMaketingAreaHandler(rowDto, singleData?.intAreaId, "intAreaId")
-          ? {
-              value: singleData?.intAreaId,
-              label: singleData?.AreaName,
-            }
-          : "",
-      territory:
-        +params?.id &&
-        isSameMaketingAreaHandler(
-          rowDto,
-          singleData?.intTerritoryId,
-          "intTerritoryId"
-        )
-          ? {
-              value: singleData?.intTerritoryId,
-              label: singleData?.TerritoryName,
-            }
-          : "",
     },
     onSubmit: (values) => {
       if (+params?.id) {
@@ -388,7 +348,13 @@ const BonusGenerateCreate = () => {
       );
     },
   });
+  const rowDtoHandler = (name, index, value) => {
+    // name = "numMinutes"
+    const data = [...rowDto];
+    data[index][name] = value;
 
+    setRowDto(data);
+  };
   return (
     <>
       {(loadingOnGetEmployeeList || loadingOnGetBonusInformation) && (
@@ -597,222 +563,6 @@ const BonusGenerateCreate = () => {
                     </div>
                   </div>
 
-                  {/* marketing setup */}
-                  {"Marketing" === wgName && (
-                    <>
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>Wing</label>
-                          <FormikSelect
-                            menuPosition="fixed"
-                            name="wing"
-                            options={wingDDL || []}
-                            value={values?.wing}
-                            onChange={(valueOption) => {
-                              getPeopleDeskWithoutAllDDL(
-                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=${valueOption?.value}`,
-                                "SoleDepoId",
-                                "SoleDepoName",
-                                setSoleDepoDDL
-                              );
-
-                              setRegionDDL([]);
-                              setAreaDDL([]);
-                              setTerritoryDDL([]);
-
-                              setFieldValue("soleDepo", "");
-                              setFieldValue("region", "");
-                              setFieldValue("area", "");
-                              setFieldValue("territory", "");
-                              setFieldValue("wing", valueOption);
-                            }}
-                            styles={customStyles}
-                            placeholder=""
-                            errors={errors}
-                            touched={touched}
-                            isClearable={false}
-                            isDisabled={
-                              +params?.id &&
-                              isSameMaketingAreaHandler(
-                                rowDto,
-                                singleData?.intWingId,
-                                "intWingId"
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>Sole Depo</label>
-                          <FormikSelect
-                            menuPosition="fixed"
-                            name="soleDepo"
-                            options={soleDepoDDL || []}
-                            value={values?.soleDepo}
-                            onChange={(valueOption) => {
-                              getPeopleDeskWithoutAllDDL(
-                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=${valueOption?.value}`,
-                                "RegionId",
-                                "RegionName",
-                                setRegionDDL
-                              );
-
-                              setAreaDDL([]);
-                              setTerritoryDDL([]);
-
-                              setFieldValue("region", "");
-                              setFieldValue("area", "");
-                              setFieldValue("territory", "");
-                              setFieldValue("soleDepo", valueOption);
-                            }}
-                            styles={customStyles}
-                            placeholder=""
-                            errors={errors}
-                            touched={touched}
-                            isClearable={false}
-                            isDisabled={
-                              (+params?.id &&
-                                isSameMaketingAreaHandler(
-                                  rowDto,
-                                  singleData?.intSoleDepoId,
-                                  "intSoleDepo"
-                                )) ||
-                              !values?.wing
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>Region</label>
-                          <FormikSelect
-                            menuPosition="fixed"
-                            name="region"
-                            options={regionDDL || []}
-                            value={values?.region}
-                            onChange={(valueOption) => {
-                              getPeopleDeskWithoutAllDDL(
-                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=${valueOption?.value}`,
-                                "AreaId",
-                                "AreaName",
-                                setAreaDDL
-                              );
-
-                              setAreaDDL([]);
-
-                              setFieldValue("area", "");
-                              setFieldValue("territory", "");
-                              setFieldValue("region", valueOption);
-                            }}
-                            styles={customStyles}
-                            placeholder=""
-                            errors={errors}
-                            touched={touched}
-                            isClearable={false}
-                            isDisabled={
-                              (+params?.id &&
-                                isSameMaketingAreaHandler(
-                                  rowDto,
-                                  singleData?.intRegionId,
-                                  "intRegionId"
-                                )) ||
-                              !values?.soleDepo
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>Area</label>
-                          <FormikSelect
-                            menuPosition="fixed"
-                            name="area"
-                            options={areaDDL || []}
-                            value={values?.area}
-                            onChange={(valueOption) => {
-                              getPeopleDeskWithoutAllDDL(
-                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=${valueOption?.value}`,
-                                "TerritoryId",
-                                "TerritoryName",
-                                setTerritoryDDL
-                              );
-                              setFieldValue("territory", "");
-                              setFieldValue("area", valueOption);
-                            }}
-                            styles={customStyles}
-                            placeholder=""
-                            errors={errors}
-                            touched={touched}
-                            isClearable={false}
-                            isDisabled={
-                              (+params?.id &&
-                                isSameMaketingAreaHandler(
-                                  rowDto,
-                                  singleData?.intAreaId,
-                                  "intAreaId"
-                                )) ||
-                              !values?.region
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>Territory</label>
-                          <FormikSelect
-                            menuPosition="fixed"
-                            name="territory"
-                            options={territoryDDL || []}
-                            value={values?.territory}
-                            onChange={(valueOption) => {
-                              setFieldValue("territory", valueOption);
-                            }}
-                            styles={customStyles}
-                            placeholder=""
-                            errors={errors}
-                            touched={touched}
-                            isClearable={false}
-                            isDisabled={
-                              (+params?.id &&
-                                isSameMaketingAreaHandler(
-                                  rowDto,
-                                  singleData?.intTerritoryId,
-                                  "intTerritoryId"
-                                )) ||
-                              !values?.area
-                            }
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  <div className="col-lg-3 d-none">
-                    <div className="input-field-main">
-                      <label htmlFor="">Business Unit</label>
-                      <FormikSelect
-                        name="businessUnit"
-                        options={businessUnitDDL || []}
-                        value={values?.businessUnit}
-                        onChange={(valueOption) => {
-                          setValues((prev) => ({
-                            ...prev,
-                            businessUnit: valueOption,
-                            workplaceGroup: "",
-                            workplace: "",
-                            payrollGroup: "",
-                          }));
-                        }}
-                        placeholder=""
-                        isDisabled={isEdit}
-                        styles={customStyles}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                  </div>
-
                   <div className="col-lg-3">
                     <div className="input-field-main">
                       <label htmlFor="">Effective Date</label>
@@ -834,9 +584,9 @@ const BonusGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-12"></div>
+                  {/* <div className="col-lg-12"></div> */}
                   {isEdit ? (
-                    <div className="col-lg-3">
+                    <div className="col-lg-3 mt-4">
                       <div className="d-flex align-items-center">
                         <button
                           style={{
@@ -902,7 +652,7 @@ const BonusGenerateCreate = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="col-lg-3">
+                    <div className="col-lg-3 mt-4">
                       <div className="d-flex align-items-center">
                         <button
                           style={{
@@ -982,7 +732,20 @@ const BonusGenerateCreate = () => {
                       margin: "0px 0px 10px 0px",
                     }}
                   >
-                    Employee Generate List
+                    Employee Generate List{" "}
+                    {rowDto?.length > 0 && (
+                      <PlusCircleOutlined
+                        onClick={() => {
+                          setOpen(true);
+                        }}
+                        style={{
+                          color: "green",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          margin: "0 5px",
+                        }}
+                      />
+                    )}
                   </h2>
 
                   <ul className="d-flex flex-wrap">
@@ -1039,7 +802,12 @@ const BonusGenerateCreate = () => {
                 <div className="table-card-styled employee-table-card tableOne">
                   <AntTable
                     data={rowDto}
-                    columnsData={columns(rowDto, setRowDto, setFieldValue)}
+                    columnsData={columns(
+                      rowDto,
+                      setRowDto,
+                      setFieldValue,
+                      rowDtoHandler
+                    )}
                   />
                 </div>
               </>
@@ -1056,6 +824,82 @@ const BonusGenerateCreate = () => {
         ) : (
           <NotPermittedPage />
         )}
+
+        <PModal
+          open={open}
+          title={"Employee Select"}
+          // width="400"
+          onCancel={() => {
+            setOpen(false);
+          }}
+          maskClosable={false}
+          components={
+            <>
+              <div className="row">
+                <div
+                  className="input-field-main col-5"
+                  style={{ overflow: "hidden", width: "100%", zIndex: 10000 }}
+                >
+                  <label>Employee</label>
+                  <AsyncFormikSelect
+                    selectedValue={values?.employee}
+                    isSearchIcon={true}
+                    handleChange={(valueOption) => {
+                      setFieldValue("employee", valueOption);
+                    }}
+                    placeholder="Search (min 3 letter)"
+                    loadOptions={(v) =>
+                      getSearchEmployeeListActiveInactive(v, values)
+                    }
+                    // isDisabled={!values?.workplaceGroup}
+                  />
+                </div>
+                <div className="col-3">
+                  <PButton
+                    style={{
+                      marginTop: "22px",
+                      marginLeft: "10px",
+                    }}
+                    type="primary"
+                    content={"Add"}
+                    onClick={() => {
+                      if (values?.employee?.value) {
+                        const isExist = rowDto?.find(
+                          (item) =>
+                            item?.intEmployeeId === values?.employee?.value
+                        );
+                        if (isExist) {
+                          return toast.warning("Employee already added!");
+                        }
+                        const newRow = {
+                          intEmployeeId: values?.employee?.value,
+                          strEmployeeName:
+                            values?.employee?.employeeNameWithCode,
+                          strEmployeeCode: values?.employee?.employeeCode,
+                          strEmploymentType: values?.employee?.employmentType,
+                          strDesignation: values?.employee?.designationName,
+                          strDepartment: values?.employee?.strDepartment,
+                          strDepartmentSection: "",
+                          strWorkplaceGroup: wgName,
+                          strWorkplace: "",
+                          numSalary: values?.employee?.numGrossSalary || 0,
+                          numBonusAmount: 0,
+                          numActualBonuaAmount: 0,
+                          numBasic: 0,
+                          strPayrollGroup: "",
+                          intWorkplaceGroupId: wgId,
+                        };
+                        setRowDto((prev) => [newRow, ...prev]);
+                        setFieldValue("employee", "");
+                        setOpen(false);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          }
+        />
       </form>
     </>
   );
