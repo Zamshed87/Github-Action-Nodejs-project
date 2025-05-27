@@ -891,6 +891,7 @@ const BonusGenerateCreate = () => {
                         };
                         setRowDto((prev) => [newRow, ...prev]);
                         setFieldValue("employee", "");
+                        setOpen(false);
                       }
                     }}
                   />
