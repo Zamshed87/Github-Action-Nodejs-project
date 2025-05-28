@@ -1,4 +1,7 @@
-import { PButton } from "Components";
+import { DeleteOutlined } from "@mui/icons-material";
+import { Tooltip } from "antd";
+import DeleteIcon from "common/DeleteIcon/DeleteIcon";
+import { Flex } from "Components";
 
 export const detailsHeader = ({
   removeData,
@@ -59,14 +62,9 @@ export const detailsHeader = ({
       ? [
           {
             title: "Action",
+            align: "center",
             render: (_, row, index) => (
-              <PButton
-                type="danger"
-                content="Remove"
-                onClick={() => {
-                  removeData?.(index);
-                }}
-              />
+              <DeleteIcon onClick={() => removeData?.(index)} />
             ),
           },
         ]
