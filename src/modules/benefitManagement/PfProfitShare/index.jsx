@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import ProfitShareView from "./components/view/ProfitShareView";
 import PfProfitShareFilters from "./components/filter/PfProfitShareFilters";
+// import AlertModal from "common/AlertModal/AlertModal";
 
 const PfProfitShare = () => {
   const dispatch = useDispatch();
@@ -104,6 +105,16 @@ const PfProfitShare = () => {
         components={<ProfitShareView data={openView.data} />}
         width={1000}
       />
+      {/* <AlertModal
+        visible={true}
+        type={"info"}
+        title="Delete Confirmation"
+        content="Do you really want to delete this item?"
+        onOk={() => {}}
+        onCancel={() => {}}
+        okText="Yes, Delete"
+        cancelText="Cancel"
+      /> */}
     </>
   ) : (
     <NotPermittedPage />
