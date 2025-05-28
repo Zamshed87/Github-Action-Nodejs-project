@@ -1,3 +1,4 @@
+import DeleteIcon from "common/DeleteIcon/DeleteIcon";
 import { PButton } from "Components";
 import moment from "moment";
 
@@ -38,10 +39,9 @@ export const detailsHeader = ({
       ? [
           {
             title: "Action",
+            align: "center",
             render: (_, row, index) => (
-              <PButton
-                type="danger"
-                content="Remove"
+              <DeleteIcon
                 onClick={() => {
                   removeData?.(index);
                 }}
