@@ -16,12 +16,12 @@ export const getHeader = (pages, history, inActivatePfInvestment) => [
     align: "center",
   },
   {
-    title: "Investment Name",
+    title: "Investment Type",
     dataIndex: "investmentName",
     width: 100,
   },
   {
-    title: "Organization Investment Name",
+    title: "Investment To Organization",
     dataIndex: "orgInvestmentName",
     width: 140,
   },
@@ -43,9 +43,9 @@ export const getHeader = (pages, history, inActivatePfInvestment) => [
     width: 100,
   },
   {
-    title: "Duration (Months)",
+    title: "Investment Duration (Months)",
     dataIndex: "investmentDuration",
-    width: 80,
+    width: 120,
   },
   {
     title: "Maturity Date",
@@ -91,7 +91,7 @@ export const getHeader = (pages, history, inActivatePfInvestment) => [
       const status = record?.status;
 
       const showEdit = status === "Not Started";
-      const showCollection = ["Running", "Matured"].includes(status);
+      const showCollection = ["Running", "Matured"].includes(status) && status !== "Collection Completed";
       const showInactive = status == "Not Started" || status !== "InActive" && !showCollection;
 
       const iconBtnStyle = {

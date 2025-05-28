@@ -16,25 +16,25 @@ export const getHeader = (pages, setOpenView) => [
     width: 120,
   },
   {
-    title: "Employee Contribution",
+    title: "Total Employee Contribution",
     dataIndex: "employeeContribution",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 120,
   },
   {
-    title: "Company Contribution",
+    title: "Total Employer Contribution",
     dataIndex: "companyContribution",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 120,
   },
   {
-    title: "Employee Profit",
+    title: "Total Profit Earned",
     dataIndex: "employeeProfit",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 100,
   },
   {
-    title: "Company Profit",
+    title: "Total PF Balance",
     dataIndex: "companyProfit",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 100,
@@ -46,7 +46,7 @@ export const getHeader = (pages, setOpenView) => [
     width: 140,
   },
   {
-    title: "Profit Share %",
+    title: "Total Profit Share %",
     dataIndex: "profitPercentage",
     render: (value) => (value != null ? `${value}%` : "-"),
     width: 100,

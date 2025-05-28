@@ -5,10 +5,10 @@ import ProfitShareCalculation from "./ProfitShareCalculation";
 const PfProfitShareConfiguration = ({ form, fetchPfShare, data, setData }) => {
   return (
     <PCardBody styles={{ display: "flex", gap: "20px" }}>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 2 }}>
         <PfProfitShareFilter form={form} fetchPfShare={fetchPfShare} />
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 3 }}>
         <ProfitShareCalculation form={form} data={data} setData={setData} />
       </div>
     </PCardBody>
