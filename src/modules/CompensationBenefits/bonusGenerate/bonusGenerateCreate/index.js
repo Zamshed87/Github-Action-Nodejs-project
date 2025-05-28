@@ -121,6 +121,7 @@ const BonusGenerateCreate = () => {
   const [, setTerritoryDDL] = useState([]);
 
   const [, getBonusInformation, loadingOnGetBonusInformation] = useAxiosPost();
+  const [, employeeSalaryInfo, loadingOnGetSalaryInfo] = useAxiosPost();
   const [, getHrPositionAuto] = useAxiosGet([]);
   const [, getWorkplaceAuto] = useAxiosGet([]);
   const [oldWplace, setoldWplace] = useState([]);
@@ -357,9 +358,9 @@ const BonusGenerateCreate = () => {
   };
   return (
     <>
-      {(loadingOnGetEmployeeList || loadingOnGetBonusInformation) && (
-        <Loading />
-      )}
+      {(loadingOnGetEmployeeList ||
+        loadingOnGetBonusInformation ||
+        loadingOnGetSalaryInfo) && <Loading />}
       <form onSubmit={handleSubmit}>
         {loading && <Loading />}
         {permission?.isView ? (
@@ -827,7 +828,7 @@ const BonusGenerateCreate = () => {
 
         <PModal
           open={open}
-          title={"Employee Select"}
+          title={"Add Employee"}
           // width="400"
           onCancel={() => {
             setOpen(false);
@@ -871,27 +872,52 @@ const BonusGenerateCreate = () => {
                         if (isExist) {
                           return toast.warning("Employee already added!");
                         }
-                        const newRow = {
-                          intEmployeeId: values?.employee?.value,
-                          strEmployeeName:
-                            values?.employee?.employeeNameWithCode,
-                          strEmployeeCode: values?.employee?.employeeCode,
-                          strEmploymentType: values?.employee?.employmentType,
-                          strDesignation: values?.employee?.designationName,
-                          strDepartment: values?.employee?.strDepartment,
-                          strDepartmentSection: "",
-                          strWorkplaceGroup: wgName,
-                          strWorkplace: "",
-                          numSalary: values?.employee?.numGrossSalary || 0,
-                          numBonusAmount: 0,
-                          numActualBonusAmount: 0,
-                          numBasic: 0,
-                          strPayrollGroup: "",
-                          intWorkplaceGroupId: wgId,
-                        };
-                        setRowDto((prev) => [newRow, ...prev]);
-                        setFieldValue("employee", "");
-                        setOpen(false);
+                        employeeSalaryInfo(
+                          `/Payroll/EmployeeSalaryManagement`,
+                          {
+                            partType: "EmployeeSalaryInfoByEmployeeId",
+                            businessUnitId: buId,
+                            workplaceGroupId: wgId,
+                            workplaceId: 0,
+                            departmentId: 0,
+                            designationId: 0,
+                            supervisorId: 0,
+                            strStatus: "Assigned",
+                            employeeId: values?.employee?.value,
+                          },
+                          (res) => {
+                            if (res?.length <= 0) {
+                              return toast.warning(
+                                "Employee salary information not found!"
+                              );
+                            } else {
+                              const newRow = {
+                                intEmployeeId: values?.employee?.value,
+                                strEmployeeName:
+                                  values?.employee?.employeeNameWithCode,
+                                strEmployeeCode: values?.employee?.employeeCode,
+                                strEmploymentType:
+                                  values?.employee?.employmentType,
+                                strDesignation: res[0]?.DesignationName,
+                                strDepartment: res[0]?.DepartmentName,
+                                strDepartmentSection: "",
+                                strWorkplaceGroup: wgName,
+                                strWorkplace: res[0]?.WorkplaceName,
+                                numSalary: res[0]?.numGrossSalary || 0,
+                                numBonusAmount: 0,
+                                numActualBonusAmount: 0,
+                                numBasic: res[0]?.numBasicSalary || 0,
+                                strPayrollGroup: res[0]?.PayrollGroupName,
+                                intWorkplaceGroupId: wgId,
+                                isManualBounsEdit: false,
+                              };
+                              setRowDto((prev) => [newRow, ...prev]);
+                              setFieldValue("employee", "");
+                              setOpen(false);
+                            }
+                          },
+                          true
+                        );
                       }
                     }}
                   />
