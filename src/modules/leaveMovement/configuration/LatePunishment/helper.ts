@@ -201,6 +201,7 @@ const fieldsToReset = [
 ]; // dynamically computed array
 
 export const createEditLatePunishmentConfig = async (
+  config: string,
   profileData: any,
   form: FormInstance<any>,
   data: DataState,
@@ -212,7 +213,8 @@ export const createEditLatePunishmentConfig = async (
   try {
     const { orgId, buId, wgId, wId, employeeId, intAccountId } = profileData;
     const values = form.getFieldsValue(true);
-
+    const url =
+      config === "ELP" ? "earlyLeavePunishmentpolicy" : "LatePunishmentpolicy";
     const payload = mapLatePunishmentPayload(
       values,
       data,
@@ -223,7 +225,7 @@ export const createEditLatePunishmentConfig = async (
       wId,
       intAccountId
     );
-    const res = await axios.post(`/LatePunishmentpolicy`, payload);
+    const res = await axios.post(`/${url}`, payload);
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();

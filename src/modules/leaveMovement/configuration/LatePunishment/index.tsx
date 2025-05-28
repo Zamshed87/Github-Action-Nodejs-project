@@ -19,10 +19,16 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import View from "./view";
 import { getPeopleDeskAllDDL } from "common/api";
 
-const LatePunishmentConfig = () => {
+interface LatePunishmentConfigProps {
+  config: string;
+}
+
+const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
   const [latePunishment, getlatePunishment, latePunishmentLoader] =
     useAxiosGet();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const url =
+    config === "ELP" ? "earlyLeavePunishmentpolicy" : "LatePunishmentpolicy";
 
   const [form] = Form.useForm();
   const { profileData } = useSelector(
@@ -45,7 +51,7 @@ const LatePunishmentConfig = () => {
     }
   ) => {
     getlatePunishment(
-      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
+      `/${url}?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
     );
   };
   useEffect(() => {
@@ -63,8 +69,10 @@ const LatePunishmentConfig = () => {
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId]);
+  const menuReferenceId = config === "ELP" ? 30607 : 30590;
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () =>
+      permissionList.find((item) => item?.menuReferenceId === menuReferenceId),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -116,9 +124,7 @@ const LatePunishmentConfig = () => {
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/administration/latePunishmentPolicy/view/" + rec?.id
-                );
+                history.push(`/administration/${url}/view/` + rec?.id);
               }}
             >
               View
@@ -135,9 +141,7 @@ const LatePunishmentConfig = () => {
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/administration/latePunishmentPolicy/extend/" + rec?.id
-                );
+                history.push(`/administration/${url}/extend/` + rec?.id);
               }}
             >
               Extend
@@ -161,7 +165,7 @@ const LatePunishmentConfig = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/administration/latePunishmentPolicy/create/1");
+                  history.push(`/administration/${url}/create/1`);
                 },
               },
             ]}
