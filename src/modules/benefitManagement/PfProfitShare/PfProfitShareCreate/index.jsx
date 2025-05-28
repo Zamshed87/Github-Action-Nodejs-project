@@ -53,18 +53,16 @@ const PfProfitShareCreate = () => {
                   const commonFields = [
                     "fromDateF",
                     "toDateF",
-                    'fromDate',
-                    'toDate',
-                    'profitShareType',
-                    'profitShare',
+                    "fromDate",
+                    "toDate",
+                    "profitShareType",
+                    "profitShare",
                   ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if(!data?.detailsData || data?.detailsData?.length < 1) {
-                        toast.error(
-                          "There are no records to save."
-                        );
+                      if (!data?.detailsData || data?.detailsData?.length < 1) {
+                        toast.error("There are no records to save.");
                         return;
                       }
 
@@ -75,7 +73,9 @@ const PfProfitShareCreate = () => {
                         toDate: values?.toDate,
                         totalProfitAmount: data?.totalProfitAmount,
                         profitShareTypeId: values?.profitShareType,
-                        profitSharePercentage: values?.profitShare ? Number(values?.profitShare) : 0,
+                        profitSharePercentage: values?.profitShare
+                          ? Number(values?.profitShare)
+                          : 0,
                       };
                       createPFProfitShare(payload, setLoading, () => {
                         form.resetFields();
@@ -91,6 +91,7 @@ const PfProfitShareCreate = () => {
               },
             ]}
           />
+          
           <PfProfitShareConfiguration
             form={form}
             data={data}
