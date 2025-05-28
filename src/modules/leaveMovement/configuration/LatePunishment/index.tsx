@@ -1,20 +1,29 @@
-import { EyeFilled, EyeInvisibleOutlined } from "@ant-design/icons";
-import { ExtensionRounded } from "@mui/icons-material";
-import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
+import {
+  DataTable,
+  Flex,
+  PButton,
+  PCard,
+  PCardHeader,
+  PForm,
+  PSelect,
+} from "Components";
 import { PModal } from "Components/Modal";
-import { Form, Switch, Tooltip } from "antd";
+import { Col, Form, Row, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import View from "./view";
+import { getPeopleDeskAllDDL } from "common/api";
 
 const LatePunishmentConfig = () => {
   const [latePunishment, getlatePunishment, latePunishmentLoader] =
     useAxiosGet();
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+
   const [form] = Form.useForm();
   const { profileData } = useSelector(
     (state: { auth: { profileData: any } }) => state?.auth,
@@ -42,12 +51,18 @@ const LatePunishmentConfig = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     document.title = "Late Punishment";
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
     () => {
       document.title = "PeopleDesk";
     };
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wgId]);
   const permission = useMemo(
     () => permissionList.find((item) => item?.menuReferenceId === 30590),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,12 +152,9 @@ const LatePunishmentConfig = () => {
 
   return permission?.isView ? (
     <div>
-      {latePunishmentLoader && <Loading />}
-
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${latePunishment?.totalCount || 0} Late Punishment`}
             buttonList={[
               {
                 type: "primary",
@@ -154,8 +166,71 @@ const LatePunishmentConfig = () => {
               },
             ]}
           />
-
-          <div className="mb-3">
+          <Row gutter={[10, 2]}>
+            <Col md={6} sm={24}>
+              <PSelect
+                options={[{ label: "All", value: 0 }, ...(workplaceDDL || [])]}
+                name="workplace"
+                label="workplace"
+                placeholder="Workplace"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Workplace is required",
+                  },
+                ]}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PSelect
+                options={[
+                  {
+                    label: "Active",
+                    value: "active",
+                  },
+                  {
+                    label: "Inactive",
+                    value: "inactive",
+                  },
+                ]}
+                name="status"
+                label="status"
+                placeholder="status"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    status: op,
+                  });
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "status is required",
+                  },
+                ]}
+              />
+            </Col>
+            <Col md={4} sm={24}>
+              <PButton
+                style={{ marginTop: "23px" }}
+                type="primary"
+                content={"View"}
+                onClick={() => {
+                  form
+                    .validateFields([""])
+                    .then(() => {
+                      const values = form.getFieldsValue(true);
+                    })
+                    .catch(() => {});
+                }}
+              />
+            </Col>
+          </Row>
+          <div className="mt-3">
             <DataTable
               bordered
               data={latePunishment || []}
@@ -173,21 +248,6 @@ const LatePunishmentConfig = () => {
           </div>
         </PCard>
       </PForm>
-      {/* Modal */}
-      <PModal
-        open={false} // have to change
-        title={"View"}
-        width={1000}
-        onCancel={() => {
-          // setViewModalModal(false);
-        }}
-        maskClosable={false}
-        components={
-          <>
-            <View />
-          </>
-        }
-      />
     </div>
   ) : (
     <NotPermittedPage />
