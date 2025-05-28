@@ -51,6 +51,7 @@
   height: 50px;
   position: relative;
   top: 5px;
+  margin-bottom: .6rem;
   transition: transform 0.2s ease;
 }
 
@@ -110,5 +111,5 @@
 }
 
 .alert-modal-info .alert-modal-icon::before {
-  content: url("../../assets/alert/info.svg");
+  content: url("../../assets/alert/info.png");
 }

@@ -46,6 +46,7 @@ const usePfInvestments = (form) => {
   , [buId, form]);
   const inActivatePfInvestment = async (
     InvestmentId,
+    callBack
   ) => {
     setOtherLoading?.(true);
     try {
@@ -54,6 +55,7 @@ const usePfInvestments = (form) => {
       );
       toast.success(res?.data?.message || "InActive Successfully");
       setOtherLoading?.(false);
+      callBack?.();
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
       setOtherLoading?.(false);

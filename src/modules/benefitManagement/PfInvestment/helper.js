@@ -7,7 +7,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import { FaEye } from "react-icons/fa";
 import { RxCrossCircled } from "react-icons/rx";
 
-export const getHeader = (pages, history, inActivatePfInvestment) => [
+export const getHeader = (pages, history, setVisible) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -181,8 +181,8 @@ export const getHeader = (pages, history, inActivatePfInvestment) => [
               <button
                 style={iconBtnStyle}
                 onClick={() => {
-                  inActivatePfInvestment(
-                    record?.investmentHeaderId,
+                  setVisible(
+                    {open: true, data: record},
                   );
                 }}
               >
