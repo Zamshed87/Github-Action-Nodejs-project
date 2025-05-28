@@ -1658,6 +1658,8 @@ import MonthlyOffdayAssignLandingSelfService from "modules/empSelfService/superv
 import { OffDayLanding } from "modules/timeSheet/employeeAssign/offDay";
 import { LeaveAdjustment } from "modules/employeeProfile/leaveAdjustment";
 import { LeavePunishmentLanding } from "modules/leaveMovement/configuration/leavePunishment";
+import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestmentByOrg";
+import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -4451,6 +4453,19 @@ export const routingList = [
     path: "/BenefitsManagement/providentFund/pfProfitShare/create",
     component: PFProfitShareCreate,
   },
+
+  // PF report start
+
+   {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr",
+    component: PfInvestmentByOrgReport,
+  },
+     {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
+    component: PfInvestmentByOrgReportView,
+  },
+
+  // PF report end
   {
     path: "/BenefitsManagement/gratuity/gratuityPolicy",
     component: GratuityPolicy,
