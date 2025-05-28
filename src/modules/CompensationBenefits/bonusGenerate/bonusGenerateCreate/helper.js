@@ -250,7 +250,7 @@ export const onGenerateOrReGenerateBonus = (
         numSalary: item?.numSalary || 0,
         numBasic: item?.numBasic || 0,
         numBonusAmount: item?.numBonusAmount || 0,
-        numActualBonuaAmount: +item?.numActualBonuaAmount || 0,
+        numActualBonusAmount: +item?.numActualBonusAmount || 0,
         isManualBounsEdit: item?.isManualBounsEdit || false,
         intCreatedBy: employeeId,
         intBonusSetupId: item?.intBonusSetupId || 0,

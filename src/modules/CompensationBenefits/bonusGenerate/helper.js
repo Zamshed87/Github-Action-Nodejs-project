@@ -248,7 +248,7 @@ export const columns = (rowDto, setRowDto, setFieldValue, rowDtoHandler) => {
                 fontSize: "12px",
               }}
               className="form-control"
-              value={item?.numActualBonuaAmount}
+              value={item?.numActualBonusAmount}
               type="number"
               // disabled={!item?.isChecked}
 
@@ -257,9 +257,9 @@ export const columns = (rowDto, setRowDto, setFieldValue, rowDtoHandler) => {
 
                 // console.log({ e })
                 if (e.target.value) {
-                  rowDtoHandler("numActualBonuaAmount", index, e.target.value);
+                  rowDtoHandler("numActualBonusAmount", index, e.target.value);
                 } else {
-                  rowDtoHandler("numActualBonuaAmount", index, 0);
+                  rowDtoHandler("numActualBonusAmount", index, 0);
                 }
                 // if(e.target.value){
                 // rowDtoHandler("numMinutes", index, e.target.value);

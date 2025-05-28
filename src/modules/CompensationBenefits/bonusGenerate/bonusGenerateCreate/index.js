@@ -884,7 +884,7 @@ const BonusGenerateCreate = () => {
                           strWorkplace: "",
                           numSalary: values?.employee?.numGrossSalary || 0,
                           numBonusAmount: 0,
-                          numActualBonuaAmount: 0,
+                          numActualBonusAmount: 0,
                           numBasic: 0,
                           strPayrollGroup: "",
                           intWorkplaceGroupId: wgId,
