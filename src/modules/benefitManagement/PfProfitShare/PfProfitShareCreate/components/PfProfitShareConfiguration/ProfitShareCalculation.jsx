@@ -100,10 +100,10 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
           label = `${label} (%)`;
         break;
       case 2:
-          label = `${label} (Proportionately With Fixed Amount)`;
+          label = `${label} (Proportionately)`;
         break;
       case 3:
-          label = `${label} (Proportionately With Balance Amount)`;
+          label = `${label} (Proportionately)`;
         break;
       case 4:
           label = `${label} (Fixed Amount)`;
@@ -116,7 +116,7 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
   };
   return (
     <Row gutter={[5, 2]}>
-      <Col md={8} sm={12} xs={24}>
+      <Col md={9} sm={12} xs={24}>
         <PSelect
           options={[
             { value: 1, label: "Percentage" },

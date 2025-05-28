@@ -87,7 +87,7 @@ const PfPolicyCreate = () => {
                         intEmployeeContributionPaidAfter:
                           values?.intEmployeeContributionPaidAfter?.value,
                         intEmployeeContributionInFixedMonth:
-                          values?.intEmployeeContributionInFixedMonth,
+                          values?.intEmployeeContributionInFixedMonth ?? 0,
                         isPFInvestment: values?.isPFInvestment,
                         intMonthlyInvestmentWith:
                           values?.intMonthlyInvestmentWith,

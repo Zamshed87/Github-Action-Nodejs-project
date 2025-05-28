@@ -101,6 +101,7 @@ const PFInvestment = () => {
           bordered
           data={data?.data || []}
           loading={loading}
+          scroll={{ x: 2000 }}
           // pagination={{
           //   pageSize: data?.pageSize,
           //   total: data?.totalCount,

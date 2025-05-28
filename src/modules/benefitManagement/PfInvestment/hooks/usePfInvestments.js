@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
@@ -38,6 +38,12 @@ const usePfInvestments = (form) => {
       setData(res);
     });
   };
+  useEffect(() => {
+    if (buId) {
+      fetchPfInvestment();
+    }
+  }
+  , [buId, form]);
   const inActivatePfInvestment = async (
     InvestmentId,
   ) => {
