@@ -27,12 +27,8 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
   const [latePunishment, getlatePunishment, latePunishmentLoader] =
     useAxiosGet();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  let url = "";
-  if (config === "ELP") {
-    url = "earlyLeavePunishmentpolicy";
-  } else {
-    url = "LatePunishmentpolicy";
-  }
+  const url =
+    config === "ELP" ? "earlyLeavePunishmentpolicy" : "LatePunishmentpolicy";
 
   const [form] = Form.useForm();
   const { profileData } = useSelector(
@@ -73,8 +69,10 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId]);
+  const menuReferenceId = config === "ELP" ? 30607 : 30590;
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () =>
+      permissionList.find((item) => item?.menuReferenceId === menuReferenceId),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

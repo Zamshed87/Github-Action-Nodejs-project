@@ -32,8 +32,13 @@ import {
 import RangeDatePicker from "./RangeDatePicker";
 import { DataState, LeaveDeductionDataState } from "./type";
 import View from "./view";
+interface PunishmentConfigProps {
+  config: string;
+}
+const CreateEditLatePunishmentConfig = ({ config }: PunishmentConfigProps) => {
+  const url =
+    config === "ELP" ? "earlyLeavePunishmentpolicy" : "LatePunishmentpolicy";
 
-const CreateEditLatePunishmentConfig = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [data, setData] = useState<DataState>([]);
@@ -74,9 +79,11 @@ const CreateEditLatePunishmentConfig = () => {
     isCreate?: boolean;
     [key: string]: any;
   };
+  const menuReferenceId = config === "ELP" ? 30607 : 30590;
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () =>
+      permissionList.find((item) => item?.menuReferenceId === menuReferenceId),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -164,18 +171,15 @@ const CreateEditLatePunishmentConfig = () => {
     };
     // have a need new useEffect to set the title
     if (params?.type === "extend" || params?.type === "view") {
-      getSingleLatePunPolicy(
-        `/LatePunishmentpolicy/${params?.id}`,
-        (data: any) => {
-          // Populate the form with the fetched data
-          // form.setFieldsValue({
-          //   lateCalculationType: data?.name,
-          // });
+      getSingleLatePunPolicy(`/${url}/${params?.id}`, (data: any) => {
+        // Populate the form with the fetched data
+        // form.setFieldsValue({
+        //   lateCalculationType: data?.name,
+        // });
 
-          setData(data?.elements || []); // need to modify
-          setLeaveDeductionData(data?.leaveDeductions || []);
-        }
-      );
+        setData(data?.elements || []); // need to modify
+        setLeaveDeductionData(data?.leaveDeductions || []);
+      });
     }
 
     getPeopleDeskAllDDL(
@@ -380,7 +384,11 @@ const CreateEditLatePunishmentConfig = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`Late Punishment Configuration`}
+            title={
+              config === "ELP"
+                ? "Early Leave Punishment Configuration"
+                : `Late Punishment Configuration`
+            }
             buttonList={
               params?.type !== "view"
                 ? [
@@ -401,15 +409,14 @@ const CreateEditLatePunishmentConfig = () => {
                           .validateFields([])
                           .then(() => {
                             createEditLatePunishmentConfig(
+                              config,
                               profileData,
                               form,
                               data,
                               leaveDeductionData,
                               setLoading,
                               () => {
-                                history.push(
-                                  "/administration/latePunishmentPolicy"
-                                );
+                                history.push(`/administration/${url}`);
                               }
                             );
                           })
