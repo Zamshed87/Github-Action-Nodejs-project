@@ -1827,16 +1827,22 @@ const PFInvestment = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/index.jsx")
 );
 const PFInvestmentCreate = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx"
+  )
 );
 const PFInvestmentCollection = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx"
+  )
 );
 const PFProfitShare = lazy(() =>
   import("../modules/benefitManagement/PfProfitShare/index.jsx")
 );
 const PFProfitShareCreate = lazy(() =>
-  import("../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx")
+  import(
+    "../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx"
+  )
 );
 const GratuityPolicy = lazy(() =>
   import("../modules/benefitManagement/gratuityPolicy/index.tsx")
@@ -1850,7 +1856,9 @@ const PFInvestmentType = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
 );
 const PFInvestmentToOrganization = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx"
+  )
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -2595,11 +2603,19 @@ export const routingList = [
   },
   {
     path: "/administration/latePunishmentPolicy",
-    component: LatePunishmentConfig,
+    component: () => <LatePunishmentConfig config={"LP"} />,
   },
   {
     path: "/administration/latePunishmentPolicy/:type/:id",
-    component: CreateEditLatePunishmentConfig,
+    component: () => <CreateEditLatePunishmentConfig config={"LP"} />,
+  },
+  {
+    path: "/administration/earlyLeavePunishmentPolicy",
+    component: () => <LatePunishmentConfig config={"ELP"} />,
+  },
+  {
+    path: "/administration/earlyLeavePunishmentPolicy/:type/:id",
+    component: () => <CreateEditLatePunishmentConfig config={"ELP"} />,
   },
   // {
   //   path: "/SelfService/timeManagement/attendenceAdjustRequest",
