@@ -47,16 +47,17 @@ export const header = (
       isHidden: random || !isSequence,
       width: 150,
     },
-    {
+       {
       title: "Before Approve Status Title",
-      dataIndex: "strStatusTitle",
+      dataIndex: "strStatusTitlePending",
       sorter: true,
     },
     {
       title: "After Approve Status Title",
-      dataIndex: "strStatusTitlePending",
+      dataIndex: "strStatusTitle",
       sorter: true,
     },
+ 
     {
       title: "User Group/Employee",
       dataIndex: "userGroupOrEmployeeName",

@@ -63,7 +63,7 @@ const PfPolicyConfig = ({ form }) => {
             placeholder="Select Employment Type"
             options={employmentTypeDDL.data}
             loading={employmentTypeDDL.loading}
-            advanceAllOption={true}
+            AllValueZero={true}
             rules={[{ required: true, message: "Employment Type is required" }]}
           />
         </Col>
