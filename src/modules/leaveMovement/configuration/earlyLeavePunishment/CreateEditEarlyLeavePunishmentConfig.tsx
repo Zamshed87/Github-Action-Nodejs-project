@@ -23,17 +23,14 @@ import CommonForm from "modules/pms/CommonForm/commonForm";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getSerial } from "Utils";
-import { LatePunishment } from "./form";
-import {
-  addHandler,
-  addLeaveDeductions,
-  createEditPunishmentConfig,
-} from "./helper";
-import RangeDatePicker from "./RangeDatePicker";
-import { DataState, LeaveDeductionDataState } from "./type";
-import View from "./view";
+import { DataState, LeaveDeductionDataState } from "./earlyLeaveType";
+import { addHandler, addLeaveDeductions } from "./earlyLeaveHelper";
+import RangeDatePicker from "../LatePunishment/RangeDatePicker";
+import View from "../LatePunishment/view";
+import { EarlyLeavePunishment } from "./earlyLeaveForm";
+import { createEditPunishmentConfig } from "../LatePunishment/helper";
 
-const CreateEditLatePunishmentConfig = () => {
+const CreateEditEarlyLeavePunishmentConfig = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [data, setData] = useState<DataState>([]);
@@ -45,15 +42,12 @@ const CreateEditLatePunishmentConfig = () => {
   const [leaveTypeDDL, getleaveTypeDDL, leaveTypeDDLLoader, setleaveTypeDDL] =
     useAxiosGet();
   const [
-    singleLatePunPolicy,
-    getSingleLatePunPolicy,
-    singleLatePunPolicyLoader,
-    setSingleLatePunPolicy,
+    singleEarlyLeavePunPolicy,
+    getSingleEarlyLeavePunPolicy,
+    singleEarlyLeavePunPolicyLoader,
+    setSingleEarlyLeavePunPolicy,
   ] = useAxiosGet();
-  const params = useParams<{ type?: string; id?: string }>() as {
-    type?: string;
-    id?: string;
-  };
+  const params = useParams<{ type?: string; id?: string }>();
   const history = useHistory();
 
   // redux
@@ -77,7 +71,6 @@ const CreateEditLatePunishmentConfig = () => {
 
   const permission = useMemo(
     () => permissionList.find((item) => item?.menuReferenceId === 30590),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -158,21 +151,15 @@ const CreateEditLatePunishmentConfig = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Late Punishment";
+    document.title = "Early Leave Punishment";
     () => {
       document.title = "PeopleDesk";
     };
-    // have a need new useEffect to set the title
     if (params?.type === "extend" || params?.type === "view") {
-      getSingleLatePunPolicy(
-        `/LatePunishmentpolicy/${params?.id}`,
+      getSingleEarlyLeavePunPolicy(
+        `/EarlyLeavePunishmentpolicy/${params?.id}`,
         (data: any) => {
-          // Populate the form with the fetched data
-          // form.setFieldsValue({
-          //   lateCalculationType: data?.name,
-          // });
-
-          setData(data?.elements || []); // need to modify
+          setData(data?.elements || []);
           setLeaveDeductionData(data?.leaveDeductions || []);
         }
       );
@@ -214,8 +201,8 @@ const CreateEditLatePunishmentConfig = () => {
       width: 30,
     },
     {
-      title: "Late Calculation Type",
-      dataIndex: "lateCalculationTypeDescription",
+      title: "Early Leave Calculation Type",
+      dataIndex: "earlyLeaveCalculationTypeDescription",
       fixed: "left",
     },
     {
@@ -239,17 +226,20 @@ const CreateEditLatePunishmentConfig = () => {
       },
     },
     {
-      title: "Late Time (Min)",
-      dataIndex: "lateTimeMinutes",
+      title: "Early Leave Time (Min)",
+      dataIndex: "earlyLeaveTimeMinutes",
       render: (value: any, rec: any) => {
         return (
-          rec?.minimumLateTime + " to " + rec?.maximumLateTime + " Minutes"
+          rec?.minimumEarlyLeaveTime +
+          " to " +
+          rec?.maximumEarlyLeaveTime +
+          " Minutes"
         );
       },
     },
     {
-      title: "Late Time Calculated by",
-      dataIndex: "lateTimeCalculatedByDescription",
+      title: "Early Leave Time Calculated by",
+      dataIndex: "earlyLeaveTimeCalculatedByDescription",
     },
     {
       title: "Punishment Type",
@@ -350,7 +340,6 @@ const CreateEditLatePunishmentConfig = () => {
 
   const CustomCheckbox = () => {
     return (
-      // <Col md={6} sm={24} style={{ marginTop: "15px" }}>
       <Form.Item
         name="isConsecutiveDay"
         valuePropName="checked"
@@ -358,7 +347,6 @@ const CreateEditLatePunishmentConfig = () => {
       >
         <Checkbox>Is Consecutive Day?</Checkbox>
       </Form.Item>
-      // </Col>
     );
   };
 
@@ -368,7 +356,10 @@ const CreateEditLatePunishmentConfig = () => {
     );
   };
 
-  const lateCalculationType = Form.useWatch("lateCalculationType", form);
+  const earlyLeaveCalculationType = Form.useWatch(
+    "earlyLeaveCalculationType",
+    form
+  );
   const punishmentType = Form.useWatch("punishmentType", form);
   const leaveDeductType = Form.useWatch("leaveDeductType", form);
   const amountDeductFrom = Form.useWatch("amountDeductFrom", form);
@@ -380,15 +371,13 @@ const CreateEditLatePunishmentConfig = () => {
         <PCard>
           <PCardHeader
             backButton
-            title={`Late Punishment Configuration`}
+            title="Early Leave Punishment Configuration"
             buttonList={
               params?.type !== "view"
                 ? [
                     {
                       type: "primary",
                       content: "Save",
-                      // icon:
-                      //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
                         if (
                           isDeductionSeqShow() &&
@@ -401,8 +390,7 @@ const CreateEditLatePunishmentConfig = () => {
                           .validateFields([])
                           .then(() => {
                             createEditPunishmentConfig(
-                              "/LatePunishmentpolicy",
-
+                              "/EarlyLeavePunishmentpolicy",
                               profileData,
                               form,
                               data,
@@ -410,10 +398,10 @@ const CreateEditLatePunishmentConfig = () => {
                               setLoading,
                               () => {
                                 history.push(
-                                  "/administration/latePunishmentPolicy"
+                                  "/administration/earlyLeavePunishmentPolicy"
                                 );
                               },
-                              "late"
+                              "early"
                             );
                           })
                           .catch(() => {});
@@ -425,9 +413,8 @@ const CreateEditLatePunishmentConfig = () => {
           />
           {params?.type !== "view" ? (
             <PCardBody>
-              {" "}
               <CommonForm
-                formConfig={LatePunishment(
+                formConfig={EarlyLeavePunishment(
                   workplaceDDL,
                   getEmploymentType,
                   getEmployeDepartment,
@@ -438,7 +425,7 @@ const CreateEditLatePunishmentConfig = () => {
                   <RangeDatePicker name={"dayRange"} />,
                   <CustomCheckbox />,
                   {
-                    lateCalculationType,
+                    earlyLeaveCalculationType,
                     punishmentType,
                     leaveDeductType,
                     amountDeductFrom,
@@ -447,7 +434,6 @@ const CreateEditLatePunishmentConfig = () => {
                 )}
                 form={form}
               >
-                {/* Add appropriate children here */}
                 <Col md={6} sm={24}>
                   <PButton
                     style={{ marginTop: "22px" }}
@@ -472,7 +458,7 @@ const CreateEditLatePunishmentConfig = () => {
             </PCardBody>
           ) : (
             <PCardBody>
-              <View data={singleLatePunPolicy} />
+              <View data={singleEarlyLeavePunPolicy} />
             </PCardBody>
           )}
         </PCard>
@@ -480,7 +466,6 @@ const CreateEditLatePunishmentConfig = () => {
           <DataTable
             bordered
             data={data || []}
-            // scroll={{ x: 1500 }}
             loading={false}
             header={header}
           />
@@ -567,4 +552,4 @@ const CreateEditLatePunishmentConfig = () => {
   );
 };
 
-export default CreateEditLatePunishmentConfig;
+export default CreateEditEarlyLeavePunishmentConfig;
