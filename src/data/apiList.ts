@@ -353,4 +353,8 @@ export const apiList = {
   LeavePunishmentExtend: "/LeavePunishment/Extend",
   GetEmployeePfAmount: "/Employee/GetEmployeePfAmount",
   GetFinalSettlementDueSalaryReport: "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
+  GetInvestmentSummaryReportByOrganization:
+    "/PFInvestment/GetInvestmentSummaryReportByOrganization",
+    GetInvestmentDetailReportByOrganization:
+    "/PFInvestment/GetInvestmentDetailReportByOrganization",
 };
