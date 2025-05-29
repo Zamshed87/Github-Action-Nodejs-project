@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "common/loading/Loading";
 import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
@@ -12,10 +12,12 @@ import { toast } from "react-toastify";
 import PfInvestmentFilters from "./components/filter/PfInvestmentFilters";
 import moment from "moment";
 import PfInvestmentDetails from "./PfInvestmentCreate/components/PfInvestmentConfig/PfInvestmentDetails";
+import AlertModal from "common/AlertModal/AlertModal";
 
 const PFInvestment = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [visible, setVisible] = useState({ open: false, data: {} });
   const [form] = Form.useForm();
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
@@ -42,7 +44,7 @@ const PFInvestment = () => {
   });
 
   const startOfYear = moment().startOf("year").format("YYYY-MM-DD");
-  const endOfYear = moment().endOf("year").format("YYYY-MM-DD");  
+  const endOfYear = moment().endOf("year").format("YYYY-MM-DD");
 
   return permission?.isView ? (
     <PForm
@@ -53,7 +55,7 @@ const PFInvestment = () => {
         ToDateF: moment(endOfYear, "YYYY-MM-DD"),
         ToDate: endOfYear,
         InvestmentTypeId: [0],
-        status: "Running"
+        status: "Running",
       }}
       onFinish={() => {
         fetchPfInvestment();
@@ -97,10 +99,11 @@ const PFInvestment = () => {
           </div>
         </PCardBody>
         <DataTable
-          header={getHeader(pages, history, inActivatePfInvestment)}
+          header={getHeader(pages, history, setVisible)}
           bordered
           data={data?.data || []}
           loading={loading}
+          scroll={{ x: 2000 }}
           // pagination={{
           //   pageSize: data?.pageSize,
           //   total: data?.totalCount,
@@ -114,6 +117,23 @@ const PFInvestment = () => {
           // }}
         />
       </PCard>
+      <AlertModal
+        visible={visible.open}
+        type={"info"}
+        title="InActive Confirmation"
+        content="Do you really want to inactive this item?"
+        onOk={() => {
+          inActivatePfInvestment(visible.data?.investmentHeaderId, () => {
+            fetchPfInvestment();
+            setVisible({ open: false, data: {} });
+          });
+        }}
+        onCancel={() => {
+          setVisible({ open: false, data: {} });
+        }}
+        okText="Yes, InActive"
+        cancelText="Cancel"
+      />
     </PForm>
   ) : (
     <NotPermittedPage />

@@ -33,8 +33,12 @@ export const getInvestmentCollection = async (
     const res =
       await axios.get(`/PFInvestment/GetById?InvestmentId=${investmentId}`);
     // toast.success(res?.data?.message || "Retrieved Successfully");
+    const mappedData = (res?.data?.data || []).map((item) => ({
+      ...item,
+      rowId: item.collectionId,
+    }));
     setLoading?.(false);
-    setData?.(res?.data?.data || []);
+    setData?.(mappedData);
   } catch (error) {
     toast.error(error?.response?.data?.message || "Something went wrong");
     setLoading?.(false);
