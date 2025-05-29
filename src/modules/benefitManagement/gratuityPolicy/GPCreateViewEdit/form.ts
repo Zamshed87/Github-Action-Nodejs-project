@@ -35,6 +35,7 @@ export const GratuityPolicyForm = (
       type: "ddl",
       label: "Employment Type",
       varname: "employmentType",
+      mode: "multiple",
       ddl: employmentTypeDDL || [],
       placeholder: "Select employment type",
       rules: [{ required: true, message: "Employment Type is required!" }],
