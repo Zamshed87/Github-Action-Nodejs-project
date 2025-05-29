@@ -1808,6 +1808,8 @@ const FinalSettlementEdit = lazy(() =>
 );
 
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
+import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestmentByOrg";
+import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -4434,6 +4436,19 @@ export const routingList = [
     path: "/BenefitsManagement/providentFund/pfProfitShare/create",
     component: PFProfitShareCreate,
   },
+
+  // PF report start
+
+   {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr",
+    component: PfInvestmentByOrgReport,
+  },
+     {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
+    component: PfInvestmentByOrgReportView,
+  },
+
+  // PF report end
   {
     path: "/bm/gratuityPolicy",
     component: GratuityPolicy,

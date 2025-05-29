@@ -89,7 +89,7 @@ export default function IbblBankLetterHead({
                 </b>
                 employees. Please debit <b>BDT</b>&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
-                  {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}&nbsp;
+                  {landingViewPdf?.[0]?.TotalBankPay?.toFixed(2)}&nbsp;
                 </b>
                 from our company account no.&nbsp;
                 <b style={{ color: "black", fontSize: "14px" }}>
@@ -196,7 +196,7 @@ export default function IbblBankLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.NeyPayableSalary.toFixed(2)}
+                          {item?.NeyPayableSalary?.toFixed(2)}
                         </td>
                         <td
                           style={{
