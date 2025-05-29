@@ -150,7 +150,7 @@ const SummaryCostCenterReport = () => {
                         values?.month
                       ).format("MM")}&intYearId=${moment(values?.month).format(
                         "YYYY"
-                      )}&strSalaryCode=${values?.salaryCode?.strSalaryCode}`;
+                      )}&strSalaryCode=${values?.salaryCode?.value}`;
                       downloadFile(
                         url,
                         `Salary Summary Cost Center Report- ${todayDate()}`,
@@ -187,7 +187,7 @@ const SummaryCostCenterReport = () => {
                         values?.month
                       ).format("MM")}&intYearId=${moment(values?.month).format(
                         "YYYY"
-                      )}&strSalaryCode=${values?.salaryCode?.strSalaryCode}`;
+                      )}&strSalaryCode=${values?.salaryCode?.value}`;
 
                       getPDFAction(url, setLoading);
                     }}
