@@ -56,7 +56,9 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
     getlatePunishment(
       `/${url}?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
         values?.workplace ? values?.workplace?.value : wId
-      }&pageSize=10&pageNo=1&isActive=${
+      }&pageSize=${pagination?.pageSize}&pageNo=${
+        pagination?.current
+      }&isActive=${
         values?.status
           ? values?.status?.value === "active"
             ? true
@@ -123,7 +125,9 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
                   url,
                   rec?.id,
                   !rec?.isActive,
-                  () => {},
+                  () => {
+                    landingApi();
+                  },
                   "late"
                 );
               }}
@@ -283,7 +287,7 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
               }}
               filterData={latePunishment?.data?.filters}
               onChange={(pagination, filters) => {
-                landingApi();
+                landingApi(pagination);
               }}
             />
           </div>
