@@ -22,8 +22,17 @@ const PfProfitShareCreate = () => {
 
   const dispatch = useDispatch();
   const [permission, setPermission] = useState(null);
-  const { data, setData, fetchPfShare, loading, pages, setPages, setLoading, detailsData, detailsLoading } =
-    usePfShare(form);
+  const {
+    data,
+    setData,
+    fetchPfShare,
+    loading,
+    pages,
+    setPages,
+    setLoading,
+    detailsData,
+    detailsLoading,
+  } = usePfShare(form);
   useEffect(() => {
     setPermission(
       permissionList.find((item) => item?.menuReferenceId === 30599)
@@ -40,7 +49,12 @@ const PfProfitShareCreate = () => {
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          profitShareType: 1,
+        }}
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -93,7 +107,7 @@ const PfProfitShareCreate = () => {
               },
             ]}
           />
-          
+
           <PfProfitShareConfiguration
             form={form}
             data={data}

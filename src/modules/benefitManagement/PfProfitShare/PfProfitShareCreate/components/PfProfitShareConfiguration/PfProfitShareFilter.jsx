@@ -1,11 +1,13 @@
-import { Col, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import moment from "moment";
 import { toast } from "react-toastify";
 
 const PfProfitShareFilter = ({ form, fetchPfShare }) => {
+    const profitShareType = Form.useWatch("profitShareType", form);
+  console.log("profitShareType", profitShareType);
   const handleViewClick = () => {
-    const commonFields = ["fromDateF", "toDateF", "fromDate", "toDate"];
+    const commonFields = ["profitShareType","fromDateF", "toDateF", "fromDate", "toDate"];
     form
       .validateFields(commonFields)
       .then((values) => {
@@ -21,7 +23,7 @@ const PfProfitShareFilter = ({ form, fetchPfShare }) => {
         <PSelect
           options={[
             { value: 1, label: "Date Wise" },
-            { value: 2, label: "Investment Wise" },
+            { value: 2, label: "Investment Wise", disabled: true },
           ]}
           name="profitShareType"
           label="Profit Share Type"
@@ -44,12 +46,15 @@ const PfProfitShareFilter = ({ form, fetchPfShare }) => {
           label="From Date"
           format={"YYYY-MM"}
           placeholder="Select From Date"
-          rules={[
-            {
-              required: true,
-              message: "From Date is required",
-            },
-          ]}
+          rules={profitShareType === 1
+              ? []
+              : [
+                  {
+                    required: true,
+                    message: "From Date is required",
+                  },
+                ]}
+          disabled={profitShareType == 1}
           onChange={(value) => {
             const startOfMonth = moment(value, "YYYY-MM")
               .startOf("month")

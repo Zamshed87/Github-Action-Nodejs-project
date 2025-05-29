@@ -1,18 +1,16 @@
-const fieldKeys = [
-  "Total PF Loan Interest (Unadjusted/ Non Shared)",
-  "Total Investment Profit (Unadjusted/ Non Shared)",
-  "Running Profit Share",
-  "Total Unadjusted Profit",
+const fieldMap = [
+  { label: "Total PF Loan Interest (Unadjusted/ Non Shared)", key: "pfLoanInterest" },
+  { label: "Total Investment Profit (Unadjusted/ Non Shared)", key: "unadjustedProfit" },
+  { label: "Running Profit Share", key: "adjustedProfit" },
+  { label: "Total Unadjusted Profit", key: "finalProfitShare" },
 ];
 
 const ProfitShareDetailsTable = ({ data, loading }) => {
-  console.log("ProfitShareDetailsTable data", data);
-  return <></>
   return (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
         <tr>
-          {fieldKeys.map((label) => (
+          {fieldMap.map(({ label }) => (
             <th key={label} style={styles.landingTh}>
               {label}
             </th>
@@ -21,18 +19,18 @@ const ProfitShareDetailsTable = ({ data, loading }) => {
       </thead>
       <tbody>
         <tr>
-          {fieldKeys.map((label) => (
-            <td key={label} style={styles.landingTd}>
-              {loading
-                ? "Loading..."
-                : data[label]?.toLocaleString?.() ?? "Info."}
-            </td>
+          {fieldMap.map(({ key }) => (
+            <TableDataCell key={key} loading={loading} value={data?.[key]} />
           ))}
         </tr>
       </tbody>
     </table>
   );
 };
+
+const TableDataCell = ({ loading, value }) => (
+  <td style={styles.landingTd}>{loading ? "Loading..." : value ?? "N/A"}</td>
+);
 
 export default ProfitShareDetailsTable;
 

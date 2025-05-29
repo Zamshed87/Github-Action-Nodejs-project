@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const usePfShare = (form) => {
@@ -28,6 +27,7 @@ const usePfShare = (form) => {
 
     const formattedParams = {
       AccountId: intAccountId,
+      ProfitShareType: formValues.profitShareType,
       FromDate: formValues.fromDate,
       ToDate: formValues.toDate,
       PageNo: pages.current,
