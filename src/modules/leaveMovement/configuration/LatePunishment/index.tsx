@@ -18,6 +18,7 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import View from "./view";
 import { getPeopleDeskAllDDL } from "common/api";
+import { statusChangePunishmentConfig } from "./helper";
 
 interface LatePunishmentConfigProps {
   config: string;
@@ -50,8 +51,20 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
       pageSize: 25,
     }
   ) => {
+    const values = form.getFieldsValue(true);
+
     getlatePunishment(
-      `/${url}?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
+      `/${url}?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
+        values?.workplace ? values?.workplace?.value : wId
+      }&pageSize=10&pageNo=1&isActive=${
+        values?.status
+          ? values?.status?.value === "active"
+            ? true
+            : values?.status?.value === "inactive"
+            ? false
+            : ""
+          : ""
+      }`
     );
   };
   useEffect(() => {
@@ -102,7 +115,19 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
             placement="bottom"
             title={rec?.isActive ? "Inactive" : "Active"}
           >
-            <Switch size="small" checked={rec?.isActive} onChange={() => {}} />
+            <Switch
+              size="small"
+              checked={rec?.isActive}
+              onChange={() => {
+                statusChangePunishmentConfig(
+                  url,
+                  rec?.id,
+                  !rec?.isActive,
+                  () => {},
+                  "late"
+                );
+              }}
+            />
           </Tooltip>
         </Flex>
       ),
@@ -156,7 +181,15 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
 
   return permission?.isView ? (
     <div>
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          status: {
+            label: "All",
+            value: "",
+          },
+        }}
+      >
         <PCard>
           <PCardHeader
             buttonList={[
@@ -194,6 +227,10 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
               <PSelect
                 options={[
                   {
+                    label: "All",
+                    value: "",
+                  },
+                  {
                     label: "Active",
                     value: "active",
                   },
@@ -227,7 +264,7 @@ const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
                   form
                     .validateFields([""])
                     .then(() => {
-                      const values = form.getFieldsValue(true);
+                      landingApi();
                     })
                     .catch(() => {});
                 }}
