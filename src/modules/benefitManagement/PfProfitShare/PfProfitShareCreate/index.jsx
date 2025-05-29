@@ -22,7 +22,7 @@ const PfProfitShareCreate = () => {
 
   const dispatch = useDispatch();
   const [permission, setPermission] = useState(null);
-  const { data, setData, fetchPfShare, loading, pages, setPages, setLoading } =
+  const { data, setData, fetchPfShare, loading, pages, setPages, setLoading, detailsData, detailsLoading } =
     usePfShare(form);
   useEffect(() => {
     setPermission(
@@ -51,11 +51,12 @@ const PfProfitShareCreate = () => {
                 content: "Save",
                 onClick: () => {
                   const commonFields = [
+                    "profitShareType",
                     "fromDateF",
                     "toDateF",
                     "fromDate",
                     "toDate",
-                    "profitShareType",
+                    "profitShareTypeId",
                     "profitShare",
                   ];
                   form
@@ -72,7 +73,8 @@ const PfProfitShareCreate = () => {
                         fromDate: values?.fromDate,
                         toDate: values?.toDate,
                         totalProfitAmount: data?.totalProfitAmount,
-                        profitShareTypeId: values?.profitShareType,
+                        profitShareType: values?.profitShareType,
+                        profitShareTypeId: values?.profitShareTypeId,
                         profitSharePercentage: values?.profitShare
                           ? Number(values?.profitShare)
                           : 0,
@@ -97,6 +99,8 @@ const PfProfitShareCreate = () => {
             data={data}
             setData={setData}
             fetchPfShare={fetchPfShare}
+            detailsData={detailsData}
+            detailsLoading={detailsLoading}
           />
           <DataTable
             header={getHeader(pages)}

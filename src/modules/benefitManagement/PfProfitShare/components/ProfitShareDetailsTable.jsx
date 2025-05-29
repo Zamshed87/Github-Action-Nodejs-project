@@ -1,14 +1,13 @@
-
 const fieldKeys = [
   "Total PF Loan Interest (Unadjusted/ Non Shared)",
   "Total Investment Profit (Unadjusted/ Non Shared)",
   "Running Profit Share",
-  "Total Unadjusted Profit"
+  "Total Unadjusted Profit",
 ];
 
-const ProfitShareDetailsTable = ({data,loading}) => {
- 
-
+const ProfitShareDetailsTable = ({ data, loading }) => {
+  console.log("ProfitShareDetailsTable data", data);
+  return <></>
   return (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
@@ -24,7 +23,9 @@ const ProfitShareDetailsTable = ({data,loading}) => {
         <tr>
           {fieldKeys.map((label) => (
             <td key={label} style={styles.landingTd}>
-              {loading ? "Loading..." : data[label]?.toLocaleString?.() ?? "Info."}
+              {loading
+                ? "Loading..."
+                : data[label]?.toLocaleString?.() ?? "Info."}
             </td>
           ))}
         </tr>

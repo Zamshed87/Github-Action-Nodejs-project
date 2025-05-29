@@ -1,11 +1,23 @@
 import { Col, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const PfProfitShareFilter = ({ form, fetchPfShare }) => {
+  const handleViewClick = () => {
+    const commonFields = ["fromDateF", "toDateF", "fromDate", "toDate"];
+    form
+      .validateFields(commonFields)
+      .then((values) => {
+        fetchPfShare();
+      })
+      .catch(() => {
+        toast.error("Please fill all required fields.");
+      });
+  };
   return (
     <Row gutter={[10, 2]}>
-      {/* <Col md={6} sm={12} xs={24}>
+      <Col md={6} sm={12} xs={24}>
         <PSelect
           options={[
             { value: 1, label: "Date Wise" },
@@ -17,8 +29,14 @@ const PfProfitShareFilter = ({ form, fetchPfShare }) => {
           onChange={(value) => {
             form.setFieldsValue({ profitShareType: value });
           }}
+          rules={[
+            {
+              required: true,
+              message: "Profit Share Type is required",
+            },
+          ]}
         />
-      </Col> */}
+      </Col>
       <Col md={6} sm={12} xs={24}>
         <PInput
           type="month"
@@ -65,7 +83,7 @@ const PfProfitShareFilter = ({ form, fetchPfShare }) => {
         <PButton
           type="primary"
           action="button"
-          onClick={() => fetchPfShare()}
+          onClick={handleViewClick}
           content="View"
         />
       </Col>

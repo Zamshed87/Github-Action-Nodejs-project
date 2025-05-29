@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const usePfShare = (form) => {
@@ -13,6 +14,14 @@ const usePfShare = (form) => {
     total: 0,
   });
   const [data, getData, loading, setData, error, setLoading] = useAxiosGet({});
+  const [
+    detailsData,
+    getDetailsData,
+    detailsLoading,
+    setDetailsData,
+    detailsError,
+    setDetailsLoading,
+  ] = useAxiosGet({});
 
   const fetchPfShare = () => {
     const formValues = form?.getFieldsValue(true);
@@ -34,13 +43,43 @@ const usePfShare = (form) => {
     getData(url, (res) => {
       setData(res?.data || []);
     });
+    getPfProfitDetailsData();
+  };
+
+  const getPfProfitDetailsData = async () => {
+    const formValues = form?.getFieldsValue(true);
+
+    const formattedParams = {
+      AccountId: intAccountId,
+      FromDate: formValues.fromDate,
+      ToDate: formValues.toDate,
+    };
+
+    const filteredParams = Object.entries(formattedParams)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    const url = `/PFProfitShare/GetUnadjustData?${filteredParams}`;
+    getDetailsData(url, (res) => {
+      setDetailsData(res?.data || []);
+    });
   };
 
   useEffect(() => {
     fetchPfShare();
   }, [wgId, wId]);
 
-  return { data, setData, fetchPfShare, loading, pages, setLoading, setPages };
+  return {
+    data,
+    setData,
+    fetchPfShare,
+    loading,
+    pages,
+    setLoading,
+    setPages,
+    detailsData,
+    detailsLoading,
+  };
 };
 
 export default usePfShare;
