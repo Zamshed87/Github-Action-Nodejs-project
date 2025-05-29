@@ -25,8 +25,6 @@ const PfInvestmentCollectionForm = ({
         "remark",
       ])
       .then((values) => {
-        const collectionDate = form.getFieldValue("collectionDate");
-        console.log("collectionDate:", collectionDate); // ✅ correct
 
         const newEntry = {
           ...values,

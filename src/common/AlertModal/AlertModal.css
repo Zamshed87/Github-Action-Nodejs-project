@@ -1,0 +1,115 @@
+.alert-modal {
+  --modal-bg: #fff;
+}
+
+.alert-modal .ant-modal-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+}
+
+.alert-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.alert-modal-title {
+  flex-direction: column;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ant-modal-body {
+  padding: 1rem 1.5rem;
+}
+.alert-modal-content {
+  text-align: center;
+  font-size: 1rem;
+  color: #4a4a4a;
+  line-height: 1.5;
+  padding: 0.4rem 0;
+}
+
+.alert-modal .ant-modal-footer {
+  border-top: none;
+  padding-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.alert-modal-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  top: 5px;
+  margin-bottom: .6rem;
+  transition: transform 0.2s ease;
+}
+
+.alert-modal-icon:hover {
+  transform: scale(1.1);
+}
+
+.alert-modal-cancel-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 8px 20px;
+  height: auto;
+  transition: all 0.3s ease;
+}
+
+.alert-modal-cancel-btn:hover {
+  background: #d9d9d9;
+  border-color: #4a4a4a;
+  color: #1a1a1a;
+}
+
+.alert-modal-ok-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 8px 20px;
+  height: auto;
+  transition: all 0.3s ease;
+  background-color: var(--primary-color);
+  border: var(--primary-color);
+  color:var(--white);
+}
+.alert-modal-ok-btn.alert-modal-ok-btn:hover {
+  background-color: var(--primary-color-dark);
+  color: var(--white);
+  border: var(--primary-color-dark);
+}
+.alert-modal-ok-btn.ant-btn:active {
+  background-color: var(--primary-color-dark);
+  color: var(--white);
+  border: var(--primary-color-dark);
+}
+.alert-modal-ok-btn.ant-btn:focus {
+  background-color: var(--primary-color-dark);
+  color: var(--white);
+  border: var(--primary-color-dark);
+}
+.alert-modal-success .alert-modal-icon::before {
+  content: url("../../assets/images/check-icon.svg");
+}
+
+.alert-modal-error .alert-modal-icon::before {
+  content: url("../../assets/images/error-icon.svg");
+}
+
+.alert-modal-warning .alert-modal-icon::before {
+  content: url("../../assets/images/error-icon.svg");
+}
+
+.alert-modal-info .alert-modal-icon::before {
+  content: url("../../assets/alert/info.png");
+}
