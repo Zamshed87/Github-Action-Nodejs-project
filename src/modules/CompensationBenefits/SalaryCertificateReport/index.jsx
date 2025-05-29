@@ -1,15 +1,10 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Tooltip } from "@mui/material";
-import axios from "axios";
 import { useFormik } from "formik";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { APIUrl } from "../../../App";
-import ProfileImg from "../../../assets/images/profile.jpg";
 import {
   getPeopleDeskAllDDL,
   getSearchEmployeeList,
@@ -24,6 +19,11 @@ import { gray600 } from "../../../utility/customColor";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { getPDFAction } from "../../../utility/downloadFile";
 import { customStyles } from "../../../utility/newSelectCustomStyle";
+import { useReactToPrint } from "react-to-print";
+import { useApiRequest } from "Hooks";
+import { APIUrl } from "App";
+import IbblBankLetterHead from "../BankAdviceReport/letterheadReports/IbblBankLetterHead";
+import LetterHead from "./LetterHead";
 
 const initialValues = {
   date: moment().format("YYYY-MM"),
@@ -51,7 +51,7 @@ const validationSchema = Yup.object().shape({
 
 const SalaryPayslipReport = () => {
   const [loading, setLoading] = useState(false);
-  const { orgId, wgId, buId } = useSelector(
+  const { orgId, wgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -63,6 +63,7 @@ const SalaryPayslipReport = () => {
       initialValues,
       onSubmit: () => {
         getData();
+        pdfViewData(values);
         setIsLandingShow(true);
       },
     });
@@ -73,6 +74,20 @@ const SalaryPayslipReport = () => {
     loadingOnEmpInfoFetching,
     setEmployeeInfo,
   ] = useAxiosGet();
+
+  const contentRef = useRef();
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+  });
+
+  const topSheetRef = useRef();
+
+  const topSheetPrintFn = useReactToPrint({
+    contentRef: topSheetRef,
+    pageStyle:
+      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: A4 ! important}}",
+    documentTitle: `${values?.bank?.label} Top Sheet-${moment().format("ll")}`,
+  });
 
   const [payrollPeiodDDL, setPayrollPeiodDDL] = useState([]);
   const [isLandingShow, setIsLandingShow] = useState(true);
@@ -91,6 +106,9 @@ const SalaryPayslipReport = () => {
       permission = item;
     }
   });
+  const [landingViewPdf, setLandingViewPdf] = useState("");
+  const [letterHeadImage, setLetterHeadImage] = useState("");
+  const [signatureImage, setSignatureImage] = useState("");
 
   // setting up to module
   const dispatch = useDispatch();
@@ -98,6 +116,92 @@ const SalaryPayslipReport = () => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     document.title = "Salary Certificate";
   }, []);
+
+  const loadImage = async (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve(img);
+      img.onerror = (error) => reject(error);
+    });
+  };
+  const landingApi = useApiRequest({});
+
+  const landingApiCall = ({
+    pagination = {},
+    filerList,
+    searchText = "",
+  } = {}) => {
+    landingApi.action({
+      urlKey: "GetAllWorkplace",
+      method: "GET",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+      },
+    });
+  };
+
+  useEffect(() => {
+    landingApiCall();
+  }, []);
+
+  const fetchLetterHeadAndSignatureImage = async () => {
+    if (landingApi?.data?.length > 0) {
+      const letterHeadImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === wId
+      )?.intLetterHeadId;
+      const signatureImageId = landingApi?.data.find(
+        (workplace) => workplace.intWorkplaceId === wId
+      )?.intSignatureId;
+      console.log("letterHeadImageId", letterHeadImageId);
+      console.log("signatureImageId", signatureImageId);
+      try {
+        setLoading(true);
+        const letterImg = await loadImage(
+          `${APIUrl}/Document/DownloadFile?id=${letterHeadImageId}`
+        );
+        const signatureImg = await loadImage(
+          `${APIUrl}/Document/DownloadFile?id=${signatureImageId}`
+        );
+        setLoading(false);
+        if (letterHeadImageId === 0) {
+          setLetterHeadImage(null);
+        } else {
+          setLetterHeadImage(letterImg);
+        }
+        if (signatureImageId === 0) {
+          setSignatureImage(null);
+        } else {
+          setSignatureImage(signatureImg);
+        }
+      } catch (error) {
+        setLetterHeadImage(null);
+        setSignatureImage(null);
+        setLoading(false);
+      }
+    }
+  };
+
+  const pdfData = useApiRequest([]);
+  const pdfViewData = (values) => {
+    pdfData?.action({
+      method: "GET",
+      urlKey: "GetSalaryCertificate",
+      params: {
+        EmployeeId: values?.employee?.value,
+        MonthId: values?.inMonth,
+        YearId: values?.intYear,
+        SalaryGenerateRequsetId: values?.adviceName?.value,
+        Type: "pdfView",
+      },
+      onSuccess: (res) => {
+        fetchLetterHeadAndSignatureImage();
+        setLandingViewPdf(res);
+      },
+    });
+  };
 
   return (
     <>
@@ -115,16 +219,17 @@ const SalaryPayslipReport = () => {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        getPDFAction(
-                          `/PdfAndExcelReport/EmployeeSalaryCertificate?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${
-                            values?.employee?.value
-                          }&intMonthId=${values?.inMonth}&intYearId=${
-                            values?.intYear
-                          }&intSalaryGenerateRequestId=${
-                            values?.adviceName ? +values?.adviceName?.value : 0
-                          }`,
-                          setLoading
-                        );
+                        reactToPrintFn();
+                        // getPDFAction(
+                        //   `/PdfAndExcelReport/EmployeeSalaryCertificate?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${
+                        //     values?.employee?.value
+                        //   }&intMonthId=${values?.inMonth}&intYearId=${
+                        //     values?.intYear
+                        //   }&intSalaryGenerateRequestId=${
+                        //     values?.adviceName ? +values?.adviceName?.value : 0
+                        //   }`,
+                        //   setLoading
+                        // );
                       }}
                       style={{
                         border: "transparent",
@@ -268,6 +373,19 @@ const SalaryPayslipReport = () => {
                   ></div>
                 </div>
               </div>
+            </div>
+            <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+              {!pdfData?.loading && (
+                <div style={{ display: "none" }}>
+                  <div ref={contentRef}>
+                      <LetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ) : (
