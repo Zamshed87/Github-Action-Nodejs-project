@@ -359,3 +359,22 @@ export const addLeaveDeductions = (
     },
   ]);
 };
+
+export const statusChangePunishmentConfig = async (
+  url: string,
+  id: number,
+  status: boolean | string,
+  cb: any,
+  type: "late" | "early"
+) => {
+  try {
+    await axios.put(`/${url}/SetStatus/${id}?isActive=${status}`, {});
+    toast.success("Updated Successfully", { toastId: 1222 });
+    cb?.();
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+  }
+};
