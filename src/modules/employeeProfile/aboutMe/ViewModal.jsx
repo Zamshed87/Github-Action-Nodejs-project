@@ -61,6 +61,7 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
   const {
     employeeProfileLandingView: originalEmployeeProfileLandingView = {},
     empEmployeePhotoIdentity: originalEmpEmployeePhotoIdentity = {},
+    empSocialMedia: originalEmpSocialMedia = [],
   } = originalData || {};
 
   const diffMap = getDiffMap(
@@ -70,6 +71,11 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
   const diffMapPI = getDiffMap(
     originalEmpEmployeePhotoIdentity,
     empEmployeePhotoIdentity
+  );
+  const diffSocialMedia = !(
+    empSocialMedia?.length === originalEmpSocialMedia?.length &&
+    empSocialMedia[0]?.strSocialMedialLink ===
+      originalEmpSocialMedia[0]?.strSocialMedialLink
   );
 
   const descriptionItemStyle = { paddingBottom: 12, fontSize: 14 };
@@ -591,11 +597,11 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
               label="Social Media"
               style={{
                 ...descriptionItemStyle,
-                ...(diffMap?.strSocialMedialLink ? highlightStyle : {}),
+                ...(diffSocialMedia ? highlightStyle : {}),
               }}
             >
               {empSocialMedia?.length > 0
-                ? empSocialMedia[0].strSocialMedialLink
+                ? empSocialMedia[0]?.strSocialMedialLink
                 : "N/A"}
             </Descriptions.Item>
             <Descriptions.Item
