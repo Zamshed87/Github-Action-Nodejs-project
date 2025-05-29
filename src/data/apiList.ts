@@ -357,4 +357,6 @@ export const apiList = {
     "/PFInvestment/GetInvestmentSummaryReportByOrganization",
     GetInvestmentDetailReportByOrganization:
     "/PFInvestment/GetInvestmentDetailReportByOrganization",
+    GetSalaryCertificate:
+    "/PdfAndExcelReport/GetSalaryCertificate",
 };
