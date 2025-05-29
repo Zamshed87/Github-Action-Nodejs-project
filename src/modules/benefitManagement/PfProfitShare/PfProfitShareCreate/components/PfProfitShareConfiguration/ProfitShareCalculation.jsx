@@ -3,7 +3,7 @@ import { PButton, PInput, PSelect } from "Components";
 import { toast } from "react-toastify";
 
 const ProfitShareCalculation = ({ form, data, setData }) => {
-  const shareType = Form.useWatch("profitShareType", form);
+  const shareType = Form.useWatch("profitShareTypeId", form);
   const profitShare = Form.useWatch("profitShare", form);
 
   // shareType:
@@ -19,7 +19,7 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
       return;
     }
     form
-      .validateFields(["profitShareType", "profitShare"])
+      .validateFields(["profitShareTypeId", "profitShare"])
       .then(() => {
         if (shareType === 1) {
           const percentage = Number(profitShare) / 100;
@@ -124,11 +124,11 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
             { value: 3, label: "Proportionately With Balance Amount" },
             { value: 4, label: "Fixed Amount" },
           ]}
-          name="profitShareType"
+          name="profitShareTypeId"
           label="Profit Share Type"
           placeholder="Select Profit Share Type"
           onChange={(value) => {
-            form.setFieldsValue({ profitShareType: value });
+            form.setFieldsValue({ profitShareTypeId: value });
             setData((prev) => ({
               ...prev,
               detailsData: prev?.detailsData?.map((rec) => ({
