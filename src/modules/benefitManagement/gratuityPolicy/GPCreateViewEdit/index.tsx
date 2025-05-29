@@ -184,15 +184,19 @@ const GPCreateViewEdit = () => {
       title: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
       dataIndex: "numPercentageOrFixedAmount",
     },
-    {
-      title: "Action",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <DeleteButton data={data} setData={setData} rec={rec} />
-      ),
-      align: "center",
-      width: 40,
-    },
+    ...(params?.type !== "view"
+      ? [
+          {
+            title: "Action",
+            dataIndex: "status",
+            render: (_: any, rec: any) => (
+              <DeleteButton data={data} setData={setData} rec={rec} />
+            ),
+            align: "center",
+            width: 40,
+          },
+        ]
+      : []),
   ];
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
