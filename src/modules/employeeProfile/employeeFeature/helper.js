@@ -69,12 +69,9 @@ export const createEditEmpAction = async (
       dteJoiningDate: values?.joiningDate
         ? moment(values?.joiningDate).format("YYYY-MM-DD")
         : null,
-      dteInternCloseDate:
-        values?.dteInternCloseDate & values?.lastDaysInternCloseDate
-          ? moment(values?.dteInternCloseDate).format("YYYY-MM-DD") +
-            "-" +
-            moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD")
-          : null,
+      dteInternCloseDate: values?.dteInternCloseDate
+        ? moment(values?.dteInternCloseDate).format("YYYY-MM-DD")
+        : null,
       dteProbationaryCloseDate: values?.dteProbationaryCloseDate
         ? moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD")
         : null,
@@ -134,28 +131,11 @@ export const createEditEmpAction = async (
       strOTbasedon: values?.strOTbasedon?.value || "",
       intOTFixedHour: +values?.intOTFixedHour || 0,
     };
-    console.log("payload", payload);
+    console.log({ payload });
     if (!isEdit) {
       payload = {
         ...payload,
-        // calendarAssignViewModel: {
-        //   employeeId: 0,
-        //   joiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
-        //   generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
-        //   generateEndDate: null,
-        //   runningCalendarId:
-        //     values?.calenderType?.value === 2
-        //       ? values?.startingCalender?.value
-        //       : values?.calender?.value,
-        //   calendarType: values?.calenderType?.label,
-        //   nextChangeDate: values?.nextChangeDate
-        //     ? moment(values?.nextChangeDate).format("YYYY-MM-DD")
-        //     : null,
-        //   rosterGroupId:
-        //     values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-        //   isAutoGenerate: false,
-        //   // intOtType: values?.intOtType?.value,
-        // },
+
         calendarAssignViewModel: {
           employeeList: "",
           generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
