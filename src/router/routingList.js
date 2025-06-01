@@ -739,7 +739,11 @@ const SalaryRequisitionReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
   )
 );
-
+const PayrollSummaryReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/PayrollSummaryReport/index.jsx"
+  )
+);
 const SalaryCostCenterReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/SalaryCostCenterReport/index.jsx"
@@ -1829,16 +1833,22 @@ const PFInvestment = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/index.jsx")
 );
 const PFInvestmentCreate = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx"
+  )
 );
 const PFInvestmentCollection = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx"
+  )
 );
 const PFProfitShare = lazy(() =>
   import("../modules/benefitManagement/PfProfitShare/index.jsx")
 );
 const PFProfitShareCreate = lazy(() =>
-  import("../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx")
+  import(
+    "../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx"
+  )
 );
 const GratuityPolicy = lazy(() =>
   import("../modules/benefitManagement/gratuityPolicy/index.tsx")
@@ -1852,7 +1862,9 @@ const PFInvestmentType = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
 );
 const PFInvestmentToOrganization = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx"
+  )
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -3084,6 +3096,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/bonusRequisitionReport",
     component: () => <SalaryRequisitionReport type={"bonus"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/payrollSummaryReport",
+    component: PayrollSummaryReport,
   },
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
@@ -4439,11 +4455,11 @@ export const routingList = [
 
   // PF report start
 
-   {
+  {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr",
     component: PfInvestmentByOrgReport,
   },
-     {
+  {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
     component: PfInvestmentByOrgReportView,
   },
