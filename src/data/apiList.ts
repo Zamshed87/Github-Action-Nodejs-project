@@ -334,5 +334,10 @@ export const apiList = {
     "/ProvidentFund/GetEmployeePfSummaryReport",
     GetEmployeeMonthWisePfDetailReport:
     "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
+    GetTypeWiseReport:
+    "/PFInvestment/GetTypeWiseReport",
+    GetTypeWiseDetailsReport:
+    "/PFInvestment/GetTypeWiseDetailsReport",
+
 
 };
