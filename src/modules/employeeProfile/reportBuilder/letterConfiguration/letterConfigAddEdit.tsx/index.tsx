@@ -30,6 +30,7 @@ import {
   getLetterTypeDDL,
 } from "./helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import RichTextEditor from "common/RichTextEditor/RichTextEditor";
 
 const LetterConfigAddEdit = () => {
   // Router state
@@ -69,14 +70,23 @@ const LetterConfigAddEdit = () => {
   const [backgroundImg, setBackgroundImg] = useState<any>([]);
   const [fields, setFields] = useState(customFields);
 
-  const handleInsertField = (fieldValue: any) => {
-    const quill = quillRef?.current?.getEditor();
+const handleInsertField = (fieldValue: string) => {
+  const editor = quillRef.current; // RichTextEditorRef
 
-    const cursorPosition = quill?.getSelection()?.index;
-    // const currentContent = quill.getText();
-    // Insert the field value at the cursor position
-    cursorPosition >= 0 && quill.insertText(cursorPosition, `@${fieldValue}`);
-  };
+  if (!editor) return;
+
+  // Access the underlying RichTextEditor instance
+  const editorInstance = editor.getInstance();
+
+  if (editorInstance && typeof editorInstance.insertHTML === 'function') {
+    // Insert the field value at the current cursor position
+    editorInstance.insertHTML(`@${fieldValue}`);
+  } else {
+    console.warn("insertHTML method is not available on the editor instance.");
+  }
+};
+
+
 
   const handleSearch = (e: any) => {
     const keyword = e.target.value;
@@ -161,12 +171,11 @@ const LetterConfigAddEdit = () => {
                       letterData,
                       setBackgroundImg
                     ).then(() => {
-                        letterId &&
+                      letterId &&
                         history.push(
-                            "/profile/customReportsBuilder/letterConfiguration"
+                          "/profile/customReportsBuilder/letterConfiguration"
                         );
                     });
-
                   })
                   .catch(() => {
                     console.log();
@@ -218,9 +227,8 @@ const LetterConfigAddEdit = () => {
                             setLoading,
                             setLetterTypeDDL
                           ).then(() => {
-                              form.setFieldValue("newLetterName", "");
+                            form.setFieldValue("newLetterName", "");
                           });
-
                         }}
                       />
                     </Space>
@@ -296,7 +304,6 @@ const LetterConfigAddEdit = () => {
             <Form.Item shouldUpdate noStyle>
               {() => {
                 const { letter } = form.getFieldsValue(true);
-
                 return (
                   <>
                     <Col className="custom_quill quil_template" md={20} sm={24}>
@@ -306,7 +313,14 @@ const LetterConfigAddEdit = () => {
                           Letter Body
                         </span>
                       </label>
-                      <ReactQuill
+                      <RichTextEditor
+                        ref={quillRef}
+                        initialValue={letter}
+                        onChange={(data) => {
+                          console.log(data);
+                        }}
+                      />
+                      {/* <ReactQuill
                         ref={quillRef}
                         preserveWhitespace={true}
                         placeholder="Write your letter body..."
@@ -315,7 +329,7 @@ const LetterConfigAddEdit = () => {
                         onChange={(value) => {
                           form.setFieldValue("letter", value);
                         }}
-                      />
+                      /> */}
                     </Col>
                     <Col md={4} sm={24}>
                       <div
