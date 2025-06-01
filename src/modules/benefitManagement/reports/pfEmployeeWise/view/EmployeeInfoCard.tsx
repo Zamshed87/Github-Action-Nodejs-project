@@ -26,7 +26,7 @@ interface EmployeeInfo {
 }
 
 const formatDate = (dateStr: string | null) => {
-  if (!dateStr) return "Info.";
+  if (!dateStr) return "_";
   const d = new Date(dateStr);
   return d.toLocaleDateString();
 };
