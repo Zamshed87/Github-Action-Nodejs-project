@@ -178,7 +178,7 @@ export default function LetterHead({
           </tbody>
         </table>
 
-        <p style={{ fontWeight: "bold", marginTop: "10px", fontSize: "18px" }}>
+        <p style={{ fontWeight: "bold", marginTop: "20px", fontSize: "18px" }}>
           In word : {emp.InWord || "One Lakh Fifty Thousand Five Hundred Only"}
         </p>
 
