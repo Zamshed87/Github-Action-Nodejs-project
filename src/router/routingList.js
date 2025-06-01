@@ -1663,6 +1663,8 @@ import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestm
 import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
 import PfEmployeeReport from "modules/benefitManagement/reports/pfEmployeeWise";
 import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWise/view";
+import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
+import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -4472,6 +4474,15 @@ export const routingList = [
   },
 
   // PF report start
+
+    {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType",
+    component: PfInvestmentByTypeReport,
+  },
+    {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType/View/:id",
+    component: PfInvestmentByTypeReportView,
+  },
 
   {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr",
