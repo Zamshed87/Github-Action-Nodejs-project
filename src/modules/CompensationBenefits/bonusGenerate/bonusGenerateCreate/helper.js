@@ -41,7 +41,9 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
       isEdit ? location?.state?.bonusObj?.intBonusHeaderId : 0
     }&IntBonusId=${values?.bonusName?.value}&DteEffectedDate=${
       values?.effectiveDate
-    }&IntCreatedBy=0&WorkplaceGroupId=${wgId}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}&workplaceListId=${wgIdList}&strHrPositionIdList=${hrList}`,
+    }&IntCreatedBy=0&WorkplaceGroupId=${wgId}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}&workplaceListId=${
+      wgIdList || 0
+    }&strHrPositionIdList=${hrList || 0}`,
     (res) => {
       // const modifiedEmployeeList = [];
 
