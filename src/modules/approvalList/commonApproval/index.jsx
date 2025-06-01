@@ -355,15 +355,15 @@ const CommonApprovalComponent = () => {
               : id == 14
               ? columnsMovement(page)
               : id == 21
-              ? columnsSeparation(setViewData, setViewModal)
+              ? columnsSeparation(setViewData, setViewModal, dispatch)
               : id == 26
               ? columnsAdvancedSalary
               : id == 3
-              ? columnsExpense
+              ? columnsExpense(dispatch)
               : id == 6
-              ? columnsIOU
+              ? columnsIOU(dispatch)
               : id == 9
-              ? columnsLoan
+              ? columnsLoan(dispatch)
               : id == 12
               ? columnsMarketVisit
               : id == 13
@@ -389,13 +389,13 @@ const CommonApprovalComponent = () => {
               : id == 18
               ? columnAdditionDeduction
               : id == 24
-              ? columnTransferPromotion
+              ? columnTransferPromotion(dispatch)
               : id == 20
               ? columnSalaryGenerate
               : id == 30
               ? columnFinalSettlement
               : id == 29
-              ? columnsSeparation(setViewData, setViewModal)
+              ? columnsSeparation(setViewData, setViewModal, dispatch)
               : id == 32
               ? columnsAsset
               : id == 33
