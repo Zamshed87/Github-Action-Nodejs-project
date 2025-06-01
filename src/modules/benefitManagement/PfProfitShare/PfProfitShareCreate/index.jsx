@@ -81,6 +81,8 @@ const PfProfitShareCreate = () => {
                         return;
                       }
 
+                      const isPercentage = values?.profitShareTypeId === 1;
+
                       const payload = {
                         accountId: intAccountId,
                         businessUnitId: buId,
@@ -89,10 +91,14 @@ const PfProfitShareCreate = () => {
                         totalProfitAmount: data?.totalProfitAmount,
                         profitShareType: values?.profitShareType,
                         profitShareTypeId: values?.profitShareTypeId,
-                        profitSharePercentage: values?.profitShare
-                          ? Number(values?.profitShare)
+                        profitAmount: isPercentage
+                          ? 0
+                          : Number(values?.profitShare) || 0,
+                        profitSharePercentage: isPercentage
+                          ? Number(values?.profitShare) || 0
                           : 0,
                       };
+
                       createPFProfitShare(payload, setLoading, () => {
                         form.resetFields();
                         history.push(
