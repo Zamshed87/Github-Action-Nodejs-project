@@ -1661,6 +1661,8 @@ import { LeaveAdjustment } from "modules/employeeProfile/leaveAdjustment";
 import { LeavePunishmentLanding } from "modules/leaveMovement/configuration/leavePunishment";
 import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestmentByOrg";
 import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
+import PfEmployeeReport from "modules/benefitManagement/reports/pfEmployeeWise";
+import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWise/view";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -4471,13 +4473,21 @@ export const routingList = [
 
   // PF report start
 
-   {
+  {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr",
     component: PfInvestmentByOrgReport,
   },
-     {
+  {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
     component: PfInvestmentByOrgReportView,
+  },
+    {
+    path: "/BenefitsManagement/reports/PFEmployeeWise",
+    component: PfEmployeeReport,
+  },
+    {
+    path: "/BenefitsManagement/reports/PFEmployeeWise/view",
+    component: PfEmployeeReportView,
   },
 
   // PF report end
