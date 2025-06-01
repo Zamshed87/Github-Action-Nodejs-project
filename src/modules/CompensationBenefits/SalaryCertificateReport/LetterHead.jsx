@@ -55,7 +55,8 @@ export default function LetterHead({
       <div
         style={{
           height: "auto",
-          fontSize: "18px", 
+          fontSize: "18px",
+          color: "#000000",
         }}
       >
         <p style={{ fontWeight: "bold" }}>
@@ -133,51 +134,18 @@ export default function LetterHead({
           }}
         >
           <tbody>
-            <tr>
-              <td style={{ width: "200px" }}>Basic Salary</td>
-              <td style={{ width: "30px", textAlign: "center" }}>:</td>
-              <td>
-                {salaryMap["Basic Salary"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>House Rent</td>
-              <td style={{ textAlign: "center" }}>:</td>
-              <td>
-                {salaryMap["House Rent"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>Medical Allowance</td>
-              <td style={{ textAlign: "center" }}>:</td>
-              <td>
-                {salaryMap["Medical Allowance"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>Conveyance</td>
-              <td style={{ textAlign: "center" }}>:</td>
-              <td>
-                {salaryMap["Conveyance"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>Festival Bonus</td>
-              <td style={{ textAlign: "center" }}>:</td>
-              <td>
-                {salaryMap["Festival Bonus"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
+            {/* Dynamically render all payroll elements */}
+            {Object.entries(salaryMap).map(([element, amount]) => (
+              <tr key={element}>
+                <td style={{ width: "200px" }}>{element}</td>
+                <td style={{ width: "30px", textAlign: "center" }}>:</td>
+                <td>
+                  {amount?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  }) || "0.00"}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
 
@@ -211,7 +179,7 @@ export default function LetterHead({
         </table>
 
         <p style={{ fontWeight: "bold", marginTop: "10px", fontSize: "18px" }}>
-          In word : One Lakh Ten Thousand Five Hundred Only
+          In word : {emp.InWord || "One Lakh Fifty Thousand Five Hundred Only"}
         </p>
 
         <p style={{ marginTop: "30px", fontSize: "18px" }}>
@@ -239,9 +207,8 @@ export default function LetterHead({
             fontSize: "16px",
             fontStyle: "italic",
             textAlign: "center",
-            color: "#555",
+            color: "#000000",
             padding: "10px 0",
-            borderTop: "1px dashed #ccc",
             marginBottom: "30px",
           }}
         >
