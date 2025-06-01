@@ -21,16 +21,14 @@ import {} from "react-icons/md";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
-import { useParams } from "react-router-dom";
 import usePfInvestmentConfig from "modules/benefitManagement/PfInvestment/PfInvestmentCreate/components/PfInvestmentConfig/usePfInvestmentConfig";
 
 const PfInvestmentByOrgReportView = () => {
-  const { id } = useParams<{ id: string }>();
 
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, orgId, wId },
+    profileData: { buId, orgId, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -86,7 +84,7 @@ const PfInvestmentByOrgReportView = () => {
     },
     {
       title: "Investment Type",
-      dataIndex: "strOrgName",
+      dataIndex: "strInvestmentType",
       sorter: true,
       width: 20,
     },
