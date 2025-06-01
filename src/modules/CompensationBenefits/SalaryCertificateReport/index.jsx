@@ -80,15 +80,6 @@ const SalaryPayslipReport = () => {
     contentRef,
   });
 
-  const topSheetRef = useRef();
-
-  const topSheetPrintFn = useReactToPrint({
-    contentRef: topSheetRef,
-    pageStyle:
-      "@media print{body { -webkit-print-color-adjust: exact; }@page {size: A4 ! important}}",
-    documentTitle: `${values?.bank?.label} Top Sheet-${moment().format("ll")}`,
-  });
-
   const [payrollPeiodDDL, setPayrollPeiodDDL] = useState([]);
   const [isLandingShow, setIsLandingShow] = useState(true);
 
@@ -155,8 +146,6 @@ const SalaryPayslipReport = () => {
       const signatureImageId = landingApi?.data.find(
         (workplace) => workplace.intWorkplaceId === wId
       )?.intSignatureId;
-      console.log("letterHeadImageId", letterHeadImageId);
-      console.log("signatureImageId", signatureImageId);
       try {
         setLoading(true);
         const letterImg = await loadImage(
@@ -374,7 +363,7 @@ const SalaryPayslipReport = () => {
                 </div>
               </div>
             </div>
-            <div style={{ overflow: "scroll" }} className="mt-3 w-100">
+            <div style={{ overflow: "scroll" }} className="mt-1 w-100">
               {!pdfData?.loading && (
                 <div style={{ display: "none" }}>
                   <div ref={contentRef}>
@@ -397,10 +386,3 @@ const SalaryPayslipReport = () => {
 };
 
 export default SalaryPayslipReport;
-
-const thStyles = {
-  fontWeight: 600,
-  fontSize: "12px !important",
-  lineHeight: "18px !important",
-  color: `${gray600} !important`,
-};
