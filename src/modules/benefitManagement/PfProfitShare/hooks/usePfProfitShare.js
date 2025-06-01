@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const usePfPolicy = (form) => {
-  const { wgId, wId } = useSelector(
+const usePfProfitShare = (form) => {
+  const { wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -14,21 +14,19 @@ const usePfPolicy = (form) => {
   });
   const [data, getData, loading, setData] = useAxiosGet({});
 
-  const fetchPfPolicy = () => {
+  const fetchPfProfitShare = () => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      IntWorkPlaceGroupId: formValues.workplaceGroup?.value ?? wgId,
-      IntWorkPlaceId: formValues.workplace?.value ?? wId,
-      // StrStatus: formValues.status,
+      AccountId: intAccountId,
+      Status: formValues.status,
     };
 
     const filteredParams = Object.entries(formattedParams)
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
-
-    const url = `/PfPolicy/GetPolicies?${filteredParams}`;
+    const url = `/PFProfitShare/GetAll?${filteredParams}`;
 
     getData(url, (res) => {
       setData(res);
@@ -36,10 +34,10 @@ const usePfPolicy = (form) => {
   };
 
   useEffect(() => {
-    fetchPfPolicy();
+    fetchPfProfitShare();
   }, [wgId, wId]);
 
-  return { data, setData, fetchPfPolicy, loading, pages, setPages };
+  return { data, setData, fetchPfProfitShare, loading, pages, setPages };
 };
 
-export default usePfPolicy;
+export default usePfProfitShare;

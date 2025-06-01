@@ -1,30 +1,21 @@
 import { Row, Col } from "antd";
-import { PButton, PInput, PSelect } from "Components";
+import { PButton, PSelect } from "Components";
 
 const PfProfitShareFilters = ({ form }) => {
   return (
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
-        <PInput
-          type="month"
-          name="fromDate"
-          label="From Date"
-          format={"YYYY-MM"}
-          placeholder="Select From Date"
+        <PSelect
+          name="status"
+          label="Status"
+          placeholder="Select Status"
+          options={[
+            { value: 0, label: 'Unapproved' },
+            { value: 1, label: 'Approved' },
+            { value: 2, label: 'Pending' },
+          ]}
           onChange={(value) => {
-            form.setFieldsValue({ fromDate: value });
-          }}
-        />
-      </Col>
-      <Col md={5} sm={12} xs={24}>
-        <PInput
-          type="month"
-          name="toDate"
-          label="To Date"
-          format={"YYYY-MM"}
-          placeholder="Select To Date"
-          onChange={(value) => {
-            form.setFieldsValue({ toDate: value });
+            form.setFieldsValue({ status: value });
           }}
         />
       </Col>

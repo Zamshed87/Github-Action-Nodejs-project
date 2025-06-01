@@ -4,7 +4,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const usePfInvestmentConfig = () => {
+const usePfInvestmentConfig = ({callInvestmentType=true,callInvestmentOrganization=true}) => {
   const {
     profileData: { orgId, buId, wgId },
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -85,8 +85,12 @@ const usePfInvestmentConfig = () => {
     }
   };
   useEffect(() => {
-    getInvestmentType();
-    getInvestmentOrganization();   
+    if(callInvestmentType){
+      getInvestmentType();
+    }
+    if(callInvestmentOrganization){
+      getInvestmentOrganization();
+    }
   }, [orgId]);
 
   return {

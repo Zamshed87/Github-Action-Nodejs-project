@@ -9,16 +9,25 @@ const usePfShare = (form) => {
   );
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 5000,
+    pageSize: 25,
     total: 0,
   });
   const [data, getData, loading, setData, error, setLoading] = useAxiosGet({});
+  const [
+    detailsData,
+    getDetailsData,
+    detailsLoading,
+    setDetailsData,
+    detailsError,
+    setDetailsLoading,
+  ] = useAxiosGet({});
 
   const fetchPfShare = () => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
       AccountId: intAccountId,
+      ProfitShareType: formValues.profitShareType,
       FromDate: formValues.fromDate,
       ToDate: formValues.toDate,
       PageNo: pages.current,
@@ -34,13 +43,43 @@ const usePfShare = (form) => {
     getData(url, (res) => {
       setData(res?.data || []);
     });
+    getPfProfitDetailsData();
+  };
+
+  const getPfProfitDetailsData = async () => {
+    const formValues = form?.getFieldsValue(true);
+
+    const formattedParams = {
+      AccountId: intAccountId,
+      FromDate: formValues.fromDate,
+      ToDate: formValues.toDate,
+    };
+
+    const filteredParams = Object.entries(formattedParams)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    const url = `/PFProfitShare/GetUnadjustData?${filteredParams}`;
+    getDetailsData(url, (res) => {
+      setDetailsData(res?.data || []);
+    });
   };
 
   useEffect(() => {
     fetchPfShare();
   }, [wgId, wId]);
 
-  return { data, setData, fetchPfShare, loading, pages, setLoading, setPages };
+  return {
+    data,
+    setData,
+    fetchPfShare,
+    loading,
+    pages,
+    setLoading,
+    setPages,
+    detailsData,
+    detailsLoading,
+  };
 };
 
 export default usePfShare;

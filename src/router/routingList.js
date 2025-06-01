@@ -1808,6 +1808,12 @@ const FinalSettlementEdit = lazy(() =>
 );
 
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
+import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestmentByOrg";
+import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
+import PfEmployeeReport from "modules/benefitManagement/reports/pfEmployeeWise";
+import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWise/view";
+import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
+import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -1827,16 +1833,22 @@ const PFInvestment = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/index.jsx")
 );
 const PFInvestmentCreate = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx"
+  )
 );
 const PFInvestmentCollection = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx"
+  )
 );
 const PFProfitShare = lazy(() =>
   import("../modules/benefitManagement/PfProfitShare/index.jsx")
 );
 const PFProfitShareCreate = lazy(() =>
-  import("../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx")
+  import(
+    "../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx"
+  )
 );
 const GratuityPolicy = lazy(() =>
   import("../modules/benefitManagement/gratuityPolicy/index.tsx")
@@ -1850,7 +1862,9 @@ const PFInvestmentType = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
 );
 const PFInvestmentToOrganization = lazy(() =>
-  import("../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx")
+  import(
+    "../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx"
+  )
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -4434,6 +4448,36 @@ export const routingList = [
     path: "/BenefitsManagement/providentFund/pfProfitShare/create",
     component: PFProfitShareCreate,
   },
+
+  // PF report start
+
+    {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType",
+    component: PfInvestmentByTypeReport,
+  },
+    {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType/View/:id",
+    component: PfInvestmentByTypeReportView,
+  },
+
+  {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr",
+    component: PfInvestmentByOrgReport,
+  },
+  {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
+    component: PfInvestmentByOrgReportView,
+  },
+    {
+    path: "/BenefitsManagement/reports/PFEmployeeWise",
+    component: PfEmployeeReport,
+  },
+    {
+    path: "/BenefitsManagement/reports/PFEmployeeWise/view",
+    component: PfEmployeeReportView,
+  },
+
+  // PF report end
   {
     path: "/bm/gratuityPolicy",
     component: GratuityPolicy,

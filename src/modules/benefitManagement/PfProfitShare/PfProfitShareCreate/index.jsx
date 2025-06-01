@@ -6,29 +6,36 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
-import PfPolicyConfiguration from "./components/PfProfitShareConfiguration";
-import { createPFPolicy } from "./helper";
+import PfProfitShareConfiguration from "./components/PfProfitShareConfiguration";
+import { createPFProfitShare, getHeader } from "./helper";
 import { useHistory } from "react-router-dom";
-import { getHeader } from "./helper";
 import usePfShare from "./hook/usePfShare";
 
 const PfProfitShareCreate = () => {
   const history = useHistory();
   const [form] = Form.useForm();
-  const [saveData, setSaveData] = useState();
   // redux
   const {
     permissionList,
-    profileData: { buId, wgId },
+    profileData: { buId, intAccountId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const dispatch = useDispatch();
   const [permission, setPermission] = useState(null);
-  const { data, setData, fetchPfShare, loading, pages, setPages, setLoading } =
-    usePfShare(form);
+  const {
+    data,
+    setData,
+    fetchPfShare,
+    loading,
+    pages,
+    setPages,
+    setLoading,
+    detailsData,
+    detailsLoading,
+  } = usePfShare(form);
   useEffect(() => {
     setPermission(
-      permissionList.find((item) => item?.menuReferenceId === 30597)
+      permissionList.find((item) => item?.menuReferenceId === 30599)
     );
   }, [permissionList]);
   useEffect(() => {
@@ -42,7 +49,12 @@ const PfProfitShareCreate = () => {
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          profitShareType: 1,
+        }}
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -52,26 +64,39 @@ const PfProfitShareCreate = () => {
                 type: "primary",
                 content: "Save",
                 onClick: () => {
-                  const commonFields = [];
+                  const commonFields = [
+                    "profitShareType",
+                    "fromDateF",
+                    "toDateF",
+                    "fromDate",
+                    "toDate",
+                    "profitShareTypeId",
+                    "profitShare",
+                  ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if (saveData.length < 1 && saveData.length < 1) {
-                        toast.error(
-                          "Please add at least one employee or company contribution."
-                        );
+                      if (!data?.detailsData || data?.detailsData?.length < 1) {
+                        toast.error("There are no records to save.");
                         return;
                       }
 
-                      const payload = {};
-                      createPFPolicy(payload, setLoading, () => {
-                        setSaveData({
-                          employeeContributions: [],
-                          companyContributions: [],
-                        });
+                      const payload = {
+                        accountId: intAccountId,
+                        businessUnitId: buId,
+                        fromDate: values?.fromDate,
+                        toDate: values?.toDate,
+                        totalProfitAmount: data?.totalProfitAmount,
+                        profitShareType: values?.profitShareType,
+                        profitShareTypeId: values?.profitShareTypeId,
+                        profitSharePercentage: values?.profitShare
+                          ? Number(values?.profitShare)
+                          : 0,
+                      };
+                      createPFProfitShare(payload, setLoading, () => {
                         form.resetFields();
                         history.push(
-                          `/BenefitsManagement/providentFund/pfPolicy`
+                          `/BenefitsManagement/providentFund/pfProfitShare`
                         );
                       });
                     })
@@ -82,29 +107,32 @@ const PfProfitShareCreate = () => {
               },
             ]}
           />
-          <PfPolicyConfiguration
+
+          <PfProfitShareConfiguration
             form={form}
-            saveData={saveData}
-            setSaveData={setSaveData}
+            data={data}
+            setData={setData}
             fetchPfShare={fetchPfShare}
+            detailsData={detailsData}
+            detailsLoading={detailsLoading}
           />
           <DataTable
             header={getHeader(pages)}
             bordered
             data={data?.detailsData || []}
             loading={loading}
-            // pagination={{
-            //   pageSize: data?.pageSize,
-            //   total: data?.totalCount,
-            //   pageSizeOptions: ["25", "50", "100"],
-            // }}
-            // scroll={{ x: 2000 }}
-            // onChange={(pagination, _, __, extra) => {
-            //   if (extra.action === "paginate") {
-            //     fetchPfShare();
-            //     setPages(pagination);
-            //   }
-            // }}
+            scroll={{ x: 1800 }}
+            pagination={{
+              pageSize: data?.pageSize,
+              total: data?.totalCount,
+              pageSizeOptions: ["25", "50", "100"],
+            }}
+            onChange={(pagination, _, __, extra) => {
+              if (extra.action === "paginate") {
+                fetchPfShare();
+                setPages(pagination);
+              }
+            }}
           />
         </PCard>
       </PForm>

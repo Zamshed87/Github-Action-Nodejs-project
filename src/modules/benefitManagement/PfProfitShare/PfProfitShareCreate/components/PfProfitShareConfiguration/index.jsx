@@ -1,15 +1,28 @@
 import { PCardBody } from "Components";
 import PfProfitShareFilter from "./PfProfitShareFilter";
 import ProfitShareCalculation from "./ProfitShareCalculation";
+import ProfitShareDetailsTable from "modules/benefitManagement/PfProfitShare/components/ProfitShareDetailsTable";
 
-const PfProfitShareConfiguration = ({ form,fetchPfShare }) => {
+const PfProfitShareConfiguration = ({ form, fetchPfShare, data, setData, detailsLoading, detailsData }) => {
+
   return (
-    <PCardBody styles={{ display: "flex", gap: "20px" }}>
-      <div style={{ flex: 1 }}>
-        <PfProfitShareFilter form={form} fetchPfShare={fetchPfShare} />
-      </div>
-      <div style={{ flex: 1 }}>
-        <ProfitShareCalculation form={form} />
+    <PCardBody>
+      <div className="d-flex mb-3">
+        <div
+          style={{
+            flex: 3,
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            marginBottom: "1rem",
+          }}
+        >
+          <PfProfitShareFilter form={form} fetchPfShare={fetchPfShare} />
+          <ProfitShareCalculation form={form} data={data} setData={setData} />
+        </div>
+        <div style={{ flex: 2 }}>
+          <ProfitShareDetailsTable loading={detailsLoading} data={detailsData} />
+        </div>
       </div>
     </PCardBody>
   );
