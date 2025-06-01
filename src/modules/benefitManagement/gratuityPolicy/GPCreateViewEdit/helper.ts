@@ -107,6 +107,10 @@ const mapGratuityPolicy = (values: any, data: DataState) => {
       values.employmentType?.Id ?? values.employmentType?.value,
     intEligibilityDependOn: values.eligibilityDependOn?.value,
     isActive: true,
+    employmentTypes: values?.employmentType?.map((item: any) => ({
+      strEmploymentTypeName: item?.label || null,
+      intEmploymentTypeId: item?.value || null,
+    })),
     gratuityPolicyDetails: data.map((item) => ({
       intPolicyDetailsId: item?.intPolicyDetailsId || null,
       intServiceLengthStartInMonth: item.intServiceLengthStartInMonth,
