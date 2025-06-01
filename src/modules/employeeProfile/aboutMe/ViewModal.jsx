@@ -35,15 +35,37 @@ function getDiffMap(original = {}, modified = {}) {
         ? nestedDiff
         : false;
     } else {
-      diffMap[key] = modified[key] !== original[key];
+      if (!modified?.hasOwnProperty(key) || !original?.hasOwnProperty(key))
+        diffMap[key] = false;
+      else diffMap[key] = modified[key] !== original[key];
     }
   }
   return diffMap;
 }
 
+function contactInformationTitle(key) {
+  let result = "Contact";
+  switch (key) {
+    case "Emergency":
+      result = "Emergency Contact";
+      break;
+    case "Nominee":
+      result = "Nominee Information";
+      break;
+    case "Grantor":
+      result = "Father/Mother Information";
+      break;
+    case "Reference":
+      result = "Guarantor/Reference Information";
+      break;
+    default:
+      break;
+  }
+  return result;
+}
+
 const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
   if (!empData) return null;
-  console.log(empData);
 
   const {
     employeeProfileLandingView,
@@ -82,6 +104,17 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
   const labelStyle = { fontWeight: 600, fontSize: 14 };
 
   const highlightStyle = { backgroundColor: "#fff8e1" }; // light yellow highlight
+  const empContactInfoGroups =
+    empEmployeeRelativesContact == null
+      ? []
+      : [
+          ...new Map(
+            empEmployeeRelativesContact.map((item) => [
+              item.strGrantorNomineeType,
+              item.strGrantorNomineeType,
+            ])
+          ).values(),
+        ];
 
   return (
     <Modal
@@ -480,49 +513,64 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
           {empEmployeeRelativesContact?.length === 0 ? (
             <Empty description="No contact information was found" />
           ) : (
-            <List
-              itemLayout="vertical"
-              dataSource={empEmployeeRelativesContact}
-              renderItem={(rel) => (
-                <List.Item
-                  key={
-                    rel?.intEmployeeRelativesContactId ||
-                    rel?.intEmployeeRelativeId
-                  }
-                  style={{
-                    marginBottom: 16,
-                    border: "1px solid #f0f0f0",
-                    borderRadius: 6,
-                    padding: 16,
-                    backgroundColor: "#fafafa",
-                  }}
-                >
-                  <List.Item.Meta
-                    title={
-                      <Text strong>
-                        {rel?.strGrantorNomineeType || "Contact"}
-                      </Text>
-                    }
-                    description={<Text>{rel?.strRelativesName || "Name"}</Text>}
+            <>
+              {empContactInfoGroups.map((groupTitle, groupKey) => (
+                <>
+                  <h1 className="mt-2 mb-1" style={{ fontSize: "18px" }}>
+                    {contactInformationTitle(groupTitle)}
+                  </h1>
+                  <List
+                    key={groupKey}
+                    itemLayout="vertical"
+                    dataSource={empEmployeeRelativesContact.filter(
+                      (rc) => rc.strGrantorNomineeType === groupTitle
+                    )}
+                    renderItem={(rel) => (
+                      <List.Item
+                        key={
+                          rel?.intEmployeeRelativesContactId ||
+                          rel?.intEmployeeRelativeId
+                        }
+                        style={{
+                          marginBottom: 16,
+                          border: "1px solid #f0f0f0",
+                          borderRadius: 6,
+                          padding: 16,
+                          backgroundColor: "#fafafa",
+                        }}
+                      >
+                        <List.Item.Meta
+                          title={<Text>{rel?.strRelativesName || "Name"}</Text>}
+                          description={
+                            <Text>
+                              Relation: {rel?.strRelationship || "N/A"}
+                            </Text>
+                          }
+                        />
+                        <div>Contact: {rel?.strPhone || "N/A"}</div>
+                        {rel?.strEmail && <div>Email: {rel?.strEmail}</div>}
+                        {rel?.strAddress && (
+                          <div>Address: {rel?.strAddress}</div>
+                        )}
+                        {rel?.strNid && <div>NID: {rel?.strNid}</div>}
+                        {rel?.strBirthId && (
+                          <div>Birth Certificate Id: {rel?.strBirthId}</div>
+                        )}
+                        {rel?.strRemarks && (
+                          <div>Remarks: {rel?.strRemarks}</div>
+                        )}
+                        {rel?.dteDateOfBirth && (
+                          <div>
+                            Date of Birth:{" "}
+                            {new Date(rel?.dteDateOfBirth).toLocaleDateString()}
+                          </div>
+                        )}
+                      </List.Item>
+                    )}
                   />
-                  <div>Relation: {rel?.strRelationship || "N/A"}</div>
-                  <div>Contact: {rel?.strPhone || "N/A"}</div>
-                  {rel?.strEmail && <div>Email: {rel?.strEmail}</div>}
-                  {rel?.strAddress && <div>Address: {rel?.strAddress}</div>}
-                  {rel?.strNid && <div>NID: {rel?.strNid}</div>}
-                  {rel?.strBirthId && (
-                    <div>Birth Certificate Id: {rel?.strBirthId}</div>
-                  )}
-                  {rel?.strRemarks && <div>Remarks: {rel?.strRemarks}</div>}
-                  {rel?.dteDateOfBirth && (
-                    <div>
-                      Date of Birth:{" "}
-                      {new Date(rel?.dteDateOfBirth).toLocaleDateString()}
-                    </div>
-                  )}
-                </List.Item>
-              )}
-            />
+                </>
+              ))}
+            </>
           )}
         </TabPane>
         <TabPane tab="Documents" key="8">
