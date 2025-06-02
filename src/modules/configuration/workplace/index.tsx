@@ -20,7 +20,7 @@ function Workplace() {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId, orgId, intAccountId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -106,12 +106,16 @@ function Workplace() {
 
       //   fixed: "left",
     },
-     wgId === 7 &&  {
-      title: "Workplace Bangla",
-      dataIndex: "strWorkplaceBn",
-      sorter: true,
-      width: 100,
-    },
+    ...(intAccountId === 7
+      ? [
+          {
+            title: "Workplace Bangla",
+            dataIndex: "strWorkplaceBn",
+            sorter: true,
+            width: 100,
+          },
+        ]
+      : []),
     {
       title: "Code",
       dataIndex: "strWorkplaceCode",
