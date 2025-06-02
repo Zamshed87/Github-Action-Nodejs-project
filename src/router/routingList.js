@@ -1669,6 +1669,7 @@ import PfEmployeeReport from "modules/benefitManagement/reports/pfEmployeeWise";
 import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWise/view";
 import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
 import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
+import GeneratePrint from "modules/CompensationBenefits/Increment/singleIncement/components/generatePrint";
 
 // const TrainingApplicationCreate = lazy(() =>
 //   import(
@@ -3170,6 +3171,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/increment/singleIncrement/grade/view/:id",
     component: SingleIncrement,
+  },
+    {
+    path: "/compensationAndBenefits/increment/singleIncrement/grade/print",
+    component: GeneratePrint,
   },
   {
     path: "/compensationAndBenefits/increment/singleIncrement/view/:id",
