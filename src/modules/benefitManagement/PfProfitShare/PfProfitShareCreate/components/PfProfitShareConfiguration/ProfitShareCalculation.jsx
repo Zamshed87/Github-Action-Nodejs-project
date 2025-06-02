@@ -19,7 +19,7 @@ const ProfitShareCalculation = ({ form, data, setData, getPfProfitDetailsData })
       return;
     }
     form
-      .validateFields(["profitShareTypeId", "profitShare"])
+      .validateFields(["profitShareTypeId", "profitShare","toDateF"])
       .then(() => {
         getPfProfitDetailsData();
         if (shareType === 1) {
