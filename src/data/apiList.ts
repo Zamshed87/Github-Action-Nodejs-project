@@ -330,8 +330,8 @@ export const apiList = {
     "/PFInvestment/GetInvestmentDetailReportByOrganization",
     GetSalaryCertificate:
     "/PdfAndExcelReport/GetSalaryCertificate",
-    GetEmployeePfSummaryReport:
-    "/ProvidentFund/GetEmployeePfSummaryReport",
+    PostEmployeePfSummaryReport:
+    "/ProvidentFund/PostEmployeePfSummaryReport",
     GetEmployeeMonthWisePfDetailReport:
     "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
     GetTypeWiseReport:
