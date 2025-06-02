@@ -106,6 +106,12 @@ function Workplace() {
 
       //   fixed: "left",
     },
+     wgId === 7 &&  {
+      title: "Workplace Bangla",
+      dataIndex: "strWorkplaceBn",
+      sorter: true,
+      width: 100,
+    },
     {
       title: "Code",
       dataIndex: "strWorkplaceCode",
