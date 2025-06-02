@@ -35,8 +35,10 @@ function getDiffMap(original = {}, modified = {}) {
         ? nestedDiff
         : false;
     } else {
-      if (!modified?.hasOwnProperty(key) || !original?.hasOwnProperty(key))
+      if (!modified?.hasOwnProperty(key) && !original?.hasOwnProperty(key))
         diffMap[key] = false;
+      else if (!modified?.hasOwnProperty(key) || !original?.hasOwnProperty(key))
+        diffMap[key] = true;
       else diffMap[key] = modified[key] !== original[key];
     }
   }
