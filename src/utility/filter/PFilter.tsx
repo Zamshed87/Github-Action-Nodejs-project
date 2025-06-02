@@ -10,6 +10,7 @@ const PFilter = ({
   isSection,
   showDesignation,
   showDepartment,
+  mode,
   children,
 }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
@@ -90,7 +91,7 @@ const PFilter = ({
               isDepartment={showDepartment !== "NO"}
               isDesignation={showDesignation !== "NO"}
               isSection={isSection}
-              // mode="multiple"
+              mode={mode}
             />
 
             {children}
