@@ -6,10 +6,22 @@ import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { formatFilterValue } from "utility/filter/helper";
 import PFilter from "utility/filter/PFilter";
 
 const PayrollSummaryReport = () => {
+  const [
+    landingApi,
+    getLandingApi,
+    landingLoading,
+    ,
+    landingError,
+    setLoading,
+  ] = useAxiosGet();
+  const [data, setData] = useState("");
+
+  const [form] = Form.useForm();
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -26,11 +38,6 @@ const PayrollSummaryReport = () => {
     : null;
   // menu permission
 
-  const landingApi = useApiRequest({});
-  const [data, setData] = useState("");
-
-  const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
@@ -44,117 +51,16 @@ const PayrollSummaryReport = () => {
 
   const landingApiCall = (searchText = "") => {
     const values = form.getFieldsValue(true);
-    setLoading(true);
-    landingApi.action({
-      urlKey: "GetLeaveHistoryReport",
-      method: "GET",
-      params: {
-        strPartName: "htmlView",
-        intAccountId: orgId,
-        intYear: values?.yearDDL?.value,
-        departments: formatFilterValue(values?.department),
-        designations: formatFilterValue(values?.designation),
-        strSearchTxt: searchText || "",
-        BusinessUnitId: buId,
-        WorkplaceGroupList:
-          values?.workplaceGroup?.value == 0 ||
-          values?.workplaceGroup?.value == undefined
-            ? decodedToken.workplaceGroupList
-            : values?.workplaceGroup?.value.toString(),
-        WorkplaceList:
-          values?.workplace?.value == 0 || values?.workplace?.value == undefined
-            ? decodedToken.workplaceList
-            : values?.workplace?.value.toString(),
-      },
-      onSuccess: (res) => {
-        setData(res);
-        setLoading(false);
-      },
-    });
+    getLandingApi(
+      `/PdfAndExcelReport/GetSalarySummaryReport?DteFromDate=2025-01-01&DteToDate=2025-01-31&StrFormat=Html`,
+      (res) => {}
+    );
   };
 
   useEffect(() => {
-    form.setFieldValue("yearDDL", { value: new Date().getFullYear() });
+    // form.setFieldValue("yearDDL", { value: new Date().getFullYear() });
     landingApiCall();
   }, []);
-  const searchFunc = debounce((value) => {
-    landingApiCall(value);
-  }, 500);
-  const header = [
-    {
-      title: "SL",
-      // render: (_, rec, index) =>
-      //   (pages?.current - 1) * pages?.pageSize + index + 1,
-      fixed: "left",
-      width: 35,
-      align: "center",
-    },
-
-    {
-      title: "Work. Group/Location",
-      dataIndex: "workplaceGroupName",
-      width: 100,
-      fixed: "left",
-    },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "workplaceName",
-      width: 120,
-      fixed: "left",
-    },
-    {
-      title: "Employee Id",
-      dataIndex: "employeeCode",
-      width: 50,
-      fixed: "left",
-    },
-
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-      render: (_, rec) => {
-        return (
-          <div className="d-flex align-items-center">
-            <Avatar title={rec?.employeeName} />
-            <span className="ml-2">{rec?.employeeName}</span>
-          </div>
-        );
-      },
-      fixed: "left",
-      width: 70,
-    },
-
-    {
-      title: "Designation",
-      dataIndex: "designationName",
-
-      width: 70,
-    },
-
-    {
-      title: "Department",
-      dataIndex: "departmentName",
-
-      width: 70,
-    },
-    {
-      title: "Section",
-      dataIndex: "sectionName",
-
-      width: 70,
-    },
-    {
-      title: "Duration (Day)",
-      dataIndex: "rawDuration",
-      //   render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
-      width: 100,
-    },
-    {
-      title: "Reason",
-      dataIndex: "reason",
-      width: 50,
-    },
-  ];
   return permission?.isView ? (
     <div>
       <PReport
@@ -164,7 +70,7 @@ const PayrollSummaryReport = () => {
         excelUrl="aaa"
         form={form}
         data={data}
-        loading={loading}
+        loading={landingLoading}
         setLoading={setLoading}
         // header={header}
         landingApiCall={landingApiCall}
@@ -173,15 +79,17 @@ const PayrollSummaryReport = () => {
         filter={
           <PFilter
             form={form}
-            ishideDate={true}
+            showDesignation={"NO"}
+            showDepartment={"NO"}
+            isSection={false}
             landingApiCall={() => {
               landingApiCall();
             }}
-            resetApiCall={() => {
-              form.setFieldValue("yearDDL", {
-                value: new Date().getFullYear(),
-              });
-            }}
+            // resetApiCall={() => {
+            //   form.setFieldValue("yearDDL", {
+            //     value: new Date().getFullYear(),
+            //   });
+            // }}
           />
         }
       />

@@ -9,6 +9,7 @@ const PFilter = ({
   ishideDate,
   isSection,
   showDesignation,
+  showDepartment,
   children,
 }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
@@ -86,7 +87,7 @@ const PFilter = ({
             <CommonFilterField
               form={form}
               col={12}
-              isDepartment={true}
+              isDepartment={showDepartment !== "NO"}
               isDesignation={showDesignation !== "NO"}
               isSection={isSection}
               // mode="multiple"
