@@ -740,7 +740,11 @@ const SalaryRequisitionReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
   )
 );
-
+const PayrollSummaryReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/PayrollSummaryReport/index.jsx"
+  )
+);
 const SalaryCostCenterReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/SalaryCostCenterReport/index.jsx"
@@ -3120,6 +3124,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/bonusRequisitionReport",
     component: () => <SalaryRequisitionReport type={"bonus"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/payrollSummaryReport",
+    component: PayrollSummaryReport,
   },
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
