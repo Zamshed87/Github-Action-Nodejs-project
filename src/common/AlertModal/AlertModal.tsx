@@ -13,6 +13,7 @@ export interface AlertModalProps {
   onOk?: () => void;
   onCancel?: () => void;
   loading?: boolean;
+  width?: number;
 }
 
 const AlertModal: React.FC<AlertModalProps> = ({
@@ -25,10 +26,11 @@ const AlertModal: React.FC<AlertModalProps> = ({
   onOk,
   onCancel,
   loading = false,
+  width = 350,
 }) => {
   return (
     <Modal
-    width={350}
+      width={width}
       className={`alert-modal alert-modal-${type}`}
       title={
         <span className="alert-modal-title">
@@ -42,7 +44,11 @@ const AlertModal: React.FC<AlertModalProps> = ({
       okButtonProps={{ style: { display: "none" } }}
       cancelButtonProps={{ style: { display: "none" } }}
       footer={[
-        <Button key="cancel" className="alert-modal-cancel-btn" onClick={onCancel}>
+        <Button
+          key="cancel"
+          className="alert-modal-cancel-btn"
+          onClick={onCancel}
+        >
           {cancelText}
         </Button>,
         <Button

@@ -10,6 +10,7 @@ import PfProfitShareConfiguration from "./components/PfProfitShareConfiguration"
 import { createPFProfitShare, getHeader } from "./helper";
 import { useHistory } from "react-router-dom";
 import usePfShare from "./hook/usePfShare";
+import AlertModal from "common/AlertModal/AlertModal";
 
 const PfProfitShareCreate = () => {
   const history = useHistory();
@@ -23,9 +24,13 @@ const PfProfitShareCreate = () => {
   const dispatch = useDispatch();
   const [permission, setPermission] = useState(null);
   const {
+    visible,
+    setVisible,
+    closeModal,
     data,
     setData,
     fetchPfShare,
+    getPfProfitDetailsData,
     loading,
     pages,
     setPages,
@@ -81,6 +86,8 @@ const PfProfitShareCreate = () => {
                         return;
                       }
 
+                      const isPercentage = values?.profitShareTypeId === 1;
+
                       const payload = {
                         accountId: intAccountId,
                         businessUnitId: buId,
@@ -89,16 +96,25 @@ const PfProfitShareCreate = () => {
                         totalProfitAmount: data?.totalProfitAmount,
                         profitShareType: values?.profitShareType,
                         profitShareTypeId: values?.profitShareTypeId,
-                        profitSharePercentage: values?.profitShare
-                          ? Number(values?.profitShare)
+                        profitAmount: isPercentage
+                          ? 0
+                          : Number(values?.profitShare) || 0,
+                        profitSharePercentage: isPercentage
+                          ? Number(values?.profitShare) || 0
                           : 0,
                       };
-                      createPFProfitShare(payload, setLoading, () => {
-                        form.resetFields();
-                        history.push(
-                          `/BenefitsManagement/providentFund/pfProfitShare`
-                        );
-                      });
+
+                      createPFProfitShare(
+                        payload,
+                        setLoading,
+                        () => {
+                          form.resetFields();
+                          history.push(
+                            `/BenefitsManagement/providentFund/pfProfitShare`
+                          );
+                        },
+                        setVisible
+                      );
                     })
                     .catch(() => {
                       toast.error("Please fill all required fields.");
@@ -113,6 +129,7 @@ const PfProfitShareCreate = () => {
             data={data}
             setData={setData}
             fetchPfShare={fetchPfShare}
+            getPfProfitDetailsData={getPfProfitDetailsData}
             detailsData={detailsData}
             detailsLoading={detailsLoading}
           />
@@ -136,6 +153,17 @@ const PfProfitShareCreate = () => {
           />
         </PCard>
       </PForm>
+      <AlertModal
+        width={400}
+        title="Error"
+        content={visible.data}
+        type="error"
+        visible={visible.open}
+        okText="Ok"
+        cancelText="Dismiss"
+        onCancel={closeModal}
+        onOk={closeModal}
+      />
     </div>
   ) : (
     <NotPermittedPage />
