@@ -20,6 +20,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
+import { getPDFAction } from "utility/downloadFile";
 
 const MarketVisitReport = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const MarketVisitReport = () => {
   });
   const {
     permissionList,
-    profileData: { buId, wgId, orgId, wId },
+    profileData: { buId, wgId, orgId, wId, intAccountId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -74,7 +75,9 @@ const MarketVisitReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
-    const employeeIdList = values?.employee?.map((item: any) => item?.value).join(",");
+    const employeeIdList = values?.employee
+      ?.map((item: any) => item?.value)
+      .join(",");
 
     landingApi.action({
       urlKey: "GetBanglaPaysilp",
@@ -133,13 +136,19 @@ const MarketVisitReport = () => {
             }}
             pdfExport={() => {
               try {
-                reactToPrintFn();
-                // getPDFAction(
-                //   `/SalaryReport/GetBanglaPaysilp?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&month=${month || 0}&year=${year || 0}&employeeId=${
-                //     values?.employee?.value || 0
-                //   }&salaryGenerateRequestId=${values?.salaryCode || 0}`,
-                //   setLoading
-                // );
+                // reactToPrintFn();
+                const values = form.getFieldsValue(true);
+                const employeeIdList = values?.employee
+                  ?.map((item: any) => item?.value)
+                  .join(",");
+                getPDFAction(
+                  `/SalaryReport/GetBanglaPaysilp?format=PDF&intAccountId=${intAccountId}&intWorkplaceId=${wId}&employeeId=${
+                    employeeIdList || 0
+                  }&month=${month}&year=${year}&salaryGenerateRequestId=${
+                    values?.salaryCode || 0
+                  }`,
+                  setLoading
+                );
               } catch (error: any) {
                 toast.error(
                   error?.response?.data?.message ||
@@ -166,7 +175,7 @@ const MarketVisitReport = () => {
                     form.setFieldsValue({
                       date: value,
                       salaryCode: undefined,
-                      employee: undefined
+                      employee: undefined,
                     });
                     const month = moment(value).format("MM");
                     const year = moment(value).format("YYYY");
@@ -194,9 +203,9 @@ const MarketVisitReport = () => {
                   onChange={(value) => {
                     form.setFieldsValue({
                       salaryCode: value,
-                      employee: undefined
+                      employee: undefined,
                     });
-                    
+
                     getPeopleDeskAllDDL(
                       `/PeopleDeskDdl/GetEmployeesBySalaryCode?salaryId=${
                         value || 0
