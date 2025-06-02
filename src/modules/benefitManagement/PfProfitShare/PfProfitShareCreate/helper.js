@@ -1,7 +1,12 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const createPFProfitShare = async (payload, setLoading, resetData) => {
+export const createPFProfitShare = async (
+  payload,
+  setLoading,
+  resetData,
+  setVisible
+) => {
   setLoading?.(true);
   try {
     const res = await axios.post(
@@ -13,13 +18,16 @@ export const createPFProfitShare = async (payload, setLoading, resetData) => {
     setLoading?.(false);
     resetData?.();
   } catch (error) {
+    setVisible?.({
+      open: true,
+      data: error?.response?.data?.message?.[0] || "Something went wrong",
+    });
     toast.error(error?.response?.data?.message?.[0] || "Something went wrong");
     setLoading?.(false);
   }
 };
 
 export const getHeader = (pages) => {
- 
   return [
     {
       title: "SL",
