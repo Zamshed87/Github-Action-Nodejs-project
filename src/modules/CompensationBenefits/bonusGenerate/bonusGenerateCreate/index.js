@@ -900,7 +900,7 @@ const BonusGenerateCreate = () => {
                                   values?.employee?.employmentType,
                                 strDesignation: res[0]?.DesignationName,
                                 strDepartment: res[0]?.DepartmentName,
-                                strDepartmentSection: "",
+                                strDepartmentSection: res[0]?.DepartmentName,
                                 strWorkplaceGroup: wgName,
                                 strWorkplace: res[0]?.WorkplaceName,
                                 numSalary: res[0]?.numGrossSalary || 0,
