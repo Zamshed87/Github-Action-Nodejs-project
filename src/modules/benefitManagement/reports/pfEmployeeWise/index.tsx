@@ -40,6 +40,7 @@ const PfEmployeeReport = () => {
   // menu permission
   const employeeFeature: any = permission;
 
+  const [filterList, setFilterList] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -51,62 +52,42 @@ const PfEmployeeReport = () => {
     document.title = "Benefits Management - PF Employee Wise Report";
   }, []);
 
-  /**
-   * WorkplaceGroupList (Example: 1,2,3)
-WorkplaceList (Example: 1,2,3)
-DepartmentList (Example: 1,2,3)
-EmployeeStatusList (Example: 1,2,3)
-IsPaginate (default: true),
-PageSize: 25,
-PageNo: 1
-   */
-
   const landingApi = useApiRequest({});
   //ProvidentFund/GetEmployeePfSummaryReport?EmployeeStatusList=Active%2CInactive&PageSize=50&PageNo=1
   const landingApiCall = () => {
     const values = form.getFieldsValue(true);
 
-    // Transform selected workplace groups into comma-separated list
-    const workplaceGroupList = values?.workplaceGroup
-      ?.map((item: any) => item.value)
-      .join(",");
+    // Transform selected workplace groups into an array of values
+    const workplaceGroupList = values?.workplaceGroup?.map(
+      (item: any) => item.value
+    );
 
-    // Transform selected workplaces into comma-separated list
-    const workplaceList = values?.workplace
-      ?.map((item: any) => item.value)
-      .join(",");
+    // Transform selected workplaces into an array of values
+    const workplaceList = values?.workplace?.map((item: any) => item.value);
 
-    // Transform selected departments into comma-separated list
-    const departmentList = values?.department
-      ?.map((item: any) => item.value)
-      .join(",");
+    // Transform selected departments into an array of values
+    const departmentList = values?.department?.map((item: any) => item.value);
 
-    // Transform selected employee status into comma-separated list
-    const employeeStatusList = values?.employeeStatus
-      ?.map((item: any) => item.label)
-      .join(",");
+    // Transform selected employee status into an array of values
+    const employeeStatusList = values?.employeeStatus?.map(
+      (item: any) => item.value
+    );
 
     landingApi.action({
-      urlKey: "GetEmployeePfSummaryReport",
-      method: "GET",
-      params: {
-        dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+      urlKey: "PostEmployeePfSummaryReport",
+      method: "POST",
+      payload: {
         intBusinessUnitId: buId,
-        WorkplaceGroupList: workplaceGroupList || undefined,
-        WorkplaceList: workplaceList || undefined,
-        DepartmentList: departmentList || undefined,
-        EmployeeStatusList: employeeStatusList || undefined,
+        strWorkplaceGroupList: workplaceGroupList || [],
+        strWorkplaceList: workplaceList || [],
+        strDepartmentList: departmentList || [],
+        strEmployeeStatusList: employeeStatusList || [],
         IsPaginate: true,
         PageSize: 25,
         PageNo: 1,
       },
     });
   };
-
-  const searchFunc = debounce((values) => {
-    landingApiCall();
-  }, 500);
 
   const header = [
     {
@@ -117,30 +98,40 @@ PageNo: 1
     {
       title: "Workplace Group",
       dataIndex: "strWorkplaceGroup",
+      filter: true,
+      filterKey: "strWorkplaceGroupList",
       sorter: true,
       width: 20,
     },
     {
       title: "Workplace",
       dataIndex: "strWorkplace",
+      filter: true,
+      filterKey: "strWorkplaceList",
       sorter: true,
       width: 20,
     },
     {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
+      filter: true,
+      filterKey: "strEmployeeNameList",
       sorter: true,
       width: 20,
     },
     {
       title: "Department",
       dataIndex: "strDepartment",
+      filter: true,
+      filterKey: "strDepartmentList",
       sorter: true,
       width: 20,
     },
     {
       title: "Designation",
       dataIndex: "strDesignation",
+      filter: true,
+      filterKey: "strDesignationList",
       sorter: true,
       width: 20,
     },
@@ -184,22 +175,20 @@ PageNo: 1
         <>
           <TableButton
             buttonsList={[
-              {
+              rec?.isPrintable && {
                 type: "view",
                 onClick: (e: any) => {
-                  console.log("rec", rec);
                   if (!employeeFeature?.isEdit) {
                     return toast.warn("You don't have permission");
                     e.stopPropagation();
                   }
-                  history.push(
-                    `/BenefitsManagement/reports/PFEmployeeWise/view`,
-                    {
-                      employeeId: rec?.intEmployeeId,
-                    }
+                  // Open in a new window instead of redirecting
+                  window.open(
+                    `/BenefitsManagement/reports/PFEmployeeWise/view?employeeId=${rec?.intEmployeeId}`,
+                    "_blank"
                   );
                 },
-              },
+              } 
             ]}
           />
         </>
@@ -292,12 +281,6 @@ PageNo: 1
             exportIcon={false}
             printIcon={false}
             title={`PF Employee Wise Report`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-              form.setFieldsValue({
-                search: e?.target?.value,
-              });
-            }}
           />
           <PCardBody className="mb-3">
             <div className="d-flex justify-content-between">

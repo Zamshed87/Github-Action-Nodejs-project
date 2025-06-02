@@ -26,9 +26,19 @@ import EmployeeInfoCard from "./EmployeeInfoCard";
 
 const PfEmployeeReportView = () => {
   const location = useLocation();
+  // Get employeeId from URL query parameter instead of location state
+  const queryParams = new URLSearchParams(location.search);
+  const employeeId = queryParams.get("employeeId")
+    ? parseInt(queryParams.get("employeeId") || "0")
+    : undefined;
+
+  // Fallback to location state if query param is not available (for backward compatibility)
   const { employeeId: stateEmployeeId } = (location.state || {}) as {
     employeeId?: number;
   };
+
+  // Use query param employeeId if available, otherwise use the one from state
+  const finalEmployeeId = employeeId || stateEmployeeId;
 
   const dispatch = useDispatch();
   const {
@@ -60,7 +70,7 @@ const PfEmployeeReportView = () => {
       urlKey: "GetEmployeeMonthWisePfDetailReport",
       method: "GET",
       params: {
-        employeeId: stateEmployeeId,
+        employeeId: finalEmployeeId,
       },
     });
   };
@@ -187,7 +197,7 @@ const PfEmployeeReportView = () => {
             pdfExport={() => {
               try {
                 getPDFAction(
-                  `/PdfAndExcelReport/GetEmployeeMonthWisePfDetailReport?employeeId=${stateEmployeeId || 0}`,
+                  `/PdfAndExcelReport/GetEmployeeMonthWisePfDetailReport?employeeId=${finalEmployeeId || 0}`,
                   setLoading
                 );
               } catch (error: any) {
