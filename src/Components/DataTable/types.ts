@@ -100,7 +100,8 @@ export type buttonType =
   | "dollar"
   | "disbursement"
   | "print"
-  | "extend";
+  | "extend"
+  | "disabled";
 export type buttonList = {
   isActive?: boolean;
   type: buttonType;
