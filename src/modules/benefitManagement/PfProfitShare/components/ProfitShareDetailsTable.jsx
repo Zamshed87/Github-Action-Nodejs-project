@@ -1,8 +1,8 @@
 const fieldMap = [
   { label: "Total PF Loan Interest (Unadjusted/ Non Shared)", key: "pfLoanInterest" },
-  { label: "Total Investment Profit (Unadjusted/ Non Shared)", key: "unadjustedProfit" },
-  { label: "Running Profit Share", key: "adjustedProfit" },
-  { label: "Total Unadjusted Profit", key: "finalProfitShare" },
+  { label: "Total Investment Profit (Unadjusted/ Non Shared)", key: "investedProfit" },
+  { label: "Running Profit Share", key: "runningProfitShare" },
+  { label: "Total Unadjusted Profit", key: "unadjustedProfit" },
 ];
 
 const ProfitShareDetailsTable = ({ data, loading }) => {
