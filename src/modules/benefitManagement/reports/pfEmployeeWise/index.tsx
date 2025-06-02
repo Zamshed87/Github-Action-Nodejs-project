@@ -52,9 +52,23 @@ const PfEmployeeReport = () => {
     document.title = "Benefits Management - PF Employee Wise Report";
   }, []);
 
+  // Define a type for the landing API parameters
+  type TLandingApi = {
+    pagination?: {
+      pageSize?: number;
+      current?: number;
+    };
+    filerList?: any;
+    searchText?: string;
+  };
+
   const landingApi = useApiRequest({});
   //ProvidentFund/GetEmployeePfSummaryReport?EmployeeStatusList=Active%2CInactive&PageSize=50&PageNo=1
-  const landingApiCall = () => {
+  const landingApiCall = ({
+    pagination = {},
+    filerList,
+    searchText = "",
+  }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
     // Transform selected workplace groups into an array of values
@@ -82,9 +96,10 @@ const PfEmployeeReport = () => {
         strWorkplaceList: workplaceList || [],
         strDepartmentList: departmentList || [],
         strEmployeeStatusList: employeeStatusList || [],
-        IsPaginate: true,
-        PageSize: 25,
-        PageNo: 1,
+        isPaginate: true,
+        pageSize: pagination?.pageSize || 25,
+        pageNo: pagination?.current || 1,
+        searchText: searchText || "",
       },
     });
   };
@@ -188,7 +203,7 @@ const PfEmployeeReport = () => {
                     "_blank"
                   );
                 },
-              } 
+              },
             ]}
           />
         </>
@@ -384,9 +399,23 @@ const PfEmployeeReport = () => {
               }
               loading={landingApi?.loading}
               header={header}
+              pagination={{
+                total: landingApi?.data?.totalCount || 0,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "25", "50", "100"],
+                pageSize: landingApi?.data?.pageSize || 25,
+                current: landingApi?.data?.pageNo || 1,
+                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+              }}
               onChange={(pagination, filters, sorter, extra) => {
+                // Return if sort function is called
                 if (extra.action === "sort") return;
-                landingApiCall();
+                const { search } = form.getFieldsValue(true);
+                landingApiCall({
+                  pagination,
+                  filerList: filters,
+                  searchText: search,
+                });
               }}
             />
           )}
