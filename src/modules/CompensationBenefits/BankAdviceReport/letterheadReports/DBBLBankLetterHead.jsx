@@ -1,8 +1,14 @@
+import { shallowEqual, useSelector } from "react-redux";
+
 export default function DBBLBankLetterHead({
   letterHeadImage,
   landingViewPdf,
   signatureImage,
 }) {
+  const { intAccountId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   return (
     <>
       {letterHeadImage && (
@@ -53,10 +59,14 @@ export default function DBBLBankLetterHead({
               </p>
               <p style={{ color: "black", fontSize: "14px" }}>
                 To <br />
-                The Manager,
+                {intAccountId == 1
+                  ? "Head of Agent Banking Division"
+                  : "The Manager,"}
               </p>
               <p style={{ color: "black", fontSize: "14px" }}>
-                {landingViewPdf?.[0]?.CompBankName}
+                {intAccountId == 1
+                  ? "Dutch-Bangla Bank PLC"
+                  : landingViewPdf?.[0]?.CompBankName}
               </p>
               <p style={{ color: "black", fontSize: "14px" }}>
                 {landingViewPdf?.[0]?.CompBranchName}
