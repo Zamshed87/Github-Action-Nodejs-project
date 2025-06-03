@@ -30,7 +30,7 @@ const PfInvestmentConfig = ({ form }) => {
             gap: 5,
           }}
         >
-          <div style={{ width: "95%" }}>
+          <div style={{ width: "90%" }}>
             <PSelect
               name="investmentTypeId"
               label="Investment Type"
