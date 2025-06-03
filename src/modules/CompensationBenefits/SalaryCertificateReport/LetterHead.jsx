@@ -16,6 +16,26 @@ export default function LetterHead({
   const genderWord =
     emp.Gender === "Son" ? "Son" : emp.Gender === "Daughter" ? "Daughter" : "";
 
+  // Format date properly
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+
+    try {
+      const date = new Date(dateString);
+      // Check if date is valid
+      if (isNaN(date.getTime())) return dateString;
+
+      // Format: DD Month YYYY (e.g., 15 January 2023)
+      return date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   return (
     <>
       {letterHeadImage && (
@@ -23,7 +43,7 @@ export default function LetterHead({
           src={letterHeadImage.src}
           alt="letterhead"
           style={{
-            height: "1570px",
+            height: "100%",
             width: "1130px",
             objectFit: "cover",
             position: "fixed",
@@ -34,27 +54,20 @@ export default function LetterHead({
 
       <div
         style={{
-          margin: "0 96px",
-          fontSize: "14px",
-          marginTop: "50px",
-          minWidth: "930px",
-          color: "black",
-          lineHeight: 1.7,
-          fontFamily: "Arial, sans-serif",
-          whiteSpace: "pre-line",
-          position: "relative",
-          zIndex: 1,
+          height: "auto",
+          fontSize: "18px",
+          color: "#000000",
         }}
       >
         <p style={{ fontWeight: "bold" }}>
-          Date: <span>{emp.IssueDate}</span>
+          Date: <span>{formatDate(emp.IssueDate)}</span>
         </p>
 
         <p
           style={{
             textAlign: "center",
             fontWeight: "bold",
-            fontSize: "16px",
+            fontSize: "22px",
             marginTop: "100px",
             marginBottom: "30px",
             textTransform: "uppercase",
@@ -63,15 +76,16 @@ export default function LetterHead({
           TO WHOM IT MAY CONCERN
         </p>
 
-        <p>
-          This is to certify that{" "}
-          <strong>{emp.EmployeeName}</strong>, {genderWord} of{" "}
-          <strong>{emp.FatherName || "N/A"}</strong>, is a{" "}
+        <p style={{ fontSize: "18px" }}>
+          This is to certify that <strong>{emp.EmployeeName}</strong>,{" "}
+          {genderWord} of <strong>{emp.FatherName || "N/A"}</strong>, is a{" "}
           <strong>{emp.EmploymentType}</strong> employee of{" "}
           <strong>{emp.WorkplaceName}</strong>.
         </p>
 
-        <p style={{ marginTop: "20px" }}>
+        <p
+          style={{ marginTop: "20px", fontSize: "18px", marginBottom: "20px" }}
+        >
           {pronoun} employment details are as follows:
         </p>
 
@@ -80,7 +94,7 @@ export default function LetterHead({
             width: "100%",
             marginTop: "5px",
             borderCollapse: "collapse",
-            fontSize: "14px",
+            fontSize: "18px",
           }}
         >
           <tbody>
@@ -107,53 +121,31 @@ export default function LetterHead({
           </tbody>
         </table>
 
-        <p style={{ marginTop: "20px", fontWeight: "bold" }}>Salary Breakdown</p>
+        <p style={{ marginTop: "20px", fontWeight: "bold", fontSize: "18px" }}>
+          Salary Breakdown
+        </p>
 
         <table
           style={{
             width: "100%",
             marginTop: "5px",
             borderCollapse: "collapse",
-            fontSize: "14px",
+            fontSize: "18px",
           }}
         >
           <tbody>
-            <tr>
-              <td style={{ width: "150px" }}>Basic Salary</td>
-              <td style={{ width: "10px" }}>:</td>
-              <td style={{ textAlign: "right" }}>
-                {salaryMap["Basic Salary"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>House Rent</td>
-              <td>:</td>
-              <td style={{ textAlign: "right" }}>
-                {salaryMap["House Rent"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>Medical Allowance</td>
-              <td>:</td>
-              <td style={{ textAlign: "right" }}>
-                {salaryMap["Medical Allowance"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
-            <tr>
-              <td>Conveyance</td>
-              <td>:</td>
-              <td style={{ textAlign: "right" }}>
-                {salaryMap["Conveyance"]?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) || "0.00"}
-              </td>
-            </tr>
+            {/* Dynamically render all payroll elements */}
+            {Object.entries(salaryMap).map(([element, amount]) => (
+              <tr key={element}>
+                <td style={{ width: "200px" }}>{element}</td>
+                <td style={{ width: "30px", textAlign: "center" }}>:</td>
+                <td>
+                  {amount?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  }) || "0.00"}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
 
@@ -162,7 +154,7 @@ export default function LetterHead({
             marginTop: "10px",
             marginBottom: "10px",
             border: "1px solid black",
-            width: "100%",
+            width: "50%",
           }}
         />
 
@@ -170,14 +162,14 @@ export default function LetterHead({
           style={{
             width: "100%",
             fontWeight: "bold",
-            fontSize: "14px",
+            fontSize: "18px",
           }}
         >
           <tbody>
             <tr>
-              <td style={{ width: "150px" }}>Total Gross Salary</td>
-              <td style={{ width: "10px" }}>:</td>
-              <td style={{ textAlign: "right" }}>
+              <td style={{ width: "200px" }}>Total Gross Salary</td>
+              <td style={{ width: "30px", textAlign: "center" }}>:</td>
+              <td>
                 {emp.GrossAmount.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}
@@ -186,19 +178,14 @@ export default function LetterHead({
           </tbody>
         </table>
 
-        <p style={{ fontWeight: "bold", marginTop: "10px" }}>
-          In word : One Lakh Ten Thousand Five Hundred Only
+        <p style={{ fontWeight: "bold", marginTop: "20px", fontSize: "18px" }}>
+          In word : {emp.InWord || "One Lakh Fifty Thousand Five Hundred Only"}
         </p>
 
-        <p style={{ marginTop: "30px" }}>
+        <p style={{ marginTop: "30px", fontSize: "18px" }}>
           This certificate is issued at the request of the employee. Nearby
           confirm that the above information is true and accurate to the best of
           our knowledge.
-        </p>
-
-        <p style={{ marginTop: "50px", fontSize: "12px", fontStyle: "italic" }}>
-          Note: This document is system-generated and does not require any
-          signature
         </p>
 
         {signatureImage && (
@@ -213,6 +200,21 @@ export default function LetterHead({
             }}
           />
         )}
+
+        <p
+          style={{
+            marginTop: "50px",
+            fontSize: "16px",
+            fontStyle: "italic",
+            textAlign: "center",
+            color: "#000000",
+            padding: "10px 0",
+            marginBottom: "30px",
+          }}
+        >
+          Note: This document is system-generated and does not require any
+          signature
+        </p>
       </div>
     </>
   );

@@ -13,7 +13,8 @@ const useAxiosPost = (initValue) => {
     cb,
     isToast,
     successMessage,
-    errorMessage
+    errorMessage,
+    errorCb,
   ) => {
     setLoading && setLoading(true);
     axios
@@ -32,6 +33,7 @@ const useAxiosPost = (initValue) => {
         }
       })
       .catch((err) => {
+        errorCb?.(err);
         setRes([]);
         setError(err);
         setLoading(false);

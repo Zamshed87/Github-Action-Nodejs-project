@@ -4,8 +4,8 @@ import { Flex } from "Components";
 import moment from "moment";
 import { TbEdit } from "react-icons/tb";
 import { GiTakeMyMoney } from "react-icons/gi";
-import { FaEye } from "react-icons/fa";
 import { RxCrossCircled } from "react-icons/rx";
+import { EyeOutlined } from "@ant-design/icons";
 
 export const getHeader = (pages, history, setVisible) => [
   {
@@ -132,7 +132,7 @@ export const getHeader = (pages, history, setVisible) => [
                 );
               }}
             >
-              <FaEye size={16} />
+              <EyeOutlined size={16} />
             </button>
           </Tooltip>
 

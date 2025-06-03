@@ -2,7 +2,7 @@ import { Col, Form, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import { toast } from "react-toastify";
 
-const ProfitShareCalculation = ({ form, data, setData }) => {
+const ProfitShareCalculation = ({ form, data, setData, getPfProfitDetailsData }) => {
   const shareType = Form.useWatch("profitShareTypeId", form);
   const profitShare = Form.useWatch("profitShare", form);
 
@@ -19,8 +19,9 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
       return;
     }
     form
-      .validateFields(["profitShareTypeId", "profitShare"])
+      .validateFields(["profitShareTypeId", "profitShare","toDateF"])
       .then(() => {
+        getPfProfitDetailsData();
         if (shareType === 1) {
           const percentage = Number(profitShare) / 100;
           setData((prev) => {

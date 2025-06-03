@@ -11,14 +11,14 @@ const CommonFilterField = ({
   isDepartment,
   isDesignation,
   col,
-  mode = undefined,
+  mode = "single",
   isSection,
 }: {
   form: any;
   isDepartment?: boolean;
   isDesignation?: boolean;
   col?: number;
-  mode?: string | undefined;
+  mode?: any;
   isSection?: boolean;
 }) => {
   const { profileData } = useSelector(
@@ -215,7 +215,7 @@ const CommonFilterField = ({
           label="Workplace"
           allowClear
           placeholder="Workplace"
-          mode={mode as "multiple" | undefined | "tags"}
+          mode={mode?.workplace ? "multiple" : undefined}
           showSearch
           onChange={(value, op) => {
             const { workplaceGroup } = form.getFieldsValue(true);
@@ -236,6 +236,9 @@ const CommonFilterField = ({
                 workplaceId: value,
                 workplaceGroupId: undefined,
               });
+              if (mode?.workplace) {
+                setCustomFieldsValue(form, "workplace", op);
+              }
             }
             if (isDepartment) {
               getEmployeDepartment();
