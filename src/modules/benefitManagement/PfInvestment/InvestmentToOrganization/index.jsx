@@ -8,8 +8,8 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import CreateEditInvestmentType from "./CreateInvestmentToOrganization";
-import { getHeader } from "./helper";
 import useInvestmentOrganization from "./useInvestmentToOrganization";
+import { getCommonHeader } from "../common/helper";
 
 const InvestmentToOrganization = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const InvestmentToOrganization = () => {
             ]}
           />
           <DataTable
-            header={getHeader(pages, setData, setOpenEdit, permission)}
+            header={getCommonHeader({pages, setData, setOpenEdit, permission, investmentType:false})}
             bordered
             data={data?.data || []}
             loading={loading}
