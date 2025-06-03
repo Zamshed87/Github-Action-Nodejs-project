@@ -50,6 +50,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
   const [slabDDL, setSlabDDL] = useState<any[]>([]);
   const [empBasic, setEmpBasic] = useState([]);
+  const [oldAmount, setOldAmount] = useState<number>(0);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -66,9 +67,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
   const employeeIncrementByIdApi = useApiRequest([]);
 
   const dispatch = useDispatch();
-
-  console.log("rowDto", rowDto);
-  console.log("empBasic", empBasic);
 
   // Life Cycle Hooks
   // useEffect(() => {}, [buId, wgId, wId]);
@@ -549,6 +547,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           id: id,
         },
         onSuccess: (res) => {
+          setOldAmount(res?.oldGrossAmount);
           const modify = res?.rows?.map((i: any) => {
             return {
               ...i,
@@ -764,8 +763,9 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           getById={getById}
           history={history}
           rowDto={rowDto}
+          oldAmount={oldAmount}
         />
-        <LetterContainer
+        {/* <LetterContainer
           location={location}
           orgId={orgId}
           empBasic={empBasic}
@@ -773,7 +773,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           form={form}
           employeeIncrementByIdApi={employeeIncrementByIdApi}
           rowDto={rowDto}
-        />
+        /> */}
         <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
