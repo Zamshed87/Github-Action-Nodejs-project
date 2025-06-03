@@ -15,14 +15,11 @@ import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray600 } from "../../../utility/customColor";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
-import { getPDFAction } from "../../../utility/downloadFile";
 import { customStyles } from "../../../utility/newSelectCustomStyle";
 import { useReactToPrint } from "react-to-print";
 import { useApiRequest } from "Hooks";
 import { APIUrl } from "App";
-import IbblBankLetterHead from "../BankAdviceReport/letterheadReports/IbblBankLetterHead";
 import LetterHead from "./LetterHead";
 
 const initialValues = {
@@ -64,7 +61,6 @@ const SalaryPayslipReport = () => {
       onSubmit: () => {
         getData();
         pdfViewData(values);
-        setIsLandingShow(true);
       },
     });
 
@@ -81,7 +77,6 @@ const SalaryPayslipReport = () => {
   });
 
   const [payrollPeiodDDL, setPayrollPeiodDDL] = useState([]);
-  const [isLandingShow, setIsLandingShow] = useState(true);
 
   const getData = () => {
     getEmployeeInfo(
@@ -278,7 +273,6 @@ const SalaryPayslipReport = () => {
                               setPayrollPeiodDDL
                             );
                           }
-                          setIsLandingShow(false);
                         }}
                         errors={errors}
                         touched={touched}
@@ -308,7 +302,6 @@ const SalaryPayslipReport = () => {
                               setPayrollPeiodDDL
                             );
                           }
-                          setIsLandingShow(false);
                         }}
                         placeholder="Search (min 3 letter)"
                         loadOptions={(v) =>
@@ -329,7 +322,6 @@ const SalaryPayslipReport = () => {
                             ...prev,
                             adviceName: valueOption,
                           }));
-                          setIsLandingShow(false);
                         }}
                         placeholder=""
                         styles={customStyles}
