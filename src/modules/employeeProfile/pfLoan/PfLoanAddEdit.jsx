@@ -235,6 +235,7 @@ const PfLoanAddEdit = () => {
                       method: "GET",
                       params: {
                         employeeId: valueOption?.value,
+                        AccountId: orgId,
                       },
                       onSuccess: (res) => {
                         if (orgId === 14) {
