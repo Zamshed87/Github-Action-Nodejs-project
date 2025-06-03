@@ -83,6 +83,10 @@ const PfInvestmentFilters = ({ form }) => {
               value: "Profit Shared",
               label: "Profit Shared",
             },
+            {
+              value: "Collection Completed",
+              label: "Collection Completed",
+            },
           ]}
           name="status"
           label="Status"
