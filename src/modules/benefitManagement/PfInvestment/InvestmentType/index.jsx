@@ -7,9 +7,9 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
-import { getHeader } from "./helper";
 import CreateEditInvestmentType from "./CreateEditInvestmentType";
 import useInvestmentType from "./useInvestmentType";
+import { getCommonHeader } from "../common/helper";
 
 const InvestmentType = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const InvestmentType = () => {
             ]}
           />
           <DataTable
-            header={getHeader(pages, setData, setOpenEdit, permission)}
+            header={getCommonHeader({pages, setData, setOpenEdit, permission})}
             bordered
             data={data?.data || []}
             loading={loading}
