@@ -94,7 +94,7 @@ const CommonApprovalComponent = () => {
     }
   }, [wId, wgId]);
 
-  const getEmpData = () => {
+  const getEmpData = (employeeId) => {
     getEmployeeProfileViewData(
       employeeId,
       setEmpBasic,
@@ -121,7 +121,7 @@ const CommonApprovalComponent = () => {
   const handleViewClick = (empId) => {
     setIsOpen(true);
     getEmpPendingData(empId);
-    getEmpData();
+    getEmpData(empId);
   };
 
   useEffect(() => {
