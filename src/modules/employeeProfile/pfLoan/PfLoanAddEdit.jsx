@@ -252,7 +252,7 @@ const PfLoanAddEdit = () => {
                         ) {
                           setFieldValue(
                             "loanAmount",
-                            res?.data?.eligibleAmount || 0
+                            res?.data?.totalPfAmount * 0.85 || 0
                           );
                         } else {
                           setFieldValue("employee", "");
@@ -337,10 +337,11 @@ const PfLoanAddEdit = () => {
                     }
                     if (
                       orgId === 15 &&
-                      e.target.value > pfInfoApi?.data?.data?.eligibleAmount
+                      e.target.value >
+                        pfInfoApi?.data?.data?.totalPfAmount * 0.85
                     ) {
                       return toast.warning(
-                        "Loan amount should be less than 85% of Own PF amount"
+                        "Loan amount should be less than 85% of total PF amount"
                       );
                     }
                     setFieldValue("loanAmount", e.target.value);
