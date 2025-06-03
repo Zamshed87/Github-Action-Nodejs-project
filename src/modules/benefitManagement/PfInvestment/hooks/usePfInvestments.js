@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
@@ -38,8 +38,15 @@ const usePfInvestments = (form) => {
       setData(res);
     });
   };
+  useEffect(() => {
+    if (buId) {
+      fetchPfInvestment();
+    }
+  }
+  , [buId, form]);
   const inActivatePfInvestment = async (
     InvestmentId,
+    callBack
   ) => {
     setOtherLoading?.(true);
     try {
@@ -48,6 +55,7 @@ const usePfInvestments = (form) => {
       );
       toast.success(res?.data?.message || "InActive Successfully");
       setOtherLoading?.(false);
+      callBack?.();
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
       setOtherLoading?.(false);

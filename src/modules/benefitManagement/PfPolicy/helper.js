@@ -79,6 +79,7 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
               size="small"
               checked={isActive}
               onChange={async (checked) => {
+                const prevStatus = rec.strStatus;
                 const newStatus = checked ? "Active" : "Inactive";
 
                 // Optimistically update UI
@@ -96,12 +97,13 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
                   const result = await togglePfPolicyStatus(rec.intPfConfigHeaderId);
                   toast.success(result?.message || "Status updated successfully");
                 } catch (error) {
+                  console.log("pf policy failed")
                   setData((prev) => ({
                     ...prev,
                     data: updatePolicyStatusLocally(
                       prev.data,
                       rec.intPfConfigHeaderId,
-                      isActive ? "Inactive" : "Active" // rollback
+                      prevStatus
                     ),
                   }));
                   toast.error(

@@ -10,6 +10,7 @@ import PfProfitShareConfiguration from "./components/PfProfitShareConfiguration"
 import { createPFProfitShare, getHeader } from "./helper";
 import { useHistory } from "react-router-dom";
 import usePfShare from "./hook/usePfShare";
+import AlertModal from "common/AlertModal/AlertModal";
 
 const PfProfitShareCreate = () => {
   const history = useHistory();
@@ -22,8 +23,21 @@ const PfProfitShareCreate = () => {
 
   const dispatch = useDispatch();
   const [permission, setPermission] = useState(null);
-  const { data, setData, fetchPfShare, loading, pages, setPages, setLoading } =
-    usePfShare(form);
+  const {
+    visible,
+    setVisible,
+    closeModal,
+    data,
+    setData,
+    fetchPfShare,
+    getPfProfitDetailsData,
+    loading,
+    pages,
+    setPages,
+    setLoading,
+    detailsData,
+    detailsLoading,
+  } = usePfShare(form);
   useEffect(() => {
     setPermission(
       permissionList.find((item) => item?.menuReferenceId === 30599)
@@ -40,7 +54,12 @@ const PfProfitShareCreate = () => {
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          profitShareType: 1,
+        }}
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -51,22 +70,23 @@ const PfProfitShareCreate = () => {
                 content: "Save",
                 onClick: () => {
                   const commonFields = [
+                    "profitShareType",
                     "fromDateF",
                     "toDateF",
-                    'fromDate',
-                    'toDate',
-                    'profitShareType',
-                    'profitShare',
+                    "fromDate",
+                    "toDate",
+                    "profitShareTypeId",
+                    "profitShare",
                   ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                      if(!data?.detailsData || data?.detailsData?.length < 1) {
-                        toast.error(
-                          "There are no records to save."
-                        );
+                      if (!data?.detailsData || data?.detailsData?.length < 1) {
+                        toast.error("There are no records to save.");
                         return;
                       }
+
+                      const isPercentage = values?.profitShareTypeId === 1;
 
                       const payload = {
                         accountId: intAccountId,
@@ -74,15 +94,27 @@ const PfProfitShareCreate = () => {
                         fromDate: values?.fromDate,
                         toDate: values?.toDate,
                         totalProfitAmount: data?.totalProfitAmount,
-                        profitShareTypeId: values?.profitShareType,
-                        profitSharePercentage: values?.profitShare ? Number(values?.profitShare) : 0,
+                        profitShareType: values?.profitShareType,
+                        profitShareTypeId: values?.profitShareTypeId,
+                        profitAmount: isPercentage
+                          ? 0
+                          : Number(values?.profitShare) || 0,
+                        profitSharePercentage: isPercentage
+                          ? Number(values?.profitShare) || 0
+                          : 0,
                       };
-                      createPFProfitShare(payload, setLoading, () => {
-                        form.resetFields();
-                        history.push(
-                          `/BenefitsManagement/providentFund/pfProfitShare`
-                        );
-                      });
+
+                      createPFProfitShare(
+                        payload,
+                        setLoading,
+                        () => {
+                          form.resetFields();
+                          history.push(
+                            `/BenefitsManagement/providentFund/pfProfitShare`
+                          );
+                        },
+                        setVisible
+                      );
                     })
                     .catch(() => {
                       toast.error("Please fill all required fields.");
@@ -91,11 +123,15 @@ const PfProfitShareCreate = () => {
               },
             ]}
           />
+
           <PfProfitShareConfiguration
             form={form}
             data={data}
             setData={setData}
             fetchPfShare={fetchPfShare}
+            getPfProfitDetailsData={getPfProfitDetailsData}
+            detailsData={detailsData}
+            detailsLoading={detailsLoading}
           />
           <DataTable
             header={getHeader(pages)}
@@ -117,6 +153,17 @@ const PfProfitShareCreate = () => {
           />
         </PCard>
       </PForm>
+      <AlertModal
+        width={400}
+        title="Error"
+        content={visible.data}
+        type="error"
+        visible={visible.open}
+        okText="Ok"
+        cancelText="Dismiss"
+        onCancel={closeModal}
+        onOk={closeModal}
+      />
     </div>
   ) : (
     <NotPermittedPage />

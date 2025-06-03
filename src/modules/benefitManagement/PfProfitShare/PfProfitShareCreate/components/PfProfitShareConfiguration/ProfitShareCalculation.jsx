@@ -2,8 +2,8 @@ import { Col, Form, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import { toast } from "react-toastify";
 
-const ProfitShareCalculation = ({ form, data, setData }) => {
-  const shareType = Form.useWatch("profitShareType", form);
+const ProfitShareCalculation = ({ form, data, setData, getPfProfitDetailsData }) => {
+  const shareType = Form.useWatch("profitShareTypeId", form);
   const profitShare = Form.useWatch("profitShare", form);
 
   // shareType:
@@ -19,8 +19,9 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
       return;
     }
     form
-      .validateFields(["profitShareType", "profitShare"])
+      .validateFields(["profitShareTypeId", "profitShare","toDateF"])
       .then(() => {
+        getPfProfitDetailsData();
         if (shareType === 1) {
           const percentage = Number(profitShare) / 100;
           setData((prev) => {
@@ -100,10 +101,10 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
           label = `${label} (%)`;
         break;
       case 2:
-          label = `${label} (Proportionately With Fixed Amount)`;
+          label = `${label} (Proportionately)`;
         break;
       case 3:
-          label = `${label} (Proportionately With Balance Amount)`;
+          label = `${label} (Proportionately)`;
         break;
       case 4:
           label = `${label} (Fixed Amount)`;
@@ -116,7 +117,7 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
   };
   return (
     <Row gutter={[5, 2]}>
-      <Col md={8} sm={12} xs={24}>
+      <Col md={9} sm={12} xs={24}>
         <PSelect
           options={[
             { value: 1, label: "Percentage" },
@@ -124,11 +125,11 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
             { value: 3, label: "Proportionately With Balance Amount" },
             { value: 4, label: "Fixed Amount" },
           ]}
-          name="profitShareType"
+          name="profitShareTypeId"
           label="Profit Share Type"
           placeholder="Select Profit Share Type"
           onChange={(value) => {
-            form.setFieldsValue({ profitShareType: value });
+            form.setFieldsValue({ profitShareTypeId: value });
             setData((prev) => ({
               ...prev,
               detailsData: prev?.detailsData?.map((rec) => ({

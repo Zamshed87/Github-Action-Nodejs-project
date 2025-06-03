@@ -68,11 +68,25 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
         formatMoney(record?.employeeContributionAmount),
     },
     {
-      title: "Employer Amount",
+      title: "Company Amount",
       dataIndex: "companyContributionAmount",
       align: "right",
       render: (data: any, record: any) =>
         formatMoney(record?.companyContributionAmount),
+    },
+    {
+      title: "Employee Profit",
+      dataIndex: "employeeProfit",
+      align: "right",
+      render: (data: any, record: any) =>
+        formatMoney(record?.employeeProfit),
+    },
+    {
+      title: "Company Profit",
+      dataIndex: "companyProfit",
+      align: "right",
+      render: (data: any, record: any) =>
+        formatMoney(record?.companyProfit),
     },
     {
       title: "Status",
@@ -94,7 +108,7 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
       dataIndex: "action",
       sort: false,
       filter: false,
-      width: 30,
+      width: 40,
       className: "text-center",
       render: () => (
         <PrimaryButton

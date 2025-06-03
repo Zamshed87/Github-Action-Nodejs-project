@@ -71,6 +71,7 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/LeaveBalanceReport",
   "/PdfAndExcelReport/PMS/YearlyPerformanceReportExcel",
   "/PdfAndExcelReport/PMS/YearlyPerformanceReportDetailPdf",
+  "/PdfAndExcelReport/PMS/PerformanceAppraisalReport",
   "/PdfAndExcelReport/EmployeeLoanPdf",
   "/PdfAndExcelReport/Payroll/BankSalaryReportExcel",
   "/PdfAndExcelReport/Payroll/BankSalaryReportPdf",
@@ -78,4 +79,8 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportExcel",
   "/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportPdf",
   "/PdfAndExcelReport/IOUApplicationReport",
+  "/PdfAndExcelReport/GetFinalSettlementReport",
+  "/PdfAndExcelReport/GetEmployeeMonthWisePfDetailReport",
+  "/PdfAndExcelReport/GetSalaryCertificate",
+  "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport"
 ];
