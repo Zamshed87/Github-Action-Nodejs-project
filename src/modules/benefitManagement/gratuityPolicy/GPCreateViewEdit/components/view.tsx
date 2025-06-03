@@ -11,8 +11,12 @@ const View = ({ data }: any) => {
         <div style={valueStyle}>{data?.strPolicyName || "N/A"}</div>
       </Col>
       <Col md={6} sm={24}>
+        <div style={labelStyle}>Workplace Group:</div>
+        <div style={valueStyle}>{data?.strWorkplaceGroupName || "N/A"}</div>
+      </Col>
+      <Col md={6} sm={24}>
         <div style={labelStyle}>Workplace:</div>
-        <div style={valueStyle}>{data?.workplaceName || "N/A"}</div>
+        <div style={valueStyle}>{data?.strWorkplaceName || "N/A"}</div>
       </Col>
       <Col md={6} sm={24}>
         <div style={labelStyle}>Employee Type:</div>
