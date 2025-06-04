@@ -193,6 +193,15 @@ export const EarlyLeavePunishment = (
       placeholder: "Select punishment type",
       rules: [{ required: true, message: "Punishment Type is required!" }],
       col: 6,
+      onChange: () => {
+        form.setFieldsValue({
+          leaveDeductType: undefined,
+          leaveDeductQty: undefined,
+          amountDeductFrom: undefined,
+          amountDeductType: undefined,
+          amountPercentage: undefined,
+        });
+      },
     },
     ...(values?.punishmentType?.value === 1
       ? [
@@ -217,7 +226,7 @@ export const EarlyLeavePunishment = (
           {
             type: "number",
             label: "Leave Deduction Qty",
-            varname: "leaveDeduction",
+            varname: "leaveDeductQty",
             placeholder: "Enter leave deduct type",
             rules: [
               { required: true, message: "Leave Deduction Qty is required!" },

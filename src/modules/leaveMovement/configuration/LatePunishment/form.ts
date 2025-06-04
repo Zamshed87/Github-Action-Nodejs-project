@@ -278,6 +278,15 @@ export const LatePunishment = (
       ddl: punishmentType || [],
       placeholder: "Select punishment type",
       rules: [{ required: true, message: "Punishment Type is required!" }],
+      onChange: () => {
+        form.setFieldsValue({
+          leaveDeductType: undefined,
+          leaveDeductQty: undefined,
+          amountDeductFrom: undefined,
+          amountDeductType: undefined,
+          amountPercentage: undefined,
+        });
+      },
       col: 6,
     },
     ...(values?.punishmentType?.value === 1
