@@ -11,31 +11,30 @@ export const getHeader = (pages, setOpenView) => [
   {
     title: "Profit Share Date",
     dataIndex: "profitShareDate",
-    render: (value) =>
-      value ? new Date(value).toLocaleDateString() : "-",
+    render: (value) => (value ? new Date(value).toLocaleDateString() : "-"),
     width: 120,
   },
   {
     title: "Total Employee Contribution",
-    dataIndex: "employeeContribution",
+    dataIndex: "totalEmployeeContribution",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 120,
   },
   {
     title: "Total Employer Contribution",
-    dataIndex: "companyContribution",
+    dataIndex: "totalCompanyContribution",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 120,
   },
   {
     title: "Total Profit Earned",
-    dataIndex: "employeeProfit",
+    dataIndex: "totalProfitEarned",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 100,
   },
   {
     title: "Total PF Balance",
-    dataIndex: "companyProfit",
+    dataIndex: "totalPFBalance",
     render: (value) => value?.toLocaleString() ?? "-",
     width: 100,
   },
@@ -47,7 +46,7 @@ export const getHeader = (pages, setOpenView) => [
   },
   {
     title: "Total Profit Share %",
-    dataIndex: "profitPercentage",
+    dataIndex: "totalProfitSharePercentage",
     render: (value) => (value != null ? `${value}%` : "-"),
     width: 100,
   },
@@ -64,15 +63,12 @@ export const getHeader = (pages, setOpenView) => [
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
         <PButton
+          disabled
           content="View"
           type="primary-outline"
           onClick={() => setOpenView?.({ open: true, data: record })}
         />
-        <PButton
-          content="Edit"
-          type="primary"
-          onClick={() => {}}
-        />
+        <PButton disabled content="Edit" type="primary" onClick={() => {}} />
       </div>
     ),
   },
