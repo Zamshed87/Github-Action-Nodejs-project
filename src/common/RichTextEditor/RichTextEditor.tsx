@@ -9,12 +9,13 @@ export type RichTextEditorRef = {
 
 type Props = {
   initialValue?: string;
+  value?: string;
   onChange?: (content: string) => void;
   height?: number;
 };
 
 const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
-  ({ initialValue = "", onChange, height }, ref) => {
+  ({ initialValue = "", value, onChange, height }, ref) => {
     const editorDivRef = useRef<HTMLDivElement>(null);
     const editorInstanceRef = useRef<any>(null);
 
@@ -37,6 +38,18 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
         editorInstanceRef.current = instance;
       }
     }, []);
+
+    // Update content when value prop changes (controlled input behavior)
+    useEffect(() => {
+      const currentHTML = editorInstanceRef.current?.getHTMLCode();
+      if (
+        value !== undefined &&
+        editorInstanceRef.current &&
+        value !== currentHTML
+      ) {
+        editorInstanceRef.current.setHTMLCode(value);
+      }
+    }, [value]);
 
     useImperativeHandle(ref, () => ({
       setContent: (html: string) => {

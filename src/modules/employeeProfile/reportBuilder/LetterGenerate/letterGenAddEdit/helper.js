@@ -91,3 +91,43 @@ export const createNEditLetterGenerate = async (
     setLoading(false);
   }
 };
+
+export function generateIncrementTableHTML(tableData) {
+  const headerHTML = `<tr>${tableData.header
+    .map((h) => `<th>${h}</th>`)
+    .join("")}</tr>`;
+
+  const rowsHTML = tableData.data
+    .map(
+      (item) =>
+        `<tr><td>${item.label}</td><td>${item.value.toLocaleString()}</td></tr>`
+    )
+    .join("");
+
+  const totalRow = `<tr><td><strong>Total</strong></td><td><strong>${tableData.total.toLocaleString()}</strong></td></tr>`;
+
+  return `
+    <table>
+      <thead>${headerHTML}</thead>
+      <tbody>${rowsHTML}${totalRow}</tbody>
+    </table>
+  `;
+}
+export function replacePlaceholdersInHTML(html, data) {
+  return html.replace(/@\[(.*?)\]/g, (_, key) => {
+    const cleanKey = key.trim();
+
+    // Handle special case for the table
+    if (cleanKey === "Increment Details Table" && data["Increment Details Table"]) {
+      return generateIncrementTableHTML(data["Increment Details Table"]);
+    }
+
+    // Handle @InWord
+    if (cleanKey === "InWord" && data["Increment Details Table"]?.toWord) {
+      return data["Increment Details Table"].toWord;
+    }
+
+    // Generic key-value replacement
+    return data[cleanKey] ?? "";
+  });
+}

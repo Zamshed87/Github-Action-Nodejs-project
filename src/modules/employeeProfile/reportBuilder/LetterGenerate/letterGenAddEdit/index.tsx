@@ -26,11 +26,10 @@ import {
   PSelect,
 } from "Components";
 import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
-import { modules } from "../../letterConfiguration/utils";
 import { postPDFAction } from "utility/downloadFile";
+import RichTextEditor from "common/RichTextEditor/RichTextEditor";
 
 const LetterGenAddEdit = () => {
   // Router state
@@ -233,15 +232,12 @@ const LetterGenAddEdit = () => {
               return (
                 <>
                   <Col className="custom_quill quilJob" md={24} sm={24}>
-                    <ReactQuill
-                      preserveWhitespace={true}
-                      placeholder="letter body..."
+                    <RichTextEditor
+                      height={600}
                       value={letter}
-                      modules={{
-                        toolbar: modules.toolbar,
-                        clipboard: modules.clipboard,
+                      onChange={(data) => {
+                        form.setFieldValue("letter", data);
                       }}
-                      onChange={(value) => form.setFieldValue("letter", value)}
                     />
                   </Col>
                 </>

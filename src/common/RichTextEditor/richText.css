@@ -1,3 +1,7 @@
 .rte-fixed.rte-floatpanel-paragraphop {
   display: none !important;
 }
+
+rte-powerby a {
+    display:none;
+}

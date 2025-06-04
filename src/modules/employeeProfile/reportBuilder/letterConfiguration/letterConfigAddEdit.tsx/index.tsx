@@ -317,7 +317,6 @@ const handleInsertField = (fieldValue: string) => {
                         initialValue={letter}
                         onChange={(data) => {
                           form.setFieldValue('letter',data)
-                          console.log(data);
                         }}
                       />
                     </Col>
