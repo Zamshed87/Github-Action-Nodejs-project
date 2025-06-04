@@ -15,6 +15,7 @@ import {
   createNEditLetterGenerate,
   getLetterNameDDL,
   getLetterPreview,
+  getLetterPreviewAndTransform,
 } from "./helper";
 import {
   Flex,
@@ -88,7 +89,6 @@ const LetterGenAddEdit = () => {
       },
     }).then();
   };
-
   return letterGenPermission?.isCreate ? (
     <PForm
       formName="tempCreate"
@@ -188,7 +188,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     employee: op,
                   });
-                  getLetterPreview(profileData, setLoading, form);
+                  getLetterPreviewAndTransform(profileData, setLoading, form);
                 }}
                 onSearch={(value) => {
                   getEmployee(value);
@@ -228,7 +228,7 @@ const LetterGenAddEdit = () => {
           <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);
-
+              console.log(letter)
               return (
                 <>
                   <Col className="custom_quill quilJob" md={24} sm={24}>

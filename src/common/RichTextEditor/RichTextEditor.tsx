@@ -41,11 +41,9 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
 
     // Update content when value prop changes (controlled input behavior)
     useEffect(() => {
-      const currentHTML = editorInstanceRef.current?.getHTMLCode();
       if (
         value !== undefined &&
-        editorInstanceRef.current &&
-        value !== currentHTML
+        editorInstanceRef.current
       ) {
         editorInstanceRef.current.setHTMLCode(value);
       }
