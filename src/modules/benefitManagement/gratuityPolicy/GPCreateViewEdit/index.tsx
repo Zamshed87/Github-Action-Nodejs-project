@@ -122,14 +122,11 @@ const GPCreateViewEdit = () => {
               label: data?.workplaceName,
               value: data?.intWorkplaceId,
             },
-            employmentType:
-              Array.isArray(data?.employmentTypeName) &&
-              Array.isArray(data?.intEmploymentTypeId)
-                ? data.employmentTypeName.map((name: any, index: any) => ({
-                    label: "ususyus",
-                    value: "sjshjshj",
-                  }))
-                : [],
+            employmentType: data?.employmentTypeName
+              ? data?.employmentTypeName.map(
+                  (item: any) => item.strEmploymentTypeName
+                )
+              : [],
             eligibilityDependOn: {
               label: data?.eligibilityDependOnName,
               value: data?.intEligibilityDependOn,
@@ -215,16 +212,11 @@ const GPCreateViewEdit = () => {
           params?.type === "edit"
             ? {
                 strPolicyName: gratuityPolicy?.strPolicyName,
-                employmentType:
-                  Array.isArray(gratuityPolicy?.employmentTypeName) &&
-                  Array.isArray(gratuityPolicy?.intEmploymentTypeId)
-                    ? gratuityPolicy?.employmentTypeName?.map(
-                        (name: any, index: any) => ({
-                          label: name?.strEmploymentTypeName,
-                          value: name?.intEmploymentTypeId,
-                        })
-                      )
-                    : [],
+                employmentType: gratuityPolicy?.employmentTypeName
+                  ? gratuityPolicy.employmentTypeName.map(
+                      (item: any) => item.strEmploymentTypeName
+                    )
+                  : [],
               }
             : {}
         }
