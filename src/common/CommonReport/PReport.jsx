@@ -51,7 +51,6 @@ const PReport = ({
             />
             <div className="mt-3">{filter}</div>
           </PCardHeader>
-
           {reportType === "RDLC" && data && (
             <div
               style={{ overflow: "scroll", marginTop: "" }}
