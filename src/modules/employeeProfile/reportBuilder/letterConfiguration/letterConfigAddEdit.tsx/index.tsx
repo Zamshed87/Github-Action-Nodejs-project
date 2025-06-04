@@ -17,11 +17,10 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import React, { useEffect, useRef, useState } from "react";
-import ReactQuill from "react-quill";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { customFields, modules } from "../utils";
+import { customFields } from "../utils";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
 import {
@@ -37,7 +36,7 @@ const LetterConfigAddEdit = () => {
   const { letterId }: any = useParams();
   const location = useLocation();
   const letterData: any = location?.state;
-  const quillRef: any = useRef(null);
+  const editorRef: any = useRef(null);
   const history = useHistory();
 
   // Form Instance
@@ -71,7 +70,7 @@ const LetterConfigAddEdit = () => {
   const [fields, setFields] = useState(customFields);
 
 const handleInsertField = (fieldValue: string) => {
-  const editor = quillRef.current; // RichTextEditorRef
+  const editor = editorRef.current; // RichTextEditorRef
 
   if (!editor) return;
 
@@ -314,22 +313,13 @@ const handleInsertField = (fieldValue: string) => {
                         </span>
                       </label>
                       <RichTextEditor
-                        ref={quillRef}
+                        ref={editorRef}
                         initialValue={letter}
                         onChange={(data) => {
+                          form.setFieldValue('letter',data)
                           console.log(data);
                         }}
                       />
-                      {/* <ReactQuill
-                        ref={quillRef}
-                        preserveWhitespace={true}
-                        placeholder="Write your letter body..."
-                        value={letter}
-                        modules={modules}
-                        onChange={(value) => {
-                          form.setFieldValue("letter", value);
-                        }}
-                      /> */}
                     </Col>
                     <Col md={4} sm={24}>
                       <div

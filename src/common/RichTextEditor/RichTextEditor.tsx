@@ -1,5 +1,5 @@
 import { useEffect, useImperativeHandle, useRef, forwardRef } from "react";
-
+import "./richText.css";
 export type RichTextEditorRef = {
   setContent: (html: string) => void;
   getContent: () => string;
@@ -21,7 +21,10 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
     useEffect(() => {
       if (window && (window as any).RichTextEditor && editorDivRef.current) {
         const instance = new (window as any).RichTextEditor(
-          editorDivRef.current
+          editorDivRef.current,
+          {
+            allowFloatPanel: false,
+          }
         );
         instance.setHTMLCode(initialValue);
 
@@ -33,7 +36,7 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
 
         editorInstanceRef.current = instance;
       }
-    }, [onChange]);
+    }, []);
 
     useImperativeHandle(ref, () => ({
       setContent: (html: string) => {
