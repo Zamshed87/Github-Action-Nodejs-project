@@ -482,7 +482,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                           <label className="lebel-bold mr-2">
                             Upload Files
                           </label>
-                          {imageFile?.globalFileUrlId && (
+                          {imageFile?.globalFileUrlId > 0 && (
                             <VisibilityOutlined
                               sx={{ color: gray900, fontSize: "18px" }}
                               onClick={() => {
@@ -546,7 +546,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                               />
                             )}
                           </div>
-                          {imageFile?.globalFileUrlId && (
+                          {imageFile?.globalFileUrlId > 0 && (
                             <div
                               className="d-flex align-items-center"
                               onClick={() => {
@@ -666,7 +666,8 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                       fontSize={"18px"}
                                       options={[
                                         ...(intAccountId === 5
-                                          ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                          ? !rowDto.isMarkCompleted ||
+                                            isOfficeAdmin
                                             ? [
                                                 {
                                                   value: 1,
@@ -683,16 +684,23 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                     setStatus("input");
                                                     setIsCreateForm(true);
                                                     setSingleData({
-                                                      companyName: item?.strCompanyName,
-                                                      jobTitle: item?.strJobTitle,
-                                                      location: item?.strLocation,
-                                                      jobDescription: item?.strDescription,
-                                                      fromDate: item?.dteFromDate,
+                                                      companyName:
+                                                        item?.strCompanyName,
+                                                      jobTitle:
+                                                        item?.strJobTitle,
+                                                      location:
+                                                        item?.strLocation,
+                                                      jobDescription:
+                                                        item?.strDescription,
+                                                      fromDate:
+                                                        item?.dteFromDate,
                                                       toDate: item?.dteToDate,
-                                                      intJobExperienceId: item?.intJobExperienceId,
+                                                      intJobExperienceId:
+                                                        item?.intJobExperienceId,
                                                     });
                                                     setImageFile({
-                                                      globalFileUrlId: item?.intNocUrlId,
+                                                      globalFileUrlId:
+                                                        item?.intNocUrlId,
                                                     });
                                                   },
                                                 },
@@ -708,7 +716,10 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                     />
                                                   ),
                                                   onClick: () => {
-                                                    deleteHandler(item?.intJobExperienceId, item);
+                                                    deleteHandler(
+                                                      item?.intJobExperienceId,
+                                                      item
+                                                    );
                                                   },
                                                 },
                                               ]
@@ -729,16 +740,20 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                   setStatus("input");
                                                   setIsCreateForm(true);
                                                   setSingleData({
-                                                    companyName: item?.strCompanyName,
+                                                    companyName:
+                                                      item?.strCompanyName,
                                                     jobTitle: item?.strJobTitle,
                                                     location: item?.strLocation,
-                                                    jobDescription: item?.strDescription,
+                                                    jobDescription:
+                                                      item?.strDescription,
                                                     fromDate: item?.dteFromDate,
                                                     toDate: item?.dteToDate,
-                                                    intJobExperienceId: item?.intJobExperienceId,
+                                                    intJobExperienceId:
+                                                      item?.intJobExperienceId,
                                                   });
                                                   setImageFile({
-                                                    globalFileUrlId: item?.intNocUrlId,
+                                                    globalFileUrlId:
+                                                      item?.intNocUrlId,
                                                   });
                                                 },
                                               },
@@ -754,13 +769,14 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                   />
                                                 ),
                                                 onClick: () => {
-                                                  deleteHandler(item?.intJobExperienceId, item);
+                                                  deleteHandler(
+                                                    item?.intJobExperienceId,
+                                                    item
+                                                  );
                                                 },
                                               },
                                             ]),
                                       ]}
-                                      
-                                      
                                     />
                                   </div>
                                 )}

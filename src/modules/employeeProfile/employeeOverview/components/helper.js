@@ -9,13 +9,20 @@ import { toast } from "react-toastify";
  * @param {Function} cb - The callback function to be called after the update is complete.
  * @returns {Promise<void>} - A promise that resolves when the update is complete.
  */
-export const updateEmployeeProfile = async (payload, setLoading, cb) => {
+
+export const updateEmployeeProfile = async (payload, setLoading, cb, selfServiceParam) => {
   setLoading && setLoading(true);
+  const firstSegment = window.location.pathname.split("/")[1];
+  const selfService = selfServiceParam ?? (firstSegment === "SelfService");
+
+  const endpoint = selfService
+    ? "/Employee/UpdateEmployeeProfileSelfService"
+    : "/Employee/UpdateEmployeeProfile";
+
   try {
-    const res = await axios.post(`/Employee/UpdateEmployeeProfile`, payload);
+    const res = await axios.post(endpoint, payload);
     cb?.(res.data);
-     // if api is calling for delete then it will show the message
-    if (!payload?.value) { // "" , 0, false, null, undefined
+    if (!payload?.value) {
       const message = `${payload?.partType || "Information"} deleted successfully`;
       toast.success(message);
     } else {
@@ -27,6 +34,8 @@ export const updateEmployeeProfile = async (payload, setLoading, cb) => {
     setLoading && setLoading(false);
   }
 };
+
+
 
 export const DDLForAddress = async (
   ddlType,

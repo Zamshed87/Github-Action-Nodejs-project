@@ -1,4 +1,8 @@
-import { CloseCircleTwoTone, EditTwoTone, SettingTwoTone } from "@ant-design/icons";
+import {
+  CloseCircleTwoTone,
+  EditTwoTone,
+  SettingTwoTone,
+} from "@ant-design/icons";
 import { FilePresentOutlined, InfoOutlined } from "@mui/icons-material";
 import { Dropdown, Tooltip } from "antd";
 import axios from "axios";
@@ -185,7 +189,13 @@ export const separationApplicationLandingTableColumn = (
             height: "35px",
           }}
           label={"Exit Interview"}
-          disabled={data?.intQuestionAssignId === null ? true : false || data?.isExitInterviewDone === true ? true : false}
+          disabled={
+            data?.intQuestionAssignId === null
+              ? true
+              : false || data?.isExitInterviewDone === true
+              ? true
+              : false
+          }
           onClick={() => {
             history.push("/SelfService/separation/applicationV2/interView", {
               data: data,
@@ -285,29 +295,29 @@ export const separationApplicationLandingTableColumn = (
                   />
                   {item?.docArr?.length && item?.docArr?.[0] !== ""
                     ? item?.docArr.map((image, i) => (
-                      <p
-                        style={{
-                          margin: "6px 0 0",
-                          fontWeight: "400",
-                          fontSize: "12px",
-                          lineHeight: "18px",
-                          color: "#009cde",
-                          cursor: "pointer",
-                        }}
-                        key={i}
-                      >
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            dispatch(getDownlloadFileView_Action(image));
+                        <p
+                          style={{
+                            margin: "6px 0 0",
+                            fontWeight: "400",
+                            fontSize: "12px",
+                            lineHeight: "18px",
+                            color: "#009cde",
+                            cursor: "pointer",
                           }}
+                          key={i}
                         >
-                          <>
-                            <FilePresentOutlined /> {`Attachment_${i + 1}`}
-                          </>
-                        </span>
-                      </p>
-                    ))
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              dispatch(getDownlloadFileView_Action(image));
+                            }}
+                          >
+                            <>
+                              <FilePresentOutlined /> {`Attachment_${i + 1}`}
+                            </>
+                          </span>
+                        </p>
+                      ))
                     : ""}
                 </div>
               </div>
@@ -388,12 +398,61 @@ export const separationApplicationLandingTableColumn = (
                 title={
                   <div className="p-1">
                     <div className="mb-1">
-                      <table style={{ border: `1px solid #475467`, borderCollapse: "collapse" }}>
-                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Charge Handover</b></p></th>
-                        <th style={{ border: `1px solid #475467`, margin: "10px", padding: "10px" }}><p><b>Exit Interview</b></p></th>
+                      <table
+                        style={{
+                          border: `1px solid #475467`,
+                          borderCollapse: "collapse",
+                        }}
+                      >
+                        <th
+                          style={{
+                            border: `1px solid #475467`,
+                            margin: "10px",
+                            padding: "10px",
+                          }}
+                        >
+                          <p>
+                            <b>Charge Handover</b>
+                          </p>
+                        </th>
+                        <th
+                          style={{
+                            border: `1px solid #475467`,
+                            margin: "10px",
+                            padding: "10px",
+                          }}
+                        >
+                          <p>
+                            <b>Exit Interview</b>
+                          </p>
+                        </th>
                         <tr>
-                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isHandedOverDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
-                          <td style={{ border: `1px solid #475467`, textAlign: "center", padding: "5px 0" }}>{data?.isExitInterviewDone === true ? <Chips label="Done" classess="success p-2" /> : <Chips label="Not Done" classess="warning p-2" />}</td>
+                          <td
+                            style={{
+                              border: `1px solid #475467`,
+                              textAlign: "center",
+                              padding: "5px 0",
+                            }}
+                          >
+                            {data?.isHandedOverDone === true ? (
+                              <Chips label="Done" classess="success p-2" />
+                            ) : (
+                              <Chips label="Not Done" classess="warning p-2" />
+                            )}
+                          </td>
+                          <td
+                            style={{
+                              border: `1px solid #475467`,
+                              textAlign: "center",
+                              padding: "5px 0",
+                            }}
+                          >
+                            {data?.isExitInterviewDone === true ? (
+                              <Chips label="Done" classess="success p-2" />
+                            ) : (
+                              <Chips label="Not Done" classess="warning p-2" />
+                            )}
+                          </td>
                         </tr>
                       </table>
                     </div>
@@ -416,11 +475,9 @@ export const separationApplicationLandingTableColumn = (
             {data?.approvalStatus === "Cancelled" && (
               <Chips label="Cancelled" classess="danger p-2" />
             )}
-            {data?.approvalStatus
-              ?.toLowerCase()
-              .includes("approved") && (
-                <Chips label="Approved" classess="success p-2" />
-              )}
+            {data?.approvalStatus?.toLowerCase().includes("approved") && (
+              <Chips label="Approved" classess="success p-2" />
+            )}
             {data?.approvalStatus === "Withdrawn" && (
               <Chips label="Withdrawn" classess="danger p-2" />
             )}
@@ -434,7 +491,10 @@ export const separationApplicationLandingTableColumn = (
               <Chips label="Clearance Completed" classess="success p-2" />
             )}
             {data?.approvalStatus === "Final Settlement Completed" && (
-              <Chips label="Final Settlement Completed" classess="success p-2" />
+              <Chips
+                label="Final Settlement Completed"
+                classess="success p-2"
+              />
             )}
             {data?.approvalStatus === "Released" && (
               <Chips label="Released" classess="indigo p-2" />
@@ -460,9 +520,7 @@ export const separationApplicationLandingTableColumn = (
               }}
               trigger={["click"]}
               disabled={
-                !item?.approvalStatus
-                  ?.toLowerCase()
-                  .includes("approved")
+                !item?.approvalStatus?.toLowerCase().includes("approved")
               }
             >
               <PrimaryButton
@@ -612,7 +670,6 @@ export const interViewQuestionSave = async (
         questions: fieldsArr.map((field) => {
           const id = `field-${field.id}`;
           const answer = values[id];
-
           return {
             id: field.id,
             answer: field.typeName === "Checkbox" ? answer : [answer] || [],
@@ -621,12 +678,13 @@ export const interViewQuestionSave = async (
       },
     };
 
-
-    const res = await axios.post(`/ExitInterview/SubmitExitInterview`, payload);
-    cb && cb();
-    toast.success(res?.data?.Message, { toastId: 1 });
+    const res = await axios.post("/ExitInterview/SubmitExitInterview", payload);
+    toast.success(res?.data?.message || "Interview submitted successfully", {
+      toastId: 1,
+    });
+    cb && cb(res); // pass res here so caller can use it
   } catch (error) {
-    toast.warn(error?.response?.data?.Message || "Something went wrong", {
+    toast.warn(error?.response?.data?.message || "Something went wrong", {
       toastId: 1,
     });
   } finally {
