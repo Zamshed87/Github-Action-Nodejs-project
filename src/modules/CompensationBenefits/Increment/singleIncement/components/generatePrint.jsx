@@ -5,7 +5,6 @@ import { PButton, PSelect } from "Components";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { numberToWords } from "Utils";
-import { getEmployee } from "modules/reporterUpdation/utils";
 import { useApiRequest } from "Hooks";
 
 const GeneratePrint = () => {
@@ -42,7 +41,6 @@ const GeneratePrint = () => {
       },
     });
   };
-  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const { buId, wgId } = location.state?.globalSetting || { buId: 0, wgId: 0 };
 
@@ -142,7 +140,8 @@ const GeneratePrint = () => {
     }
   };
 
-  const previousSalary = totalSalary * 0.9;
+
+  const previousSalary = location?.state?.oldAmount || 0;
   const incrementPercentage = (
     ((totalSalary - previousSalary) / previousSalary) *
     100
