@@ -29,7 +29,7 @@ const PayrollSummaryReport = () => {
   // menu permission
 
   const permission = useMemo(
-    () => permissionList?.find((item) => item?.menuReferenceId === 100),
+    () => permissionList?.find((item) => item?.menuReferenceId === 30608),
     []
   );
 
@@ -80,7 +80,7 @@ const PayrollSummaryReport = () => {
         pdfUrl={makeUrl("pdf")}
         excelUrl={makeUrl("Excel")}
         form={form}
-        data={data}
+        data={data && (data?.message == "No Data Found!!!" ? "" : data)}
         loading={landingLoading}
         setLoading={setLoading}
         // header={header}

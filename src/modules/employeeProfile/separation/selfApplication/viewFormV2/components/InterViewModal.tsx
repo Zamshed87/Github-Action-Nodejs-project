@@ -17,16 +17,16 @@ import { shallowEqual, useSelector } from "react-redux";
 import Loading from "common/loading/Loading";
 import moment from "moment";
 import { getQuestionaireById } from "modules/exit-interview/interview/helper";
-import { createLetterType } from "modules/exit-interview/interview/components/helper";
 import EmpInfo from "modules/exit-interview/interview/components/empInfo";
 import { interViewQuestionSave } from "../../helper";
+import { toast } from "react-toastify";
 
 const InterViewModal = () => {
   const location: any = useLocation();
 
   const history = useHistory();
 
-  const {data} = location.state;
+  const { data } = location.state;
   // Form Instance
   const [form] = Form.useForm();
   const quillRef: any = useRef(null);
@@ -91,7 +91,7 @@ const InterViewModal = () => {
     return modifiedArr;
   };
 
-  return  (
+  return (
     <div style={{ marginRight: "200px" }}>
       <PForm
         formName="tempCreate"
@@ -110,24 +110,16 @@ const InterViewModal = () => {
                 disabled: loading,
                 onClick: () => {
                   const values = form.getFieldsValue(true);
-                  form
-                    .validateFields()
-                    .then(() => {
-                      console.log("values", values);
-                      interViewQuestionSave(
-                        data,
-                        singleData?.questions,
-                        values,
-                        setLoading,
-                        () => {
-                          history.goBack();
-                        }
-                      );
+                  interViewQuestionSave(
+                    data,
+                    singleData?.questions,
+                    values,
+                    setLoading,
+                    (res: any) => {
+                      console.log("res", res);
+                      history.goBack();
                     }
-                  )
-                    .catch(() => {
-                      console.log();
-                    });
+                  );
                 },
               },
             ]}
@@ -279,7 +271,7 @@ const InterViewModal = () => {
         </PCard>
       </PForm>
     </div>
-  ) 
+  );
 };
 
 export default InterViewModal;
