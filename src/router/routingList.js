@@ -1814,6 +1814,11 @@ const FinalSettlementEdit = lazy(() =>
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
 import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestmentByOrg";
 import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
+import PfEmployeeReport from "modules/benefitManagement/reports/pfEmployeeWise";
+import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWise/view";
+import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
+import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
+import GeneratePrint from "modules/CompensationBenefits/Increment/singleIncement/components/generatePrint";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -3143,6 +3148,10 @@ export const routingList = [
     path: "/compensationAndBenefits/increment/singleIncrement/grade/view/:id",
     component: SingleIncrement,
   },
+    {
+    path: "/compensationAndBenefits/increment/singleIncrement/grade/print",
+    component: GeneratePrint,
+  },
   {
     path: "/compensationAndBenefits/increment/singleIncrement/view/:id",
     component: ViewIncrementNPromotion,
@@ -4455,6 +4464,15 @@ export const routingList = [
 
   // PF report start
 
+    {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType",
+    component: PfInvestmentByTypeReport,
+  },
+    {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType/View/:id",
+    component: PfInvestmentByTypeReportView,
+  },
+
   {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr",
     component: PfInvestmentByOrgReport,
@@ -4462,6 +4480,14 @@ export const routingList = [
   {
     path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
     component: PfInvestmentByOrgReportView,
+  },
+    {
+    path: "/BenefitsManagement/reports/PFEmployeeWise",
+    component: PfEmployeeReport,
+  },
+    {
+    path: "/BenefitsManagement/reports/PFEmployeeWise/view",
+    component: PfEmployeeReportView,
   },
 
   // PF report end

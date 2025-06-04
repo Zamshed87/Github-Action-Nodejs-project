@@ -16,7 +16,6 @@ import { customStyles } from "../../../../../utility/newSelectCustomStyle";
 import { AttachmentOutlined, Close, FileUpload } from "@mui/icons-material";
 import {
   getPeopleDeskAllDDL,
-  // getSearchEmployeeList,
   getSearchEmployeeListWithWarning,
   multiple_attachment_actions,
 } from "../../../../../common/api";
@@ -25,7 +24,6 @@ import { IconButton } from "@mui/material";
 import {
   deleteSeparationAttachment,
   separationCrud,
-  separationDDL,
 } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
@@ -147,16 +145,23 @@ export default function ManagementApplicationSeparationForm() {
           lastWorkingDay: dateFormatterForInput(res?.dteLastWorkingDate),
           applicationBody: `${res?.strReason}`,
         }));
-        setImgRow(res?.strDocumentId?.split(","));
-        const documentList =
-          res?.strDocumentId?.length > 0
-            ? res?.strDocumentId?.split(",")?.map((image) => {
-                return {
-                  globalFileUrlId: +image,
-                };
-              })
-            : [];
-        setEditImageRow(documentList);
+        
+        // Process document IDs only if they exist
+        if (res?.strDocumentId && res?.strDocumentId.length > 0) {
+          const documentIds = res?.strDocumentId.split(",");
+          setImgRow(documentIds);
+          
+          // Create document list objects with exact ID values from the API
+          const documentList = documentIds.map((id) => ({
+            globalFileUrlId: parseInt(id, 10),
+          }));
+          
+          setEditImageRow(documentList);
+        } else {
+          setImgRow([]);
+          setEditImageRow([]);
+        }
+        
         setSingleData(res);
         getLastWorkingDay(
           `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${

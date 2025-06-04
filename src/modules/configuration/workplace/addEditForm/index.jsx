@@ -31,7 +31,7 @@ export default function AddEditForm({
   const [letterBuilderImage, setLetterBuilderImage] = useState();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -92,6 +92,7 @@ export default function AddEditForm({
       actionTypeId: singleData.intWorkplaceId ? singleData.intWorkplaceId : 0,
       intWorkplaceId: singleData.intWorkplaceId ? singleData.intWorkplaceId : 0,
       strWorkplace: values?.strWorkplace,
+      strWorkplaceBn: values?.strWorkplaceBn,
       strWorkplaceCode: values?.strWorkplaceCode,
       strAddress: "",
       intDistrictId: 0,
@@ -171,6 +172,18 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
+          {intAccountId === 7 && (
+            <Col md={12} sm={24}>
+              <PInput
+                type="text"
+                name="strWorkplaceBn"
+                label="Workplace Bangla"
+                placeholder="Workplace Bangla"
+                // disabled={isEdit}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+          )}
           <Col md={12} sm={24}>
             <PInput
               type="text"

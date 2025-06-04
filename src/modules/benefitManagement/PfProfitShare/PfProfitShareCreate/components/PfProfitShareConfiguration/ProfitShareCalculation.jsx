@@ -2,7 +2,12 @@ import { Col, Form, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import { toast } from "react-toastify";
 
-const ProfitShareCalculation = ({ form, data, setData }) => {
+const ProfitShareCalculation = ({
+  form,
+  data,
+  setData,
+  getPfProfitDetailsData,
+}) => {
   const shareType = Form.useWatch("profitShareTypeId", form);
   const profitShare = Form.useWatch("profitShare", form);
 
@@ -19,20 +24,29 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
       return;
     }
     form
-      .validateFields(["profitShareTypeId", "profitShare"])
+      .validateFields(["profitShareTypeId", "profitShare", "toDateF"])
       .then(() => {
+        getPfProfitDetailsData();
         if (shareType === 1) {
           const percentage = Number(profitShare) / 100;
           setData((prev) => {
             return {
               ...prev,
               detailsData: prev?.detailsData?.map((rec) => {
-                const runningProfitShare = rec?.totalPFAmount * percentage;
+                const totalPFAmount = Number(rec?.totalPFAmount) || 0;
+                const employeeContribution =
+                  Number(rec?.employeeContribution) || 0;
+                const employeeProfit = Number(rec?.employeeProfit) || 0;
+                const companyContribution =
+                  Number(rec?.companyContribution) || 0;
+                const companyProfit = Number(rec?.companyProfit) || 0;
+
+                const runningProfitShare = totalPFAmount * percentage;
                 const employeeProfitShare =
-                  (rec?.employeeContribution + rec?.employeeProfit) *
-                  percentage;
+                  (employeeContribution + employeeProfit) * percentage;
                 const companyProfitShare =
-                  (rec?.companyContribution + rec?.companyProfit) * percentage;
+                  (companyContribution + companyProfit) * percentage;
+
                 return {
                   ...rec,
                   runningProfitShare: runningProfitShare?.toFixed(6),
@@ -44,19 +58,25 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
           });
         } else if (shareType === 2) {
           setData((prev) => {
-            const totalEmp = prev?.totalCount;
+            const totalEmp = Number(prev?.totalCount) || 1; // Avoid division by 0
             const distributedAmount = Number(profitShare) / totalEmp;
             return {
               ...prev,
               detailsData: prev?.detailsData?.map((rec) => {
+                const totalPFAmount = Number(rec?.totalPFAmount) || 1; // Avoid division by 0
+                const employeeContribution =
+                  Number(rec?.employeeContribution) || 0;
+                const employeeProfit = Number(rec?.employeeProfit) || 0;
+                const companyContribution =
+                  Number(rec?.companyContribution) || 0;
+                const companyProfit = Number(rec?.companyProfit) || 0;
                 const employeeProfitShare =
-                  ((rec?.employeeContribution + rec?.employeeProfit) /
-                    rec?.totalPFAmount) *
+                  ((employeeContribution + employeeProfit) / totalPFAmount) *
                   distributedAmount;
                 const companyProfitShare =
-                  ((rec?.companyContribution + rec?.companyProfit) /
-                    rec?.totalPFAmount) *
+                  ((companyContribution + companyProfit) / totalPFAmount) *
                   distributedAmount;
+
                 return {
                   ...rec,
                   runningProfitShare: distributedAmount?.toFixed(6),
@@ -72,14 +92,21 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
             return {
               ...prev,
               detailsData: prev?.detailsData?.map((rec) => {
+                const totalPFAmount = Number(rec?.totalPFAmount) || 1; // Avoid division by 0
+                const employeeContribution =
+                  Number(rec?.employeeContribution) || 0;
+                const employeeProfit = Number(rec?.employeeProfit) || 0;
+                const companyContribution =
+                  Number(rec?.companyContribution) || 0;
+                const companyProfit = Number(rec?.companyProfit) || 0;
+
                 const employeeProfitShare =
-                  ((rec?.employeeContribution + rec?.employeeProfit) /
-                    rec?.totalPFAmount) *
+                  ((employeeContribution + employeeProfit) / totalPFAmount) *
                   fixedAmount;
                 const companyProfitShare =
-                  ((rec?.companyContribution + rec?.companyProfit) /
-                    rec?.totalPFAmount) *
+                  ((companyContribution + companyProfit) / totalPFAmount) *
                   fixedAmount;
+
                 return {
                   ...rec,
                   runningProfitShare: fixedAmount?.toFixed(6),
@@ -97,16 +124,16 @@ const ProfitShareCalculation = ({ form, data, setData }) => {
     let label = "Profit Share";
     switch (shareType) {
       case 1:
-          label = `${label} (%)`;
+        label = `${label} (%)`;
         break;
       case 2:
-          label = `${label} (Proportionately)`;
+        label = `${label} (Proportionately)`;
         break;
       case 3:
-          label = `${label} (Proportionately)`;
+        label = `${label} (Proportionately)`;
         break;
       case 4:
-          label = `${label} (Fixed Amount)`;
+        label = `${label} (Fixed Amount)`;
         break;
       default:
         label = `${label}`;

@@ -3,13 +3,15 @@ import { toast } from "react-toastify";
 
 export const getEmployeeDocumentManagement = async (
   accId = 1,
-  id =1,
+  id = 1,
   setter,
   setLoading
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement?accountId=${accId}&employeeId=${id}`);
+    const res = await axios.get(
+      `/Employee/GetAllEmployeeDocumentManagement?accountId=${accId}&employeeId=${id}`
+    );
     if (res?.data) {
       setter && setter(res?.data);
       setLoading && setLoading(false);
@@ -21,11 +23,13 @@ export const getEmployeeDocumentManagement = async (
 
 export const saveEmployeeDocument = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
+  const firstSegment = window.location.pathname.split("/")[1];
+  const selfService = firstSegment === "SelfService";
+  const endpoint = selfService
+    ? `/Employee/SaveEmployeeDocumentManagementSelfService`
+    : `/Employee/SaveEmployeeDocumentManagement`;
   try {
-    const res = await axios.post(
-      `/Employee/SaveEmployeeDocumentManagement`,
-      payload
-    );
+    const res = await axios.post(endpoint, payload);
     cb && cb();
     toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
@@ -44,7 +48,7 @@ export const deleteEmployeeDocumentManagement = async (id, setLoading, cb) => {
     if (res?.data) {
       setLoading && setLoading(false);
       cb && cb();
-      toast.success( "Document Delete Successfully!!!" || res.data?.message);
+      toast.success("Document Delete Successfully!!!" || res.data?.message);
     }
   } catch (error) {
     setLoading && setLoading(false);

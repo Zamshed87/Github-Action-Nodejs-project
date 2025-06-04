@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const usePfShare = (form) => {
-  const { wgId, wId, intAccountId } = useSelector(
+  const [visible, setVisible] = useState({ open: false, data: "" });
+  const closeModal = () => {
+    setVisible(false);
+  };
+  const { buId, wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -13,14 +18,8 @@ const usePfShare = (form) => {
     total: 0,
   });
   const [data, getData, loading, setData, error, setLoading] = useAxiosGet({});
-  const [
-    detailsData,
-    getDetailsData,
-    detailsLoading,
-    setDetailsData,
-    detailsError,
-    setDetailsLoading,
-  ] = useAxiosGet({});
+  const [detailsData, postDetailsData, detailsLoading, setDetailsData] =
+    useAxiosPost({});
 
   const fetchPfShare = () => {
     const formValues = form?.getFieldsValue(true);
@@ -43,26 +42,40 @@ const usePfShare = (form) => {
     getData(url, (res) => {
       setData(res?.data || []);
     });
-    getPfProfitDetailsData();
   };
 
   const getPfProfitDetailsData = async () => {
     const formValues = form?.getFieldsValue(true);
+    const isPercentage = formValues?.profitShareTypeId === 1;
 
     const formattedParams = {
       AccountId: intAccountId,
+      businessUnitId: buId,
       FromDate: formValues.fromDate,
       ToDate: formValues.toDate,
+      profitShareType: formValues?.profitShareType,
+      profitShareTypeId: formValues?.profitShareTypeId,
+      profitAmount: isPercentage ? 0 : Number(formValues?.profitShare) || 0,
+      profitSharePercentage: isPercentage
+        ? Number(formValues?.profitShare) || 0
+        : 0,
     };
 
-    const filteredParams = Object.entries(formattedParams)
-      .filter(([_, value]) => value !== undefined && value !== null)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join("&");
-    const url = `/PFProfitShare/GetUnadjustData?${filteredParams}`;
-    getDetailsData(url, (res) => {
-      setDetailsData(res?.data || []);
-    });
+
+    const url = `/PFProfitShare/GetUnadjustData`;
+    postDetailsData(
+      url,
+      formattedParams,
+      (res) => {
+        setDetailsData(res?.data || []);
+      },
+      true,
+      "Data Retrieved Successfully",
+      "Data Retrieval Unsuccessful",
+      (err) => {
+        console.log("the error => ",err);
+      }
+    );
   };
 
   useEffect(() => {
@@ -70,9 +83,13 @@ const usePfShare = (form) => {
   }, [wgId, wId]);
 
   return {
+    visible,
+    closeModal,
+    setVisible,
     data,
     setData,
     fetchPfShare,
+    getPfProfitDetailsData,
     loading,
     pages,
     setLoading,

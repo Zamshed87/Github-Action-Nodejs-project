@@ -14,6 +14,7 @@ import {
 import React from "react";
 import { TableButtonType, buttonList, buttonType } from "./types";
 import { Popconfirm, Tooltip } from "antd";
+import { DisabledByDefaultOutlined } from "@mui/icons-material";
 
 export const TableButton: React.FC<TableButtonType> = (property) => {
   const { parentStyle, buttonsList } = property;
@@ -29,7 +30,8 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     dollar: <DollarOutlined />,
     disbursement: <DollarOutlined />,
     print: <PrinterFilled />,
-    extend: <CopyOutlined/>
+    extend: <CopyOutlined/>,
+    disabled: <DisabledByDefaultOutlined />,
   };
 
   const renderButton = (type: buttonType) => {

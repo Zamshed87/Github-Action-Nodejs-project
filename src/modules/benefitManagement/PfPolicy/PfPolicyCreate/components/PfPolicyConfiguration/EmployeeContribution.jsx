@@ -58,7 +58,7 @@ const EmployeeContribution = ({
         label = "% of Gross Salary";
         break;
       case "2":
-        label = "Basic Salary";
+        label = "% of Basic Salary";
         break;
       case "3":
         label = "Fixed Amount";
@@ -153,7 +153,7 @@ const EmployeeContribution = ({
                 </Col>
               </>
             )}
-          <Col md={4} sm={12} xs={24}>
+          <Col md={5} sm={12} xs={24}>
             <PSelect
               options={contributionOpts}
               name={`${prefix}intContributionDependOn`}
@@ -171,7 +171,7 @@ const EmployeeContribution = ({
               ]}
             />
           </Col>
-          <Col md={5} sm={12} xs={24}>
+          <Col md={6} sm={12} xs={24}>
             <PInput
               type="number"
               min={1}

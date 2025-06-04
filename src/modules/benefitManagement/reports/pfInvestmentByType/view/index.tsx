@@ -23,8 +23,7 @@ import { toast } from "react-toastify";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import usePfInvestmentConfig from "modules/benefitManagement/PfInvestment/PfInvestmentCreate/components/PfInvestmentConfig/usePfInvestmentConfig";
 
-const PfInvestmentByOrgReportView = () => {
-
+const PfInvestmentByTypeReportView = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -46,28 +45,26 @@ const PfInvestmentByOrgReportView = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Investment By Org Details";
+    document.title = "Benefits Management - PF Investment By Type Details";
   }, []);
 
-  const { investmentOrganization, loadingInvestmentOrganization } =
-    usePfInvestmentConfig({
-      callInvestmentType: false,
-      callInvestmentOrganization: true,
-    });
+  const { investmentType, loadingInvestmentType } = usePfInvestmentConfig({
+    callInvestmentType: true,
+    callInvestmentOrganization: true,
+  });
 
   const landingApi = useApiRequest({});
 
   const landingApiCall = () => {
     const values = form.getFieldsValue(true);
-
     landingApi.action({
-      urlKey: "GetInvestmentDetailReportByOrganization",
+      urlKey: "GetTypeWiseDetailsReport",
       method: "GET",
       params: {
-        dteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        dteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        intBusinessUnitId: buId,
-        InvestmentOrgId: values?.investmentOrganizationId || 0,
+        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        BusinessUnitId: buId,
+        InvestmentTypeId: values?.investmentType || 0,
       },
     });
   };
@@ -83,62 +80,68 @@ const PfInvestmentByOrgReportView = () => {
       width: 5,
     },
     {
-      title: "Investment Type",
-      dataIndex: "strInvestmentType",
+      title: "Investment To Organization",
+      dataIndex: "investmentOrg",
       sorter: true,
-      width: 20,
+      width: 35,
     },
     {
       title: "Investment Date",
-      dataIndex: "dteInvestmentDate",
+      dataIndex: "investmentDate",
       render: (_: any, rec: any) => (
-        <>{dateFormatter(rec?.dteInvestmentDate)}</>
+        <>{dateFormatter(rec?.investmentDate)}</>
       ),
       sorter: true,
       width: 20,
     },
     {
       title: "Investment Amount",
-      dataIndex: "numInvestmentAmount",
+      dataIndex: "investmentAmount",
       sorter: true,
       width: 30,
     },
     {
       title: "Collection Date",
-      dataIndex: "dteCollectionDate",
+      dataIndex: "collectionDate",
       render: (_: any, rec: any) => (
-        <>{dateFormatter(rec?.dteCollectionDate)}</>
+        <>{dateFormatter(rec?.collectionDate)}</>
       ),
       sorter: true,
       width: 20,
     },
     {
       title: "Principal Collection",
-      dataIndex: "numPrincipalAmount",
+      dataIndex: "principalAmount",
       sorter: true,
       width: 30,
     },
     {
       title: "Interest Collection",
-      dataIndex: "numInterestAmount",
+      dataIndex: "interestCollection",
       sorter: true,
       width: 30,
     },
     {
       title: "Total Collection",
-      dataIndex: "numTotalCollection",
+      dataIndex: "totalCollection",
       sorter: true,
       width: 20,
     },
+     {
+      title: "Investment Balance",
+      dataIndex: "investmentBalance",
+      sorter: true,
+      width: 30,
+    },
     {
       title: "Collection Status",
-      dataIndex: "strCollectionStatus",
+      dataIndex: "collectionStatus",
       sorter: true,
       width: 20,
     },
     {
       title: "Comments",
-      dataIndex: "strComments",
+      dataIndex: "remark",
       sorter: true,
       width: 20,
     },
@@ -162,81 +165,30 @@ const PfInvestmentByOrgReportView = () => {
             exportIcon={false}
             printIcon={false}
             backButton={true}
-            title={`PF Investment By Org Details`}
+            title={`PF Investment By Type Details`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
                 search: e?.target?.value,
               });
             }}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                if (landingApi?.data?.length === 0) return null;
-                try {
-                  const values = form.getFieldsValue(true);
-                  downloadFile(
-                    `/MarketVisitReport/MarketVisitReport?format=excel&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
-                      values?.fromDate
-                    ).format("YYYY-MM-DD")}&toDate=${moment(
-                      values?.toDate
-                    ).format("YYYY-MM-DD")}&strSearch=${
-                      values?.search || ""
-                    }&employeeId=${values?.employee?.value || 0}`,
-                    "Market Visit Report",
-                    "xlsx",
-                    setLoading
-                  );
-                  setExcelLoading(false);
-                } catch (error: any) {
-                  console.log("error", error);
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                }
-              };
-              excelLanding();
-            }}
-            pdfExport={() => {
-              try {
-                const values = form.getFieldsValue(true);
-                getPDFAction(
-                  `/MarketVisitReport/MarketVisitReport?format=pdf&intAccountId=${orgId}&intWorkplaceId=${wId}&fromDate=${moment(
-                    values?.fromDate
-                  ).format("YYYY-MM-DD")}&toDate=${moment(
-                    values?.toDate
-                  ).format("YYYY-MM-DD")}&employeeId=${
-                    values?.employee?.value || 0
-                  }&strSearch=${values?.search || ""}`,
-                  setLoading
-                );
-              } catch (error: any) {
-                toast.error(
-                  error?.response?.data?.message ||
-                    error?.message ||
-                    "Something went wrong",
-                  {
-                    toastId: "marketvisitreport_error",
-                  }
-                );
-              }
-            }}
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PSelect
-                  name="investmentOrganizationId"
-                  label="Investment Organization"
-                  placeholder="Select Investment Organization"
+                  name="investmentType"
+                  label="Investment Type"
+                  placeholder="Select Investment Type"
                   onChange={(value) => {
-                    form.setFieldsValue({ investmentOrganizationId: value });
+                    form.setFieldsValue({ investmentType: value });
                   }}
-                  options={investmentOrganization}
-                  loading={loadingInvestmentOrganization}
+                  options={investmentType}
+                  loading={loadingInvestmentType}
                   rules={[
                     {
                       required: true,
-                      message: "Investment Organization is required",
+                      message: "Investment Type is required",
                     },
                   ]}
                 />
@@ -300,4 +252,4 @@ const PfInvestmentByOrgReportView = () => {
   );
 };
 
-export default PfInvestmentByOrgReportView;
+export default PfInvestmentByTypeReportView;
