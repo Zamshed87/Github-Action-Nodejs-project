@@ -313,11 +313,16 @@ const PfLoanAddEdit = () => {
               <div className="input-field-main">
                 <label>
                   Loan Amount{" "}
-                  {[14, 15].includes(orgId)
-                    ? `( Pf Own:${
-                        pfInfoApi?.data?.data?.employeeContribution || 0
-                      } Pf Total:${pfInfoApi?.data?.data?.totalPfAmount || 0} )`
-                    : ""}
+                  {[14, 15].includes(orgId) ? (
+                    <span>
+                      <b>Pf Own:</b>
+                      {pfInfoApi?.data?.data?.employeeContribution || 0}{" "}
+                      <b>Pf Total:</b>
+                      {pfInfoApi?.data?.data?.totalPfAmount || 0}
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </label>
                 <DefaultInput
                   classes="input-sm"
