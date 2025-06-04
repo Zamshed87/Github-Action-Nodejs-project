@@ -45,7 +45,6 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
               <div className="col-md-3">
                 <div className="tabs-name">
                   {filteredTabName?.map((item, i) => {
-                    console.log(item, "item", intAccountId, "intAccountId");
                     return (
                       <button
                         key={i}
