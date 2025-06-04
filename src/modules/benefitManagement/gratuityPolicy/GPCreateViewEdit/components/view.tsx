@@ -11,12 +11,20 @@ const View = ({ data }: any) => {
         <div style={valueStyle}>{data?.strPolicyName || "N/A"}</div>
       </Col>
       <Col md={6} sm={24}>
+        <div style={labelStyle}>Workplace Group:</div>
+        <div style={valueStyle}>{data?.strWorkplaceGroupName || "N/A"}</div>
+      </Col>
+      <Col md={6} sm={24}>
         <div style={labelStyle}>Workplace:</div>
         <div style={valueStyle}>{data?.workplaceName || "N/A"}</div>
       </Col>
       <Col md={6} sm={24}>
         <div style={labelStyle}>Employee Type:</div>
-        <div style={valueStyle}>{data?.employmentTypeName || "N/A"}</div>
+        <div style={valueStyle}>
+          {data?.employmentTypeName
+            ?.map((item: any) => item.strEmploymentTypeName)
+            .join(",") || "N/A"}
+        </div>
       </Col>
       <Col md={6} sm={24}>
         <div style={labelStyle}>Eligibility Depened On:</div>

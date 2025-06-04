@@ -58,7 +58,7 @@ const GratuityPolicy = () => {
     },
     {
       title: "Workplace Group",
-      dataIndex: "strWorkplaceName",
+      dataIndex: "strWorkplaceGroupName",
     },
     {
       title: "Workplace",
@@ -66,7 +66,7 @@ const GratuityPolicy = () => {
     },
     {
       title: "Employment Type",
-      dataIndex: "strEmploymentTypeName",
+      dataIndex: "strEmploymentTypeNames",
     },
     {
       title: "Action",

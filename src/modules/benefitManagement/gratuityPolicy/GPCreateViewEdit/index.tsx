@@ -122,10 +122,14 @@ const GPCreateViewEdit = () => {
               label: data?.workplaceName,
               value: data?.intWorkplaceId,
             },
-            employmentType: {
-              label: data?.employmentTypeName,
-              value: data?.intEmploymentTypeId,
-            },
+            employmentType:
+              Array.isArray(data?.employmentTypeName) &&
+              Array.isArray(data?.intEmploymentTypeId)
+                ? data.employmentTypeName.map((name: any, index: any) => ({
+                    label: "ususyus",
+                    value: "sjshjshj",
+                  }))
+                : [],
             eligibilityDependOn: {
               label: data?.eligibilityDependOnName,
               value: data?.intEligibilityDependOn,
@@ -141,7 +145,7 @@ const GPCreateViewEdit = () => {
         setData(gratuityPolicyDetails || []); // need to modify
       });
     }
-    if (params?.type === "extend" || params?.type === "create") {
+    if (params?.type !== "view") {
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
         "intWorkplaceId",
@@ -211,6 +215,16 @@ const GPCreateViewEdit = () => {
           params?.type === "edit"
             ? {
                 strPolicyName: gratuityPolicy?.strPolicyName,
+                employmentType:
+                  Array.isArray(gratuityPolicy?.employmentTypeName) &&
+                  Array.isArray(gratuityPolicy?.intEmploymentTypeId)
+                    ? gratuityPolicy?.employmentTypeName?.map(
+                        (name: any, index: any) => ({
+                          label: name?.strEmploymentTypeName,
+                          value: name?.intEmploymentTypeId,
+                        })
+                      )
+                    : [],
               }
             : {}
         }
