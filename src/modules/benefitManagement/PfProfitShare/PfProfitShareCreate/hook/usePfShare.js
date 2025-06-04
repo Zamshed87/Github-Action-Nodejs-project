@@ -69,7 +69,7 @@ const usePfShare = (form) => {
       (res) => {
         setDetailsData(res?.data || []);
       },
-      true,
+      false,
       "Data Retrieved Successfully",
       "Data Retrieval Unsuccessful",
       (err) => {
