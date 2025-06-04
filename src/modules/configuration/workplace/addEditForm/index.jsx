@@ -179,7 +179,7 @@ export default function AddEditForm({
                 name="strWorkplaceBn"
                 label="Workplace Bangla"
                 placeholder="Workplace Bangla"
-                disabled={isEdit}
+                // disabled={isEdit}
                 rules={[{ required: true, message: "Workplace is required" }]}
               />
             </Col>

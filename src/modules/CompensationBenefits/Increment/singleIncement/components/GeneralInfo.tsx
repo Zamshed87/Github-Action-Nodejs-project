@@ -40,7 +40,8 @@ export const GeneralInfo = ({
   payrollGroupDDL,
   getById,
   history,
-  rowDto
+  rowDto,
+  oldAmount
 }: any) => {
   const getEmployee = (value: any) => {
     if (value?.length < 2) return employeeDDLApi?.reset();
@@ -374,6 +375,7 @@ export const GeneralInfo = ({
               state: {
                 rowDto: rowDto,
                 empBasic: empBasic,
+                oldAmount: oldAmount,
               },
             });
           }}
