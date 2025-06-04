@@ -9,7 +9,6 @@ import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
 import { convertTo12HourFormat } from "utility/timeFormatter";
-import React from "react";
 import AttachmentTooltip from "common/AttachmentTooltip";
 
 export const columnsDefault = [
