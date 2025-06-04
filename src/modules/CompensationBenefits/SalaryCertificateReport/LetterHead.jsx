@@ -14,7 +14,8 @@ export default function LetterHead({
 
   const pronoun = emp.ProNoun || "His";
   const genderWord =
-    emp.Gender === "Son" ? "Son" : emp.Gender === "Daughter" ? "Daughter" : "";
+    emp.Gender === "Son" || emp.Gender === "son" ? "Son" : 
+    emp.Gender === "Daughter" || emp.Gender === "daughter" ? "Daughter" : "";
 
   // Format date properly
   const formatDate = (dateString) => {
