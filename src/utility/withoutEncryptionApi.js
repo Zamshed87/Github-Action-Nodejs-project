@@ -78,5 +78,9 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportExcel",
   "/PdfAndExcelReport/Payroll/MonthlySalaryBreakDownReportPdf",
   "/PdfAndExcelReport/IOUApplicationReport",
+  "/PdfAndExcelReport/GetFinalSettlementReport",
+  "/PdfAndExcelReport/GetEmployeeMonthWisePfDetailReport",
+  "/PdfAndExcelReport/GetSalaryCertificate",
+  "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
   "/PdfAndExcelReport/GetSalarySummaryReport",
 ];
