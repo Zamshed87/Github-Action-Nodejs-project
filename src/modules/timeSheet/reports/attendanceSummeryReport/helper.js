@@ -120,7 +120,7 @@ export const attendanceSummaryReportColumn = [
     },
   },
   {
-    title: "Total Emp",
+    title: "Total Employee",
     dataIndex: "IntTotalEmp",
     render: renderConditionalColumnData("IntTotalEmp"),
   },
