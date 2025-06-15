@@ -50,7 +50,7 @@ export const NocLandingColumn = (
   dispatch,
   getById,
 ) => {
-  const approvedStatuses = ["approved", "approve", "Approved", "pending"];
+  const approvedStatuses = ["approved", "approve", "Approved"];
   const rejectStatuses = ["Rejected", "rejected", "Reject", "reject"];
   return [
     {
