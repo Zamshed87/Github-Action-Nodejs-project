@@ -1819,6 +1819,9 @@ import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWi
 import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
 import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
 import GeneratePrint from "modules/CompensationBenefits/Increment/singleIncement/components/generatePrint";
+import NOCManagementLanding from "modules/NOC/nocManagment";
+import NOCForm from "modules/NOC/components/NOCForm";
+import NocSelfLanding from "modules/NOC/nocSelf";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -2575,6 +2578,38 @@ export const routingList = [
     path: "/profile/timemanagement/attendenceadjust",
     component: AttendenceAdjustN,
   },
+
+  // noc start
+    {
+    path: "/SelfService/noc/nocApplication",
+    component: NocSelfLanding,
+  },
+    {
+    path: "/SelfService/noc/nocApplication/create",
+    component: NOCForm,
+  },
+  {
+    path: "/SelfService/noc/nocApplication/:type/:id",
+    component: NOCForm,
+  },
+  {
+    path: "/profile/noc/nocApplication",
+    component: NOCManagementLanding,
+  },
+  {
+    path: "/profile/noc/nocApplication/create",
+    component: NOCForm,
+  },
+  {
+    path: "/profile/noc/nocApplication/create",
+    component: NOCForm,
+  },
+  {
+    path: "/profile/noc/nocApplication/:type/:id",
+    component: NOCForm,
+  },
+
+  // noc end
   {
     path: "/profile/timeManagement/attendanceAutoProcess",
     component: AttendanceProcessLanding,
@@ -3148,7 +3183,7 @@ export const routingList = [
     path: "/compensationAndBenefits/increment/singleIncrement/grade/view/:id",
     component: SingleIncrement,
   },
-    {
+  {
     path: "/compensationAndBenefits/increment/singleIncrement/grade/print",
     component: GeneratePrint,
   },
@@ -4464,11 +4499,11 @@ export const routingList = [
 
   // PF report start
 
-    {
+  {
     path: "/BenefitsManagement/reports/pfInvestmentbyType",
     component: PfInvestmentByTypeReport,
   },
-    {
+  {
     path: "/BenefitsManagement/reports/pfInvestmentbyType/View/:id",
     component: PfInvestmentByTypeReportView,
   },
@@ -4481,11 +4516,11 @@ export const routingList = [
     path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
     component: PfInvestmentByOrgReportView,
   },
-    {
+  {
     path: "/BenefitsManagement/reports/PFEmployeeWise",
     component: PfEmployeeReport,
   },
-    {
+  {
     path: "/BenefitsManagement/reports/PFEmployeeWise/view",
     component: PfEmployeeReportView,
   },
