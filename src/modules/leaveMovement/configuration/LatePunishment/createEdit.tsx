@@ -27,7 +27,7 @@ import { LatePunishment } from "./form";
 import {
   addHandler,
   addLeaveDeductions,
-  createEditLatePunishmentConfig,
+  createEditPunishmentConfig,
 } from "./helper";
 import RangeDatePicker from "./RangeDatePicker";
 import { DataState, LeaveDeductionDataState } from "./type";
@@ -400,7 +400,9 @@ const CreateEditLatePunishmentConfig = () => {
                         form
                           .validateFields([])
                           .then(() => {
-                            createEditLatePunishmentConfig(
+                            createEditPunishmentConfig(
+                              "/LatePunishmentpolicy",
+
                               profileData,
                               form,
                               data,
@@ -410,7 +412,8 @@ const CreateEditLatePunishmentConfig = () => {
                                 history.push(
                                   "/administration/latePunishmentPolicy"
                                 );
-                              }
+                              },
+                              "late"
                             );
                           })
                           .catch(() => {});

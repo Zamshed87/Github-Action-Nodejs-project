@@ -301,7 +301,11 @@ const MonthlyLeaveReport = () => {
         render: (rec: any) => (
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              style={{
+                color: "var(--primary-color)",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
               onClick={() => {
                 getapporveStatus(
                   `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntApplicationId}&employeeId=${rec.IntEmployeeId}`,

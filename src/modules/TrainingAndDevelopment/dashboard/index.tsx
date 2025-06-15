@@ -302,7 +302,11 @@ const TnDDashboard = () => {
             title="Trainer Details"
           >
             <EyeOutlined
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              style={{
+                color: "var(--primary-color)",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
             />
           </Popover>
         );

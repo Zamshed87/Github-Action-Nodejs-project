@@ -132,6 +132,11 @@ const AbsentReport = () => {
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
+    if (!values?.workplaceGroup || !values?.workplace) {
+      toast.error("Please select workplace group");
+      return;
+    }
+
     const workplaceList = `${values?.workplace
       ?.map((item: any) => item?.intWorkplaceId)
       .join(",")}`;
@@ -147,7 +152,7 @@ const AbsentReport = () => {
       searchTxt: searchText || "",
 
       intBusinessUnitId: buId,
-      intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
+      intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
 
       // intWorkplaceId: values?.workplace?.value || 0,
       workplaceList: workplaceList || "",

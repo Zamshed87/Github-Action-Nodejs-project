@@ -35,6 +35,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   // Api Actions
   const savePayscale = useApiRequest({});
   const jobClassDDL = useApiRequest({});
+  const policyDDL = useApiRequest({});
   const gradeDDL = useApiRequest({});
   const designationDDL = useApiRequest({});
   const jobLevelDDL = useApiRequest({});
@@ -52,7 +53,6 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
         accountId: orgId,
         businessUnitId: buId,
       },
-      onSuccess: () => {},
     });
   };
   const getGradeDDL = () => {
@@ -66,7 +66,6 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
         businessUnitId: buId,
         jobClassId: jobClass?.value,
       },
-      onSuccess: () => {},
     });
   };
   const getDesignationDDL = () => {
@@ -92,8 +91,6 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
         businessUnitId: buId,
         jobGradeId: grade?.value,
       },
-
-      onSuccess: () => {},
     });
   };
   const getElementDDL = () => {
@@ -106,8 +103,22 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
         workplaceGroupId: wgId,
         workplaceId: wId,
       },
-
-      onSuccess: () => {},
+    });
+  };
+  const getPolicyDDL = () => {
+    policyDDL?.action({
+      urlKey: "GetAllSalaryPolicy",
+      method: "get",
+      params: {
+        accountId: orgId,
+        businessUnitId: buId,
+      },
+      onSuccess: (res: any) => {
+        res?.forEach((i: any, idx: any) => {
+          res[idx].label = i?.strPolicyName;
+          res[idx].value = i?.intPolicyId;
+        });
+      },
     });
   };
   // Form Instance
@@ -117,6 +128,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     getJobClassDDL();
     getDesignationDDL();
     getElementDDL();
+    getPolicyDDL();
     // getGradeDDL();
     // getJobLevelDDL();
   }, []);
@@ -150,6 +162,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       jobGradeId: values?.grade?.value,
       jobLevelId: values?.jobLevel?.value,
       incrementSlabCount: values?.incrementSlab,
+      payrollPolicyId: values?.policy?.value,
       incrementAmount: values?.increment,
       extendedIncrementSlabCount: values?.efficiencySlab,
       extendedIncrementAmount: values?.incrementExtended,
@@ -383,7 +396,10 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             jobClass: { value: res?.jobClassId, label: res?.jobClassName },
             increment: res?.incrementAmount,
             incrementSlab: res?.incrementSlabCount,
-
+            policy: {
+              value: res?.payrollPolicyId,
+              label: res?.payrollPolicyName,
+            },
             incrementExtended: res?.extendedIncrementAmount,
             efficiencySlab: res?.extendedIncrementSlabCount,
             isEfficiency: res?.extendedIncrementAmount > 0 ? true : false,
@@ -430,6 +446,28 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             disabled={rowData}
           />
         </Col>
+        <Col md={12} sm={24}>
+          <PSelect
+            name="policy"
+            label="Payroll Policy"
+            placeholder=""
+            options={policyDDL?.data?.length > 0 ? policyDDL?.data : []}
+            loading={policyDDL?.loading}
+            onChange={(value, op) => {
+              form.setFieldsValue({
+                policy: op,
+              });
+            }}
+            filterOption={false}
+            rules={[
+              {
+                required: true,
+                message: "Payroll Policy is required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={12} sm={24}></Col>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { typeCreate } = form.getFieldsValue(true);

@@ -28,6 +28,8 @@ import BackButton from "common/BackButton";
 import PfLoanTable from "./components/pfLoanTable";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { useApiRequest } from "Hooks";
+import { isDevServer } from "App";
 
 const PfLoanAddEdit = () => {
   const dispatch = useDispatch();
@@ -54,6 +56,7 @@ const PfLoanAddEdit = () => {
       permission = item;
     }
   });
+  const pfInfoApi = useApiRequest({});
 
   const [generatedData, setGeneratedData] = useState([]);
   const [loanTypeDDL, setLoanTypeDDL] = useState([]);
@@ -225,6 +228,45 @@ const PfLoanAddEdit = () => {
                 isSearchIcon={true}
                 handleChange={(valueOption) => {
                   setFieldValue("employee", valueOption);
+                  [14, 15].includes(orgId) &&
+                    valueOption?.value &&
+                    pfInfoApi.action({
+                      urlKey: "GetEmployeePfAmount",
+                      method: "GET",
+                      params: {
+                        employeeId: valueOption?.value,
+                        AccountId: orgId,
+                      },
+                      onSuccess: (res) => {
+                        if (orgId === 14) {
+                          console.log("first", res?.data);
+                          setFieldValue(
+                            "loanAmount",
+                            res?.data?.employeeContribution * 0.7
+                          );
+                          return;
+                        }
+                        if (
+                          orgId === 15 &&
+                          res?.data?.serviceLength > 3 &&
+                          valueOption?.employmentType === "Permanent"
+                        ) {
+                          setFieldValue(
+                            "loanAmount",
+                            res?.data?.totalPfAmount * 0.85 || 0
+                          );
+                        } else {
+                          setFieldValue("employee", "");
+                          setFieldValue("loanAmount", 0);
+                          return toast.warning(
+                            "Employee is not eligible for PF Loan"
+                          );
+                        }
+                      },
+                      onError: (error) => {
+                        toast.error(error?.response?.data?.title);
+                      },
+                    });
                 }}
                 placeholder="Search (min 3 letter)"
                 loadOptions={(v) => getSearchEmployeeList(buId, wgId, v, 4)}
@@ -269,7 +311,19 @@ const PfLoanAddEdit = () => {
             </div>
             <div className="col-lg-3">
               <div className="input-field-main">
-                <label>Loan Amount</label>
+                <label>
+                  Loan Amount{" "}
+                  {[14, 15].includes(orgId) ? (
+                    <span>
+                      <b>Pf Own:</b>
+                      {pfInfoApi?.data?.data?.employeeContribution || 0}{" "}
+                      <b>Pf Total:</b>
+                      {pfInfoApi?.data?.data?.totalPfAmount || 0}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </label>
                 <DefaultInput
                   classes="input-sm"
                   value={values?.loanAmount}
@@ -278,6 +332,24 @@ const PfLoanAddEdit = () => {
                   type="number"
                   className="form-control"
                   onChange={(e) => {
+                    if (
+                      orgId === 14 &&
+                      e.target.value >
+                        pfInfoApi?.data?.data?.employeeContribution * 0.7
+                    ) {
+                      return toast.warning(
+                        "Loan amount should be less than 70% of Own PF amount"
+                      );
+                    }
+                    if (
+                      orgId === 15 &&
+                      e.target.value >
+                        pfInfoApi?.data?.data?.totalPfAmount * 0.85
+                    ) {
+                      return toast.warning(
+                        "Loan amount should be less than 85% of total PF amount"
+                      );
+                    }
                     setFieldValue("loanAmount", e.target.value);
                     setGeneratedData([]);
                   }}

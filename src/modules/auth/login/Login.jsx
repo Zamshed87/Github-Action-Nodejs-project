@@ -47,7 +47,7 @@ const LogIn = () => {
       dispatch(setFirstLevelNameAction("Dashboard"));
     }
   }, [dispatch, history]);
-  
+
   return (
     <Formik
       enableReinitialize={true}
@@ -159,6 +159,10 @@ const LogIn = () => {
                           <PrimaryButton
                             type="submit"
                             className="btn btn-green"
+                            style={{
+                              backgroundColor: "#299647",
+                              border: "#299647",
+                            }}
                             label="Log In"
                             disabled={loading}
                           />
