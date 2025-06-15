@@ -5,8 +5,9 @@ import { formatFilterValueList } from "utility/filter/helper";
 import { getHeader } from "../helper";
 import React, { useEffect } from "react";
 
-type TPFFundReport = { form: any };
-const PFFundReportDetails: React.FC<TPFFundReport> = ({ form }) => {
+type TPFFundReport = { form: any, data: any };
+const PFFundReportDetails: React.FC<TPFFundReport> = ({ form, data }) => {
+  console.log(data);
   // Data From Store
   const { orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -46,7 +47,7 @@ const PFFundReportDetails: React.FC<TPFFundReport> = ({ form }) => {
           method: "post",
           payload: {
             intAccountId: orgId,
-            intEmployeeId: values?.employeeName?.value,
+            intEmployeeId: data?.employeeId ?? 0,
             isCurrentFund: isCurrentFund,
             status: values?.status?.value,
             pageNo: pagination?.current || 1,
@@ -87,7 +88,7 @@ const PFFundReportDetails: React.FC<TPFFundReport> = ({ form }) => {
         total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
       }}
       loading={pfFundReportApi?.loading}
-      scroll={{ x: 1000 }}
+      scroll={{ x: 1500 }}
       onChange={(pagination, filters, sorter, extra) => {
         if (extra.action === "sort") return;
         landingApi({
