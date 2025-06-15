@@ -39,6 +39,8 @@ export const customFields = [
   { id: 31, value: "[Spouse Name]", label: "Spouse Name" },
   { id: 32, value: "[Confirmation Date]", label: "Confirmation Date" },
   { id: 33, value: "[Last Working Date]", label: "Last Working Date" },
+  { id: 34, value: "[Increment Details Table]", label: "Increment Details Table" },
+  { id: 35, value: "[InWord]", label: "In Word" },
 ];
 
 export const modules = {
