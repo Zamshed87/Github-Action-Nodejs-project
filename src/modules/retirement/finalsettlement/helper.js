@@ -341,7 +341,7 @@ export const getFinalSettlementLandingTableColumn = (
               />
             </Tooltip>
           )}
-          {data?.intFinalSettlementId === null && (
+          {data?.intFinalSettlementId == null && (
             <Tooltip placement="top" color={"#34a853"} title={"Generate"}>
               <PrimaryButton
                 type="button"
@@ -465,7 +465,7 @@ export const getFinalSettlementLandingTableColumn = (
 };
 
 export const dataFormatter = (data) => {
-  if (data === null || data === 0 || data === undefined || data === "") {
+  if (data == null || data === 0 || data === undefined || data === "") {
     return 0;
   } else {
     return `${data}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");

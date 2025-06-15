@@ -33,7 +33,7 @@ function LanguageDropdown() {
       setIsLanguageDropdownOpen(true);
 
       const select: any = document.querySelector(".goog-te-combo");
-      if (select === null) return;
+      if (select == null) return;
       select.addEventListener("change", () => {
         handleLanguageDropdown();
       });
@@ -62,7 +62,7 @@ function LanguageDropdown() {
       en: "English",
     };
     const select: any = document.querySelector(".goog-te-combo");
-    if (select === null) return;
+    if (select == null) return;
     setTimeout(() => {
       const selectOptions = select?.options;
       for (let i = 0; i < selectOptions?.length; i++) {

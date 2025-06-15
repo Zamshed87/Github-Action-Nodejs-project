@@ -345,7 +345,7 @@ const MonthlyLeaveReport = () => {
               {rec?.IsApprove === true && <Tag color="success">Approved</Tag>}
               {rec?.AfterApproveStatus === "-"
                 ? "-"
-                : (rec?.IsApprove === false || rec?.IsApprove === null) &&
+                : (rec?.IsApprove === false || rec?.IsApprove == null) &&
                   rec?.IsReject === false && <Tag color="warning">Pending</Tag>}
               {rec?.IsReject === true && <Tag color="red">Rejected</Tag>}
             </div>
