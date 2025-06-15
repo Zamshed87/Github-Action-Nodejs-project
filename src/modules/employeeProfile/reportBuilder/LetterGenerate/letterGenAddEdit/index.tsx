@@ -31,6 +31,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
 import { postPDFAction } from "utility/downloadFile";
 import RichTextEditor from "common/RichTextEditor/RichTextEditor";
+import Loading from "common/loading/Loading";
 
 const LetterGenAddEdit = () => {
   // Router state
@@ -110,6 +111,7 @@ const LetterGenAddEdit = () => {
           : "",
       }}
     >
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
           title={"Create Template"}
@@ -136,7 +138,7 @@ const LetterGenAddEdit = () => {
                     ).then();
                   })
                   .catch(() => {
-                    console.log();
+                    console.log('');
                   });
               },
             },
@@ -154,6 +156,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     letterType: op,
                   });
+                  form.resetFields(["letterName", "employee"]);
                   getLetterNameDDL(
                     profileData,
                     setLoading,
@@ -174,6 +177,7 @@ const LetterGenAddEdit = () => {
                     letterName: op,
                   });
                   getLetterPreview(profileData, setLoading, form);
+                  form.resetFields(["employee"]);
                 }}
               />
             </Col>
@@ -228,7 +232,6 @@ const LetterGenAddEdit = () => {
           <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);
-              console.log(letter)
               return (
                 <>
                   <Col className="custom_quill quilJob" md={24} sm={24}>
