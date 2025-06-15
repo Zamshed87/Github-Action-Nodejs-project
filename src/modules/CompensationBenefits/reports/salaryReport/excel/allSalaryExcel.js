@@ -20,13 +20,11 @@ const getTableDataForExcel = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(
-        item?.DeptName?.trim()
-          ? `Depertment: ${item?.DeptName}`
-          : item?.SL,
+        item?.DeptName?.trim() ? `Depertment: ${item?.DeptName}` : item?.SL,
         "left",
         "text",
-        item?.SalaryGenerateHeaderId === null,
-        item?.SalaryGenerateHeaderId === null ? 10 : 9
+        item?.SalaryGenerateHeaderId == null,
+        item?.SalaryGenerateHeaderId == null ? 10 : 9
       ).getCell(),
       new Cell(item?.EmployeeCode, "left", "text").getCell(),
       new Cell(item?.EmployeeName, "left", "text").getCell(),
@@ -34,44 +32,42 @@ const getTableDataForExcel = (row) => {
       // new Cell(item?.strEmployeeCode, "center", "text").getCell(),
       new Cell(item?.GrossSalary, "right", "text").getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.TotalAllowance || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.TotalAllowance || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.TotalDeduction || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.TotalDeduction || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.NetPay || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.NetPay || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.BankPay || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.BankPay || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.DegitalBankPay || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.DegitalBankPay || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.CashPay || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.CashPay || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null
-          ? ""
-          : item?.TotalWorkingDays || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.TotalWorkingDays || 0,
         "right",
         "text"
       ).getCell(),
       new Cell(
-        item?.SalaryGenerateHeaderId === null ? "" : item?.PayableDays || 0,
+        item?.SalaryGenerateHeaderId == null ? "" : item?.PayableDays || 0,
         "right",
         "text"
       ).getCell(),

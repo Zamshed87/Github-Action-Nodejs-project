@@ -190,7 +190,7 @@ export const separationApplicationLandingTableColumn = (
           }}
           label={"Exit Interview"}
           disabled={
-            data?.intQuestionAssignId === null
+            data?.intQuestionAssignId == null
               ? true
               : false || data?.isExitInterviewDone === true
               ? true
