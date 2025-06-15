@@ -90,6 +90,7 @@ const LetterGenAddEdit = () => {
       },
     }).then();
   };
+  
   return letterGenPermission?.isCreate ? (
     <PForm
       formName="tempCreate"
