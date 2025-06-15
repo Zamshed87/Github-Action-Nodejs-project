@@ -6,7 +6,6 @@ import { LightTooltip } from "common/LightTooltip";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { gray900 } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
-import { getPDFAction } from "utility/downloadFile";
 import * as Yup from "yup";
 
 export const initialValueForNOCApplication = {
@@ -48,9 +47,10 @@ export const NocLandingColumn = (
   pathurl,
   isManagement,
   setLoading,
-  dispatch
+  dispatch,
+  getById,
 ) => {
-  const approvedStatuses = ["approved", "approve", "Approved"];
+  const approvedStatuses = ["approved", "approve", "Approved", "pending"];
   const rejectStatuses = ["Rejected", "rejected", "Reject", "reject"];
   return [
     {
@@ -65,23 +65,6 @@ export const NocLandingColumn = (
       sorter: true,
       width: "80px",
     },
-    // {
-    //   title: "Employee",
-    //   dataIndex: "employeeName", // Updated for employee name
-    //   render: (employeeName, record) => (
-    //     <div className="d-flex align-items-center">
-    //       <AvatarComponent
-    //         classess=""
-    //         letterCount={1}
-    //         label={employeeName || record?.strEmployeeName || ""}
-    //       />
-    //       <span className="ml-2">{employeeName || record?.strEmployeeName || ""}</span>
-    //     </div>
-    //   ),
-    //   filter: true,
-    //   sorter: true,
-    //   width: "200px",
-    // },
     {
       title: "NOC Type",
       dataIndex: "nocType", // Updated to match response data
@@ -96,12 +79,17 @@ export const NocLandingColumn = (
               <div className="movement-tooltip p-2">
                 <div className="border-bottom">
                   <p className="tooltip-title">Purpose</p>
-                  <p className="tooltip-subTitle">{record?.purpose || record?.strPurposeName}</p>
+                  <p className="tooltip-subTitle">
+                    {record?.purpose || record?.strPurposeName}
+                  </p>
                 </div>
                 <div>
                   {record?.strFileIds &&
                     record?.strFileIds?.split(",").map((fileId, idx) => (
-                      <div className="d-flex align-items-center mt-2" key={fileId || idx}>
+                      <div
+                        className="d-flex align-items-center mt-2"
+                        key={fileId || idx}
+                      >
                         <div className="leave-application-document ml-1">
                           <span
                             onClick={(e) => {
@@ -144,9 +132,7 @@ export const NocLandingColumn = (
       dataIndex: "fromDate", // Updated to match response data
       isDate: true,
       render: (fromDate) => {
-        return (
-          <span className="text-center">{dateFormatter(fromDate)}</span>
-        );
+        return <span className="text-center">{dateFormatter(fromDate)}</span>;
       },
       sorter: true,
       width: "100px",
@@ -177,7 +163,6 @@ export const NocLandingColumn = (
                 <button className="iconButton ml-2" type="button">
                   <EditOutlined
                     onClick={(e) => {
-                      console.log("Edit Clicked", record);
                       e.stopPropagation();
                       history.push({
                         pathname: `${pathurl}/edit/${record?.id}`,
@@ -205,16 +190,13 @@ export const NocLandingColumn = (
               <div
                 onClick={(e) => {
                   e.stopPropagation();
-                  getPDFAction(
-                    `/PdfAndExcelReport/NocApplicationPDF?nocApplicationId=${record?.id || record?.intNocApplicationId}`,
-                    setLoading
-                  );
+                  getById(record?.id);
                 }}
               >
                 <Print
                   style={{
                     fontSize: "24px",
-                    marginLeft: "10px",
+                    marginLeft: "0px",
                     color: gray900,
                     cursor: "pointer",
                   }}
