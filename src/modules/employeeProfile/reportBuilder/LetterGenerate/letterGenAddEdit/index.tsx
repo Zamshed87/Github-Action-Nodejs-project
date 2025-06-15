@@ -7,7 +7,7 @@
 
 import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
@@ -67,6 +67,7 @@ const LetterGenAddEdit = () => {
   const [loading, setLoading] = useState(false);
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
   const [letterNameDDL, setLetterNameDDL] = useState([]);
+  const templateRef = useRef<string>(""); // 👈 Holds unmodified letter template
 
   //   api calls
   const CommonEmployeeDDL = useApiRequest([]);
@@ -177,7 +178,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     letterName: op,
                   });
-                  getLetterPreview(profileData, setLoading, form);
+                  getLetterPreview(profileData, setLoading, form, templateRef);
                   form.resetFields(["employee"]);
                 }}
               />
@@ -193,7 +194,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     employee: op,
                   });
-                  getLetterPreviewAndTransform(profileData, setLoading, form);
+                  getLetterPreviewAndTransform(profileData, setLoading, form, templateRef);
                 }}
                 onSearch={(value) => {
                   getEmployee(value);
@@ -206,7 +207,7 @@ const LetterGenAddEdit = () => {
           </Row>
         </PCardBody>
         <Flex className="my-2" justify="flex-end">
-          <PButton
+          {/* <PButton
             type="primary"
             action="button"
             content="Preview"
@@ -227,7 +228,7 @@ const LetterGenAddEdit = () => {
               ).then();
             }}
             disabled={!form.getFieldValue("letterId")}
-          />
+          /> */}
         </Flex>
         <Row gutter={[10, 2]}>
           <Form.Item shouldUpdate noStyle>

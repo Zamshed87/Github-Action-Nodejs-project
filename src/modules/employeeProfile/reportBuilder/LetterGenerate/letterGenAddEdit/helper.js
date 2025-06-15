@@ -30,7 +30,12 @@ export const getLetterNameDDL = async (
   }
 };
 
-export const getLetterPreview = async (profileData, setLoading, form) => {
+export const getLetterPreview = async (
+  profileData,
+  setLoading,
+  form,
+  templateRef
+) => {
   setLoading(true);
   try {
     const { orgId, buId, wgId, wId } = profileData;
@@ -48,8 +53,9 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
     //   res?.data?.generatedLetterBody?.match(/<body>([\s\S]*?)<\/body>/i)?.[1] ||
     //   ""
     // ).trim();
-
-    form.setFieldValue("letter", res?.data?.generatedLetterBody);
+    let letterTemplate = res?.data?.generatedLetterBody;
+    form.setFieldValue("letter", letterTemplate);
+    templateRef.current = letterTemplate;
     form.setFieldValue("letterId", res?.data?.templateId);
   } catch (error) {
     toast.error("Something went wrong");
@@ -60,7 +66,8 @@ export const getLetterPreview = async (profileData, setLoading, form) => {
 export const getLetterPreviewAndTransform = async (
   profileData,
   setLoading,
-  form
+  form,
+  templateRef
 ) => {
   setLoading(true);
   try {
@@ -81,10 +88,10 @@ export const getLetterPreviewAndTransform = async (
     // ).trim();
 
     // form.setFieldValue("letterId", res?.data?.templateId);
-    const { letter } = form.getFieldsValue(true);
-    let data = replacePlaceholdersInHTML(letter, res?.data);
-    form.setFieldValue("letter", data);
+    const letterTemplate = templateRef.current || "";
 
+    let data = replacePlaceholdersInHTML(letterTemplate, res?.data);
+    form.setFieldValue("letter", data);
   } catch (error) {
     toast.error("Something went wrong");
   } finally {
@@ -159,7 +166,6 @@ export function generateIncrementTableHTML(tableData) {
     </table>
   `;
 }
-
 
 export function replacePlaceholdersInHTML(html, data) {
   return html.replace(/@\[(.*?)\]/g, (_, key) => {
