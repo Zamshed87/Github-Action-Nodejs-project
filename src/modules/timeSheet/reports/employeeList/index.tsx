@@ -352,7 +352,7 @@ const EmployeeList = () => {
     },
     {
       title: "Employee Email",
-      dataIndex: "email",
+      dataIndex: "officeEmail",
       width: 200,
     },
     {
