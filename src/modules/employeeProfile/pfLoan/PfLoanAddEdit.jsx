@@ -264,7 +264,7 @@ const PfLoanAddEdit = () => {
                         }
                       },
                       onError: (error) => {
-                        toast.error(error?.response?.data?.title);
+                        toast.error(error?.response?.data?.message);
                       },
                     });
                 }}
