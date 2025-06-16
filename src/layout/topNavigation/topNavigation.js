@@ -3,10 +3,10 @@
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { Menu } from "@mui/icons-material";
 import axios from "axios";
-// import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
+import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import authLogo from "../../assets/images/logo.svg";
 // import { getTotalNotificationsCount } from "./helper";
@@ -17,19 +17,41 @@ import QuickAccess from "./QuickAccess";
 import ResourcesDropdown from "./ResourcesDropdown";
 import url from "./notification.mp3";
 import { useAudio } from "./useAudio";
+import {
+  setMsgNotifyCountAction,
+  setNotifyCountAction,
+  setSignalRConnectionAction,
+} from "modules/chattingApp/redux/Action";
 
 export default function TopNavigation({
   setIsOpenSidebar,
   isOpenSidebar,
   isHideDropdown,
 }) {
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, strLoginId, connectionKEY } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const history = useHistory();
+  const dispatch = useDispatch();
+
   const [playing, toggle] = useAudio(url);
   const [connection, setConnection] = useState(null);
   const [myCount, setMyCount] = useState(0);
+  const [messageState, setMessageState] = useState({});
+  const connectionChat = useSelector(
+    (state) => state?.chattingApp?.signalRConnection,
+    shallowEqual
+  );
+  const msgNotifyCount = useSelector(
+    (state) => state?.chattingApp?.msgNotifyCount,
+    shallowEqual
+  );
+  const notifyCount = useSelector(
+    (state) => state?.chattingApp?.notifyCount,
+    shallowEqual
+  );
+  const chatting_KEY = connectionKEY + "___chatting_notify";
 
   const notificationCount = async () => {
     try {
@@ -43,19 +65,30 @@ export default function TopNavigation({
           // .withUrl("https://10.209.99.141/NotificationHub")
           .withAutomaticReconnect()
           .build();
+        if (connect) {
+          connect.start().then(() => {
+            dispatch(setSignalRConnectionAction(connect));
+          });
+        }
         setConnection(connect);
       }
     } catch (error) {
       console.log("connection error", error);
     }
   };
-
+  const mesNotificationCount = async () => {
+    const msgNotifyRes = await axios.get(
+      `/ChattingApp/GetMsgNotificationCount?accountId=${orgId}&userid=${strLoginId}`
+    );
+    dispatch(setMsgNotifyCountAction(msgNotifyRes?.data));
+  };
   // useEffect(() => {
   //   getTotalNotificationsCount(employeeId, orgId, setMyCount);
   // }, []);
 
   useEffect(() => {
     notificationCount();
+    mesNotificationCount();
   }, []);
 
   const notify_KEY =
@@ -88,7 +121,56 @@ export default function TopNavigation({
         .catch((error) => {});
     }
   }, [connection]);
+  // useEffect(async () => {
+  //   if (connectionChat) {
+  //     connectionChat.on(`${chatting_KEY}`, (message) => {
+  //       if (message) {
+  //         if (!window.location.href.includes("/chat-app")) {
+  //           setMessageState(message);
+  //         }
+  //         if (document.hidden || !window.location.href.includes("/chat-app")) {
+  //           if (Notification.permission === "granted") {
+  //             new Notification(`"New message form ${message?.senderName}`, {
+  //               body: message?.message,
+  //             });
+  //           }
+  //         }
+  //       }
+  //       toggle();
+  //     });
+  //   }
+  // }, [connectionChat]);
+  useEffect(() => {
+    let isMounted = true;
 
+    if (connectionChat && isMounted) {
+      const handler = (message) => {
+        if (message) {
+          if (!window.location.href.includes("/chat-app")) {
+            setMessageState(message);
+          }
+          if (document.hidden || !window.location.href.includes("/chat-app")) {
+            if (Notification.permission === "granted") {
+              new Notification(`New message from ${message?.senderName}`, {
+                body: message?.message,
+              });
+            }
+          }
+        }
+        toggle();
+      };
+
+      connectionChat.on(chatting_KEY, handler);
+
+      // Cleanup function
+      return () => {
+        isMounted = false;
+        connectionChat.off(chatting_KEY, handler);
+        // DON'T call connectionChat.destroy() — it's not a valid method
+        // Use connectionChat.stop() if needed
+      };
+    }
+  }, [connectionChat, chatting_KEY]);
   return (
     <>
       <div className="top-navigation">
@@ -123,17 +205,32 @@ export default function TopNavigation({
 
               <NotificationMenu myCount={myCount} setMyCount={setMyCount} />
 
-              {/* 
+              <div
+                className="top-user pointer notification-bell"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dispatch(setMsgNotifyCountAction(0));
 
-              <SmsOutlinedIcon
-                sx={{
-                  color: "rgba(96, 96, 96, 1)",
-                  cursor: "pointer",
-                  marginTop: "2px",
-                  marginLeft: "15px",
+                  history.push("/chat-app");
                 }}
-                onClick={() => history.push("/chat")}
-              /> */}
+              >
+                <span>
+                  <SmsOutlinedIcon
+                    sx={{
+                      color: "rgba(96, 96, 96, 1)",
+                      cursor: "pointer",
+                      marginTop: "2px",
+                      // marginLeft: "15px",
+                    }}
+                    // onClick={() => history.push("/chat-app")}
+                  />
+                </span>
+                {msgNotifyCount > 0 && (
+                  <span id="notiCount" className="badge">
+                    {msgNotifyCount}
+                  </span>
+                )}
+              </div>
             </>
           )}
           <ProfileMenu />

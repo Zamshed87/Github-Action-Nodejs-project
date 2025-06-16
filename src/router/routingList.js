@@ -438,12 +438,7 @@ const SubmissionDetails = lazy(() =>
     "../modules/trainingDevelopment/assessment/assessmentFormDetails/submission/index.jsx"
   )
 );
-const AttendanceView = lazy(() =>
-  import("../modules/trainingDevelopment/attendance/attendanceView/index.jsx")
-);
-const TrainingAttendanceLanding = lazy(() =>
-  import("../modules/trainingDevelopment/attendance/index.jsx")
-);
+
 const RequisitionLanding = lazy(() =>
   import("../modules/trainingDevelopment/requisition/index.jsx")
 );
@@ -598,7 +593,6 @@ const ApproverCommonLanding = lazy(() =>
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
-const Chat = lazy(() => import("../modules/chat/index.jsx"));
 const ArearSalaryGenerateForm = lazy(() =>
   import(
     "../modules/CompensationBenefits/arearSalaryGenerate/addEditForm/index.jsx"
@@ -1248,15 +1242,7 @@ const SelfSalaryCertificateView = lazy(() =>
 const ExpenseApplicationApproval = lazy(() =>
   import("../modules/expense/expenseApplicationApproval/index.jsx")
 );
-const SelfExpanseApplicationAddForm = lazy(() =>
-  import("../modules/expense/updatedExpanseApp/addEditForm.jsx")
-);
-const UpdateExpanseApplication = lazy(() =>
-  import("../modules/expense/updatedExpanseApp/index.jsx")
-);
-const SelfExpenseApplicationView = lazy(() =>
-  import("../modules/expense/updatedExpanseApp/viewForm.jsx")
-);
+
 const FoodDetailsReport = lazy(() =>
   import("../modules/FoodDetailsReport/index.tsx")
 );
@@ -1359,9 +1345,7 @@ const LeaveEncashmentApproval = lazy(() =>
 const MovementApproval = lazy(() =>
   import("../modules/leaveMovement/movement/movementApproval/index.jsx")
 );
-const Application = lazy(() =>
-  import("../modules/loanManagement/loan/application")
-);
+
 const LoanApproval = lazy(() =>
   import("../modules/loanManagement/loan/approval/index.jsx")
 );
@@ -1547,15 +1531,11 @@ const UnderCreateRosterSetup = lazy(() =>
     "../modules/timeSheet/configuration/rosterSetup/UnderCreateRosterSetup/index.jsx"
   )
 );
-const Calendar = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
-);
+
 const LeavePolicyAssign = lazy(() =>
   import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
-const HolidayException = lazy(() =>
-  import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
-);
+
 // const OffDay = lazy(() =>
 //   import("../modules/timeSheet/employeeAssign/offDay/index.tsx")
 // );
@@ -1819,6 +1799,7 @@ import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWi
 import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
 import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
 import GeneratePrint from "modules/CompensationBenefits/Increment/singleIncement/components/generatePrint";
+import ChattingIndex from "modules/chattingApp/ChattingIndex";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -1873,7 +1854,7 @@ const PFInvestmentToOrganization = lazy(() =>
 );
 export const routingList = [
   { path: "/", component: Homepage },
-  { path: "/chat", component: Chat },
+  { path: "/chat-app", component: ChattingIndex },
   {
     path: "/SelfService/myrewardsandpunishment",
     component: RewardsAndPunishmentView,
@@ -3148,7 +3129,7 @@ export const routingList = [
     path: "/compensationAndBenefits/increment/singleIncrement/grade/view/:id",
     component: SingleIncrement,
   },
-    {
+  {
     path: "/compensationAndBenefits/increment/singleIncrement/grade/print",
     component: GeneratePrint,
   },
@@ -3217,7 +3198,7 @@ export const routingList = [
     component: TMProjectSingleTask,
   },
   { path: "/tm/task-project/:id/task-board", component: TMProjectTaskBoard },
-  { path: "/chat", component: Chat },
+
   { path: "/taskmanagement/taskmgmt/dashboard", component: TMDashboard },
   { path: "/taskmanagement/taskmgmt/projects", component: TMProject },
   {
@@ -4464,11 +4445,11 @@ export const routingList = [
 
   // PF report start
 
-    {
+  {
     path: "/BenefitsManagement/reports/pfInvestmentbyType",
     component: PfInvestmentByTypeReport,
   },
-    {
+  {
     path: "/BenefitsManagement/reports/pfInvestmentbyType/View/:id",
     component: PfInvestmentByTypeReportView,
   },
@@ -4481,11 +4462,11 @@ export const routingList = [
     path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
     component: PfInvestmentByOrgReportView,
   },
-    {
+  {
     path: "/BenefitsManagement/reports/PFEmployeeWise",
     component: PfEmployeeReport,
   },
-    {
+  {
     path: "/BenefitsManagement/reports/PFEmployeeWise/view",
     component: PfEmployeeReportView,
   },
