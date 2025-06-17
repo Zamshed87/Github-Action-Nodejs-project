@@ -100,6 +100,7 @@ export const createEditGratuityPolicy = async (
 };
 
 const mapGratuityPolicy = (values: any, data: DataState) => {
+  console.log(values?.employmentType, "values?.employmentType");
   return {
     strPolicyName: values.strPolicyName,
     intWorkplaceId: values.workplace?.intWorkplaceId ?? values.workplace?.value,
