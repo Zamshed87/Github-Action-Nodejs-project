@@ -26,6 +26,7 @@ import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
 import { addHandler, createEditGratuityPolicy } from "./helper";
 import DeleteButton from "./components/DeleteButton";
+import { EditOutlined, ExpandOutlined, SaveOutlined } from "@ant-design/icons";
 export interface GratuityPolicyDetailKey {
   intServiceLengthStartInMonth: number;
   intServiceLengthEndInMonth: number;
@@ -123,9 +124,10 @@ const GPCreateViewEdit = () => {
               value: data?.intWorkplaceId,
             },
             employmentType: data?.employmentTypeName
-              ? data?.employmentTypeName.map(
-                  (item: any) => item.strEmploymentTypeName
-                )
+              ? data.employmentTypeName.map((item: any) => ({
+                  label: item.strEmploymentTypeName,
+                  value: item.intEmploymentTypeId, // or whatever unique id property exists
+                }))
               : [],
             eligibilityDependOn: {
               label: data?.eligibilityDependOnName,
@@ -141,6 +143,9 @@ const GPCreateViewEdit = () => {
 
         setData(gratuityPolicyDetails || []); // need to modify
       });
+    }
+    if (params?.type === "edit") {
+      getEmploymentType();
     }
     if (params?.type !== "view") {
       getPeopleDeskAllDDL(
@@ -213,9 +218,10 @@ const GPCreateViewEdit = () => {
             ? {
                 strPolicyName: gratuityPolicy?.strPolicyName,
                 employmentType: gratuityPolicy?.employmentTypeName
-                  ? gratuityPolicy.employmentTypeName.map(
-                      (item: any) => item.strEmploymentTypeName
-                    )
+                  ? gratuityPolicy.employmentTypeName.map((item: any) => ({
+                      label: item.strEmploymentTypeName,
+                      value: item.intEmploymentTypeId, // or whatever unique id property exists
+                    }))
                   : [],
               }
             : {}
@@ -230,9 +236,20 @@ const GPCreateViewEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: params?.type === "edit" ? "Edit" : "Save",
-                      // icon:
-                      //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      content:
+                        params?.type === "create"
+                          ? "Save"
+                          : params?.type === "edit"
+                          ? "Edit"
+                          : "Extend",
+                      icon:
+                        params?.type === "create" ? (
+                          <SaveOutlined />
+                        ) : params?.type === "edit" ? (
+                          <EditOutlined />
+                        ) : (
+                          <ExpandOutlined />
+                        ),
                       onClick: () => {
                         form
                           .validateFields([])
