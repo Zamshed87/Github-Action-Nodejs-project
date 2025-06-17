@@ -58,22 +58,25 @@ export default function TopNavigation({
       const res = await axios.get(
         `/Notification/GetNotificationCount?employeeId=${employeeId}&accountId=${orgId}`
       );
-      if (res?.data > 0) {
-        setMyCount(res?.data);
-        const connect = new HubConnectionBuilder()
-          .withUrl("https://signal.peopledesk.io/NotificationHub")
-          // .withUrl("https://10.209.99.141/NotificationHub")
-          .withAutomaticReconnect()
-          .build();
-        if (connect) {
-          connect.start().then(() => {
-            dispatch(setSignalRConnectionAction(connect));
-          });
-        }
-        setConnection(connect);
+      // if (res?.data > 0) {
+      setMyCount(res?.data);
+      dispatch(setNotifyCountAction(res?.data));
+
+      const connect = new HubConnectionBuilder()
+        .withUrl("https://signal.peopledesk.io/NotificationHub")
+        // .withUrl("https://10.209.99.141/NotificationHub")
+        .withAutomaticReconnect()
+        .build();
+      if (connect) {
+        connect.start().then(() => {
+          console.log({ connect });
+          dispatch(setSignalRConnectionAction(connect));
+        });
       }
+      setConnection(connect);
+      // }
     } catch (error) {
-      console.log("connection error", error);
+      console.log("connection error", { error });
     }
   };
   const mesNotificationCount = async () => {
@@ -89,6 +92,21 @@ export default function TopNavigation({
   useEffect(() => {
     notificationCount();
     mesNotificationCount();
+    // try {
+    //   const connectionHub = new HubConnectionBuilder()
+    //     .withUrl("https://signal.peopledesk.io/NotificationHub")
+    //     .withAutomaticReconnect()
+    //     .build();
+    //   if (connectionHub) {
+    //     setConnection(connectionHub);
+
+    //     connectionHub.start().then(() => {
+    //       dispatch(setSignalRConnectionAction(connectionHub));
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.error("Error establishing SignalR connection:", { error });
+    // }
   }, []);
 
   const notify_KEY =
