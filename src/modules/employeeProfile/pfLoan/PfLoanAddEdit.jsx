@@ -330,6 +330,7 @@ const PfLoanAddEdit = () => {
                   placeholder="Loan Amount"
                   name="loanAmount"
                   type="number"
+                  min={0}
                   className="form-control"
                   onChange={(e) => {
                     if (
