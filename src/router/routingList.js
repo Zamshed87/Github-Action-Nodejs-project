@@ -439,12 +439,6 @@ const SubmissionDetails = lazy(() =>
     "../modules/trainingDevelopment/assessment/assessmentFormDetails/submission/index.jsx"
   )
 );
-// const AttendanceView = lazy(() =>
-//   import("../modules/trainingDevelopment/attendance/attendanceView/index.jsx")
-// );
-// const TrainingAttendanceLanding = lazy(() =>
-//   import("../modules/trainingDevelopment/attendance/index.jsx")
-// );
 const RequisitionLanding = lazy(() =>
   import("../modules/trainingDevelopment/requisition/index.jsx")
 );
@@ -599,7 +593,6 @@ const ApproverCommonLanding = lazy(() =>
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
-const Chat = lazy(() => import("../modules/chat/index.jsx"));
 const ArearSalaryGenerateForm = lazy(() =>
   import(
     "../modules/CompensationBenefits/arearSalaryGenerate/addEditForm/index.jsx"
@@ -1249,15 +1242,7 @@ const SelfSalaryCertificateView = lazy(() =>
 const ExpenseApplicationApproval = lazy(() =>
   import("../modules/expense/expenseApplicationApproval/index.jsx")
 );
-const SelfExpanseApplicationAddForm = lazy(() =>
-  import("../modules/expense/updatedExpanseApp/addEditForm.jsx")
-);
-const UpdateExpanseApplication = lazy(() =>
-  import("../modules/expense/updatedExpanseApp/index.jsx")
-);
-const SelfExpenseApplicationView = lazy(() =>
-  import("../modules/expense/updatedExpanseApp/viewForm.jsx")
-);
+
 const FoodDetailsReport = lazy(() =>
   import("../modules/FoodDetailsReport/index.tsx")
 );
@@ -1360,9 +1345,6 @@ const LeaveEncashmentApproval = lazy(() =>
 const MovementApproval = lazy(() =>
   import("../modules/leaveMovement/movement/movementApproval/index.jsx")
 );
-// const Application = lazy(() =>
-//   import("../modules/loanManagement/loan/application")
-// );
 const LoanApproval = lazy(() =>
   import("../modules/loanManagement/loan/approval/index.jsx")
 );
@@ -1548,12 +1530,11 @@ const UnderCreateRosterSetup = lazy(() =>
     "../modules/timeSheet/configuration/rosterSetup/UnderCreateRosterSetup/index.jsx"
   )
 );
-// const Calendar = lazy(() =>
-//   import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
-// );
+
 const LeavePolicyAssign = lazy(() =>
   import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
+
 const MonthlyOffdayAssignLanding = lazy(() =>
   import("../modules/timeSheet/employeeAssign/monthlyOffdayAssign/index.js")
 );
@@ -1786,9 +1767,6 @@ const SelfServiceSeparation = lazy(() =>
     "../modules/employeeProfile/separation/selfApplication/viewFormV2/index.jsx"
   )
 );
-const AttendanceShiftChange = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
-);
 
 // Retirement Module
 const Separation = lazy(() =>
@@ -1823,6 +1801,12 @@ const FinalSettlementEdit = lazy(() =>
   import(
     "../modules/retirement/finalsettlement/components/FinalSettlementEdit.jsx"
   )
+);
+
+import ChattingIndex from "modules/chattingApp/ChattingIndex";
+
+const AttendanceShiftChange = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
 );
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -1874,7 +1858,7 @@ const PFInvestmentToOrganization = lazy(() =>
 );
 export const routingList = [
   { path: "/", component: Homepage },
-  { path: "/chat", component: Chat },
+  { path: "/chat-app", component: ChattingIndex },
   {
     path: "/SelfService/myrewardsandpunishment",
     component: RewardsAndPunishmentView,
@@ -2596,11 +2580,11 @@ export const routingList = [
   },
 
   // noc start
-    {
+  {
     path: "/SelfService/noc/nocApplication",
     component: NocSelfLanding,
   },
-    {
+  {
     path: "/SelfService/noc/nocApplication/create",
     component: NOCForm,
   },
@@ -3276,7 +3260,7 @@ export const routingList = [
     component: TMProjectSingleTask,
   },
   { path: "/tm/task-project/:id/task-board", component: TMProjectTaskBoard },
-  { path: "/chat", component: Chat },
+
   { path: "/taskmanagement/taskmgmt/dashboard", component: TMDashboard },
   { path: "/taskmanagement/taskmgmt/projects", component: TMProject },
   {
