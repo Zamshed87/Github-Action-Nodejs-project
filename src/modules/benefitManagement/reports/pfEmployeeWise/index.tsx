@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { getWorkplaceDetails } from "common/api";
 import PfEmployeeDetails from "./rightSideDetails";
+import { getMultipleDepartment } from "./view/helper";
+import { setCustomFieldsValue } from "utility/filter/helper";
 
 const PfEmployeeReport = () => {
   const history = useHistory();
@@ -72,9 +74,7 @@ const PfEmployeeReport = () => {
     const values = form.getFieldsValue(true);
 
     // Transform selected workplace groups into an array of values
-    const workplaceGroupList = values?.workplaceGroup?.map(
-      (item: any) => item.value
-    );
+    const workplaceGroupList = values?.workplaceGroup?.value;
 
     // Transform selected workplaces into an array of values
     const workplaceList = values?.workplace?.map((item: any) => item.value);
@@ -83,16 +83,20 @@ const PfEmployeeReport = () => {
     const departmentList = values?.department?.map((item: any) => item.value);
 
     // Transform selected employee status into an array of values
-    const employeeStatusList = values?.employeeStatus?.map(
-      (item: any) => item.value
+    let employeeStatusList = values?.employeeStatus?.map(
+      (item: any) => item.label
     );
+
+    if (employeeStatusList?.length === 1 && employeeStatusList[0] === "All") {
+      employeeStatusList = ["Active", "Inactive", "Separated"];
+    }
 
     landingApi.action({
       urlKey: "PostEmployeePfSummaryReport",
       method: "POST",
       payload: {
         intBusinessUnitId: buId,
-        strWorkplaceGroupList: workplaceGroupList || [],
+        strWorkplaceGroupList: [workplaceGroupList],
         strWorkplaceList: workplaceList || [],
         strDepartmentList: departmentList || [],
         strEmployeeStatusList: employeeStatusList || [],
@@ -215,7 +219,7 @@ const PfEmployeeReport = () => {
 
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
-  const departmentDDL = useApiRequest([]);
+  const [departmentDDL, setDepartmentDDL] = useState([]);
 
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -257,23 +261,11 @@ const PfEmployeeReport = () => {
   };
 
   const getDepartments = () => {
-    departmentDDL.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-        accountId: orgId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any) => {
-          item.label = item.strDepartment;
-          item.value = item.intDepartmentId;
-        });
-      },
-    });
+    const { workplace } = form.getFieldsValue(true);
+
+    getMultipleDepartment(setLoading, workplace, setDepartmentDDL);
   };
+
   useEffect(() => {
     getWorkplaceGroup();
   }, []);
@@ -308,7 +300,6 @@ const PfEmployeeReport = () => {
                       name="workplaceGroup"
                       label="Workplace Group"
                       placeholder="Workplace Group"
-                      mode="multiple"
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           workplaceGroup: op,
@@ -341,12 +332,12 @@ const PfEmployeeReport = () => {
                   <Col md={5} sm={12} xs={24}>
                     <PSelect
                       maxTagCount={"responsive"}
-                      options={departmentDDL?.data || []}
+                      options={departmentDDL || []}
                       name="department"
                       label="Department"
                       placeholder="Department"
                       mode="multiple"
-                      loading={departmentDDL?.loading}
+                      loading={false}
                       onChange={(value, op) => {
                         form.setFieldsValue({
                           department: op,
@@ -359,7 +350,7 @@ const PfEmployeeReport = () => {
                     <PSelect
                       maxTagCount={"responsive"}
                       options={[
-                        { label: "All", value: 1 },
+                        { label: "All", value: 0 },
                         { label: "Active", value: 2 },
                         { label: "InActive", value: 3 },
                         { label: "Separated", value: 4 },
@@ -369,9 +360,7 @@ const PfEmployeeReport = () => {
                       placeholder="Employee Status"
                       mode="multiple"
                       onChange={(value, op) => {
-                        form.setFieldsValue({
-                          employeeStatus: op,
-                        });
+                        setCustomFieldsValue(form, "employeeStatus", op);
                       }}
                     />
                   </Col>
@@ -405,7 +394,8 @@ const PfEmployeeReport = () => {
                 pageSizeOptions: ["10", "25", "50", "100"],
                 pageSize: landingApi?.data?.pageSize || 25,
                 current: landingApi?.data?.pageNo || 1,
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`,
               }}
               onChange={(pagination, filters, sorter, extra) => {
                 // Return if sort function is called
