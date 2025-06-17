@@ -186,18 +186,13 @@ const PfEmployeeReportView = () => {
           {(landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             printIcon={true}
-            backButton={true}
             title={`PF Employee Wise Details`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-              form.setFieldsValue({
-                search: e?.target?.value,
-              });
-            }}
             pdfExport={() => {
               try {
                 getPDFAction(
-                  `/PdfAndExcelReport/GetEmployeeMonthWisePfDetailReport?employeeId=${finalEmployeeId || 0}`,
+                  `/PdfAndExcelReport/GetEmployeeMonthWisePfDetailReport?employeeId=${
+                    finalEmployeeId || 0
+                  }`,
                   setLoading
                 );
               } catch (error: any) {
