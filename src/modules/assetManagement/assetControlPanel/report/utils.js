@@ -77,7 +77,7 @@ const assetReportColumn = (
             <Tooltip title="Details" arrow>
               <button style={{ border: 0, background: "none" }} type="button">
                 <InfoOutlined
-                  sx={{ color: "#299647 !important" }}
+                  sx={{ color: "var(--primary-color) !important" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     setHistoryModal(true);

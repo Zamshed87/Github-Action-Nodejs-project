@@ -36,8 +36,8 @@
   font-size: 14px;
 }
 .btn-tab.btn-tab-active {
-  color: var(--success700) !important;
-  background: var(--success50) !important;
+  color: var(--primary-color) !important;
+  background: var(--primary-color-light) !important;
 }
 .common-overview-part {
   padding: 18px 35px;
@@ -60,7 +60,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  color: var(--success500);
+  color: var(--primary-color);
   margin-left: 10px;
 }
 .cancel-save-btn {

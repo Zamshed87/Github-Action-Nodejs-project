@@ -40,7 +40,7 @@ function FaceBook({ empId }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const saveHandler = (values, response = null) => {
-    if (response === null) {
+    if (response == null) {
       return toast.error("Please login with facebook");
     }
     if (singleData) {
@@ -182,7 +182,7 @@ function FaceBook({ empId }) {
 
                   <>
                     {rowDto?.userVM?.loginFacbookId === "" ||
-                    rowDto?.userVM?.loginFacbookId === null ? (
+                    rowDto?.userVM?.loginFacbookId == null ? (
                       <>
                         <h5>Facebook Profile 2</h5>
                         <div

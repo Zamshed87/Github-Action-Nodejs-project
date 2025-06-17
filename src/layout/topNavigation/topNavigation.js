@@ -22,16 +22,15 @@ import {
   setNotifyCountAction,
   setSignalRConnectionAction,
 } from "modules/chattingApp/redux/Action";
+import { colorThemes } from "common/colorThemes";
 
 export default function TopNavigation({
   setIsOpenSidebar,
   isOpenSidebar,
   isHideDropdown,
 }) {
-  const { employeeId, orgId, strLoginId, connectionKEY } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, orgId, strLoginId, intAccountId, connectionKEY } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -88,8 +87,14 @@ export default function TopNavigation({
   // useEffect(() => {
   //   getTotalNotificationsCount(employeeId, orgId, setMyCount);
   // }, []);
-
+  const setColor = () => {
+    const theme = colorThemes[intAccountId] || colorThemes.default;
+    Object.entries(theme).forEach(([key, value]) =>
+      document.documentElement.style.setProperty(key, value)
+    );
+  };
   useEffect(() => {
+    setColor();
     notificationCount();
     mesNotificationCount();
     // try {

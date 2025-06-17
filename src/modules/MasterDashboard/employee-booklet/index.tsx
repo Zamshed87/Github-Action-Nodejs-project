@@ -34,6 +34,18 @@ const EmployeeBooklet = () => {
 
   const landingApiReward = useApiRequest({});
   const landingApiPunishment = useApiRequest({});
+  const balanceApi = useApiRequest({});
+  const balanceInfo = (id: number) => {
+    balanceApi?.action({
+      urlKey: "EmployeeLeaveBalanceList",
+      method: "GET",
+      params: {
+        employeeId: id,
+        date: todayDate(),
+        isAdmin: false,
+      },
+    });
+  };
 
   // Form Instance
   const [form] = Form.useForm();
@@ -305,16 +317,17 @@ const EmployeeBooklet = () => {
                   wgId,
                   buId
                 );
-                getEmployeeLeaveBalanceAndHistory(
-                  rec.intEmployeeBasicInfoId,
-                  "LeaveBalance",
-                  setLeaveBalanceDto,
-                  setLoading,
-                  "",
-                  moment().format("yyyy"),
-                  buId,
-                  wgId
-                );
+                // getEmployeeLeaveBalanceAndHistory(
+                //   rec.intEmployeeBasicInfoId,
+                //   "LeaveBalance",
+                //   setLeaveBalanceDto,
+                //   setLoading,
+                //   "",
+                //   moment().format("yyyy"),
+                //   buId,
+                //   wgId
+                // );
+                balanceInfo(rec.intEmployeeBasicInfoId);
 
                 landingApiReward.action({
                   urlKey: "GetUserRewardPunishmentLetterLanding",
@@ -363,6 +376,7 @@ const EmployeeBooklet = () => {
             leaveBalanceDto={leaveBalanceDto}
             landingApiReward={landingApiReward}
             landingApiPunishment={landingApiPunishment}
+            balanceApi={balanceApi}
           />
         }
       />

@@ -1,19 +1,16 @@
+import { FormInstance } from "antd";
+import axios from "axios";
 import { toast } from "react-toastify";
 import {
   DataState,
   Department,
   Designation,
   EmploymentType,
-  LatePunishmentElement,
-  LatePunishmentPayload,
   LeaveDeduction,
   LeaveDeductionDataState,
 } from "./type";
-import { FormInstance } from "antd";
-import { SetStateAction } from "react";
-import axios from "axios";
 
-function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
+export function eachDayDuplicacyCheck(data: DataState, values: any, form: any) {
   const conflictingPolicies = data.filter(
     (policy) =>
       policy.isConsecutiveDay === values.isConsecutiveDay &&
@@ -45,7 +42,7 @@ const isDateRangeOverlap = (
   return !(endA < startB || startA > endB);
 };
 
-function isDayRangeOverlapping(data: any[], values: any): any {
+export function isDayRangeOverlapping(data: any[], values: any): any {
   const [newStartISO, newEndISO] = values.dayRange;
   const newStartDate = new Date(newStartISO);
   const newEndDate = new Date(newEndISO);
@@ -82,7 +79,7 @@ function isDayRangeOverlapping(data: any[], values: any): any {
   return true; // No overlap, safe to proceed
 }
 
-function isTimeBasedOverlaped(data: any[], values: any): boolean {
+export function isTimeBasedOverlaped(data: any[], values: any): boolean {
   const conflictingPolicies = data.filter(
     (policy) => policy.lateCalculationTypeId === 3
   );
@@ -181,16 +178,19 @@ export const addHandler = (
       amountOrPercentage: values.amountPercentage,
     },
   ]);
-  form.resetFields(fieldsToReset);
+  form.resetFields([...lateSpecificFields, ...commonFieldsToReset]);
 };
 
-const fieldsToReset = [
+const lateSpecificFields = [
   "lateCalculationType",
+  "minimumLateTime",
+  "maximumLateTime",
+];
+
+export const commonFieldsToReset = [
   "eachDayCountBy",
   "dayRange",
   "isConsecutiveDay",
-  "minimumLateTime",
-  "maximumLateTime",
   "calculatedBy",
   "punishmentType",
   "leaveDeductType",
@@ -198,22 +198,40 @@ const fieldsToReset = [
   "amountDeductFrom",
   "amountDeductType",
   "amountPercentage",
-]; // dynamically computed array
+];
 
-export const createEditLatePunishmentConfig = async (
+type BasePunishmentPayload = {
+  accountId: number;
+  businessUnitId: number;
+  workplaceGroupId: number;
+  workplaceId: number;
+  name: string;
+  description: string;
+  isActive: boolean;
+  actionBy: number;
+  elements: any[];
+  departments: Department[];
+  designations: Designation[];
+  employmentTypes: EmploymentType[];
+  leaveDeductions: LeaveDeduction[];
+};
+
+export const createEditPunishmentConfig = async (
+  endpoint: string,
   profileData: any,
   form: FormInstance<any>,
-  data: DataState,
+  data: any,
   leaveDeductionData: LeaveDeductionDataState,
-  setLoading: { (value: SetStateAction<boolean>): void; (arg0: boolean): void },
-  cb: any
+  setLoading: any,
+  cb: any,
+  type: "late" | "early"
 ) => {
   setLoading(true);
   try {
-    const { orgId, buId, wgId, wId, employeeId, intAccountId } = profileData;
+    const { orgId, buId, wgId, wId, intAccountId } = profileData;
     const values = form.getFieldsValue(true);
 
-    const payload = mapLatePunishmentPayload(
+    const payload = mapPunishmentPayload(
       values,
       data,
       leaveDeductionData,
@@ -221,13 +239,15 @@ export const createEditLatePunishmentConfig = async (
       buId,
       wgId,
       wId,
-      intAccountId
+      intAccountId,
+      type
     );
-    const res = await axios.post(`/LatePunishmentpolicy`, payload);
+
+    await axios.post(endpoint, payload);
+
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
-    cb && cb();
-    setLoading(false);
+    cb?.();
   } catch (error: any) {
     const errorMessage =
       error?.response?.data?.Message || "Something went wrong";
@@ -237,7 +257,7 @@ export const createEditLatePunishmentConfig = async (
   }
 };
 
-const mapLatePunishmentPayload = (
+const mapPunishmentPayload = (
   values: any,
   dataState: any[],
   leaveDeductionData: LeaveDeductionDataState,
@@ -245,9 +265,52 @@ const mapLatePunishmentPayload = (
   buId: number,
   wgId: number,
   wId: number,
-  accountId: number
-): LatePunishmentPayload => {
-  const payload: LatePunishmentPayload = {
+  accountId: number,
+  type: "late" | "early"
+): BasePunishmentPayload => {
+  const elements = dataState.map((item: any) => {
+    const isLate = type === "late";
+    return {
+      ...(isLate
+        ? {
+            lateCalculationType: item.lateCalculationType || 0,
+            lateCalculationTypeDescription:
+              item.lateCalculationTypeDescription || "",
+            minimumLateTime: item.minimumLateTime || 0,
+            maximumLateTime: item.maximumLateTime || 0,
+            lateTimeCalculatedBy: item.lateTimeCalculatedBy || 0,
+            lateTimeCalculatedByDescription:
+              item.lateTimeCalculatedByDescription || "",
+          }
+        : {
+            earlyLeaveCalculationType: item.earlyLeaveCalculationType || 0,
+            earlyLeaveCalculationTypeDescription:
+              item.earlyLeaveCalculationTypeDescription || "",
+            minimumEarlyLeaveTime: item.minimumEarlyLeaveTime || 0,
+            maximumEarlyLeaveTime: item.maximumEarlyLeaveTime || 0,
+            earlyLeaveTimeCalculatedBy: item.earlyLeaveTimeCalculatedBy || 0,
+            earlyLeaveTimeCalculatedByDescription:
+              item.earlyLeaveTimeCalculatedByDescription || "",
+          }),
+      eachDayCountBy: item.eachDayCountById || 0,
+      startDay: item.startDay || 0,
+      endDay: item.endDay || 0,
+      isConsecutiveDay: item.isConsecutiveDay || false,
+      punishmentType: item.punishmentType || 0,
+      punishmentTypeDescription: item.punishmentTypeDescription || "",
+      leaveDeductType: item.leaveDeductType || 0,
+      leaveDeductTypeDescription: item.leaveDeductTypeDescription || "",
+      leaveDeductQty: item.leaveDeductQty || 0,
+      amountDeductFrom: item.amountDeductFrom || 0,
+      amountDeductFromDescription: item.amountDeductFromDescription || "",
+      amountDeductType: item.amountDeductType || 0,
+      amountDeductTypeDescription: item.amountDeductTypeDescription || "",
+      amountOrPercentage: item.amountOrPercentage || 0,
+      id: item.id || 0,
+    };
+  });
+
+  return {
     accountId: accountId || 0,
     businessUnitId: buId || 0,
     workplaceGroupId: wgId || 0,
@@ -256,65 +319,29 @@ const mapLatePunishmentPayload = (
     description: values?.policyDescription || "",
     isActive: true,
     actionBy: values?.employeeId || 0,
-    elements: dataState.map(
-      (item: any): LatePunishmentElement => ({
-        lateCalculationType: item.lateCalculationType || 0,
-        lateCalculationTypeDescription:
-          item.lateCalculationTypeDescription || "",
-        eachDayCountBy: item.eachDayCountById || 0,
-        startDay: item.startDay || 0,
-        endDay: item.endDay || 0,
-        isConsecutiveDay: item.isConsecutiveDay || false,
-        minimumLateTime: item.minimumLateTime || 0,
-        maximumLateTime: item.maximumLateTime || 0,
-        lateTimeCalculatedBy: item.lateTimeCalculatedBy || 0,
-        lateTimeCalculatedByDescription:
-          item.lateTimeCalculatedByDescription || "",
-        punishmentType: item.punishmentType || 0,
-        punishmentTypeDescription: item.punishmentTypeDescription || "",
-        leaveDeductType: item.leaveDeductType || 0,
-        leaveDeductTypeDescription: item.leaveDeductTypeDescription || "",
-        leaveDeductQty: item.leaveDeductQty || 0,
-        amountDeductFrom: item.amountDeductFrom || 0,
-        amountDeductFromDescription: item.amountDeductFromDescription || 0,
-        amountDeductType: item.amountDeductType || 0,
-        amountDeductTypeDescription: item.amountDeductTypeDescription || "",
-        amountOrPercentage: item.amountOrPercentage || 0,
-        id: item.id || 0,
-      })
-    ),
-    departments: (values?.department || []).map(
-      (dept: any): Department => ({
-        departmentId: dept.value || 0,
-        departmentName: dept.label || "",
-        id: 0,
-      })
-    ),
-    designations: (values?.designation || []).map(
-      (design: any): Designation => ({
-        designationId: design.value || 0,
-        designationName: design.label || "",
-        id: 0,
-      })
-    ),
-    employmentTypes: (values?.employmentType || []).map(
-      (empType: any): EmploymentType => ({
-        employmentTypeId: empType.value || 0,
-        employmentTypeName: empType.label || "",
-        id: 0,
-      })
-    ),
-    leaveDeductions: (leaveDeductionData || []).map(
-      (ld: any, index: number): LeaveDeduction => ({
-        serialNo: index,
-        leaveTypeId: ld.leaveTypeId || 0,
-        leaveTypeName: ld.leaveTypeName || "",
-        id: 0,
-      })
-    ),
+    elements,
+    departments: (values?.department || []).map((dept: any) => ({
+      departmentId: dept.value || 0,
+      departmentName: dept.label || "",
+      id: 0,
+    })),
+    designations: (values?.designation || []).map((des: any) => ({
+      designationId: des.value || 0,
+      designationName: des.label || "",
+      id: 0,
+    })),
+    employmentTypes: (values?.employmentType || []).map((emp: any) => ({
+      employmentTypeId: emp.value || 0,
+      employmentTypeName: emp.label || "",
+      id: 0,
+    })),
+    leaveDeductions: (leaveDeductionData || []).map((ld: any, i: number) => ({
+      serialNo: i,
+      leaveTypeId: ld.leaveTypeId || 0,
+      leaveTypeName: ld.leaveTypeName || "",
+      id: 0,
+    })),
   };
-
-  return payload;
 };
 
 export const addLeaveDeductions = (
@@ -331,4 +358,23 @@ export const addLeaveDeductions = (
       id: 0,
     },
   ]);
+};
+
+export const statusChangePunishmentConfig = async (
+  url: string,
+  id: number,
+  status: boolean | string,
+  cb: any,
+  type: "late" | "early"
+) => {
+  try {
+    await axios.put(`/${url}/SetStatus/${id}?isActive=${status}`, {});
+    toast.success("Updated Successfully", { toastId: 1222 });
+    cb?.();
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.Message || "Something went wrong";
+    toast.warn(errorMessage);
+  } finally {
+  }
 };

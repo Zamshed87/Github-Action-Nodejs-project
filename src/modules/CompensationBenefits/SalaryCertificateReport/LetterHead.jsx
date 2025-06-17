@@ -67,10 +67,10 @@ export default function LetterHead({
           lineHeight: "1.5", // Added base line height for all content
         }}
       >
-        <div style={{ marginTop: "120px" }}>
+        <div style={{ marginTop: "200px" }}>
           {" "}
           {/* Increased top margin to match the image */}
-          <p style={{ fontWeight: "bold", color: "#000", lineHeight: "1.6" }}>
+          <p style={{ fontWeight: "bold", color: "#000", lineHeight: "1.6"}}>
             Date: <span>{formatDate(emp.IssueDate)}</span>
           </p>
 
@@ -79,7 +79,7 @@ export default function LetterHead({
               textAlign: "center",
               fontWeight: "bold",
               fontSize: "22px",
-              marginTop: "120px",
+              marginTop: "30px",
               marginBottom: "30px",
               textTransform: "uppercase",
               color: "#000",

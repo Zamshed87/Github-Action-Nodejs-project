@@ -301,7 +301,11 @@ const MonthlyLeaveReport = () => {
         render: (rec: any) => (
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
+              style={{
+                color: "var(--primary-color)",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
               onClick={() => {
                 getapporveStatus(
                   `/LeaveMovement/MonthlyLeaveReportApprovalStatus?applicationId=${rec.IntApplicationId}&employeeId=${rec.IntEmployeeId}`,
@@ -345,7 +349,7 @@ const MonthlyLeaveReport = () => {
               {rec?.IsApprove === true && <Tag color="success">Approved</Tag>}
               {rec?.AfterApproveStatus === "-"
                 ? "-"
-                : (rec?.IsApprove === false || rec?.IsApprove === null) &&
+                : (rec?.IsApprove === false || rec?.IsApprove == null) &&
                   rec?.IsReject === false && <Tag color="warning">Pending</Tag>}
               {rec?.IsReject === true && <Tag color="red">Rejected</Tag>}
             </div>

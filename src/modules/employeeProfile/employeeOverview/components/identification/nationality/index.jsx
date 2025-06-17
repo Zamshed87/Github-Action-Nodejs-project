@@ -380,7 +380,7 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                   {!singleData && (
                     <>
                       {rowDto?.empEmployeePhotoIdentity === "" ||
-                      rowDto?.empEmployeePhotoIdentity === null ||
+                      rowDto?.empEmployeePhotoIdentity == null ||
                       rowDto?.empEmployeePhotoIdentity?.strNationality === "" ||
                       rowDto?.empEmployeePhotoIdentity?.strNationality ===
                         null ? (
