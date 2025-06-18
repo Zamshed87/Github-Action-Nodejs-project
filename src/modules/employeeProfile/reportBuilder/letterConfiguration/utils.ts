@@ -41,6 +41,10 @@ export const customFields = [
   { id: 33, value: "[Last Working Date]", label: "Last Working Date" },
   { id: 34, value: "[Increment Details Table]", label: "Increment Details Table" },
   { id: 35, value: "[InWord]", label: "In Word" },
+  { id: 35, value: "[Basic Salary]", label: "Basic Salary" },
+  { id: 35, value: "[Increment Effective Date]", label: "Increment Effective Date" },
+  { id: 35, value: "[Incremented Salary]", label: "Incremented Salary" },
+  { id: 35, value: "[Increment %]", label: "Increment %" },
 ];
 
 export const modules = {

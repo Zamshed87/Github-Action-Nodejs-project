@@ -183,6 +183,14 @@ export function replacePlaceholdersInHTML(html, data) {
     if (cleanKey === "InWord" && data["Increment Details Table"]?.toWord) {
       return `In Word: ${data["Increment Details Table"].toWord}`;
     }
+    // Handle @Increment %
+    if (cleanKey === "Increment %") {
+      let grossSalary = data["Gross Salary"];
+      let incrementedSalary = data["Incremented Salary"];
+      let incrementPercent =
+        ((incrementedSalary - grossSalary) / grossSalary) * 100;
+      return incrementPercent?.toFixed(2);
+    }
 
     // Generic key-value replacement
     return data[cleanKey] ?? "";

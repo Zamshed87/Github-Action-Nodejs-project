@@ -24,7 +24,8 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
         const instance = new (window as any).RichTextEditor(
           editorDivRef.current,
           {
-            allowFloatPanel: false,
+            toggleBorder:false,
+            contentCssText: "body{overflow-y:scroll !important}"
           }
         );
         instance.setHTMLCode(initialValue);
@@ -43,7 +44,8 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
     useEffect(() => {
       if (
         value !== undefined &&
-        editorInstanceRef.current
+        editorInstanceRef.current &&
+        editorInstanceRef.current.getHTMLCode() !== value
       ) {
         editorInstanceRef.current.setHTMLCode(value);
       }
@@ -65,7 +67,7 @@ const RichTextEditor = forwardRef<RichTextEditorRef, Props>(
     }));
 
     return (
-      <div style={{ height: `${height ?? 350}px` }} ref={editorDivRef}></div>
+      <div style={{ minHeight: `${height ?? 450}px` }} ref={editorDivRef}></div>
     );
   }
 );
