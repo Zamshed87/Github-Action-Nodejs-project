@@ -60,7 +60,7 @@ const NOCLanding = ({ isManagement, pathurl }) => {
 
   const getLanding = (values) => {
     // &EmployeeId=${employeeId}
-    let api = `/NocApplication?Accountid=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&EmployeeId=0&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsDescending=false`;
+    let api = `/NocApplication?Accountid=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&EmployeeId=${isManagement ? 0 : employeeId}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsDescending=false`;
     getRowDataApi(api);
   };
 
