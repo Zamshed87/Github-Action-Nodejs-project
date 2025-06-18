@@ -183,11 +183,11 @@ const IndividualKpiEntry = () => {
             <div className="row">
               <div className="col-lg-12 pt-2 pb-2">
                 <h6 className="mb-2">
-                  <strong>Name: </strong> {values?.employee?.EmployeeOnlyName}{" "}
+                  <strong>Name: </strong> {values?.employee?.label}{" "}
                   <strong className="ml-1">Enroll: </strong>{" "}
-                  {values?.employee?.EmployeeId}{" "}
+                  {values?.employee?.value}{" "}
                   <strong className="ml-1">Designation: </strong>{" "}
-                  {values?.employee?.DesignationName}
+                  {values?.employee?.employeeInfoDesignation}
                 </h6>
               </div>
             </div>
