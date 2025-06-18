@@ -17,6 +17,7 @@ import {
   columnDisbursment,
   columnFinalSettlement,
   columnIncrement,
+  columnNoc,
   columnOvertime,
   columnsAboutMe,
   columnsAdvancedSalary,
@@ -400,6 +401,8 @@ const CommonApprovalComponent = () => {
               ? columnsAsset
               : id == 33
               ? columnsAboutMe(handleViewClick)
+              : id == 34
+              ? columnNoc
               : columnsDefault
           }
           bordered
