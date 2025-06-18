@@ -19,20 +19,17 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getDateOfYear } from "utility/dateFormatter";
 import {} from "react-icons/md";
-import { debounce } from "lodash";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
 import { getWorkplaceDetails } from "common/api";
 import PfEmployeeDetails from "./rightSideDetails";
 import { getMultipleDepartment } from "./view/helper";
 import { setCustomFieldsValue } from "utility/filter/helper";
 
 const PfEmployeeReport = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, orgId, wId, employeeId },
+    profileData: { buId, wgId, orgId, employeeId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -42,7 +39,6 @@ const PfEmployeeReport = () => {
   // menu permission
   const employeeFeature: any = permission;
 
-  const [filterList, setFilterList] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -360,7 +356,22 @@ const PfEmployeeReport = () => {
                       placeholder="Employee Status"
                       mode="multiple"
                       onChange={(value, op) => {
-                        setCustomFieldsValue(form, "employeeStatus", op);
+                        // Check if the current selection includes "All"
+                        const hasAll = value.includes(0);
+                        const hadAll = form.getFieldValue('employeeStatus')?.some((item: any) => item.value === 0);
+                        
+                        if (hasAll && !hadAll) {
+                          // If "All" is newly selected, clear other selections and only keep "All"
+                          const allOption = op.find((item: any) => item.value === 0);
+                          setCustomFieldsValue(form, "employeeStatus", [allOption]);
+                        } else if (value.length > 1 && hasAll) {
+                          // If "All" is already selected and user selects another option, remove "All"
+                          const filteredOptions = op.filter((item: any) => item.value !== 0);
+                          setCustomFieldsValue(form, "employeeStatus", filteredOptions);
+                        } else {
+                          // For other cases, use the normal behavior
+                          setCustomFieldsValue(form, "employeeStatus", op);
+                        }
                       }}
                     />
                   </Col>
