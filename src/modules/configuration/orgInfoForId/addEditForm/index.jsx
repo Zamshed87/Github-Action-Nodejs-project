@@ -1,14 +1,15 @@
 import { ModalFooter } from "Components/Modal";
-import { PForm, PInput, PSelect } from "Components/PForm";
+import { PForm, PInput } from "Components/PForm";
+import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Switch } from "antd";
+import axios from "axios";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import { useEffect, useState } from "react";
 import { ImAttachment } from "react-icons/im";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
-import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -20,9 +21,9 @@ export default function AddEditForm({
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
+  const workplaceDDL = useApiRequest([]);
 
-  const saveHRPostion = useApiRequest({});
-  const getBUnitDDL = useApiRequest({});
+  const saveExtraInfo = useApiRequest({});
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [attachmentList2, setAttachmentList2] = useState([]);
@@ -51,17 +52,17 @@ export default function AddEditForm({
         ? singleData?.intEmpIdCardExternalInfoId
         : 0,
       intAccountId: orgId,
-      intAuthorizedSignatureUrlId:
+      authorizedSignatureUrlId:
         attachmentList2[0]?.response.length > 0
           ? attachmentList2[0]?.response[0]?.globalFileUrlId
-          : singleData?.intAuthorizedSignatureUrlId,
-      intOrgLogoUrlId:
+          : singleData?.authorizedSignatureUrlId,
+      orgLogoUrlId:
         attachmentList[0]?.response.length > 0
           ? attachmentList[0]?.response[0]?.globalFileUrlId
-          : singleData?.intOrgLogoUrlId,
+          : singleData?.orgLogoUrlId,
       isActive: values?.isActive,
     };
-    saveHRPostion.action({
+    saveExtraInfo.action({
       urlKey: "CreateOrUpdateEmpIdCardExternalInfo",
       method: "POST",
       payload: payload,
@@ -72,11 +73,42 @@ export default function AddEditForm({
   };
 
   useEffect(() => {
-    if (singleData?.intEmpIdCardExternalInfoId) {
-      form.setFieldsValue({
-        ...singleData,
-      });
+    if (singleData?.id) {
+      const getExtraInfo = async () => {
+        setLoading && setLoading(true);
+        try {
+          const res = await axios.get(
+            `/SaasMasterData/GetEmpIdCardExternalInfoDetail?id=${singleData?.id}`
+          );
+          console.log(res?.data);
+          form.setFieldsValue({
+            ...res?.data,
+            workplaceIds: res?.data?.workplaces?.map((item) => item?.id),
+          });
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading && setLoading(false);
+        }
+      };
+      getExtraInfo();
     }
+    workplaceDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
   }, [singleData]);
   return (
     <>
@@ -96,20 +128,20 @@ export default function AddEditForm({
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
-            <PInput
-              type="text"
-              name="strOrgLocationAddress"
-              label="Organization Address"
-              placeholder="Organization Address"
-              rules={[
-                { required: true, message: "Organization Address is required" },
-              ]}
+            <PSelectWithAll
+              form={form}
+              name="workplaceIds"
+              label="Workplace"
+              placeholder="Select Workplace"
+              options={workplaceDDL.data}
+              loading={workplaceDDL.loading}
+              rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>
             <PInput
               type="text"
-              name="strOrgEmailAddress"
+              name="orgEmail"
               label="Organization Email"
               placeholder="Organization Email"
               rules={[
@@ -124,7 +156,32 @@ export default function AddEditForm({
           <Col md={12} sm={24}>
             <PInput
               type="text"
-              name="strOrgDomainAddress"
+              name="orgAddress"
+              label="Organization Address"
+              placeholder="Organization Address"
+              rules={[
+                { required: true, message: "Organization Address is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="orgAddressBn"
+              label="Organization Address Bangla"
+              placeholder="Organization Address Bangla"
+              rules={[
+                {
+                  required: true,
+                  message: "Organization Address Bangla is required",
+                },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="orgDomainAddress"
               label="Organization Domain Address"
               placeholder="Organization Domain Address"
               //   rules={[
@@ -138,7 +195,7 @@ export default function AddEditForm({
           <Col md={12} sm={24}>
             <PInput
               type="text"
-              name="strOrgPhone"
+              name="orgTelephone"
               label="Organization Telephone"
               placeholder="Organization Telephone"
               //   rules={[
@@ -152,7 +209,7 @@ export default function AddEditForm({
 
           <Col md={12} style={{ marginTop: "1.4rem" }}>
             <div className="input-main position-group-select">
-              {singleData?.intOrgLogoUrlId ? (
+              {singleData?.orgLogoUrlId ? (
                 <>
                   <FileUploadComponents
                     propsObj={{
@@ -170,8 +227,7 @@ export default function AddEditForm({
                       maxCount: 1,
                     }}
                   />
-                  {attachmentList?.length === 0 &&
-                  singleData?.intOrgLogoUrlId ? (
+                  {attachmentList?.length === 0 && singleData?.orgLogoUrlId ? (
                     <div
                       style={{
                         color: "rgb(0, 114, 229)",
@@ -180,9 +236,7 @@ export default function AddEditForm({
                       }}
                       onClick={() => {
                         dispatch(
-                          getDownlloadFileView_Action(
-                            singleData?.intOrgLogoUrlId
-                          )
+                          getDownlloadFileView_Action(singleData?.orgLogoUrlId)
                         );
                       }}
                     >
@@ -200,7 +254,7 @@ export default function AddEditForm({
               // style={{ cursor: "pointer", position: "relative" }}
             >
               <div style={{ fontSize: "" }}>
-                {!singleData?.intOrgLogoUrlId ? (
+                {!singleData?.orgLogoUrlId ? (
                   <>
                     <FileUploadComponents
                       propsObj={{
@@ -230,7 +284,7 @@ export default function AddEditForm({
            */}
           <Col md={12} style={{ marginTop: "1.4rem" }}>
             <div className="input-main position-group-select">
-              {singleData?.intAuthorizedSignatureUrlId ? (
+              {singleData?.authorizedSignatureUrlId ? (
                 <>
                   <FileUploadComponents
                     propsObj={{
@@ -249,7 +303,7 @@ export default function AddEditForm({
                     }}
                   />
                   {attachmentList2?.length === 0 &&
-                  singleData?.intAuthorizedSignatureUrlId ? (
+                  singleData?.authorizedSignatureUrlId ? (
                     <div
                       style={{
                         color: "rgb(0, 114, 229)",
@@ -259,7 +313,7 @@ export default function AddEditForm({
                       onClick={() => {
                         dispatch(
                           getDownlloadFileView_Action(
-                            singleData?.intAuthorizedSignatureUrlId
+                            singleData?.authorizedSignatureUrlId
                           )
                         );
                       }}
@@ -278,7 +332,7 @@ export default function AddEditForm({
               // style={{ cursor: "pointer", position: "relative" }}
             >
               <div style={{ fontSize: "" }}>
-                {!singleData?.intOrgLogoUrlId ? (
+                {!singleData?.orgLogoUrlId ? (
                   <>
                     <FileUploadComponents
                       propsObj={{
