@@ -325,7 +325,7 @@ const handleInsertField = (fieldValue: string) => {
                         style={{
                           marginTop: "21px",
                           backgroundColor: "#F4F9F5",
-                          height: "350px",
+                          height: "450px",
                           overflow: "scroll",
                         }}
                       >

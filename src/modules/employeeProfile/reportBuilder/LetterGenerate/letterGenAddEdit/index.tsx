@@ -240,7 +240,7 @@ const LetterGenAddEdit = () => {
                 <>
                   <Col className="custom_quill quilJob" md={24} sm={24}>
                     <RichTextEditor
-                      height={600}
+                      height={800}
                       value={letter}
                       onChange={(data) => {
                         form.setFieldValue("letter", data);
