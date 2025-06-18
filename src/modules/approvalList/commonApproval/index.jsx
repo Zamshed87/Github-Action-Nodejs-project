@@ -60,13 +60,16 @@ const CommonApprovalComponent = () => {
     shallowEqual
   );
   const isFirstRun = useRef(true);
+  const rowRefs = useRef({}); // To store refs for each row
   // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
+
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   // state
+  const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
   const [viewData, setViewData] = useState({});
@@ -271,7 +274,26 @@ const CommonApprovalComponent = () => {
     label: item,
     value: item,
   }));
+  useEffect(() => {
+    if (location.state && location.state.state.idToHighlight) {
+      setHighlightedRowId(location.state.state.idToHighlight);
 
+      // Optional: Scroll to the row after a short delay to ensure it's rendered
+      const timer = setTimeout(() => {
+        if (rowRefs.current[location.state.state.idToHighlight]) {
+          rowRefs.current[location.state.state.idToHighlight].scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          // After blinking for a few seconds, you might want to remove the highlight
+          setTimeout(() => {
+            setHighlightedRowId(null);
+          }, 3000); // Remove highlight after 3 seconds
+        }
+      }, 100); // Small delay
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
   // render
   return (
     <div className="approval-container mt-4">
@@ -343,6 +365,20 @@ const CommonApprovalComponent = () => {
             onChange: (selectedRowKeys, selectedRows) => {
               setSelectedRow(selectedRows);
             },
+          }}
+          rowClassName={(record) => {
+            if (record.applicationId === highlightedRowId) {
+              return "blink-row";
+            }
+            return "";
+          }}
+          onRow={(record) => {
+            return {
+              ref: (node) => {
+                // Store a ref for each row using its ID
+                rowRefs.current[record.applicationId] = node;
+              },
+            };
           }}
           header={
             id == 8
