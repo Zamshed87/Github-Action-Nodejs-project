@@ -12,6 +12,12 @@ export default function LetterHead({
     salaryMap[PayrollElement] = Amount;
   });
 
+  // Calculate total gross salary dynamically from salary elements
+  const totalGrossSalary = Object.values(salaryMap).reduce(
+    (total, amount) => total + (Number(amount) || 0),
+    0
+  );
+
   const pronoun = emp.ProNoun || "His";
   const genderWord =
     emp.Gender === "Son" || emp.Gender === "son" ? "Son" : 
@@ -199,14 +205,13 @@ export default function LetterHead({
                 <td style={{ width: "200px", color: "#000" }}>Total Gross Salary</td>
                 <td style={{ width: "30px", textAlign: "center" }}>:</td>
                 <td>
-                  {emp.GrossAmount.toLocaleString(undefined, {
+                  {totalGrossSalary.toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                   })}
                 </td>
               </tr>
             </tbody>
           </table>
-
           <p
             style={{
               fontWeight: "bold",
