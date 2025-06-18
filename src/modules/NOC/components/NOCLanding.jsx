@@ -133,7 +133,12 @@ const NOCLanding = ({ isManagement, pathurl }) => {
       <div className="table-card">
         <div style={{ display: "none" }}>
           <div ref={contentRef}>
-            {<NOCPrintDocument nocData={printData} signatureInfo={signatureInfo} />}
+            {
+              <NOCPrintDocument
+                nocData={printData}
+                signatureInfo={signatureInfo}
+              />
+            }
           </div>
         </div>
         {/* header-employee-profile  */}
@@ -260,17 +265,26 @@ const NOCLanding = ({ isManagement, pathurl }) => {
           open={signatureModalVisible}
           onCancel={() => setSignatureModalVisible(false)}
           footer={[
-            <div key="footer-container" style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+            <div
+              key="footer-container"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "100%",
+              }}
+            >
               <button
                 key="print"
                 className="btn btn-green"
                 onClick={handlePrintWithSignature}
                 style={{ width: "180px", minWidth: "280px" }}
               >
-                <LocalPrintshopIcon style={{ fontSize: "18px", marginRight: "5px" }} />
+                <LocalPrintshopIcon
+                  style={{ fontSize: "18px", marginRight: "5px" }}
+                />
                 Print with Signature
               </button>
-            </div>
+            </div>,
           ]}
           width={600}
         >
@@ -281,8 +295,10 @@ const NOCLanding = ({ isManagement, pathurl }) => {
                 name="employee"
                 placeholder="Search minimum 2 character"
                 onChange={(value, op) => {
+                  const employeeNameWithCodeModify =
+                    op?.employeeNameWithCode?.replace(/\(\d+\)/, "");
                   setSignatureInfo({
-                    name: op?.employeeNameWithCode || "",
+                    name: employeeNameWithCodeModify || "",
                     designation: op?.designationName || "",
                     department: op?.strDepartment || "",
                     workplace: op?.workplace || "",
