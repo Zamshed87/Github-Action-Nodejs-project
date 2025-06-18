@@ -7,7 +7,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
 import PfPolicyConfiguration from "./components/PfPolicyConfiguration";
-import { createPFPolicy } from "./helper";
+import { createTdsChallan } from "./helper";
 import { useHistory } from "react-router-dom";
 
 const TdsChallanCreate = () => {
@@ -92,7 +92,7 @@ const TdsChallanCreate = () => {
                         intMonthlyInvestmentWith:
                           values?.intMonthlyInvestmentWith,
                       };
-                      createPFPolicy(payload, setLoading, () => {
+                      createTdsChallan(payload, setLoading, () => {
                         setSaveData({
                           employeeContributions: [],
                           companyContributions: [],

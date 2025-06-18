@@ -7,7 +7,7 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import PfPolicyFilters from "./components/filter/TdsChallanFilters";
+import TdsChallanFilters from "./components/filter/TdsChallanFilters";
 import useTdsChallan from "./hooks/useTdsChallan";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
@@ -72,7 +72,7 @@ const TdsChallan = () => {
             ]}
           />
           <PCardBody className="mb-3">
-            <PfPolicyFilters form={form} />
+            <TdsChallanFilters form={form} />
           </PCardBody>
           <DataTable
             header={getHeader(pages, setData, setOpenView, setOpenExtend)}

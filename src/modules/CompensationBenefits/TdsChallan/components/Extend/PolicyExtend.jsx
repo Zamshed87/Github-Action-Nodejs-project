@@ -3,7 +3,7 @@ import { ModalFooter } from "Components/Modal";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Loading from "common/loading/Loading";
-import { createPFPolicy } from "../../TdsChallanCreate/helper";
+import { createTdsChallan } from "../../TdsChallanCreate/helper";
 import { PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
@@ -68,7 +68,7 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
           isPFInvestment: data.isPFInvestment,
           intMonthlyInvestmentWith: data.intMonthlyInvestmentWith,
         };
-        await createPFPolicy(payload, setLoading, () => {
+        await createTdsChallan(payload, setLoading, () => {
           form.resetFields();
           fetchPfPolicy();
           setOpenExtend({ extend: false, data: {} });

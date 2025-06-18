@@ -1,29 +1,30 @@
 import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
-import usePfPolicyFilters from "./useTdsChallanFilters";
+import useTdsChallanFilters from "./useTdsChallanFilters";
 
-const TdsChallanFilters = ({form}) => {
-  const { workplaceGroupDDL, workplaceDDL, getWorkplaceDDL } =
-    usePfPolicyFilters(form);
+const TdsChallanFilters = ({ form }) => {
+  const { fiscalYearDDL, workplaceDDL } = useTdsChallanFilters();
   return (
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
         <PSelect
-          options={workplaceGroupDDL.data}
-          name="workplaceGroup"
-          label="Workplace Group"
-          placeholder="Select Workplace Group"
-          onChange={(_, op) => {
-            form.setFieldsValue({ workplaceGroup: op });
-            getWorkplaceDDL();
+          options={fiscalYearDDL?.data?.length > 0 ? fiscalYearDDL?.data : []}
+          name="fiscalYear"
+          mode="multiple"
+          showSearch
+          filterOption={true}
+          label="Financial Year"
+          placeholder="Financial Year"
+          onChange={(value, op) => {
+            form.setFieldsValue({ fiscalYear: op });
           }}
-          loading={workplaceGroupDDL.loading}
-          // rules={[{ required: true, message: "Workplace Group Is Required" }]}
+          rules={[{ required: true, message: "Fiscal Year is required" }]}
         />
       </Col>
       <Col md={5} sm={12} xs={24}>
         <PSelect
           options={workplaceDDL.data}
+          mode="multiple"
           name="workplace"
           label="Workplace"
           placeholder="Select Workplace"
@@ -34,30 +35,6 @@ const TdsChallanFilters = ({form}) => {
           // rules={[{ required: true, message: "Workplace Is Required" }]}
         />
       </Col>
-      {/* <Col md={5} sm={12} xs={24}>
-        <PSelect
-          options={[
-            {
-              value: 0,
-              label: "All",
-            },
-            {
-              value: "Active",
-              label: "Active",
-            },
-            {
-              value: "Inactive",
-              label: "Inactive",
-            },
-          ]}
-          name="status"
-          label="Status"
-          placeholder="Select Status"
-          onChange={(value) => {
-            form.setFieldsValue({ status: value });
-          }}
-        />
-      </Col> */}
       <Col style={{ marginTop: "23px" }}>
         <PButton type="primary" action="submit" content="View" />
       </Col>
