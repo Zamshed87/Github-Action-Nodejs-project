@@ -1,6 +1,4 @@
-import { Switch, Tooltip } from "antd";
-import { Flex, PButton } from "Components";
-import { toast } from "react-toastify";
+import { PButton } from "Components";
 
 export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
   {

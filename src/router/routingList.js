@@ -2982,7 +2982,7 @@ export const routingList = [
     component: TdsChallan,
   },
   {
-    path: "/compensationAndBenefits/incometaxmgmt/tdsChallanCreate",
+    path: "/compensationAndBenefits/incometaxmgmt/tdsChallan/create",
     component: TdsChallanCreate,
   },
   {

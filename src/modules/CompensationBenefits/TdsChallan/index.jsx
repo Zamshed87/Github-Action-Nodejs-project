@@ -63,7 +63,7 @@ const TdsChallan = () => {
                 icon: "plus",
                 onClick: () => {
                   if (permission?.isCreate) {
-                    history.push("/BenefitsManagement/providentFund/pfPolicy/create");
+                    history.push("/compensationAndBenefits/incometaxmgmt/tdsChallan/create");
                   } else {
                     toast.warn("You don't have permission");
                   }

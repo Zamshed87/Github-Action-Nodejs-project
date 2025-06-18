@@ -33,11 +33,11 @@ const TdsChallanCreate = () => {
     );
   }, [permissionList]);
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management - PF Policy Create";
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Benefits Management - TDS CHALLAN Create";
     return () => {
       document.title = "PeopleDesk";
-    };  
+    };
   }, []);
 
   return permission?.isCreate ? (
@@ -67,9 +67,13 @@ const TdsChallanCreate = () => {
                   form
                     .validateFields(commonFields)
                     .then((values) => {
-                
-                      if (saveData.employeeContributions.length < 1 && saveData.companyContributions.length < 1) {
-                        toast.error("Please add at least one employee or company contribution.");
+                      if (
+                        saveData.employeeContributions.length < 1 &&
+                        saveData.companyContributions.length < 1
+                      ) {
+                        toast.error(
+                          "Please add at least one employee or company contribution."
+                        );
                         return;
                       }
 
