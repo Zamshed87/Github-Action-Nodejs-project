@@ -1,10 +1,9 @@
 import EmployeeContribution from "./EmployeeContribution";
-import PfPolicyConfig from "./PfPolicyConfig";
-import EmployeeContributionPfPayment from "./EmployeeContributionPfPayment";
-import PfInvestment from "./PfInvestment";
 import { toast } from "react-toastify";
+import { detailsHeader } from "./helper";
+import { DataTable, PCardBody } from "Components";
 
-const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
+const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
   const removeData = (index, company) => {
     if (company) {
       const newData = saveData?.companyContributions?.filter(
@@ -109,28 +108,31 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
         toast.error("Please fill all required fields.");
       });
   };
-  
+  let data = [];
 
   return (
     <>
-      <PfPolicyConfig form={form} />
       <EmployeeContribution
         form={form}
         data={saveData?.employeeContributions}
         addData={() => addData(false)}
         removeData={(index) => removeData(index, false)}
       />
-      <EmployeeContribution
-        form={form}
-        data={saveData?.companyContributions}
-        addData={() => addData(true)}
-        removeData={(index) => removeData(index, true)}
-        company={true}
-      />
-      <EmployeeContributionPfPayment form={form} />
-      <PfInvestment form={form} />
+      {data?.length > 0 && (
+        <PCardBody className="mb-4">
+          <DataTable
+            bordered
+            data={data || []}
+            rowKey={(row, idx) => idx}
+            header={detailsHeader({
+              removeData,
+              intPfEligibilityDependOn:'',
+            })}
+          />
+        </PCardBody>
+      )}
     </>
   );
 };
 
-export default PfPolicyConfiguration;
+export default TdsChallanCreateForm;

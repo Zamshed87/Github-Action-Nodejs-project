@@ -1,5 +1,5 @@
 import { DataTable } from "Components";
-import { detailsHeader } from "../../TdsChallanCreate/components/PfPolicyConfiguration/helper";
+import { detailsHeader } from "../../TdsChallanCreate/components/TdsChallanCreateForm/helper";
 
 const PolicyView = ({ data }) => {
   let intPfEligibilityDependOn = { value: data?.intPfEligibilityDependOn };
