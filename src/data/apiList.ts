@@ -355,18 +355,15 @@ export const apiList = {
   GetFinalSettlementDueSalaryReport: "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
   GetInvestmentSummaryReportByOrganization:
     "/PFInvestment/GetInvestmentSummaryReportByOrganization",
-    GetInvestmentDetailReportByOrganization:
+  GetInvestmentDetailReportByOrganization:
     "/PFInvestment/GetInvestmentDetailReportByOrganization",
-    GetSalaryCertificate:
-    "/PdfAndExcelReport/GetSalaryCertificate",
-    PostEmployeePfSummaryReport:
-    "/ProvidentFund/PostEmployeePfSummaryReport",
-    GetEmployeeMonthWisePfDetailReport:
+  GetSalaryCertificate: "/PdfAndExcelReport/GetSalaryCertificate",
+  PostEmployeePfSummaryReport: "/ProvidentFund/PostEmployeePfSummaryReport",
+  GetEmployeeMonthWisePfDetailReport:
     "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
-    GetTypeWiseReport:
-    "/PFInvestment/GetTypeWiseReport",
-    GetTypeWiseDetailsReport:
-    "/PFInvestment/GetTypeWiseDetailsReport",
+  GetTypeWiseReport: "/PFInvestment/GetTypeWiseReport",
+  GetTypeWiseDetailsReport: "/PFInvestment/GetTypeWiseDetailsReport",
 
-
+  ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
+  ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
 };

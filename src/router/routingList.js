@@ -1803,6 +1803,7 @@ const FinalSettlementEdit = lazy(() =>
   )
 );
 
+import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
 import ChattingIndex from "modules/chattingApp/ChattingIndex";
 
 const AttendanceShiftChange = lazy(() =>
@@ -1970,6 +1971,10 @@ export const routingList = [
   {
     path: "/administration/thirdPartyIntegration/hireDesk",
     component: HiredeskOnboarding,
+  },
+  {
+    path: "/administration/thirdPartyIntegration/managerium",
+    component: ManageriumOnBoarding,
   },
   {
     path: "/administration/timeManagement/fixedRosterSetup",

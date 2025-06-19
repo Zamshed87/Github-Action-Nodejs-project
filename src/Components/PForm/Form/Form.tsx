@@ -13,6 +13,8 @@ export const PForm: React.FC<FormProperty> = (property) => {
     onValuesChange,
     onFieldsChange,
     children,
+    wrapperCol,
+    labelCol,
   } = property;
   return (
     <Form
@@ -23,6 +25,8 @@ export const PForm: React.FC<FormProperty> = (property) => {
       autoComplete={autoComplete || "off"}
       form={form}
       layout={layout || "vertical"}
+      wrapperCol={wrapperCol}
+      labelCol={labelCol}
       size="middle"
       className="PeopleDeskFormWrapper"
       onValuesChange={onValuesChange}
