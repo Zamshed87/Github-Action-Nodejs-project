@@ -79,12 +79,12 @@ const GPCreateViewEdit = () => {
     []
   );
 
-  const getEmploymentType = () => {
+  const getEmploymentType = (intWorkplaceId?: number) => {
     form.setFieldsValue({
       employmentType: undefined,
     });
     const { workplace } = form.getFieldsValue(true);
-
+    console.log(workplace, "workplace");
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -92,7 +92,7 @@ const GPCreateViewEdit = () => {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value,
+        IntWorkplaceId: workplace?.value || intWorkplaceId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -115,7 +115,8 @@ const GPCreateViewEdit = () => {
     if (params?.type !== "create") {
       getgratuityPolicy(`/GratuityPolicy/${params?.id}`, (data: any) => {
         // Populate the form with the fetched data
-        if (params?.type === "edit")
+        if (params?.type === "edit") {
+          getEmploymentType(data?.intWorkplaceId);
           form.setFieldsValue({
             strPolicyName: data?.strPolicyName,
             intPolicyId: data?.intPolicyId,
@@ -134,6 +135,8 @@ const GPCreateViewEdit = () => {
               value: data?.intEligibilityDependOn,
             },
           });
+        }
+
         const gratuityPolicyDetails = data?.gratuityPolicyDetails.map(
           (item: GratuityPolicyDetailKey) => ({
             ...item,
@@ -144,9 +147,7 @@ const GPCreateViewEdit = () => {
         setData(gratuityPolicyDetails || []); // need to modify
       });
     }
-    if (params?.type === "edit") {
-      getEmploymentType();
-    }
+
     if (params?.type !== "view") {
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
