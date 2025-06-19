@@ -1822,6 +1822,7 @@ import GeneratePrint from "modules/CompensationBenefits/Increment/singleIncement
 import NOCManagementLanding from "modules/NOC/nocManagment";
 import NOCForm from "modules/NOC/components/NOCForm";
 import NocSelfLanding from "modules/NOC/nocSelf";
+import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -1988,6 +1989,10 @@ export const routingList = [
   {
     path: "/administration/thirdPartyIntegration/hireDesk",
     component: HiredeskOnboarding,
+  },
+  {
+    path: "/administration/thirdPartyIntegration/managerium",
+    component: ManageriumOnBoarding,
   },
   {
     path: "/administration/timeManagement/fixedRosterSetup",
@@ -2580,11 +2585,11 @@ export const routingList = [
   },
 
   // noc start
-    {
+  {
     path: "/SelfService/noc/nocApplication",
     component: NocSelfLanding,
   },
-    {
+  {
     path: "/SelfService/noc/nocApplication/create",
     component: NOCForm,
   },
