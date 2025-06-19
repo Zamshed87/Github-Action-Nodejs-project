@@ -97,11 +97,11 @@ export const GratuityPolicyForm = (
       ddl: [
         {
           label: "Gross",
-          value: 1,
+          value: 2,
         },
         {
           label: "Basic",
-          value: 2,
+          value: 1,
         },
         {
           label: "Fixed Amount",
