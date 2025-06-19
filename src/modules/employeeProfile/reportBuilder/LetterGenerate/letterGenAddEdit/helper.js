@@ -124,6 +124,7 @@ export const createNEditLetterGenerate = async (
     };
     const res = await axios.post(`/LetterBuilder/LetterGenerate`, payload);
     form.resetFields();
+    setLoading(false);
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     toast.warn(error?.response?.data?.message ?? "something went wrong");
