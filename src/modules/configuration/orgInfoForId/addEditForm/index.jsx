@@ -21,6 +21,7 @@ export default function AddEditForm({
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
+  const [details, setDetails] = useState({});
   const workplaceDDL = useApiRequest([]);
 
   const saveExtraInfo = useApiRequest({});
@@ -55,11 +56,11 @@ export default function AddEditForm({
       authorizedSignatureUrlId:
         attachmentList2[0]?.response.length > 0
           ? attachmentList2[0]?.response[0]?.globalFileUrlId
-          : singleData?.authorizedSignatureUrlId,
+          : details?.authorizedSignatureUrlId,
       orgLogoUrlId:
         attachmentList[0]?.response.length > 0
           ? attachmentList[0]?.response[0]?.globalFileUrlId
-          : singleData?.orgLogoUrlId,
+          : details?.orgLogoUrlId,
       isActive: values?.isActive,
     };
     saveExtraInfo.action({
@@ -80,7 +81,7 @@ export default function AddEditForm({
           const res = await axios.get(
             `/SaasMasterData/GetEmpIdCardExternalInfoDetail?id=${singleData?.id}`
           );
-          console.log(res?.data);
+          setDetails(res?.data);
           form.setFieldsValue({
             ...res?.data,
             workplaceIds: res?.data?.workplaces?.map((item) => item?.id),
@@ -209,7 +210,7 @@ export default function AddEditForm({
 
           <Col md={12} style={{ marginTop: "1.4rem" }}>
             <div className="input-main position-group-select">
-              {singleData?.orgLogoUrlId ? (
+              {details?.orgLogoUrlId ? (
                 <>
                   <FileUploadComponents
                     propsObj={{
@@ -227,7 +228,7 @@ export default function AddEditForm({
                       maxCount: 1,
                     }}
                   />
-                  {attachmentList?.length === 0 && singleData?.orgLogoUrlId ? (
+                  {attachmentList?.length === 0 && details?.orgLogoUrlId ? (
                     <div
                       style={{
                         color: "rgb(0, 114, 229)",
@@ -236,7 +237,7 @@ export default function AddEditForm({
                       }}
                       onClick={() => {
                         dispatch(
-                          getDownlloadFileView_Action(singleData?.orgLogoUrlId)
+                          getDownlloadFileView_Action(details?.orgLogoUrlId)
                         );
                       }}
                     >
@@ -254,7 +255,7 @@ export default function AddEditForm({
               // style={{ cursor: "pointer", position: "relative" }}
             >
               <div style={{ fontSize: "" }}>
-                {!singleData?.orgLogoUrlId ? (
+                {!details?.orgLogoUrlId ? (
                   <>
                     <FileUploadComponents
                       propsObj={{
@@ -284,7 +285,7 @@ export default function AddEditForm({
            */}
           <Col md={12} style={{ marginTop: "1.4rem" }}>
             <div className="input-main position-group-select">
-              {singleData?.authorizedSignatureUrlId ? (
+              {details?.authorizedSignatureUrlId ? (
                 <>
                   <FileUploadComponents
                     propsObj={{
@@ -303,7 +304,7 @@ export default function AddEditForm({
                     }}
                   />
                   {attachmentList2?.length === 0 &&
-                  singleData?.authorizedSignatureUrlId ? (
+                  details?.authorizedSignatureUrlId ? (
                     <div
                       style={{
                         color: "rgb(0, 114, 229)",
@@ -313,7 +314,7 @@ export default function AddEditForm({
                       onClick={() => {
                         dispatch(
                           getDownlloadFileView_Action(
-                            singleData?.authorizedSignatureUrlId
+                            details?.authorizedSignatureUrlId
                           )
                         );
                       }}
@@ -332,7 +333,7 @@ export default function AddEditForm({
               // style={{ cursor: "pointer", position: "relative" }}
             >
               <div style={{ fontSize: "" }}>
-                {!singleData?.orgLogoUrlId ? (
+                {!details?.orgLogoUrlId ? (
                   <>
                     <FileUploadComponents
                       propsObj={{
