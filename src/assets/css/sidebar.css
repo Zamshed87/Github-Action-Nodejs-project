@@ -79,7 +79,7 @@
 
 /* 1st level dropdown */
 .menu ul li > ul.dropdown-content li a.active {
-  color: var(--success500) !important;
+  color: var(--primary-color) !important;
   background: var(--color-less) !important;
 }
 
@@ -205,7 +205,7 @@ ul.dropdown-content.dropdown-second-content li a:hover {
   box-shadow: none;
 }
 .menu ul li > ul.dropdown-content li a.active:before {
-  background: var(--success500) !important;
+  background: var(--primary-color) !important;
 }
 .secondLevel-dropdown-show {
   position: relative;
@@ -227,5 +227,5 @@ ul.dropdown-content
   > ul.dropdown-content.dropdown-second-content
   li
   a.active:hover {
-  color: var(--success500) !important;
+  color: var(--primary-color) !important;
 }

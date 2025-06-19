@@ -244,17 +244,19 @@ const CardTable = ({ propsObj }) => {
       title: "Location",
       dataIndex: "visitingLocation",
       render: (_, record) => (
-        (
-          <LightTooltip
-            title={stripHtml(record?.visitingLocation ? record?.visitingLocation : "N/A")}
-            arrow
-          >
-            <div className="pointer">
-              {stripHtml((record?.visitingLocation || "N/A").slice(0, 70))}
-              {stripHtml((record?.visitingLocation?.length || 0) > 70 ? "..." : "")}
-            </div>
-          </LightTooltip>
-        )
+        <LightTooltip
+          title={stripHtml(
+            record?.visitingLocation ? record?.visitingLocation : "N/A"
+          )}
+          arrow
+        >
+          <div className="pointer">
+            {stripHtml((record?.visitingLocation || "N/A").slice(0, 70))}
+            {stripHtml(
+              (record?.visitingLocation?.length || 0) > 70 ? "..." : ""
+            )}
+          </div>
+        </LightTooltip>
       ),
       sorter: false,
       filter: false,
@@ -285,7 +287,11 @@ const CardTable = ({ propsObj }) => {
                       demoPopup("approve", "Approve", record);
                     }}
                   >
-                    <MuiIcon icon={<CheckCircle sx={{ color: "#34A853" }} />} />
+                    <MuiIcon
+                      icon={
+                        <CheckCircle sx={{ color: "var(--primary-color)" }} />
+                      }
+                    />
                   </div>
                 </Tooltip>
                 <Tooltip title="Reject">
@@ -525,7 +531,7 @@ const CardTable = ({ propsObj }) => {
         //                       }}
         //                     >
         //                       <MuiIcon
-        //                         icon={<CheckCircle sx={{ color: "#34A853" }} />}
+        //                         icon={<CheckCircle sx={{ color: "var(--primary-color)" }} />}
         //                       />
         //                     </div>
         //                   </Tooltip>

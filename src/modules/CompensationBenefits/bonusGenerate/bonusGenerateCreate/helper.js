@@ -70,6 +70,7 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
           ...item,
           isChecked: false,
           strDepartmentSection: item?.strDepartmentSection || "",
+          isManualBounsEdit: false,
         });
       });
 
@@ -248,9 +249,11 @@ export const onGenerateOrReGenerateBonus = (
           item?.strPayrollGroup || item?.strWorkPlaceGroupName,
         dteJoiningDate: item?.dteJoiningDate,
         strServiceLength: "",
-        numSalary: 0,
-        numBasic: 0,
-        numBonusAmount: 0,
+        numSalary: item?.numSalary || 0,
+        numBasic: item?.numBasic || 0,
+        numBonusAmount: item?.numBonusAmount || 0,
+        numActualBonusAmount: +item?.numActualBonusAmount || 0,
+        isManualBounsEdit: item?.isManualBounsEdit || false,
         intCreatedBy: employeeId,
         intBonusSetupId: item?.intBonusSetupId || 0,
         intDepartmentId: item?.intDepartmentId || 0,

@@ -286,7 +286,7 @@ const EmLoanApplication = () => {
       <ViewModal
         size="xl"
         title={
-          singleData === null
+          singleData == null
             ? "Create Loan Application"
             : "Update Loan Application"
         }

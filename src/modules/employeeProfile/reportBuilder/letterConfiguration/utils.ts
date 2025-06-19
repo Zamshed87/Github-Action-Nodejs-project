@@ -39,6 +39,13 @@ export const customFields = [
   { id: 31, value: "[Spouse Name]", label: "Spouse Name" },
   { id: 32, value: "[Confirmation Date]", label: "Confirmation Date" },
   { id: 33, value: "[Last Working Date]", label: "Last Working Date" },
+  { id: 34, value: "[Increment Details Table]", label: "Increment Details Table" },
+  { id: 35, value: "[InWord]", label: "In Word" },
+  { id: 36, value: "[Basic Salary]", label: "Basic Salary" },
+  { id: 37, value: "[Increment Effective Date]", label: "Increment Effective Date" },
+  { id: 38, value: "[Gross Salary Before Increment]", label: "Gross Salary Before Increment" },
+  { id: 39, value: "[Incremented Salary]", label: "Incremented Salary" },
+  { id: 40, value: "[Increment %]", label: "Increment %" },
 ];
 
 export const modules = {

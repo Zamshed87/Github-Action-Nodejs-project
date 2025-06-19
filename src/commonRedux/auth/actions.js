@@ -64,6 +64,7 @@ export const setLoginAction =
           isOwner,
         };
         dispatch(slice.setToken(res?.data?.token));
+        dispatch(slice.setBaseColor("#96295f"));
         dispatch(slice.setDecodedTokenData(res?.data?.token));
         if (res?.data?.isLoggedInWithOtp) {
           if (res?.data?.strOfficeMail || res?.data?.strPersonalMail) {

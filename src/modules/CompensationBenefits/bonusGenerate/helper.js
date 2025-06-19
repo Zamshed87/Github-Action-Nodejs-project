@@ -95,7 +95,7 @@ export const bonusGenerateApproveReject = async (payload, setLoading, cb) => {
   }
 };
 
-export const columns = (rowDto, setRowDto, setFieldValue) => {
+export const columns = (rowDto, setRowDto, setFieldValue, rowDtoHandler) => {
   return [
     {
       title: () => <div style={{ color: "#475467" }}>SL</div>,
@@ -216,6 +216,58 @@ export const columns = (rowDto, setRowDto, setFieldValue) => {
       dataIndex: "strPayrollGroup",
       sorter: true,
       filter: true,
+    },
+    {
+      title: "Salary",
+      dataIndex: "numSalary",
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Basic",
+      dataIndex: "numBasic",
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Bonus Amount",
+      dataIndex: "numBonusAmount",
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Actual Bonus Amount",
+      render: (_, item, index) => {
+        // console.log("per minutes")
+        return (
+          <div>
+            <input
+              style={{
+                height: "25px",
+                width: "100px",
+                fontSize: "12px",
+              }}
+              className="form-control"
+              value={item?.numActualBonusAmount}
+              type="number"
+              // disabled={!item?.isChecked}
+
+              onChange={(e) => {
+                rowDtoHandler("isManualBounsEdit", index, true);
+
+                // console.log({ e })
+                if (e.target.value) {
+                  rowDtoHandler("numActualBonusAmount", index, e.target.value);
+                } else {
+                  rowDtoHandler("numActualBonusAmount", index, 0);
+                }
+                // if(e.target.value){
+                // rowDtoHandler("numMinutes", index, e.target.value);
+              }}
+            />
+          </div>
+        );
+      },
     },
   ];
 };

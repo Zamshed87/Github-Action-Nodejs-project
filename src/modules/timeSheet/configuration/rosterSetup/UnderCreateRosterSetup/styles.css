@@ -84,7 +84,7 @@
   .form-UnderCreateRosterSetup
   .add-btn {
   background: #e4f8dd;
-  border: 2px solid #34a853;
+  border: 2px solid var(--primary-color);
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -95,7 +95,7 @@
   padding: 5px;
   /* height: 56px; */
   margin-top: 1rem;
-  color: #34a853;
+  color: var(--primary-color);
   width: 100%;
   cursor: pointer;
 }

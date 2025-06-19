@@ -2,103 +2,103 @@ import { Workbook } from "exceljs";
 import * as fs from "file-saver";
 import moment from "moment";
 
-const getWorkBook = ({ creator = '', createTime = new Date() }) => {
+const getWorkBook = ({ creator = "", createTime = new Date() }) => {
   const workbook = new Workbook();
   workbook.creator = creator;
   workbook.created = createTime;
   return workbook;
 };
 
-const getIndex = char => {
+const getIndex = (char) => {
   return char?.toUpperCase()?.charCodeAt() - 64;
 };
-const getfontStyle = cell => {
+const getfontStyle = (cell) => {
   return {
     // name: row[cellIndex]?.fontFamily,
     size: cell?.fontSize || 9,
     bold: cell?.bold || false,
     underline: cell?.underline || false,
     italic: cell?.italic || false,
-    color: { argb: cell?.textColor } || 'black'
+    color: { argb: cell?.textColor } || "black",
   };
 };
 
-const getTextFormat = formatName => {
+const getTextFormat = (formatName) => {
   const format = {
-    number: '0',
-    text: '@',
-    date: 'mm/dd/yyyy',
+    number: "0",
+    text: "@",
+    date: "mm/dd/yyyy",
     money: "#,##0.00",
   };
-  return formatName ? format[formatName] : '@';
+  return formatName ? format[formatName] : "@";
 };
-const getFill = cell => {
+const getFill = (cell) => {
   return {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: cell?.bgColor || '#ffffff' }
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: cell?.bgColor || "#ffffff" },
   };
 };
 
 const borderTypes = [
-  'thin',
-  'dotted',
-  'dashDot',
-  'hair',
-  'dashDotDot',
-  'slantDashDot',
-  'mediumDashed',
-  'mediumDashDotDot',
-  'mediumDashDot',
-  'medium',
-  'double',
-  'thick'
+  "thin",
+  "dotted",
+  "dashDot",
+  "hair",
+  "dashDotDot",
+  "slantDashDot",
+  "mediumDashed",
+  "mediumDashDotDot",
+  "mediumDashDot",
+  "medium",
+  "double",
+  "thick",
 ];
 
-const getBorder = borderInfo => {
-  const _borderDefinations = borderInfo.split(':');
-  if (_borderDefinations[0].split(' ')[0] === 'all') {
-    const _borderData = _borderDefinations[0].split(' ');
+const getBorder = (borderInfo) => {
+  const _borderDefinations = borderInfo.split(":");
+  if (_borderDefinations[0].split(" ")[0] === "all") {
+    const _borderData = _borderDefinations[0].split(" ");
     if (_borderData?.length === 2) {
       return borderTypes.includes(_borderData[1])
         ? {
-          top: { style: _borderData[1] },
-          left: { style: _borderData[1] },
-          bottom: { style: _borderData[1] },
-          right: { style: _borderData[1] }
-        }
+            top: { style: _borderData[1] },
+            left: { style: _borderData[1] },
+            bottom: { style: _borderData[1] },
+            right: { style: _borderData[1] },
+          }
         : {
-          top: { color: { argb: _borderData[1] }, style: 'thin' },
-          left: { color: { argb: _borderData[1] }, style: 'thin' },
-          bottom: { color: { argb: _borderData[1] }, style: 'thin' },
-          right: { color: { argb: _borderData[1] }, style: 'thin' }
-        };
+            top: { color: { argb: _borderData[1] }, style: "thin" },
+            left: { color: { argb: _borderData[1] }, style: "thin" },
+            bottom: { color: { argb: _borderData[1] }, style: "thin" },
+            right: { color: { argb: _borderData[1] }, style: "thin" },
+          };
     } else {
       return {
         top: { color: { argb: _borderData[1] }, style: _borderData[2] },
         left: { color: { argb: _borderData[1] }, style: _borderData[2] },
         bottom: { color: { argb: _borderData[1] }, style: _borderData[2] },
-        right: { color: { argb: _borderData[1] }, style: _borderData[2] }
+        right: { color: { argb: _borderData[1] }, style: _borderData[2] },
       };
     }
   } else {
     const obj = {};
-    _borderDefinations.forEach(item => {
-      const _singleBorderDef = item.split(' ');
+    _borderDefinations.forEach((item) => {
+      const _singleBorderDef = item.split(" ");
       // eslint-disable-next-line default-case
       switch (_singleBorderDef?.length) {
         case 1:
-          obj[_singleBorderDef[0]] = { color: 'black', style: 'thin' };
+          obj[_singleBorderDef[0]] = { color: "black", style: "thin" };
           break;
         case 2:
           obj[_singleBorderDef[0]] = borderTypes.includes(_singleBorderDef[1])
             ? { style: _singleBorderDef[1] }
-            : { color: { argb: _singleBorderDef[1] }, style: 'thin' };
+            : { color: { argb: _singleBorderDef[1] }, style: "thin" };
           break;
         case 3:
           obj[_singleBorderDef[0]] = {
             color: { argb: _singleBorderDef[1] },
-            style: _singleBorderDef[2]
+            style: _singleBorderDef[2],
           };
           break;
       }
@@ -108,15 +108,13 @@ const getBorder = borderInfo => {
   }
 };
 
-const getAlignment = cell => {
+const getAlignment = (cell) => {
   return {
-    horizontal: cell?.alignment?.split(':')[0] || 'center',
-    vertical: cell?.alignment?.split(':')[1] || 'middle',
-    wrapText: cell?.wrapText || true
+    horizontal: cell?.alignment?.split(":")[0] || "center",
+    vertical: cell?.alignment?.split(":")[1] || "middle",
+    wrapText: cell?.wrapText || true,
   };
 };
-
-
 
 const createFile = (excel) => {
   //create workbook
@@ -124,18 +122,18 @@ const createFile = (excel) => {
 
   //generate sheets
   // eslint-disable-next-line no-unused-expressions
-  excel?.sheets?.forEach(sheet => {
+  excel?.sheets?.forEach((sheet) => {
     //create worksheet
 
-    const _sheet = workbook.addWorksheet(sheet?.name ?? '', {
+    const _sheet = workbook.addWorksheet(sheet?.name ?? "", {
       views: [
         {
-          showGridLines: true
-        }
-      ]
+          showGridLines: true,
+        },
+      ],
     });
 
-    _sheet.properties.defaultColWidth = 18
+    _sheet.properties.defaultColWidth = 18;
     _sheet.getColumn("A").width = 6;
     _sheet.getColumn("B").width = 27;
     _sheet.getColumn("F").width = 27;
@@ -169,12 +167,12 @@ const createFile = (excel) => {
       let lastCellIndex = 0;
       // eslint-disable-next-line no-unused-expressions
       row?.forEach((cell, index) => {
-        if (cell === null) {
-          cell = '';
+        if (cell == null) {
+          cell = "";
         }
-        if (typeof cell !== 'object') {
-          if (typeof cell === 'string' && cell?.startsWith('_blank')) {
-            for (let i = 0; i < Number(cell?.split('_blank*')[1]) - 1; i++) {
+        if (typeof cell !== "object") {
+          if (typeof cell === "string" && cell?.startsWith("_blank")) {
+            for (let i = 0; i < Number(cell?.split("_blank*")[1]) - 1; i++) {
               _sheet.addRow([]);
             }
           } else {
@@ -190,7 +188,7 @@ const createFile = (excel) => {
             cell?.cellRange ? getIndex(cell?.cellRange[0]) : lastCellIndex + 1
           ] = cell?.text;
           lastCellIndex = cell?.cellRange
-            ? getIndex(cell?.cellRange?.split(':')[1][0])
+            ? getIndex(cell?.cellRange?.split(":")[1][0])
             : lastCellIndex + 1;
         }
       });
@@ -202,31 +200,33 @@ const createFile = (excel) => {
         bold: sheet?.bold,
         underline: sheet?.underline,
         textColor: sheet?.italic,
-        italic: sheet?.textColor
+        italic: sheet?.textColor,
       });
       _addedRow.alignment = getAlignment({
-        alignment: sheet?.alignment
+        alignment: sheet?.alignment,
       });
       _addedRow.fill =
         sheet?.bgColor &&
         getFill({
-          bgColor: sheet?.bgColor
+          bgColor: sheet?.bgColor,
         });
       let _cellIndex = 0;
       lastCellIndex = 0;
       _addedRow.eachCell((cell, cellIndex) => {
         if (lastCellIndex < cellIndex) {
-          if (typeof row[_cellIndex] === 'object') {
+          if (typeof row[_cellIndex] === "object") {
             // add fonyt style
             cell.font = getfontStyle(row[_cellIndex]);
 
             //merge cell to the cell
             if (row[_cellIndex]?.merge) {
-              const points = row[_cellIndex]?.cellRange?.split(':');
+              const points = row[_cellIndex]?.cellRange?.split(":");
               _sheet.mergeCells(
-                `${points[0][0]}${_addedRow.number +
-                (Number(points[0].slice(1)) - 1)}:${points[1][0]
-                }${_addedRow.number + (Number(points[1].slice(1)) - 1)}`
+                `${points[0][0]}${
+                  _addedRow.number + (Number(points[0].slice(1)) - 1)
+                }:${points[1][0]}${
+                  _addedRow.number + (Number(points[1].slice(1)) - 1)
+                }`
               );
             }
 
@@ -243,17 +243,17 @@ const createFile = (excel) => {
             // add text format to the cell
             cell.numFmt = getTextFormat(row[_cellIndex]?.textFormat);
             if (row[_cellIndex] instanceof Date) {
-              cell.numFmt = getTextFormat('date');
+              cell.numFmt = getTextFormat("date");
             }
             lastCellIndex = row[_cellIndex]?.cellRange
-              ? getIndex(row[_cellIndex]?.cellRange?.split(':')[1][0])
+              ? getIndex(row[_cellIndex]?.cellRange?.split(":")[1][0])
               : lastCellIndex + 1;
             _cellIndex++;
           } else {
-            if (typeof row[_cellIndex] === 'number') {
-              cell.numFmt = getTextFormat('number');
+            if (typeof row[_cellIndex] === "number") {
+              cell.numFmt = getTextFormat("number");
             } else {
-              cell.numFmt = getTextFormat('text');
+              cell.numFmt = getTextFormat("text");
             }
             lastCellIndex += 1;
             _cellIndex++;
@@ -261,11 +261,10 @@ const createFile = (excel) => {
         }
       });
     });
-
   });
-  workbook.xlsx.writeBuffer().then(data => {
+  workbook.xlsx.writeBuffer().then((data) => {
     let blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     fs.saveAs(blob, `${excel.name}.xlsx`);
   });
@@ -322,7 +321,6 @@ const getTableDataForExcel = (row) => {
       // new Cell(item[29] || "N/A", "left", "text").getCell(),
       new Cell(item[30] || "N/A", "left", "text").getCell(),
       // new Cell(item[31] || "N/A", "center", "text").getCell(),
-
     ];
   });
   return data;
@@ -336,13 +334,12 @@ const createExcelFile = (
   businessUnit,
   businessUnitAddress
 ) => {
-
   const excel = {
-    name: `${comapanyNameHeader} Report ${moment().format('ll')}`,
+    name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name: `${comapanyNameHeader} ${moment().format('ll')}`,
+        name: `${comapanyNameHeader} ${moment().format("ll")}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -368,7 +365,7 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}-${moment().format('LL')}`,
+              text: `${comapanyNameHeader}-${moment().format("LL")}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -580,13 +577,12 @@ const createExcelFile = (
             //   border: "all 000000 thin",
             //   alignment: "center",
             // },
-
           ],
           ...getTableDataForExcel(tableData),
           ["_blank*2"],
           [
             {
-              text: `System Generated Report ${moment().format('ll')}`,
+              text: `System Generated Report ${moment().format("ll")}`,
               fontSize: 12,
               bold: true,
               cellRange: "A1:J1",
@@ -711,7 +707,6 @@ const createExcelFile = (
   // // empty cell
   // worksheet.getCell("A4").alignment = { horizontal: "center", wrapText: true };
 
-
   // // table header
   // let _tableHeader = worksheet.addRow(tableHeader);
   // _tableHeader.font = { bold: true };
@@ -768,8 +763,15 @@ const getTableData = (row, keys, totalKey) => {
   return data;
 };
 
-export const generateExcelAction = (title, fromDate, toDate, column, data, businessUnit, businessUnitAddress) => {
-
+export const generateExcelAction = (
+  title,
+  fromDate,
+  toDate,
+  column,
+  data,
+  businessUnit,
+  businessUnitAddress
+) => {
   const tableDataInfo = getTableData(data, Object.keys(column));
   createExcelFile(
     title,
@@ -780,4 +782,4 @@ export const generateExcelAction = (title, fromDate, toDate, column, data, busin
     businessUnit,
     businessUnitAddress
   );
-}
+};

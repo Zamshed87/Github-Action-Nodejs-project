@@ -1,52 +1,114 @@
+import { Tag } from "antd";
 import { DataTable } from "Components";
-import moment from "moment";
 import React, { forwardRef } from "react";
 
 const LeaveBalanceData = forwardRef((props: any, ref: any) => {
   const leaveBalanceDto = props?.leaveBalanceDto;
+  const { balanceApi } = props;
 
   const header = [
     {
       title: "Leave Type",
       render: (_: any, record: any) => (
         <>
-          <p>{record?.strLeaveType}</p>
+          <p>{record?.type}</p>
         </>
       ),
       width: 80,
     },
     {
-      title: "Balance",
-      dataIndex: "intBalanceLveInDay",
-      width: 45,
+      title: "Taken",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.takenDays}</p>
+        </>
+      ),
+      width: 47,
     },
     {
-      title: "Taken",
-      render: (data: any) => <p>{data}</p>,
-      dataIndex: "intTakenLveInDay",
-      width: 40,
+      title: "Balance",
+      dataIndex: "balanceDays",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.balanceDays}</p>
+        </>
+      ),
+      width: 60,
     },
+
     {
       title: "Total",
-      dataIndex: "intAllocatedLveInDay",
-      width: 40,
+      dataIndex: "totalAllocatedDays",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.totalAllocatedDays}</p>
+        </>
+      ),
+      width: 45,
+    },
+
+    {
+      title: "Carry Taken",
+      dataIndex: "carryTakenDays",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.carryTakenDays}</p>
+        </>
+      ),
     },
     {
       title: "Carry Balance",
-      dataIndex: "intCarryBalanceLveInDay",
-    },
-    {
-      title: "Carry Taken",
-      dataIndex: "inyCarryTakenLveInDay",
+      dataIndex: "carryBalanceDays",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.carryBalanceDays}</p>
+        </>
+      ),
     },
     {
       title: "Carry Allocated",
-      dataIndex: "intCarryAllocatedLveInDay",
+      dataIndex: "carryTotalAllocatedDays",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.carryTotalAllocatedDays}</p>
+        </>
+      ),
     },
     {
-      title: "Carry Expire",
-      render: (data: any) =>
-        data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
+      title: "Carry Expire Balance",
+      dataIndex: "carryExpiredDays",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.carryExpiredDays}</p>
+        </>
+      ),
+    },
+    {
+      title: "Carry Expire Date",
+      render: (data: any, record: any) => (
+        <>
+          <p>{record?.details?.expireDate}</p>
+        </>
+      ),
+    },
+    {
+      title: "Status",
+      render: (_: any, rec: any) => {
+        return (
+          <div>
+            {rec?.status === "Active" ? (
+              <Tag color="green">{rec?.status}</Tag>
+            ) : rec?.status === "Inactive" ? (
+              <Tag color="red">{rec?.status}</Tag>
+            ) : rec?.status === "Salary Hold" ? (
+              <Tag color="orange">{rec?.status}</Tag>
+            ) : (
+              <Tag color="gold">{rec?.status}</Tag>
+            )}
+          </div>
+        );
+      },
+      width: 35,
     },
   ];
   return (
@@ -61,7 +123,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           header={header}
           nodataStyle={{ marginTop: "-35px", height: "175px" }}
           bordered
-          data={leaveBalanceDto?.length > 0 ? leaveBalanceDto : []}
+          data={balanceApi?.data?.length > 0 ? balanceApi?.data : []}
         />
       </div>
     </div>
