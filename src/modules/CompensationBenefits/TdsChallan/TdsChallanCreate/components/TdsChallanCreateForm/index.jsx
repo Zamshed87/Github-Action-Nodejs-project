@@ -1,21 +1,14 @@
-import EmployeeContribution from "./EmployeeContribution";
+import TdsChallanFormFields from "./TdsChallanFormFields";
 import { toast } from "react-toastify";
 import { detailsHeader } from "./helper";
 import { DataTable, PCardBody } from "Components";
+import { useDispatch } from "react-redux";
 
 const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
-  const removeData = (index, company) => {
-    if (company) {
-      const newData = saveData?.companyContributions?.filter(
-        (_, i) => i !== index
-      );
-      setSaveData((prev) => ({ ...prev, companyContributions: newData }));
-    } else {
-      const newData = saveData?.employeeContributions?.filter(
-        (_, i) => i !== index
-      );
-      setSaveData((prev) => ({ ...prev, employeeContributions: newData }));
-    }
+  const dispatch = useDispatch();
+  const removeData = (index) => {
+    const newData = saveData?.filter((_, i) => i !== index);
+    setSaveData(newData);
   };
   const addData = (company) => {
     const commonFields = [
@@ -25,7 +18,7 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
       "intEmploymentTypeIds",
       "intPfEligibilityDependOn",
     ];
-  
+
     const employeeFields = [
       "consecutiveDay",
       "intRangeFrom",
@@ -33,7 +26,7 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
       "intContributionDependOn",
       "numAppraisalValue",
     ];
-  
+
     const employerFields = [
       "CconsecutiveDay",
       "CintRangeFrom",
@@ -41,18 +34,18 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
       "CintContributionDependOn",
       "CnumAppraisalValue",
     ];
-  
+
     const validateFields = [
       ...commonFields,
       ...(company ? employerFields : employeeFields),
     ];
-  
+
     form
       .validateFields(validateFields)
       .then((values) => {
         let contributionData = {};
         let newFrom, newTo, existingContributions;
-  
+
         if (company) {
           newFrom = values.CintRangeFrom;
           newTo = values.CintRangeTo;
@@ -62,19 +55,19 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
           newTo = values.intRangeTo;
           existingContributions = saveData?.employeeContributions || [];
         }
-  
+
         // 🔍 Check for overlapping ranges within the same contribution type
         const isOverlapping = existingContributions.some(
           (item) =>
             Math.max(item.intRangeFrom, newFrom) <=
             Math.min(item.intRangeTo, newTo)
         );
-  
+
         if (isOverlapping) {
           toast.error("Overlapping range detected. Please adjust the values.");
           return;
         }
-  
+
         // ✅ Prepare contributionData
         if (company) {
           contributionData = {
@@ -112,13 +105,8 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
 
   return (
     <>
-      <EmployeeContribution
-        form={form}
-        data={saveData?.employeeContributions}
-        addData={() => addData(false)}
-        removeData={(index) => removeData(index, false)}
-      />
-      {data?.length > 0 && (
+      <TdsChallanFormFields form={form} addData={() => addData(false)} />
+      {!data?.length > 0 && (
         <PCardBody className="mb-4">
           <DataTable
             bordered
@@ -126,7 +114,7 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
             rowKey={(row, idx) => idx}
             header={detailsHeader({
               removeData,
-              intPfEligibilityDependOn:'',
+              dispatch
             })}
           />
         </PCardBody>

@@ -2,7 +2,7 @@ import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
 import useTdsChallanFilters from "./useTdsChallanFilters";
 
-const TdsChallanFilters = ({ form }) => {
+const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
   const { fiscalYearDDL, workplaceDDL } = useTdsChallanFilters();
   return (
     <Row gutter={[10, 2]}>
@@ -32,12 +32,14 @@ const TdsChallanFilters = ({ form }) => {
             form.setFieldsValue({ workplace: op });
           }}
           loading={workplaceDDL.loading}
-          // rules={[{ required: true, message: "Workplace Is Required" }]}
+          rules={[{ required: true, message: "Workplace Is Required" }]}
         />
       </Col>
-      <Col style={{ marginTop: "23px" }}>
+      {
+        !hideSubmitBtn && <Col style={{ marginTop: "23px" }}>
         <PButton type="primary" action="submit" content="View" />
       </Col>
+      }
     </Row>
   );
 };
