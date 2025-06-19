@@ -184,10 +184,10 @@ export function replacePlaceholdersInHTML(html, data) {
     }
     // Handle @Increment %
     if (cleanKey === "Increment %") {
-      let grossSalary = data["Gross Salary"];
+      let oldSalary = data["Gross Salary Before Increment"];
       let incrementedSalary = data["Incremented Salary"];
       let incrementPercent =
-        ((incrementedSalary - grossSalary) / grossSalary) * 100;
+        ((incrementedSalary - oldSalary) / oldSalary) * 100;
       return incrementPercent?.toFixed(2);
     }
 
