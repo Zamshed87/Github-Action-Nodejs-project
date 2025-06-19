@@ -333,7 +333,7 @@ export default function AddEditForm({
               // style={{ cursor: "pointer", position: "relative" }}
             >
               <div style={{ fontSize: "" }}>
-                {!details?.orgLogoUrlId ? (
+                {!details?.authorizedSignatureUrlId ? (
                   <>
                     <FileUploadComponents
                       propsObj={{
