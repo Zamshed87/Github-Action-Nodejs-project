@@ -18,9 +18,8 @@ const useTdsChallan = (form) => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      IntWorkPlaceGroupId: formValues.workplaceGroup?.value ?? wgId,
-      IntWorkPlaceId: formValues.workplace?.value ?? wId,
-      // StrStatus: formValues.status,
+      listOfFiscalYear: formValues.ListOfFiscalYear,
+      listOfWorkplace: formValues.ListOfWorkplace,
     };
 
     const filteredParams = Object.entries(formattedParams)
