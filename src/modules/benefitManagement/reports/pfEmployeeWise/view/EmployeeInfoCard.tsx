@@ -22,7 +22,7 @@ interface EmployeeInfo {
   numTotalCompanyContribution: number;
   numTotalProfitShare: number;
   numInTotalPFAmount: number;
-  dteLastProfitShareDate: string | null;
+  dteLastDateProfitShare: string | null;
 }
 
 const formatDate = (dateStr: string | null) => {
@@ -50,7 +50,7 @@ const EmployeeInfoCard = ({ employee }: { employee: EmployeeInfo }) => {
           <InfoRow label="Total Company Contribution" value={employee.numTotalCompanyContribution} />
           <InfoRow label="Total Profit Share" value={employee.numTotalProfitShare} />
           <InfoRow label="Total PF Amount" value={employee.numInTotalPFAmount} />
-          <InfoRow label="Last Profit Share Date" value={formatDate(employee.dteLastProfitShareDate)} />
+          <InfoRow label="Last Profit Share Date" value={formatDate(employee.dteLastDateProfitShare)} />
         </Row>
       </PCardBody>
     </PCard>
