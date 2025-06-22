@@ -3,118 +3,64 @@ import { toast } from "react-toastify";
 import { detailsHeader } from "./helper";
 import { DataTable, PCardBody } from "Components";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
+import Loading from "common/loading/Loading";
 
 const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const removeData = (index) => {
     const newData = saveData?.filter((_, i) => i !== index);
     setSaveData(newData);
   };
-  const addData = (company) => {
-    const commonFields = [
-      "strPolicyName",
-      "strPolicyCode",
-      "intWorkPlaceId",
-      "intEmploymentTypeIds",
-      "intPfEligibilityDependOn",
-    ];
-
-    const employeeFields = [
-      "consecutiveDay",
-      "intRangeFrom",
-      "intRangeTo",
-      "intContributionDependOn",
-      "numAppraisalValue",
-    ];
-
-    const employerFields = [
-      "CconsecutiveDay",
-      "CintRangeFrom",
-      "CintRangeTo",
-      "CintContributionDependOn",
-      "CnumAppraisalValue",
-    ];
-
+  const addData = (attachmentId) => {
     const validateFields = [
-      ...commonFields,
-      ...(company ? employerFields : employeeFields),
+      "StrTransactionMode",
+      "IntBankWalletId",
+      "StrBankWallet",
+      "StrBranchName",
+      "DteChallanDateF",
+      "DteChallanDate",
+      "StrChallanNumber",
+      "NumChallanAmount",
+      "StrComment",
     ];
 
     form
       .validateFields(validateFields)
       .then((values) => {
-        let contributionData = {};
-        let newFrom, newTo, existingContributions;
-
-        if (company) {
-          newFrom = values.CintRangeFrom;
-          newTo = values.CintRangeTo;
-          existingContributions = saveData?.companyContributions || [];
-        } else {
-          newFrom = values.intRangeFrom;
-          newTo = values.intRangeTo;
-          existingContributions = saveData?.employeeContributions || [];
-        }
-
-        // 🔍 Check for overlapping ranges within the same contribution type
-        const isOverlapping = existingContributions.some(
-          (item) =>
-            Math.max(item.intRangeFrom, newFrom) <=
-            Math.min(item.intRangeTo, newTo)
-        );
-
-        if (isOverlapping) {
-          toast.error("Overlapping range detected. Please adjust the values.");
-          return;
-        }
-
-        // ✅ Prepare contributionData
-        if (company) {
-          contributionData = {
-            strPfConfigurationPart: "Employee",
-            intRangeFrom: newFrom,
-            intRangeTo: newTo,
-            strContributionDependOn: values.CintContributionDependOn.label,
-            intContributionDependOn: values.CintContributionDependOn.value,
-            numAppraisalValue: values.CnumAppraisalValue,
-          };
-          setSaveData((prev) => ({
-            ...prev,
-            companyContributions: [...existingContributions, contributionData],
-          }));
-        } else {
-          contributionData = {
-            strPfConfigurationPart: "Company",
-            intRangeFrom: newFrom,
-            intRangeTo: newTo,
-            strContributionDependOn: values.intContributionDependOn.label,
-            intContributionDependOn: values.intContributionDependOn.value,
-            numAppraisalValue: values.numAppraisalValue,
-          };
-          setSaveData((prev) => ({
-            ...prev,
-            employeeContributions: [...existingContributions, contributionData],
-          }));
-        }
+        // if (true) {
+        //   toast.error("Overlapping range detected. Please adjust the values.");
+        //   return;
+        // }
+        const payload = {
+          ...values,
+          IntBankWalletId: values?.IntBankWalletId?.value,
+          StrBankWallet: values?.IntBankWalletId?.label,
+          IntDocumentId: attachmentId ?? 0,
+        };
+        setSaveData((prev) => [...prev, payload]);
       })
       .catch(() => {
         toast.error("Please fill all required fields.");
       });
   };
   let data = [];
-
+  console.log(saveData);
   return (
     <>
-      <TdsChallanFormFields form={form} addData={() => addData(false)} />
+      {loading && <Loading />}
+      <TdsChallanFormFields form={form} addData={addData} />
       {!data?.length > 0 && (
         <PCardBody className="mb-4">
           <DataTable
             bordered
-            data={data || []}
+            data={saveData || []}
             rowKey={(row, idx) => idx}
             header={detailsHeader({
               removeData,
-              dispatch
+              dispatch,
+              setLoading,
             })}
           />
         </PCardBody>

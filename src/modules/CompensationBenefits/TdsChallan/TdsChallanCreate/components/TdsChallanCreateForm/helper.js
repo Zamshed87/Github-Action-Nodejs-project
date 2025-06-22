@@ -3,7 +3,12 @@ import { ImAttachment } from "react-icons/im"; // or any icon you already use
 import DeleteIcon from "common/DeleteIcon/DeleteIcon";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
-export const detailsHeader = ({ removeData, action = true, dispatch }) => [
+export const detailsHeader = ({
+  removeData,
+  action = true,
+  dispatch,
+  setLoading,
+}) => [
   {
     title: "SL",
     render: (_, __, index) => index + 1,
@@ -12,53 +17,62 @@ export const detailsHeader = ({ removeData, action = true, dispatch }) => [
   },
   {
     title: "Transaction Mode",
-    dataIndex: "transactionMode",           // 'bank' | 'mfs'
+    dataIndex: "StrTransactionMode", // 'bank' | 'mfs'
     render: (value) => (value ? value.toUpperCase() : "-"),
   },
   {
     title: "Bank / MFS Name",
-    dataIndex: "bankMfsName",
+    dataIndex: "StrBankWallet",
     render: (v) => v ?? "-",
   },
   {
     title: "Branch Name / MFS Number",
-    dataIndex: "branchOrMfsNumber",
+    dataIndex: "StrBranchName",
     render: (v) => v ?? "-",
   },
   {
-    title: "Challan / Transaction Date",
-    dataIndex: "transactionDate",
+    title: "Challan Date",
+    dataIndex: "DteChallanDate",
     render: (v) => v ?? "-",
   },
   {
-    title: "Challan / Transaction Number",
-    dataIndex: "transactionNumber",
+    title: "Challan Number",
+    dataIndex: "StrChallanNumber",
     render: (v) => v ?? "-",
   },
   {
     title: "TDS Amount",
-    dataIndex: "tdsAmount",
+    dataIndex: "NumChallanAmount",
     align: "right",
     render: (v) =>
-      v || v === 0 ? Number(v).toLocaleString("en-BD", { minimumFractionDigits: 2 }) : "-",
+      v || v === 0
+        ? Number(v).toLocaleString("en-BD", { minimumFractionDigits: 2 })
+        : "-",
   },
   {
     title: "Comments",
-    dataIndex: "comments",
+    dataIndex: "StrComment",
     render: (v) => v ?? "-",
     ellipsis: true,
   },
   {
     title: "Attachment",
-    dataIndex: "attachmentUrlId",           // backend ID or URL
+    dataIndex: "IntDocumentId", // backend ID or URL
     align: "center",
-    render: (attachmentUrlId, row) =>
-      attachmentUrlId ? (
-        <Tooltip title="Download">
+    render: (IntDocumentId) =>
+      IntDocumentId ? (
+        <Tooltip title="View Attachment">
           <ImAttachment
             style={{ cursor: "pointer", color: "#0072e5" }}
             onClick={() =>
-              dispatch(getDownlloadFileView_Action(attachmentUrlId))
+              dispatch(
+                getDownlloadFileView_Action(
+                  IntDocumentId,
+                  false,
+                  () => {},
+                  setLoading
+                )
+              )
             }
           />
         </Tooltip>
@@ -72,7 +86,9 @@ export const detailsHeader = ({ removeData, action = true, dispatch }) => [
           title: "Action",
           align: "center",
           width: 80,
-          render: (_, __, index) => <DeleteIcon onClick={() => removeData?.(index)} />,
+          render: (_, __, index) => (
+            <DeleteIcon onClick={() => removeData?.(index)} />
+          ),
         },
       ]
     : []),

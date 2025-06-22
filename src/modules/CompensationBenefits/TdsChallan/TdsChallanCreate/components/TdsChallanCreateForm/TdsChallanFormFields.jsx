@@ -1,24 +1,30 @@
 import { PButton, PCardBody, PInput, PSelect } from "Components";
-import useConfigSelectionHook from "./useConfigSelectionHook";
-import { Col, Row } from "antd";
+import useTdsChallanFormFields from "./useTdsChallanFormFields";
+import { Col, Form, Row } from "antd";
 import TdsChallanFilters from "modules/CompensationBenefits/TdsChallan/components/filter/TdsChallanFilters";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
 const TdsChallanFormFields = ({ form, addData }) => {
-  const { contributionOpts, loadingContribution } = useConfigSelectionHook(
-    form,
-    {
-      fetchContributionEnum: true,
-    }
-  );
+  const { fetchBankMfs, bankOrMfsOptions, loadingBankOrMfs } =
+    useTdsChallanFormFields(form);
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
+  console.log(isOpen, attachmentList, "la la");
   const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const transactionMode = Form.useWatch("StrTransactionMode", form);
+  const getBankMfsLabel = () => {
+    if (transactionMode == "Bank") return "Bank";
+    return "MFS";
+  };
+  const getBranchMfsLabel = () => {
+    if (transactionMode == "Bank") return "Branch Name";
+    return "MFS Number";
+  };
   return (
     <>
       <PCardBody className="mb-4">
@@ -28,10 +34,22 @@ const TdsChallanFormFields = ({ form, addData }) => {
         <Row gutter={[16, 16]}>
           <Col md={4} sm={12} xs={24}>
             <PSelect
-              name="transactionMode"
+              name="StrTransactionMode"
               label="Transaction Mode"
-              options={[]} // [{ label: 'Bank', value: 'bank' }, ...]
+              options={[
+                {
+                  label: "Bank",
+                  value: "Bank",
+                },
+                {
+                  label: "MFS",
+                  value: "MFS",
+                },
+              ]}
               placeholder="Select Transaction Mode"
+              onChange={(value) => {
+                fetchBankMfs(value);
+              }}
               rules={[
                 { required: true, message: "Transaction Mode is required" },
               ]}
@@ -39,36 +57,46 @@ const TdsChallanFormFields = ({ form, addData }) => {
           </Col>
           <Col md={4} sm={12} xs={24}>
             <PSelect
-              name="bankMfsName"
-              label="Bank / MFS Name"
-              options={[]} // [{ label: 'bKash', value: 'bkash' }, ...]
-              placeholder="Select Bank / MFS Name"
-              rules={[
-                { required: true, message: "Bank / MFS Name is required" },
-              ]}
-            />
-          </Col>
-          <Col md={4} sm={12} xs={24}>
-            <PInput
-              name="branchOrMfsNumber"
-              label="Branch Name / MFS Number"
-              placeholder="Enter Branch Name or MFS Number"
-              type="text"
+              name="IntBankWalletId"
+              label={`${getBankMfsLabel()} Name`}
+              options={bankOrMfsOptions}
+              loading={loadingBankOrMfs}
+              onChange={(value, op) => {
+                form.setFieldsValue({ IntBankWalletId: op });
+              }}
+              placeholder={`Select ${getBankMfsLabel()} Name`}
               rules={[
                 {
                   required: true,
-                  message: "Branch Name or MFS Number is required",
+                  message: `${getBankMfsLabel()} Name is required`,
                 },
               ]}
             />
           </Col>
           <Col md={4} sm={12} xs={24}>
             <PInput
-              name="transactionDate"
-              label="Challan / Transaction Date"
+              name="StrBranchName"
+              label={getBranchMfsLabel()}
+              placeholder={`Enter ${getBranchMfsLabel()}`}
+              type="text"
+              rules={[
+                {
+                  required: true,
+                  message: `${getBranchMfsLabel()} is required`,
+                },
+              ]}
+            />
+          </Col>
+          <Col md={4} sm={12} xs={24}>
+            <PInput
+              name="DteChallanDateF"
+              label="Challan Date"
               type="date"
               format="YYYY-MM-DD"
               placeholder="Select Date"
+              onChange={(date, formatDate) => {
+                form.setFieldsValue({ DteChallanDate: formatDate });
+              }}
               rules={[
                 { required: true, message: "Transaction Date is required" },
               ]}
@@ -76,8 +104,8 @@ const TdsChallanFormFields = ({ form, addData }) => {
           </Col>
           <Col md={6} sm={12} xs={24}>
             <PInput
-              name="transactionNumber"
-              label="Challan / Transaction Number"
+              name="StrChallanNumber"
+              label="Challan Number"
               placeholder="Enter Transaction Number"
               type="text"
               rules={[
@@ -85,31 +113,25 @@ const TdsChallanFormFields = ({ form, addData }) => {
               ]}
             />
           </Col>
-
-          {/* TDS Amount */}
           <Col md={6} sm={12} xs={24}>
             <PInput
-              name="tdsAmount"
+              name="NumChallanAmount"
               label="TDS Amount"
               placeholder="Enter TDS Amount"
               type="number"
               rules={[{ required: true, message: "TDS Amount is required" }]}
             />
           </Col>
-
-          {/* Comments */}
           <Col md={10} sm={12} xs={24}>
             <PInput
-              name="comments"
+              name="StrComment"
               label="Comments"
               placeholder="Enter any comments"
               type="text"
               rules={[]}
             />
           </Col>
-
-          {/* Attachment Upload */}
-          <Col md={4} sm={12} xs={24}>
+          <Col md={4} sm={12} xs={24} style={{ marginTop: "22px" }}>
             <FileUploadComponents
               propsObj={{
                 title: "Upload Attachment",
@@ -132,7 +154,11 @@ const TdsChallanFormFields = ({ form, addData }) => {
               type="primary"
               action="button"
               content="Add"
-              onClick={addData}
+              onClick={() => {
+                addData(
+                  attachmentList?.[0]?.response?.[0]?.globalFileUrlId ?? 0
+                );
+              }}
             />
           </Col>
         </Row>
