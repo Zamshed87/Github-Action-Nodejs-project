@@ -228,7 +228,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
       };
     });
-
+    console.log({ values });
     const gradeBasedPayload = {
       id: id || 0,
       payScaleName:
@@ -483,7 +483,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       onSuccess: (data: any) => {
         form.setFieldsValue({
           salaryType: { value: "Grade", label: "Grade" },
-          payscale: res?.payScaleId,
+          payscale: { value: res?.payScaleId, label: data?.payScaleName },
           payscaleJobLevel: {
             value: data?.jobLevelId,
             label: data?.jobLevelName,
@@ -616,7 +616,10 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           onSuccess: (res: any) => {
             form.setFieldsValue({
               salaryType: { value: "Grade", label: "Grade" },
-              payscale: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+              payscale: {
+                value: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
+                label: employeeInfo?.data[0]?.PayrollGroupName,
+              },
               payscaleJobLevel: {
                 value: res?.jobLevelId,
                 label: res?.jobLevelName,

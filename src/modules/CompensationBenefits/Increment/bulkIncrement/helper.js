@@ -17,6 +17,7 @@ export const processBulkUploadIncrementAction = async (
 ) => {
   try {
     setLoading(true);
+    console.log({ payrollInfo });
     const keyValuePairs = {};
 
     for (const item of elementInfo) {
