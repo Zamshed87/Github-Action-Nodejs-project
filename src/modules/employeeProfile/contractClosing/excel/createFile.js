@@ -1,35 +1,35 @@
 // import { Workbook } from 'exceljs';
-import * as fs from 'file-saver';
+import * as fs from "file-saver";
 
-import { getWorkBook, getIndex } from './utils.js';
-import { getfontStyle, getTextFormat, getFill } from './font.js';
-import { getAlignment } from './alignment.js';
-import { getBorder } from './border.js';
+import { getWorkBook, getIndex } from "./utils.js";
+import { getfontStyle, getTextFormat, getFill } from "./font.js";
+import { getAlignment } from "./alignment.js";
+import { getBorder } from "./border.js";
 
-export const createFile = (excel,flag) => {
+export const createFile = (excel, flag) => {
   //create workbook
   const workbook = getWorkBook(excel);
 
   //generate sheets
   // eslint-disable-next-line no-unused-expressions
-  excel?.sheets?.forEach(sheet => {
+  excel?.sheets?.forEach((sheet) => {
     //create worksheet
 
-    const _sheet = workbook.addWorksheet(sheet?.name ?? '', {
+    const _sheet = workbook.addWorksheet(sheet?.name ?? "", {
       views: [
         {
-          showGridLines: true
-        }
-      ]
+          showGridLines: true,
+        },
+      ],
     });
-    _sheet.properties.defaultColWidth=15
+    _sheet.properties.defaultColWidth = 15;
     _sheet.getColumn("A").width = 6;
     _sheet.getColumn("B").width = 27;
     _sheet.getColumn("D").width = 27;
-    _sheet.getColumn("E").width =27;
-    _sheet.getColumn("F").width =27;
-    _sheet.getColumn("G").width =27;
-    _sheet.getColumn("H").width =18;
+    _sheet.getColumn("E").width = 27;
+    _sheet.getColumn("F").width = 27;
+    _sheet.getColumn("G").width = 27;
+    _sheet.getColumn("H").width = 18;
     // generate rows
     // eslint-disable-next-line no-unused-expressions
     sheet?.rows?.forEach((row, rowIndex) => {
@@ -39,12 +39,12 @@ export const createFile = (excel,flag) => {
       let lastCellIndex = 0;
       // eslint-disable-next-line no-unused-expressions
       row?.forEach((cell, index) => {
-        if (cell === null) {
-          cell = '';
+        if (cell == null) {
+          cell = "";
         }
-        if (typeof cell !== 'object') {
-          if (typeof cell === 'string' && cell?.startsWith('_blank')) {
-            for (let i = 0; i < Number(cell?.split('_blank*')[1]) - 1; i++) {
+        if (typeof cell !== "object") {
+          if (typeof cell === "string" && cell?.startsWith("_blank")) {
+            for (let i = 0; i < Number(cell?.split("_blank*")[1]) - 1; i++) {
               _sheet.addRow([]);
             }
           } else {
@@ -60,7 +60,7 @@ export const createFile = (excel,flag) => {
             cell?.cellRange ? getIndex(cell?.cellRange[0]) : lastCellIndex + 1
           ] = cell?.text;
           lastCellIndex = cell?.cellRange
-            ? getIndex(cell?.cellRange?.split(':')[1][0])
+            ? getIndex(cell?.cellRange?.split(":")[1][0])
             : lastCellIndex + 1;
         }
       });
@@ -72,32 +72,33 @@ export const createFile = (excel,flag) => {
         bold: sheet?.bold,
         underline: sheet?.underline,
         textColor: sheet?.italic,
-        italic: sheet?.textColor
+        italic: sheet?.textColor,
       });
       _addedRow.alignment = getAlignment({
-        alignment: sheet?.alignment
+        alignment: sheet?.alignment,
       });
       _addedRow.fill =
         sheet?.bgColor &&
         getFill({
-          bgColor: sheet?.bgColor
+          bgColor: sheet?.bgColor,
         });
       let _cellIndex = 0;
       lastCellIndex = 0;
       _addedRow.eachCell((cell, cellIndex) => {
         if (lastCellIndex < cellIndex) {
-          if (typeof row[_cellIndex] === 'object') {
+          if (typeof row[_cellIndex] === "object") {
             // add fonyt style
             cell.font = getfontStyle(row[_cellIndex]);
 
             //merge cell to the cell
             if (row[_cellIndex]?.merge) {
-              const points = row[_cellIndex]?.cellRange?.split(':');
+              const points = row[_cellIndex]?.cellRange?.split(":");
               _sheet.mergeCells(
-                `${points[0][0]}${_addedRow.number +
-                  (Number(points[0].slice(1)) - 1)}:${
-                  points[1][0]
-                }${_addedRow.number + (Number(points[1].slice(1)) - 1)}`
+                `${points[0][0]}${
+                  _addedRow.number + (Number(points[0].slice(1)) - 1)
+                }:${points[1][0]}${
+                  _addedRow.number + (Number(points[1].slice(1)) - 1)
+                }`
               );
             }
 
@@ -114,17 +115,17 @@ export const createFile = (excel,flag) => {
             // add text format to the cell
             cell.numFmt = getTextFormat(row[_cellIndex]?.textFormat);
             if (row[_cellIndex] instanceof Date) {
-              cell.numFmt = getTextFormat('date');
+              cell.numFmt = getTextFormat("date");
             }
             lastCellIndex = row[_cellIndex]?.cellRange
-              ? getIndex(row[_cellIndex]?.cellRange?.split(':')[1][0])
+              ? getIndex(row[_cellIndex]?.cellRange?.split(":")[1][0])
               : lastCellIndex + 1;
             _cellIndex++;
           } else {
-            if (typeof row[_cellIndex] === 'number') {
-              cell.numFmt = getTextFormat('number');
+            if (typeof row[_cellIndex] === "number") {
+              cell.numFmt = getTextFormat("number");
             } else {
-              cell.numFmt = getTextFormat('text');
+              cell.numFmt = getTextFormat("text");
             }
             lastCellIndex += 1;
             _cellIndex++;
@@ -133,9 +134,9 @@ export const createFile = (excel,flag) => {
       });
     });
   });
-  workbook.xlsx.writeBuffer().then(data => {
+  workbook.xlsx.writeBuffer().then((data) => {
     let blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     fs.saveAs(blob, `${excel.name}.xlsx`);
   });

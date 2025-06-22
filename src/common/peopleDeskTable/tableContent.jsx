@@ -64,7 +64,7 @@ const TableContent = ({
   useEffect(() => {
     if (
       currentSortValue?.current?.length > 0 &&
-      (handleSortingData === null || typeof handleSortingData !== "function")
+      (handleSortingData == null || typeof handleSortingData !== "function")
     ) {
       if (currentSortValue?.clickCount === 1)
         sortDataList(

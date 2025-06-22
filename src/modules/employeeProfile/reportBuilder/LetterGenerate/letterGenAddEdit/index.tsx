@@ -7,7 +7,7 @@
 
 import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getLetterTypeDDL } from "../../letterConfiguration/letterConfigAddEdit.tsx/helper";
@@ -15,6 +15,7 @@ import {
   createNEditLetterGenerate,
   getLetterNameDDL,
   getLetterPreview,
+  getLetterPreviewAndTransform,
 } from "./helper";
 import {
   Flex,
@@ -26,12 +27,13 @@ import {
   PSelect,
 } from "Components";
 import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { useApiRequest } from "Hooks";
-import { modules } from "../../letterConfiguration/utils";
 import { postPDFAction } from "utility/downloadFile";
+import RichTextEditor from "common/RichTextEditor/RichTextEditor";
+import Loading from "common/loading/Loading";
 
+import html2pdf from 'html2pdf.js';
 const LetterGenAddEdit = () => {
   // Router state
   // const { letterId }: any = useParams();
@@ -66,6 +68,7 @@ const LetterGenAddEdit = () => {
   const [loading, setLoading] = useState(false);
   const [letterTypeDDL, setLetterTypeDDL] = useState([]);
   const [letterNameDDL, setLetterNameDDL] = useState([]);
+  const templateRef = useRef<string>(""); // 👈 Holds unmodified letter template
 
   //   api calls
   const CommonEmployeeDDL = useApiRequest([]);
@@ -111,6 +114,7 @@ const LetterGenAddEdit = () => {
           : "",
       }}
     >
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
           title={"Create Template"}
@@ -122,7 +126,6 @@ const LetterGenAddEdit = () => {
               disabled: loading,
               onClick: () => {
                 const values = form.getFieldsValue(true);
-
                 form
                   .validateFields()
                   .then(() => {
@@ -137,7 +140,7 @@ const LetterGenAddEdit = () => {
                     ).then();
                   })
                   .catch(() => {
-                    console.log();
+                    console.log('');
                   });
               },
             },
@@ -155,6 +158,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     letterType: op,
                   });
+                  form.resetFields(["letterName", "employee"]);
                   getLetterNameDDL(
                     profileData,
                     setLoading,
@@ -174,7 +178,8 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     letterName: op,
                   });
-                  getLetterPreview(profileData, setLoading, form);
+                  getLetterPreview(profileData, setLoading, form, templateRef);
+                  form.resetFields(["employee"]);
                 }}
               />
             </Col>
@@ -189,7 +194,7 @@ const LetterGenAddEdit = () => {
                   form.setFieldsValue({
                     employee: op,
                   });
-                  getLetterPreview(profileData, setLoading, form);
+                  getLetterPreviewAndTransform(profileData, setLoading, form, templateRef);
                 }}
                 onSearch={(value) => {
                   getEmployee(value);
@@ -202,7 +207,7 @@ const LetterGenAddEdit = () => {
           </Row>
         </PCardBody>
         <Flex className="my-2" justify="flex-end">
-          <PButton
+          {/* <PButton
             type="primary"
             action="button"
             content="Preview"
@@ -216,6 +221,8 @@ const LetterGenAddEdit = () => {
                 letterGenerateId: letterId || 0,
                 letterBody: letter,
               };
+              handleDownload();
+              return;
               postPDFAction(
                 "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
                 payload,
@@ -223,25 +230,21 @@ const LetterGenAddEdit = () => {
               ).then();
             }}
             disabled={!form.getFieldValue("letterId")}
-          />
+          /> */}
         </Flex>
         <Row gutter={[10, 2]}>
           <Form.Item shouldUpdate noStyle>
             {() => {
               const { letter } = form.getFieldsValue(true);
-
               return (
                 <>
                   <Col className="custom_quill quilJob" md={24} sm={24}>
-                    <ReactQuill
-                      preserveWhitespace={true}
-                      placeholder="letter body..."
+                    <RichTextEditor
+                      height={650}
                       value={letter}
-                      modules={{
-                        toolbar: modules.toolbar,
-                        clipboard: modules.clipboard,
+                      onChange={(data) => {
+                        form.setFieldValue("letter", data);
                       }}
-                      onChange={(value) => form.setFieldValue("letter", value)}
                     />
                   </Col>
                 </>

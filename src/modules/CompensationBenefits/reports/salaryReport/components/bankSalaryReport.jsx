@@ -67,7 +67,7 @@ export default function BankSalaryReport({ rowDto, index, tabIndex }) {
             {rowDto?.map((item, index) => (
               <tr
                 key={index}
-                colSpan={item?.SalaryGenerateHeaderId === null ? 16 : 1}
+                colSpan={item?.SalaryGenerateHeaderId == null ? 16 : 1}
               >
                 <td style={{ minWidth: "200px" }}>
                   <div>{item?.SL}</div>

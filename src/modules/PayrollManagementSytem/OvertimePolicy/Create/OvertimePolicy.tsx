@@ -33,7 +33,7 @@ import { IconButton, Tooltip } from "@mui/material";
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   // Data From Store
-  const { orgId, buId, wgId, employeeId } = useSelector(
+  const { orgId, buId, wgId, employeeId, wId, wName } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -197,6 +197,22 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      workplace: { value: wId, label: wName },
+    });
+    form.resetFields(["calendarName","hrPosition","employmentType"]);
+    setMatchingData([])
+    getHRPositionDDL();
+    getEmploymentTypeDDL();
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Calender&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
+      "CalenderId",
+      "CalenderName",
+      setCalendarDDL
+    );
+  }, [wId]);
+
   const remover = (payload: number) => {
     const filterArr = tableData.filter(
       (itm: any, idx: number) => idx !== payload
@@ -216,6 +232,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           benefitHours: 1,
           count: 1,
           showInDepend: { value: 1, label: "Fixed" },
+          workplace: { value: wId, label: wName },
         }}
         onFinish={onFinish}
         onValuesChange={(changedFields) => {
@@ -273,6 +290,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         form.setFieldsValue({
                           workplace: option,
                         });
+                        form.resetFields(["calendarName","hrPosition","employmentType"]);
                         getHRPositionDDL();
                         getEmploymentTypeDDL();
                         getPeopleDeskAllDDL(
@@ -590,12 +608,10 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       }}
                       disabled={state?.intOtconfigId}
                       rules={[
-                        orgId === 9
-                          ? {
-                              required: true,
-                              message: "Please Select Calendar Name!",
-                            }
-                          : null,
+                        orgId === 9 ? {
+                          required: true,
+                          message: "Please Select Calendar Name!",
+                        }: null,
                       ]}
                     />
                   </Col>

@@ -24,9 +24,16 @@ import { getSerial } from "Utils";
 import { DataState } from "../type";
 import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
-import { addHandler, createEditLatePunishmentConfig } from "./helper";
+import { addHandler, createEditGratuityPolicy } from "./helper";
 import DeleteButton from "./components/DeleteButton";
-
+import { EditOutlined, ExpandOutlined, SaveOutlined } from "@ant-design/icons";
+export interface GratuityPolicyDetailKey {
+  intServiceLengthStartInMonth: number;
+  intServiceLengthEndInMonth: number;
+  disbursementDependOnName: string;
+  numPercentageOrFixedAmount: number;
+  [key: string]: any; // Add additional properties if necessary
+}
 const GPCreateViewEdit = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
@@ -67,17 +74,17 @@ const GPCreateViewEdit = () => {
   };
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () => permissionList.find((item) => item?.menuReferenceId === 30599),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  const getEmploymentType = () => {
+  const getEmploymentType = (intWorkplaceId?: number) => {
     form.setFieldsValue({
       employmentType: undefined,
     });
     const { workplace } = form.getFieldsValue(true);
-
+    console.log(workplace, "workplace");
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -85,7 +92,7 @@ const GPCreateViewEdit = () => {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value,
+        IntWorkplaceId: workplace?.value || intWorkplaceId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -98,29 +105,57 @@ const GPCreateViewEdit = () => {
   };
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Late Punishment";
+    dispatch(setFirstLevelNameAction("Benefits Management"));
+    document.title = "Benefits Management";
     () => {
       document.title = "PeopleDesk";
     };
-    // have a need new useEffect to set the title
-    if (params?.type === "extend" || params?.type === "view") {
-      getgratuityPolicy(`/LatePunishmentpolicy/${params?.id}`, (data: any) => {
-        // Populate the form with the fetched data
-        // form.setFieldsValue({
-        //   lateCalculationType: data?.name,
-        // });
 
-        setData(data?.elements || []); // need to modify
+    // have a need new useEffect to set the title
+    if (params?.type !== "create") {
+      getgratuityPolicy(`/GratuityPolicy/${params?.id}`, (data: any) => {
+        // Populate the form with the fetched data
+        if (params?.type === "edit") {
+          getEmploymentType(data?.intWorkplaceId);
+          form.setFieldsValue({
+            strPolicyName: data?.strPolicyName,
+            intPolicyId: data?.intPolicyId,
+            workplace: {
+              label: data?.workplaceName,
+              value: data?.intWorkplaceId,
+            },
+            employmentType: data?.employmentTypeName
+              ? data.employmentTypeName.map((item: any) => ({
+                  label: item.strEmploymentTypeName,
+                  value: item.intEmploymentTypeId, // or whatever unique id property exists
+                }))
+              : [],
+            eligibilityDependOn: {
+              label: data?.eligibilityDependOnName,
+              value: data?.intEligibilityDependOn,
+            },
+          });
+        }
+
+        const gratuityPolicyDetails = data?.gratuityPolicyDetails.map(
+          (item: GratuityPolicyDetailKey) => ({
+            ...item,
+            idx: crypto.randomUUID(),
+          })
+        );
+
+        setData(gratuityPolicyDetails || []); // need to modify
       });
     }
 
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      "intWorkplaceId",
-      "strWorkplace",
-      setWorkplaceDDL
-    );
+    if (params?.type !== "view") {
+      getPeopleDeskAllDDL(
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+        "intWorkplaceId",
+        "strWorkplace",
+        setWorkplaceDDL
+      );
+    }
   }, [wgId]);
 
   const header = [
@@ -141,7 +176,10 @@ const GPCreateViewEdit = () => {
       dataIndex: "",
       render: (value: any, rec: any) => {
         return (
-          rec?.serviceLengthStart + " to " + rec?.serviceLengthEnd + " Month"
+          rec?.intServiceLengthStartInMonth +
+          " to " +
+          rec?.intServiceLengthEndInMonth +
+          " Month"
         );
       },
     },
@@ -151,25 +189,45 @@ const GPCreateViewEdit = () => {
     },
     {
       title: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
-      dataIndex: "numPercentage",
+      dataIndex: "numPercentageOrFixedAmount",
     },
-    {
-      title: "Action",
-      dataIndex: "status",
-      render: (_: any, rec: any) => (
-        <DeleteButton data={data} setData={setData} rec={rec} />
-      ),
-      align: "center",
-      width: 40,
-    },
+    ...(params?.type !== "view"
+      ? [
+          {
+            title: "Action",
+            dataIndex: "status",
+            render: (_: any, rec: any) => (
+              <DeleteButton data={data} setData={setData} rec={rec} />
+            ),
+            align: "center",
+            width: 40,
+          },
+        ]
+      : []),
   ];
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
+  console.log(gratuityPolicy, "gratuityPolicy");
 
   return permission?.isCreate ? (
     <div>
       {(loading || gratuityPolicyLoader) && <Loading />}
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={
+          params?.type === "edit"
+            ? {
+                strPolicyName: gratuityPolicy?.strPolicyName,
+                employmentType: gratuityPolicy?.employmentTypeName
+                  ? gratuityPolicy.employmentTypeName.map((item: any) => ({
+                      label: item.strEmploymentTypeName,
+                      value: item.intEmploymentTypeId, // or whatever unique id property exists
+                    }))
+                  : [],
+              }
+            : {}
+        }
+      >
         <PCard>
           <PCardHeader
             backButton
@@ -179,21 +237,33 @@ const GPCreateViewEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content: "Save",
-                      // icon:
-                      //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
+                      content:
+                        params?.type === "create"
+                          ? "Save"
+                          : params?.type === "edit"
+                          ? "Edit"
+                          : "Extend",
+                      icon:
+                        params?.type === "create" ? (
+                          <SaveOutlined />
+                        ) : params?.type === "edit" ? (
+                          <EditOutlined />
+                        ) : (
+                          <ExpandOutlined />
+                        ),
                       onClick: () => {
                         form
                           .validateFields([])
                           .then(() => {
-                            createEditLatePunishmentConfig(
+                            createEditGratuityPolicy(
+                              params?.type,
                               profileData,
                               form,
                               data,
                               setLoading,
                               () => {
                                 history.push(
-                                  "/administration/latePunishmentPolicy"
+                                  "/BenefitsManagement/gratuity/gratuityPolicy"
                                 );
                               }
                             );

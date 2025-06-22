@@ -159,7 +159,10 @@ export default function FinalSettlementGenerate() {
             >
               <Divider
                 orientation="left"
-                style={{ borderColor: "#34a853", fontWeight: "600" }}
+                style={{
+                  borderColor: "var(--primary-color)",
+                  fontWeight: "600",
+                }}
               >
                 Final Settlement Due Summary
               </Divider>
@@ -233,7 +236,7 @@ export default function FinalSettlementGenerate() {
                                 fontSize: "11px",
                                 textAlign: "right",
                                 padding: 0,
-                                borderColor: "#34a853",
+                                borderColor: "var(--primary-color)",
                                 width: "40%",
                               }}
                             />
@@ -255,7 +258,7 @@ export default function FinalSettlementGenerate() {
                                 fontSize: "11px",
                                 textAlign: "right",
                                 padding: 0,
-                                borderColor: "#34a853",
+                                borderColor: "var(--primary-color)",
                                 width: "40%",
                               }}
                             />
@@ -271,7 +274,7 @@ export default function FinalSettlementGenerate() {
               <Divider
                 orientation="left"
                 style={{
-                  borderColor: "#34a853",
+                  borderColor: "var(--primary-color)",
                   marginTop: "20px",
                   fontWeight: "600",
                 }}
@@ -343,7 +346,7 @@ export default function FinalSettlementGenerate() {
               <Divider
                 orientation="left"
                 style={{
-                  borderColor: "#34a853",
+                  borderColor: "var(--primary-color)",
                   marginTop: "20px",
                   fontWeight: "600",
                 }}
@@ -374,7 +377,7 @@ export default function FinalSettlementGenerate() {
               <Divider
                 orientation="left"
                 style={{
-                  borderColor: "#34a853",
+                  borderColor: "var(--primary-color)",
                   marginTop: "20px",
                   fontWeight: "600",
                 }}
@@ -416,7 +419,10 @@ export default function FinalSettlementGenerate() {
             >
               <Divider
                 orientation="left"
-                style={{ borderColor: "#34a853", fontWeight: "600" }}
+                style={{
+                  borderColor: "var(--primary-color)",
+                  fontWeight: "600",
+                }}
               >
                 Approval History Details
               </Divider>
@@ -452,7 +458,7 @@ export default function FinalSettlementGenerate() {
               <Divider
                 orientation="left"
                 style={{
-                  borderColor: "#34a853",
+                  borderColor: "var(--primary-color)",
                   marginTop: "20px",
                   fontWeight: "600",
                 }}
@@ -495,7 +501,7 @@ export default function FinalSettlementGenerate() {
               <Divider
                 orientation="left"
                 style={{
-                  borderColor: "#34a853",
+                  borderColor: "var(--primary-color)",
                   marginTop: "20px",
                   fontWeight: "600",
                 }}
