@@ -10,13 +10,13 @@ export const getHeader = (pages, history) => [
   },
   {
     title: "Workplace",
-    dataIndex: "strWorkPlace",
+    dataIndex: "strWorkplace",
     sorter: true,
     width: 100,
   },
   {
     title: "Financial Year",
-    dataIndex: "financialYear",
+    dataIndex: "strFiscalYear",
     sorter: true,
     width: 100,
   },
@@ -31,7 +31,7 @@ export const getHeader = (pages, history) => [
           type="primary-outline"
           onClick={() => {
             history.push(
-              "/compensationAndBenefits/incometaxmgmt/tdsChallan/view"
+              "/compensationAndBenefits/incometaxmgmt/taxChallan/view"
             );
           }}
         />
@@ -40,7 +40,7 @@ export const getHeader = (pages, history) => [
           type="primary"
           onClick={() => {
             history.push(
-              "/compensationAndBenefits/incometaxmgmt/tdsChallan/edit"
+              "/compensationAndBenefits/incometaxmgmt/taxChallan/edit"
             );
           }}
         />

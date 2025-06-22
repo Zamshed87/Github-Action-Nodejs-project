@@ -2978,11 +2978,19 @@ export const routingList = [
     component: IncomeTaxAssign,
   },
   {
-    path: "/compensationAndBenefits/incometaxmgmt/tdsChallan",
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan",
     component: TdsChallan,
   },
   {
-    path: "/compensationAndBenefits/incometaxmgmt/tdsChallan/create",
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/create",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/view",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/edit",
     component: TdsChallanCreate,
   },
   {

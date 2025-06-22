@@ -31,7 +31,7 @@ export const getHeader = (pages, history) => [
           type="primary-outline"
           onClick={() => {
             history.push(
-              "/compensationAndBenefits/incometaxmgmt/tdsChallan/view"
+              "/compensationAndBenefits/incometaxmgmt/taxChallan/view"
             );
           }}
         />
@@ -40,7 +40,7 @@ export const getHeader = (pages, history) => [
           type="primary"
           onClick={() => {
             history.push(
-              "/compensationAndBenefits/incometaxmgmt/tdsChallan/edit"
+              "/compensationAndBenefits/incometaxmgmt/taxChallan/edit"
             );
           }}
         />

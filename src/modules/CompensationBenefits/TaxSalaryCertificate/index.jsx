@@ -59,7 +59,7 @@ const TaxSalaryCertificate = () => {
               onClick: () => {
                 if (permission?.isCreate) {
                   history.push(
-                    "/compensationAndBenefits/incometaxmgmt/tdsChallan/create"
+                    "/compensationAndBenefits/incometaxmgmt/taxChallan/create"
                   );
                 } else {
                   toast.warn("You don't have permission");

@@ -22,7 +22,7 @@ const TdsChallan = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
-    document.title = "Benefits Management - TDS CHALLAN";
+    document.title = "Benefits Management - Income Tax Challan";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
