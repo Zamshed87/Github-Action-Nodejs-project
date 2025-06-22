@@ -133,9 +133,9 @@ const IndividualKpiModal = ({
                       }}
                       className="mt-3 pb-3 employee_info"
                     >
-                      <b> Name</b> : {empInfo?.EmployeeOnlyName}
-                      <b> Enroll</b> : {empInfo?.EmployeeId}
-                      <b> Designation</b> : {empInfo?.DesignationName}
+                      <b> Name</b> : {empInfo?.label}
+                      <b> Enroll</b> : {empInfo?.value}
+                      <b> Designation</b> : {empInfo?.employeeInfoDesignation}
                     </p>
                   </div>
 

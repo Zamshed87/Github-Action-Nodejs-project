@@ -57,6 +57,46 @@ export const columnsDefault = [
   },
 ];
 
+export const columnNoc = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Consume Type",
+    dataIndex: ["applicationInformation", "strConsumeType"],
+  },
+  {
+    title: "Reason",
+    dataIndex: ["applicationInformation", "reason"],
+  },
+
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
 export const columnsAsset = [
   {
     title: "SL",
@@ -167,7 +207,13 @@ export const columnsAboutMe = (handleViewClick) => [
     align: "center",
     render: (_, record) => {
       return (
-        <Button type="dashed" cyan onClick={() => handleViewClick(record?.applicationInformation?.employeeId)}>
+        <Button
+          type="dashed"
+          cyan
+          onClick={() =>
+            handleViewClick(record?.applicationInformation?.employeeId)
+          }
+        >
           View
         </Button>
       );

@@ -10,6 +10,7 @@ const NocSelfLanding = () => {
   
     useEffect(() => {
       dispatch(setFirstLevelNameAction("Employee Self Service"));
+      document.title = "NOC Application";
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return <NOCLanding isManagement={false} pathurl={pathurl} />;
