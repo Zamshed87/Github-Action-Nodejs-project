@@ -352,7 +352,8 @@ export const apiList = {
   LeavePunishmentGetById: "/LeavePunishment/GetById",
   LeavePunishmentExtend: "/LeavePunishment/Extend",
   GetEmployeePfAmount: "/Employee/GetEmployeePfAmount",
-  GetFinalSettlementDueSalaryReport: "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
+  GetFinalSettlementDueSalaryReport:
+    "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
   GetInvestmentSummaryReportByOrganization:
     "/PFInvestment/GetInvestmentSummaryReportByOrganization",
   GetInvestmentDetailReportByOrganization:
@@ -363,7 +364,6 @@ export const apiList = {
     "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
   GetTypeWiseReport: "/PFInvestment/GetTypeWiseReport",
   GetTypeWiseDetailsReport: "/PFInvestment/GetTypeWiseDetailsReport",
-
   ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
 };

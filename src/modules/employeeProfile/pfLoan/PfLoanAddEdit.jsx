@@ -35,7 +35,7 @@ const PfLoanAddEdit = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Loan Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PF Loan";
     return () => {
