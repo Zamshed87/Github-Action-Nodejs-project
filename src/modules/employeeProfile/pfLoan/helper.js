@@ -179,7 +179,7 @@ export const pfLandingColData = (history) => {
                   type: "edit",
                   onClick: () => {
                     history.push({
-                      pathname: `/profile/pfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
+                      pathname: `/loanManagement/PfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
                     });
                   },
                 },

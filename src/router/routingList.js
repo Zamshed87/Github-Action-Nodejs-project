@@ -2032,9 +2032,9 @@ export const routingList = [
   { path: "/profile/leave/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
-  { path: "/profile/pfLoan", component: PfLoanLanding },
-  { path: "/profile/pfLoan/create", component: PfLoanAddEdit },
-  { path: "/profile/pfLoan/edit/:id", component: PfLoanAddEdit },
+  { path: "/loanManagement/PfLoan", component: PfLoanLanding },
+  { path: "/loanManagement/PfLoan/create", component: PfLoanAddEdit },
+  { path: "/loanManagement/PfLoan/edit/:id", component: PfLoanAddEdit },
 
   { path: "/profile/confirmation", component: Confirmation },
   {
@@ -2580,11 +2580,11 @@ export const routingList = [
   },
 
   // noc start
-    {
+  {
     path: "/SelfService/noc/nocApplication",
     component: NocSelfLanding,
   },
-    {
+  {
     path: "/SelfService/noc/nocApplication/create",
     component: NOCForm,
   },
