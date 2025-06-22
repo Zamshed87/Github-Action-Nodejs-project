@@ -167,7 +167,7 @@ export const ManageriumOnBoarding = () => {
                     <Form.Item name="isActive" valuePropName="checked">
                       <Switch
                         checkedChildren="Active"
-                        unCheckedChildren="In_Active"
+                        unCheckedChildren="In Active"
                       />
                     </Form.Item>
                   </div>
