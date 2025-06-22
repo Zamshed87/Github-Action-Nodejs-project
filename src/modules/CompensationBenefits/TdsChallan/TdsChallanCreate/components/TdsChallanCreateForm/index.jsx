@@ -29,10 +29,10 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
     form
       .validateFields(validateFields)
       .then((values) => {
-        // if (true) {
-        //   toast.error("Overlapping range detected. Please adjust the values.");
-        //   return;
-        // }
+        if (saveData.find((data)=> data?.StrChallanNumber == values?.StrChallanNumber)) {
+          toast.error("Overlapping challan detected. Please adjust the values.");
+          return;
+        }
         const payload = {
           ...values,
           IntBankWalletId: values?.IntBankWalletId?.value,

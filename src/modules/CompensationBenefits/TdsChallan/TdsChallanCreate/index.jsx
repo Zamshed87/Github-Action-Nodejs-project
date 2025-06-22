@@ -51,56 +51,30 @@ const TdsChallanCreate = () => {
                 content: "Save",
                 onClick: () => {
                   const commonFields = [
-                    "strPolicyName",
-                    "strPolicyCode",
-                    "intWorkPlaceId",
-                    "intEmploymentTypeIds",
-                    "intPfEligibilityDependOn",
-                    "intEmployeeContributionPaidAfter",
-                    "isPFInvestment",
-                    "intMonthlyInvestmentWith",
-                    "intEmployeeContributionInFixedMonth",
+                    "ListOfFiscalYear",
+                    "ListOfWorkplace",
                   ];
                   form
                     .validateFields(commonFields)
                     .then((values) => {
                       if (
-                        saveData.employeeContributions.length < 1 &&
-                        saveData.companyContributions.length < 1
+                        saveData.length < 1
                       ) {
                         toast.error(
-                          "Please add at least one employee or company contribution."
+                          "Please add at least one Challan."
                         );
                         return;
                       }
 
                       const payload = {
-                        intBusinessUnitId: buId,
-                        intWorkPlaceGroupId: wgId,
-                        strPolicyName: values?.strPolicyName,
-                        strPolicyCode: values?.strPolicyCode,
-                        intWorkPlaceId: values?.intWorkPlaceId,
-                        intEmploymentTypeIds: values?.intEmploymentTypeIds,
-                        intPfEligibilityDependOn:
-                          values?.intPfEligibilityDependOn?.value,
-                        employeeContributions: saveData?.employeeContributions,
-                        ...saveData,
-                        intEmployeeContributionPaidAfter:
-                          values?.intEmployeeContributionPaidAfter?.value,
-                        intEmployeeContributionInFixedMonth:
-                          values?.intEmployeeContributionInFixedMonth ?? 0,
-                        isPFInvestment: values?.isPFInvestment,
-                        intMonthlyInvestmentWith:
-                          values?.intMonthlyInvestmentWith,
+                        ...values,
+                        ListOfTaxChallanDetail : saveData
                       };
                       createTdsChallan(payload, setLoading, () => {
-                        setSaveData({
-                          employeeContributions: [],
-                          companyContributions: [],
-                        });
+                        setSaveData([]);
                         form.resetFields();
                         history.push(
-                          `/BenefitsManagement/providentFund/pfPolicy`
+                          `/compensationAndBenefits/incometaxmgmt/tdsChallan`
                         );
                       });
                     })

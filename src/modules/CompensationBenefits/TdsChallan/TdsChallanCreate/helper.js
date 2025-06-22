@@ -8,7 +8,7 @@ export const createTdsChallan = async (
 ) => {
   setLoading?.(true);
   try {
-    const res = await axios.post(`/PfPolicy/Save
+    const res = await axios.post(`/TaxChallan/Save
 `, payload);
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading?.(false);

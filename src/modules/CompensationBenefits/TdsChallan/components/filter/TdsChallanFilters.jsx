@@ -9,7 +9,7 @@ const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
       <Col md={5} sm={12} xs={24}>
         <PSelect
           options={fiscalYearDDL?.data?.length > 0 ? fiscalYearDDL?.data : []}
-          name="fiscalYear"
+          name="ListOfFiscalYear"
           mode="multiple"
           showSearch
           filterOption={true}
@@ -25,7 +25,7 @@ const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
         <PSelect
           options={workplaceDDL.data}
           mode="multiple"
-          name="workplace"
+          name="ListOfWorkplace"
           label="Workplace"
           placeholder="Select Workplace"
           onChange={(_, op) => {

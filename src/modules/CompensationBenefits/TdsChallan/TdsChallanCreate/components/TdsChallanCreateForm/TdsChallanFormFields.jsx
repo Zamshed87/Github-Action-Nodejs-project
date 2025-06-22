@@ -49,6 +49,7 @@ const TdsChallanFormFields = ({ form, addData }) => {
               placeholder="Select Transaction Mode"
               onChange={(value) => {
                 fetchBankMfs(value);
+                form.resetFields(["IntBankWalletId","StrBranchName"]);
               }}
               rules={[
                 { required: true, message: "Transaction Mode is required" },
@@ -78,7 +79,7 @@ const TdsChallanFormFields = ({ form, addData }) => {
               name="StrBranchName"
               label={getBranchMfsLabel()}
               placeholder={`Enter ${getBranchMfsLabel()}`}
-              type="text"
+              type={transactionMode == 'Bank' ? 'text': 'number'}
               rules={[
                 {
                   required: true,

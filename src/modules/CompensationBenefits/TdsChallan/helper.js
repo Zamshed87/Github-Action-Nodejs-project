@@ -1,6 +1,6 @@
 import { PButton } from "Components";
 
-export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
+export const getHeader = (pages, history) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -30,14 +30,18 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
           content="View"
           type="primary-outline"
           onClick={() => {
-            setOpenView?.({ open: true, data: record });
+            history.push(
+              "/compensationAndBenefits/incometaxmgmt/tdsChallan/view"
+            );
           }}
         />
         <PButton
           content="Edit"
           type="primary"
           onClick={() => {
-            setOpenExtend?.({ extend: true, data: record });
+            history.push(
+              "/compensationAndBenefits/incometaxmgmt/tdsChallan/edit"
+            );
           }}
         />
       </div>

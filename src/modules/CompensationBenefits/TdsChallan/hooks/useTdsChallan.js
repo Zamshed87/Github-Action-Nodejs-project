@@ -28,7 +28,7 @@ const useTdsChallan = (form) => {
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const url = `/PfPolicy/GetPolicies?${filteredParams}`;
+    const url = `/TaxChallan/GetAll?${filteredParams}`;
 
     getData(url, (res) => {
       setData(res);
