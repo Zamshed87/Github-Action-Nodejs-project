@@ -66,7 +66,7 @@ const EvaluationCriteria = () => {
                 height: "24px",
                 fontSize: "12px",
                 padding: "0px 12px 0px 12px",
-                backgroundColor: "var(--green)",
+                backgroundColor: "var(--primary-color)",
                 color: "white",
               }}
               className="btn"

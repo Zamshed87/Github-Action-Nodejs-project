@@ -318,6 +318,10 @@ const AttendanceLog = () => {
                             Department:{" "}
                             <strong>{empInfo?.[0]?.DepartmentName}</strong>{" "}
                           </p>
+                          <p>
+                            Section:{" "}
+                            <strong>{empInfo?.[0]?.SectionName}</strong>{" "}
+                          </p>
                         </div>
                       </Col>
                       <Col

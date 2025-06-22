@@ -7,6 +7,10 @@ const PFilter = ({
   landingApiCall,
   resetApiCall,
   ishideDate,
+  isSection,
+  showDesignation,
+  showDepartment,
+  mode,
   children,
 }: any) => {
   const [openFilter, setOpenFilter] = React.useState(false);
@@ -36,6 +40,7 @@ const PFilter = ({
             workplace: { label: "All", value: 0 },
             department: { label: "All", value: 0 },
             designation: { label: "All", value: 0 },
+            section: { label: "All", value: 0 },
           }}
         >
           <Row gutter={[10, 2]}>
@@ -83,9 +88,10 @@ const PFilter = ({
             <CommonFilterField
               form={form}
               col={12}
-              isDepartment={true}
-              isDesignation={true}
-              // mode="multiple"
+              isDepartment={showDepartment !== "NO"}
+              isDesignation={showDesignation !== "NO"}
+              isSection={isSection}
+              mode={mode}
             />
 
             {children}
@@ -126,6 +132,7 @@ const PFilter = ({
                     departmentId: [0],
                     designation: { label: "All", value: 0 },
                     designationId: [0],
+                    section: { label: "All", value: 0 },
                   });
                   resetApiCall && resetApiCall();
                 }}

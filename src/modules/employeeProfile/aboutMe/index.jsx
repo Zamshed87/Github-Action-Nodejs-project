@@ -8,11 +8,13 @@ import OverviewTab from "../employeeOverview/components/OverviewTab";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import {
   getEmployeeProfileViewData,
+  getEmployeeProfileViewPendingData,
   markAsComplete,
 } from "../employeeFeature/helper";
 import { Tag } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import IConfirmModal from "common/IConfirmModal";
+import EmployeeViewModal from "./ViewModal";
 
 function AboutMe() {
   const dispatch = useDispatch();
@@ -27,8 +29,14 @@ function AboutMe() {
     shallowEqual
   );
 
+  const firstSegment = location.pathname.split("/")[1];
+  const selfService = firstSegment === "SelfService";
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [empBasic, setEmpBasic] = useState({});
+  const [empBasicPending, setEmpBasicPending] = useState({});
   const [bankData, setBankData] = useState("empty");
   const [isBank, setIsBank] = useState(true);
   // const [hasBankData, setHasBankData] = useState(true);
@@ -39,6 +47,16 @@ function AboutMe() {
     getEmployeeProfileViewData(
       employeeId,
       setEmpBasic,
+      setLoading,
+      buId,
+      logWgId
+    );
+  };
+
+  const getEmpPendingData = () => {
+    getEmployeeProfileViewPendingData(
+      employeeId,
+      setEmpBasicPending,
       setLoading,
       buId,
       logWgId
@@ -59,6 +77,16 @@ function AboutMe() {
       setBankData("complete");
     }
   }, [empBasic]);
+
+  const handleViewClick = () => {
+    setIsOpen(true);
+    getEmpPendingData();
+  };
+
+  // Handler for closing the modal
+  const handleViewModalClose = () => {
+    setIsOpen(false);
+  };
 
   return (
     <>
@@ -113,6 +141,9 @@ function AboutMe() {
 
         <div className="container-about-info" style={{ marginTop: "18px" }}>
           <ProfileCard
+            getEmpPendingData={getEmpPendingData}
+            isSelfService={selfService}
+            viewBtnHandler={handleViewClick}
             empBasic={empBasic?.employeeProfileLandingView}
             getEmpData={getEmpData}
             strProfileImageUrl={
@@ -131,6 +162,7 @@ function AboutMe() {
                 wgId={wgId}
                 buId={buId}
                 intAccountId={intAccountId}
+                isSelfService={selfService}
               />
             </div>
           </div>
@@ -152,6 +184,12 @@ function AboutMe() {
             empId={employeeId}
           />
         </div>
+        <EmployeeViewModal
+          visible={isOpen}
+          onClose={handleViewModalClose}
+          empData={empBasicPending}
+          originalData={empBasic}
+        />
       </div>
     </>
   );

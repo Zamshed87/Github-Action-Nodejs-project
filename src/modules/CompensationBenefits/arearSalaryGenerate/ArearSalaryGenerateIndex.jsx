@@ -24,7 +24,6 @@ import { gray500 } from "../../../utility/customColor";
 import {
   dateFormatter,
   getDateOfYear,
-  monthFirstDate,
   monthLastDate,
 } from "../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
@@ -53,7 +52,7 @@ const ArearSalaryGenerateIndex = () => {
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -89,7 +88,8 @@ const ArearSalaryGenerateIndex = () => {
       setRowDto,
       setAllData,
       setLoading,
-      values
+      values,
+      wgId
     );
   };
 
@@ -100,7 +100,8 @@ const ArearSalaryGenerateIndex = () => {
       setRowDto,
       setAllData,
       setLoading,
-      values
+      values,
+      wgId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId]);
@@ -473,7 +474,8 @@ const ArearSalaryGenerateIndex = () => {
                         setRowDto,
                         setAllData,
                         setLoading,
-                        values
+                        values,
+                        wgId
                       );
                     }}
                   >

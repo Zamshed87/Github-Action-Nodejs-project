@@ -108,7 +108,9 @@ export const getKPIsLanding = async (
         formValues?.objectiveType?.value ? formValues?.objectiveType?.value : ""
       }&objective=${
         formValues?.objective?.value ? formValues?.objective?.value : ""
-      }&status=${formValues?.status?.value ? formValues?.status?.value : ""}`
+      }&status=${
+        formValues?.status?.value !== undefined ? formValues?.status?.value : ""
+      }`
     );
     if (res?.data) {
       setPages((prev) => ({

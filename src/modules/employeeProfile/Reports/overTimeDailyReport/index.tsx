@@ -30,6 +30,7 @@ import { column } from "./helper";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
 import { useReactToPrint } from "react-to-print";
 import "./overTimeReport.css";
+import { numberToWords } from "Utils";
 // import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/monthlyAttendanceReport/helper";
 
 const EmOverTimeDailyReport = () => {
@@ -708,7 +709,7 @@ const EmOverTimeDailyReport = () => {
                     return acc;
                   }, {})
                 ) as [string, any[]][]
-              ).map(([workplace, records], groupIndex) => (
+              ).map(([workplace, records], groupIndex,arr) => (
                 <div key={groupIndex} style={{ marginBottom: "40px" }}>
                   {/* Table for This Workplace */}
                   <table className="pdf-table">
@@ -717,8 +718,8 @@ const EmOverTimeDailyReport = () => {
                         <th
                           colSpan={17}
                           style={{
-                            border:"none",
-                            background:"transparent",
+                            border: "none",
+                            background: "transparent",
                             textAlign: "left",
                             fontSize: "16px",
                             fontWeight: "bold",
@@ -749,7 +750,10 @@ const EmOverTimeDailyReport = () => {
                     </thead>
                     <tbody>
                       {records.map((item, index) => (
-                        <tr key={item.strEmployeeCode} style={{height:"70px"}}>
+                        <tr
+                          key={item.strEmployeeCode}
+                          style={{ height: "70px" }}
+                        >
                           <td>{index + 1}</td>
                           {/* <td>{item?.strWorkplace}</td> */}
                           <td>{item?.strDepartment}</td>
@@ -771,11 +775,79 @@ const EmOverTimeDailyReport = () => {
                           <td>{item?.strSignature}</td>
                         </tr>
                       ))}
+                      {groupIndex === arr?.length - 1 && (
+                      <tr style={{ fontWeight: "bold", background: "#f5f5f5" }}>
+                        <td colSpan={9} style={{ textAlign: "right" }}>
+                          Total
+                        </td>
+                        <td>
+                          {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalnumHours}
+                        </td>
+                        <td>
+                          {/* {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalnumPerHourRate} */}
+                        </td>
+                        <td>
+                          {landingApi?.data?.length > 0 &&
+                            landingApi?.data?.[0]?.TotalNumTotalAmount}
+                        </td>
+                        <td></td>
+                      </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
               ))}
           </tbody>
+          <td
+            style={{ fontSize: "18px", fontWeight: "bold", textAlign: "left" }}
+          >
+            In Word:{" "}
+            {landingApi?.data?.length > 0 &&
+              numberToWords(landingApi?.data?.[0]?.TotalNumTotalAmount)} Only
+          </td>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "80px", // optional spacing before signatures
+            }}
+          >
+            <div style={{ flex: 1, textAlign: "start" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Prepared By
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "center" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Checked By
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: "end" }}>
+              <div
+                style={{
+                  borderTop: "1px solid black",
+                  paddingTop: "3px",
+                  display: "inline-block",
+                }}
+              >
+                Approved By
+              </div>
+            </div>
+          </div>
           <div className="footer">System Generated Report {todayDate()}</div>
         </div>
       </table>

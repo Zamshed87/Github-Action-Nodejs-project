@@ -85,6 +85,7 @@ const EmLoanHistory = () => {
         loanTypeId: 0,
         departmentIdList: formatFilterValueList(values?.department),
         designationIdList: formatFilterValueList(values?.designation),
+        sectionIdList: formatFilterValueList(values?.section),
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
@@ -166,6 +167,11 @@ const EmLoanHistory = () => {
       title: "Department",
       dataIndex: "strDepartment",
 
+      width: 80,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSection",
       width: 80,
     },
     {
@@ -292,6 +298,7 @@ const EmLoanHistory = () => {
                 loanTypeId: 0,
                 departmentIdList: formatFilterValueList(values?.department),
                 designationIdList: formatFilterValueList(values?.designation),
+                sectionIdList: formatFilterValueList(values?.section),
                 employeeId: 0,
                 fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
                 toDate: moment(values?.toDate).format("YYYY-MM-DD"),
@@ -323,7 +330,11 @@ const EmLoanHistory = () => {
               );
             }}
           />
-          <PFilter form={form} landingApiCall={landingApiCall} />
+          <PFilter
+            form={form}
+            landingApiCall={landingApiCall}
+            isSection={true}
+          />
           <DataTable
             bordered
             data={landingApi?.data?.data || []}

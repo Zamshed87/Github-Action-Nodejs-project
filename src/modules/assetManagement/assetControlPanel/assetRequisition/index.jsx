@@ -11,16 +11,20 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
-import useDebounce from "utility/customHooks/useDebounce";
-import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
-import { assetRequisitionSelfTableColumn, filterAssetRequisitionLanding, onGetAssetRequisitionLanding } from "./helper";
+import {
+  monthFirstDate,
+  monthLastDate,
+} from "utility/dateFormatter";
+import {
+  assetRequisitionSelfTableColumn,
+  onGetAssetRequisitionLanding,
+} from "./helper";
 import Loading from "common/loading/Loading";
 import ResetButton from "common/ResetButton";
-import MasterFilter from "common/MasterFilter";
 import PrimaryButton from "common/PrimaryButton";
 import AntTable from "common/AntTable";
 import NoResult from "common/NoResult";
-
+import CommonFilter from "common/CommonFilter";
 
 const initData = {
   search: "",
@@ -29,16 +33,16 @@ const initData = {
 };
 
 const AssetRequisitionSelfLanding = () => {
-  const debounce = useDebounce();
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const [, setfilterAnchorEl] = useState(null);
   const [rowDto, setRowDto] = useState([]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -51,7 +55,7 @@ const AssetRequisitionSelfLanding = () => {
     initialValues: initData,
   });
 
- useEffect(() => {
+  useEffect(() => {
     dispatch(setFirstLevelNameAction("Asset Management"));
     document.title = "Requisition";
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,10 +69,25 @@ const AssetRequisitionSelfLanding = () => {
       employeeId,
       values,
       setRowDto,
-      wgId
+      wgId,
+      ""
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
+
+  const handleFilter = (values) => {
+    const date = values;
+    onGetAssetRequisitionLanding(
+      getAssetRequisitionLanding,
+      orgId,
+      buId,
+      employeeId,
+      values,
+      setRowDto,
+      wgId,
+      date
+    );
+  };
 
   return (
     <>
@@ -78,6 +97,34 @@ const AssetRequisitionSelfLanding = () => {
           <div className="table-card-heading">
             <div className="d-flex align-items-center"></div>
             <ul className="d-flex flex-wrap">
+              <li className="mr-3">
+                <PrimaryButton
+                  type="button"
+                  className="btn btn-default flex-center"
+                  label="Requisition"
+                  icon={
+                    <AddOutlined
+                      sx={{
+                        marginRight: "0px",
+                        fontSize: "15px",
+                      }}
+                    />
+                  }
+                  onClick={() => {
+                    history.push(
+                      `/assetManagement/assetControlPanel/assetRequisition/create`
+                    );
+                  }}
+                />
+              </li>
+              <li>
+                <CommonFilter
+                  visible={isFilterVisible}
+                  onClose={(visible) => setIsFilterVisible(visible)}
+                  onFilter={handleFilter}
+                  isDate={true}
+                />
+              </li>
               {values?.search && (
                 <li>
                   <ResetButton
@@ -99,50 +146,6 @@ const AssetRequisitionSelfLanding = () => {
                   />
                 </li>
               )}
-              <li>
-                <MasterFilter
-                  isHiddenFilter
-                  styles={{
-                    marginRight: "10px",
-                  }}
-                  inputWidth="200px"
-                  width="200px"
-                  value={values?.search}
-                  setValue={(value) => {
-                    setFieldValue("search", value);
-                    debounce(() => {
-                      filterAssetRequisitionLanding(
-                        value,
-                        assetRequisitionLanding,
-                        setRowDto
-                      );
-                    }, 500);
-                  }}
-                  cancelHandler={() => {
-                    setFieldValue("search", "");
-                    setRowDto(assetRequisitionLanding);
-                  }}
-                  handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
-                />
-              </li>
-              <li>
-                <PrimaryButton
-                  type="button"
-                  className="btn btn-default flex-center"
-                  label="Requisition"
-                  icon={
-                    <AddOutlined
-                      sx={{
-                        marginRight: "0px",
-                        fontSize: "15px",
-                      }}
-                    />
-                  }
-                  onClick={() => {
-                    history.push(`/assetManagement/assetControlPanel/assetRequisition/create`);
-                  }}
-                />
-              </li>
             </ul>
           </div>
           {rowDto?.length > 0 ? (

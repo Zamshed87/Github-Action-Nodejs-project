@@ -4,31 +4,36 @@ import { useApiRequest } from "Hooks";
 import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { setCustomFieldsValue } from "./helper";
+import { orgIdsForBn } from "utility/orgForBanglaField";
 
 const CommonFilterField = ({
   form,
   isDepartment,
   isDesignation,
   col,
-  mode = undefined,
+  mode = "single",
+  isSection,
 }: {
   form: any;
   isDepartment?: boolean;
   isDesignation?: boolean;
   col?: number;
-  mode?: string | undefined;
+  mode?: any;
+  isSection?: boolean;
 }) => {
   const { profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId } = profileData;
+  const { buId, wgId, wId, employeeId, orgId, intAccountId } = profileData;
 
   const workplaceGroup = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const designationApi = useApiRequest([]);
   const positionDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -116,6 +121,33 @@ const CommonFilterField = ({
     });
   };
 
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department, workplace, workplaceGroup } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionIdAll",
+      method: "GET",
+      params: {
+        accountId: intAccountId,
+        businessUnitId: buId,
+        departmentId: department?.value || 0,
+        workplaceGroupId: workplaceGroup?.value,
+        workplaceId:
+          typeof workplace?.value == "string" ? wId : workplace?.value,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label =
+            orgIdsForBn.includes(orgId) && item?.strSectionNameBn
+              ? `${item?.strSectionName} (${item?.strSectionNameBn})`
+              : item?.strSectionName;
+          res[i].value = item?.intSectionId;
+        });
+        res.unshift({ label: "All", value: 0 });
+      },
+    });
+  };
+
   useEffect(() => {
     // getBUnitDDL.action({
     //   urlKey: "BusinessUnitWithRoleExtension",
@@ -183,7 +215,7 @@ const CommonFilterField = ({
           label="Workplace"
           allowClear
           placeholder="Workplace"
-          mode={mode as "multiple" | undefined | "tags"}
+          mode={mode?.workplace ? "multiple" : undefined}
           showSearch
           onChange={(value, op) => {
             const { workplaceGroup } = form.getFieldsValue(true);
@@ -202,14 +234,20 @@ const CommonFilterField = ({
               form.setFieldsValue({
                 workplace: op,
                 workplaceId: value,
-                workplaceGroupId: undefined
+                workplaceGroupId: undefined,
               });
+              if (mode?.workplace) {
+                setCustomFieldsValue(form, "workplace", op);
+              }
             }
             if (isDepartment) {
               getEmployeDepartment();
             }
             if (isDesignation) {
               getDesignation();
+            }
+            if (isSection) {
+              getEmployeeSection();
             }
             //
             // getEmployeePosition();
@@ -236,6 +274,22 @@ const CommonFilterField = ({
             //     message: "Department is required",
             //   },
             // ]}
+          />
+        </Col>
+      )}
+      {isSection && (
+        <Col md={col || 6} sm={12} xs={24}>
+          <PSelect
+            options={empSectionDDL?.data || []}
+            name="section"
+            label="Section"
+            mode={"multiple"}
+            showSearch
+            allowClear
+            placeholder="Section"
+            onChange={(value, op) => {
+              setCustomFieldsValue(form, "section", op);
+            }}
           />
         </Col>
       )}

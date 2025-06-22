@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import AttachmentShow from "common/AttachmentShow";
 import { Form, Formik } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import BackButton from "../../../common/BackButton";
@@ -14,7 +15,13 @@ const initData = {
 
 export default function AnnouncementViewPage() {
   const location = useLocation();
-  const { dteExpiredDate, dteCreatedAt, strDetails, strTitle } = location.state;
+  const {
+    dteExpiredDate,
+    dteCreatedAt,
+    strDetails,
+    strTitle,
+    intAttachmentId,
+  } = location.state;
 
   const saveHandler = (values) => {};
 
@@ -52,15 +59,22 @@ export default function AnnouncementViewPage() {
                   <div className="table-card-head-right"></div>
                 </div>
                 <div className="table-card-body">
-                  <div className="announcement_header">
-                    <h4>{strTitle}</h4>
-                    <div className="d-flex add_info ">
-                      Published date: {dateFormatterForInput(dteCreatedAt)}
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="announcement_header">
+                      <h4>{strTitle}</h4>
+                      <div className="d-flex add_info ">
+                        Published date: {dateFormatterForInput(dteCreatedAt)}
+                      </div>
+                      <div className="d-flex add_info">
+                        Expiry date: {dateFormatterForInput(dteExpiredDate)}
+                      </div>
                     </div>
-                    <div className="d-flex add_info">
-                      Expiry date: {dateFormatterForInput(dteExpiredDate)}
-                    </div>
+                    <AttachmentShow
+                      intAttachmentId={intAttachmentId}
+                      label={"Attachment"}
+                    />
                   </div>
+
                   <div
                     className="announcement_body"
                     dangerouslySetInnerHTML={{

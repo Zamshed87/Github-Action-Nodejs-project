@@ -38,7 +38,7 @@ export default function AnnouncementCreate() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  const [attachmentList, setAttachmentList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [departData, setDepartData] = useState([]);
   const [singleData, setSingleData] = useState({});
@@ -188,6 +188,10 @@ export default function AnnouncementCreate() {
         dteCreatedAt: todayDate(),
         intCreatedBy: employeeId,
         isActive: true,
+        intAttachmentId:
+          attachmentList[0]?.response[0]?.globalFileUrlId?.toString() ||
+          values?.intAttachmentId ||
+          null,
       },
       announcementRow: [
         ...workGroup,
@@ -209,9 +213,9 @@ export default function AnnouncementCreate() {
       // isActive: true,
     };
 
-    cb();
+    // cb();
     console.log(payload);
-    createAnnouncement(payload, setLoading, "");
+    createAnnouncement(payload, setLoading, cb);
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -222,6 +226,7 @@ export default function AnnouncementCreate() {
       permission = item;
     }
   });
+  console.log(attachmentList, "attachmentList");
   return (
     <>
       <Formik
@@ -231,6 +236,9 @@ export default function AnnouncementCreate() {
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
+            if (!params?.id) {
+              setAttachmentList([]);
+            }
             // setIsEdit(false);
           });
         }}
@@ -281,6 +289,8 @@ export default function AnnouncementCreate() {
                           setDepartData,
                           departData,
                           params,
+                          attachmentList,
+                          setAttachmentList,
                         }}
                       ></FormCard>
                     </div>

@@ -162,6 +162,7 @@ const AttendanceReport = () => {
         filerList?.department?.length > 0 ? `${filerList?.department}` : "",
       designations:
         filerList?.designation?.length > 0 ? `${filerList?.designation}` : "",
+      sections: filerList?.section?.length > 0 ? `${filerList?.section}` : "",
     };
     landingApi.action({
       urlKey: "GetEmpAttendanceReport",
@@ -242,7 +243,9 @@ const AttendanceReport = () => {
     {
       title: "Section",
       dataIndex: "section",
-
+      filter: true,
+      filterKey: "strSectionList",
+      filterSearch: true,
       width: 100,
     },
     {

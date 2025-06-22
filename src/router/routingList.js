@@ -260,6 +260,14 @@ import GradeLanding from "modules/PayrollManagementSytem/grade";
 import JobLevelLanding from "modules/PayrollManagementSytem/jobLevel";
 import JobClassLanding from "modules/PayrollManagementSytem/jobclass";
 import PayscaleLanding from "modules/PayrollManagementSytem/payscale";
+const AbsentPunishment = lazy(() =>
+  import("../modules/punishmentConfiguration/AbsentPunishment/index.jsx")
+);
+const AbsentPunishmentConfiguration = lazy(() =>
+  import(
+    "../modules/punishmentConfiguration/AbsentPunishment/components/absentPunishmentConfiguration/index.jsx"
+  )
+);
 import LatePunishmentPolicy from "modules/configuration/latePunishmentPolicySetup";
 import { Confirmation } from "modules/employeeProfile/confirmation/index.tsx";
 import { AdjustmentIOUReportLanding } from "modules/iouManagement/adjustmentIOUReport";
@@ -282,6 +290,8 @@ import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+import LatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment";
+import CreateEditLatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment/createEdit";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
 import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
@@ -458,7 +468,9 @@ const AssetRequisitionSelfCreate = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/addEditForm.jsx")
 );
 const AssetRequisitionCreate = lazy(() =>
-  import("../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx")
+  import(
+    "../modules/assetManagement/assetControlPanel/assetRequisition/addEditForm.jsx"
+  )
 );
 const AssetRequisitionSelfLanding = lazy(() =>
   import("../modules/assetManagement/assetRequisitionSelf/index.jsx")
@@ -498,7 +510,9 @@ const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
 );
 const AssetRequisition = lazy(() =>
-  import("../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx")
+  import(
+    "../modules/assetManagement/assetControlPanel/assetRequisition/index.jsx"
+  )
 );
 const AssetRegistrationCreate = lazy(() =>
   import(
@@ -725,7 +739,11 @@ const SalaryRequisitionReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
   )
 );
-
+const PayrollSummaryReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/PayrollSummaryReport/index.jsx"
+  )
+);
 const SalaryCostCenterReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/SalaryCostCenterReport/index.jsx"
@@ -751,13 +769,17 @@ const BankSalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/bankSalaryReport/index.jsx")
 );
 const FinisBankSalaryReport = lazy(() =>
-  import("../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx")
+  import(
+    "../modules/CompensationBenefits/reports/FinisBankSalaryReport/index.jsx"
+  )
 );
 const YearlySalaryReport = lazy(() =>
   import("../modules/CompensationBenefits/reports/yearlySalaryReport/index.jsx")
 );
 const MonthlySalaryBreakDownReport = lazy(() =>
-  import("../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx")
+  import(
+    "../modules/CompensationBenefits/reports/monthlySalaryBreakDownReport/index.jsx"
+  )
 );
 const SingleSalaryReport = lazy(() =>
   import(
@@ -1790,6 +1812,16 @@ const FinalSettlementEdit = lazy(() =>
 );
 
 import InterViewModal from "modules/employeeProfile/separation/selfApplication/viewFormV2/components/InterViewModal";
+import PfInvestmentByOrgReport from "modules/benefitManagement/reports/pfInvestmentByOrg";
+import PfInvestmentByOrgReportView from "modules/benefitManagement/reports/pfInvestmentByOrg/view";
+import PfEmployeeReport from "modules/benefitManagement/reports/pfEmployeeWise";
+import PfEmployeeReportView from "modules/benefitManagement/reports/pfEmployeeWise/view";
+import PfInvestmentByTypeReport from "modules/benefitManagement/reports/pfInvestmentByType";
+import PfInvestmentByTypeReportView from "modules/benefitManagement/reports/pfInvestmentByType/view";
+import GeneratePrint from "modules/CompensationBenefits/Increment/singleIncement/components/generatePrint";
+import NOCManagementLanding from "modules/NOC/nocManagment";
+import NOCForm from "modules/NOC/components/NOCForm";
+import NocSelfLanding from "modules/NOC/nocSelf";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -1797,6 +1829,50 @@ const AttendanceShiftChange = lazy(() =>
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
   import("../modules/logMonitor/applicationNotificationLog/index.jsx")
+);
+// Benefit Management Module
+const PFPolicy = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/index.jsx")
+);
+const PFPolicyCreate = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
+);
+const PFInvestment = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/index.jsx")
+);
+const PFInvestmentCreate = lazy(() =>
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCreate/index.jsx"
+  )
+);
+const PFInvestmentCollection = lazy(() =>
+  import(
+    "../modules/benefitManagement/PfInvestment/PfInvestmentCollection/index.jsx"
+  )
+);
+const PFProfitShare = lazy(() =>
+  import("../modules/benefitManagement/PfProfitShare/index.jsx")
+);
+const PFProfitShareCreate = lazy(() =>
+  import(
+    "../modules/benefitManagement/PfProfitShare/PfProfitShareCreate/index.jsx"
+  )
+);
+const GratuityPolicy = lazy(() =>
+  import("../modules/benefitManagement/gratuityPolicy/index.tsx")
+);
+const GPCreateViewEdit = lazy(() =>
+  import(
+    "../modules/benefitManagement/gratuityPolicy/GPCreateViewEdit/index.tsx"
+  )
+);
+const PFInvestmentType = lazy(() =>
+  import("../modules/benefitManagement/PfInvestment/InvestmentType/index.jsx")
+);
+const PFInvestmentToOrganization = lazy(() =>
+  import(
+    "../modules/benefitManagement/PfInvestment/InvestmentToOrganization/index.jsx"
+  )
 );
 export const routingList = [
   { path: "/", component: Homepage },
@@ -2502,6 +2578,38 @@ export const routingList = [
     path: "/profile/timemanagement/attendenceadjust",
     component: AttendenceAdjustN,
   },
+
+  // noc start
+    {
+    path: "/SelfService/noc/nocApplication",
+    component: NocSelfLanding,
+  },
+    {
+    path: "/SelfService/noc/nocApplication/create",
+    component: NOCForm,
+  },
+  {
+    path: "/SelfService/noc/nocApplication/:type/:id",
+    component: NOCForm,
+  },
+  {
+    path: "/profile/noc/nocApplication",
+    component: NOCManagementLanding,
+  },
+  {
+    path: "/profile/noc/nocApplication/create",
+    component: NOCForm,
+  },
+  {
+    path: "/profile/noc/nocApplication/create",
+    component: NOCForm,
+  },
+  {
+    path: "/profile/noc/nocApplication/:type/:id",
+    component: NOCForm,
+  },
+
+  // noc end
   {
     path: "/profile/timeManagement/attendanceAutoProcess",
     component: AttendanceProcessLanding,
@@ -2538,6 +2646,14 @@ export const routingList = [
     // dont remove the space from this route.. otherwise it will throw error or redirect to other route
     path: "/administration/configuration/taxChallanConfig ",
     component: TaxChallanConfigLanding,
+  },
+  {
+    path: "/administration/latePunishmentPolicy",
+    component: LatePunishmentConfig,
+  },
+  {
+    path: "/administration/latePunishmentPolicy/:type/:id",
+    component: CreateEditLatePunishmentConfig,
   },
   // {
   //   path: "/SelfService/timeManagement/attendenceAdjustRequest",
@@ -3015,7 +3131,15 @@ export const routingList = [
   },
   {
     path: "/compensationAndBenefits/reports/salaryRequisitionReport",
-    component: SalaryRequisitionReport,
+    component: () => <SalaryRequisitionReport type={"salary"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/bonusRequisitionReport",
+    component: () => <SalaryRequisitionReport type={"bonus"} />,
+  },
+  {
+    path: "/compensationAndBenefits/reports/payrollSummaryReport",
+    component: PayrollSummaryReport,
   },
   {
     path: "/compensationAndBenefits/reports/salarySummaryCostCenterReport",
@@ -3058,6 +3182,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/increment/singleIncrement/grade/view/:id",
     component: SingleIncrement,
+  },
+  {
+    path: "/compensationAndBenefits/increment/singleIncrement/grade/print",
+    component: GeneratePrint,
   },
   {
     path: "/compensationAndBenefits/increment/singleIncrement/view/:id",
@@ -3228,6 +3356,14 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/payScaleSetup",
     component: PayscaleLanding,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment",
+    component: AbsentPunishment,
+  },
+  {
+    path: "/administration/punishmentConfiguration/absentPunishment/configuration",
+    component: AbsentPunishmentConfiguration,
   },
   {
     path: "/administration/payrollConfiguration/jobClass",
@@ -4323,6 +4459,88 @@ export const routingList = [
   {
     path: "/logMonitor/applicationNotificationLogs",
     component: ApplicationNotificationLogs,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfPolicy",
+    component: PFPolicy,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfPolicy/create",
+    component: PFPolicyCreate,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment",
+    component: PFInvestment,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment/create",
+    component: PFInvestmentCreate,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment/edit",
+    component: PFInvestmentCreate,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment/view",
+    component: PFInvestmentCollection,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfInvestment/collection",
+    component: PFInvestmentCollection,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfProfitShare",
+    component: PFProfitShare,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfProfitShare/create",
+    component: PFProfitShareCreate,
+  },
+
+  // PF report start
+
+  {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType",
+    component: PfInvestmentByTypeReport,
+  },
+  {
+    path: "/BenefitsManagement/reports/pfInvestmentbyType/View/:id",
+    component: PfInvestmentByTypeReportView,
+  },
+
+  {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr",
+    component: PfInvestmentByOrgReport,
+  },
+  {
+    path: "/BenefitsManagement/reports/PFInvestmentbyOr/View/:id",
+    component: PfInvestmentByOrgReportView,
+  },
+  {
+    path: "/BenefitsManagement/reports/PFEmployeeWise",
+    component: PfEmployeeReport,
+  },
+  {
+    path: "/BenefitsManagement/reports/PFEmployeeWise/view",
+    component: PfEmployeeReportView,
+  },
+
+  // PF report end
+  {
+    path: "/bm/gratuityPolicy",
+    component: GratuityPolicy,
+  },
+  {
+    path: "/bm/gratuityPolicy/:type/:id",
+    component: GPCreateViewEdit,
+  },
+  {
+    path: "/administration/configuration/investmentType",
+    component: PFInvestmentType,
+  },
+  {
+    path: "/administration/configuration/investableOrganization",
+    component: PFInvestmentToOrganization,
   },
 ];
 

@@ -71,12 +71,13 @@ export const getArearSalaryGenerateRequestLanding = async (
   setter,
   setAllData,
   setLoading,
-  values
+  values,
+  wgId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/ArearSalarySelectQueryAll?partName=ArearSalaryGenerateRequestLanding&intAccountId=${orgId}&intBusinessUnitId=${buId}&dteEffectiveFrom=${values?.filterFromDate}&dteEffectiveTo=${values?.filterToDate}`
+      `/Payroll/ArearSalarySelectQueryAll?partName=ArearSalaryGenerateRequestLanding&intAccountId=${orgId}&intWorkplaceGroupId=${wgId}&intBusinessUnitId=${buId}&dteEffectiveFrom=${values?.filterFromDate}&dteEffectiveTo=${values?.filterToDate}`
     );
     if (res?.data) {
       setAllData && setAllData(res?.data);

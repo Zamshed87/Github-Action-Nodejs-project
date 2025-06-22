@@ -221,6 +221,7 @@ export const getPermissionListAction = (userId, setLoading) => (dispatch) => {
 // getDownlloadFileView_Action
 export const getDownlloadFileView_Action =
   (id, closeModal, cb, setLoading) => (dispatch) => {
+    console.log("getDownlloadFileView_Action", id);
     setLoading && setLoading(true);
     requestFromServer.getDownlloadFileView(id).then((res) => {
       const { status, data } = res;
@@ -237,6 +238,27 @@ export const getDownlloadFileView_Action =
       }
     });
   };
+
+export const getDownlloadFileView_ActionList = (id, closeModal, cb, setLoading) => (dispatch) => {
+  console.log("getDownlloadFileView_ActionList", id);
+  setLoading && setLoading(true);
+  requestFromServer.getDownlloadFileView(id).then((res) => {
+    const { status, data } = res;
+    if (status === 200 && data) {
+      const obj = {
+        url: res?.config?.url,
+        type: res?.headers?.["content-type"],
+        model: closeModal ? false : true,
+      };
+      dispatch(slice.SetImageView(obj));
+
+      cb && cb();
+      setLoading && setLoading(false);
+    }
+  });
+};
+
+
 
 // getDownlloadFileView_Action
 export const setDownlloadFileViewEmpty = () => async (dispatch) => {

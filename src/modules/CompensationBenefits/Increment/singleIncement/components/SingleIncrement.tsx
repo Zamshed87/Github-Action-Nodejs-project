@@ -50,6 +50,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
   const [slabDDL, setSlabDDL] = useState<any[]>([]);
   const [empBasic, setEmpBasic] = useState([]);
+  const [oldAmount, setOldAmount] = useState<number>(0);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -227,104 +228,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
       };
     });
-    // ------------- transfer⚠️
 
-    // const getRoleNameList =
-    //   values?.role &&
-    //   values?.role.map((item: any) => {
-    //     return {
-    //       intRoleExtensionRowId: 0,
-    //       intTransferNpromotionId: !id
-    //         ? 0
-    //         : (location?.state as any)?.singleData?.transferPromotionObj
-    //             ?.intTransferNpromotionId || 0,
-    //       intUserRoleId: item?.value,
-    //       strUserRoleName: item?.label,
-    //     };
-    //   });
-
-    // const roleExtensionList =
-    //   !!transferRowDto?.length &&
-    //   transferRowDto.map((item) => {
-    //     return {
-    //       intRoleExtensionRowId: 0,
-    //       intTransferNpromotionId: !id
-    //         ? 0
-    //         : (location?.state as any)?.singleData?.transferPromotionObj
-    //             ?.intTransferNpromotionId || 0,
-    //       intEmployeeId: values?.employee?.value,
-    //       intOrganizationTypeId: item?.intOrganizationTypeId,
-    //       strOrganizationTypeName: item?.strOrganizationTypeName,
-    //       intOrganizationReffId: item?.intOrganizationReffId,
-    //       strOrganizationReffName: item?.strOrganizationReffName,
-    //     };
-    //   });
-
-    // const transferPromotionObj = {
-    //   intTransferNpromotionId: !id
-    //     ? 0
-    //     : (location?.state as any)?.singleData?.transferPromotionObj
-    //         ?.intTransferNpromotionId,
-    //   intEmployeeId: values?.employee?.value,
-    //   strEmployeeName: values?.employee?.label,
-    //   employmentTypeId: values?.employee?.employmentTypeId,
-    //   hrPositionId: values?.employee?.hrPositionId,
-    //   StrTransferNpromotionType: values?.transferNPromotionType?.label,
-    //   intAccountId: orgId,
-    //   intBusinessUnitId: values?.businessUnit?.value,
-    //   intWorkplaceGroupId: values?.workplaceGroup?.value,
-    //   intWorkplaceId: values?.workplace?.value,
-    //   intDepartmentId: values?.department?.value,
-    //   intDesignationId: values?.designation?.value,
-    //   intSupervisorId: values?.supervisor?.value,
-    //   intLineManagerId: values?.lineManager?.value,
-    //   intDottedSupervisorId: 0,
-    //   dteEffectiveDate: values?.effectiveDate,
-    //   dteReleaseDate: null,
-    //   intAttachementId:
-    //     id && (!fileId as any)?.globalFileUrlId
-    //       ? fileId
-    //       : (!fileId as any)?.globalFileUrlId || 0,
-    //   strRemarks: values?.remarks,
-    //   strStatus: "",
-    //   isReject: false,
-    //   dteRejectDateTime: null,
-    //   intRejectedBy: null,
-    //   dteCreatedAt: todayDate(),
-    //   intCreatedBy: employeeId,
-    //   dteUpdatedAt: todayDate(),
-    //   intUpdatedBy: employeeId,
-    //   isActive: true,
-    //   empTransferNpromotionUserRoleVMList: getRoleNameList || [],
-    //   empTransferNpromotionRoleExtensionVMList: roleExtensionList || [],
-    // };
-    // const payload = {
-    //   isPromotion: values?.promote,
-    //   incrementList: [
-    //     {
-    //       intIncrementId: !id
-    //         ? 0
-    //         : (location?.state as any)?.singleData?.incrementList?.[0]
-    //             ?.intIncrementId || 0,
-    //       intEmployeeId: values?.employee?.value,
-    //       strEmployeeName: values?.employee?.label,
-    //       intAccountId: orgId,
-    //       intBusinessUnitId: buId,
-    //       strIncrementDependOn: values?.basedOn?.label,
-    //       numIncrementPercentageOrAmount:
-    //         +values?.numIncrementPercentageOrAmount,
-    //       dteEffectiveDate: moment(values?.dteEffectiveDate).format(
-    //         "YYYY-MM-DD"
-    //       ),
-    //       isActive: true,
-    //       intCreatedBy: employeeId,
-    //       intWorkplaceGroupId: wgId,
-    //     },
-    //   ],
-    //   transferPromotionObj: values?.promote ? transferPromotionObj : null,
-    // };
-    // const confirmObject = {
-    // -------------------
     const gradeBasedPayload = {
       id: id || 0,
       payScaleName:
@@ -366,21 +270,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
       workPlaceId: wId,
       workPlaceGroupId: wgId,
       effectiveDate: moment(values?.dteEffectiveDate).format("YYYY-MM-DD"),
-      //   closeOnClickOutside: false,
-      //   message: `${values?.employee?.label} is eligable for promote, Do you want to promote?`,
-      //   yesAlertFunc: () => {},
-      //   noAlertFunc: () => {
-      //     createIncrement.action({
-      //       urlKey: "CreateEmployeeIncrement",
-      //       method: "post",
-      //       payload: payload,
-      //       toast: true,
-      //       onSuccess: () => {
-      //         history.push(`/compensationAndBenefits/increment`);
-      //       },
-      //     });
-      //   },
-      // };
       rows: modifiedBreakDown,
       actionBy: employeeId,
     };
@@ -396,60 +285,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         history.push(`/compensationAndBenefits/increment`);
       },
     });
-    // }
-    // try {
-    //   isPromotionEligibleCheckApi.action({
-    //     urlKey: "IsPromotionEligibleThroughIncrement",
-    //     method: "post",
-    //     payload: payload,
-    //     toast: values?.salaryType?.value === "Grade" ? false : true,
-    //     onSuccess: (res) => {
-    //       if (res && orgId === 10022) {
-    //         IConfirmModal(confirmObject);
-    //       } else {
-    //         createIncrement.action({
-    //           urlKey:
-    //             // values?.salaryType?.value === "Grade" &&
-    //             id
-    //               ? "UpdateEmployeeIncrement"
-    //               : // values?.salaryType?.value === "Grade"
-    //                 // ?
-    //                 "CreateEmployeeIncrementNew",
-    //           // : "CreateEmployeeIncrement",
-    //           method:
-    //             // values?.salaryType?.value === "Grade" &&
-    //             id ? "put" : "post",
-    //           payload:
-    //             // values?.salaryType?.value === "Grade"
-    //             //   ?
-    //             gradeBasedPayload,
-    //           // : payload,
-    //           toast: true,
-    //           onSuccess: () => {
-    //             history.push(`/compensationAndBenefits/increment`);
-    //           },
-    //         });
-    //       }
-    //     },
-    //     onError: (res) => {
-    //       // if (values?.salaryType?.value === "Grade") {
-    //       createIncrement.action({
-    //         urlKey:
-    //           // values?.salaryType?.value === "Grade" &&
-    //           id ? "UpdateEmployeeIncrement" : "CreateEmployeeIncrementNew",
-    //         method:
-    //           // values?.salaryType?.value === "Grade" &&
-    //           id ? "put" : "post",
-    //         payload: gradeBasedPayload,
-    //         toast: true,
-    //         onSuccess: () => {
-    //           history.push(`/compensationAndBenefits/increment`);
-    //         },
-    //       });
-    //     },
-    //     // },
-    //   });
-    // } catch (error) {}
   };
 
   // elements calculations
@@ -712,6 +547,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           id: id,
         },
         onSuccess: (res) => {
+          setOldAmount(res?.oldGrossAmount);
           const modify = res?.rows?.map((i: any) => {
             return {
               ...i,
@@ -765,31 +601,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         },
       });
     }
-    // ------------- transfer⚠️
-
-    // if (
-    //   (location?.state as any)?.singleData?.transferPromotionObj?.intEmployeeId
-    // ) {
-    //   getTransferAndPromotionHistoryById(
-    //     orgId,
-    //     (location?.state as any)?.singleData?.transferPromotionObj
-    //       ?.intEmployeeId,
-    //     setHistoryData,
-    //     setLoading,
-    //     buId,
-    //     wgId
-    //   );
-    //   (location?.state as any)?.singleData?.transferPromotionObj &&
-    //     setTransferRowDtoRowDto(
-    //       (location?.state as any)?.singleData?.transferPromotionObj
-    //         ?.empTransferNpromotionRoleExtensionVMList
-    //     );
-    //   setFileId(
-    //     (location?.state as any)?.singleData?.transferPromotionObj
-    //       ?.intAttachementId
-    //   );
-    // }
-    // ----------
   }, [location?.state]);
 
   useEffect(() => {
@@ -950,8 +761,11 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           getBreakDownPolicyElements={getBreakDownPolicyElements}
           setSlabDDL={setSlabDDL}
           getById={getById}
+          history={history}
+          rowDto={rowDto}
+          oldAmount={oldAmount}
         />
-        <LetterContainer
+        {/* <LetterContainer
           location={location}
           orgId={orgId}
           empBasic={empBasic}
@@ -959,8 +773,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
           form={form}
           employeeIncrementByIdApi={employeeIncrementByIdApi}
           rowDto={rowDto}
-        />
-        {/* calculation rows */}
+        /> */}
         <Row className="mb-2">
           <Form.Item shouldUpdate noStyle>
             {() => {
@@ -971,7 +784,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                   <Col md={6} sm={12} xs={24}>
                     <PInput
                       type="text"
-                      // name="basicAmount"
                       value={basicAmount}
                       disabled={(location?.state as any)?.viewOnly}
                       label={
@@ -1018,25 +830,11 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         if (isNaN(e?.target?.value)) {
                           return toast.warn("Only numeric value allowed");
                         } else {
-                          // if (
-                          //   employeeIncrementByIdApi?.data?.oldGrossAmount >
-                          //     +e?.target?.value ||
-                          //   employeeInfo?.data[0]?.numNetGrossSalary >
-                          //     +e?.target?.value
-                          // ) {
-                          //   return toast.warn(
-                          //     "Amount should be greater than previous amount"
-                          //   );
-                          // }
                           form.setFieldsValue({
                             grossAmount: +e?.target?.value,
                           });
                           new_gross_calculation();
                         }
-
-                        // (values?.bankPay * 100) /
-                        //               values?.totalGrossSalary
-                        //             )?.toFixed(6)
                       }}
                       rules={[
                         {
@@ -1100,12 +898,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                     value={grossAmount}
                     placeholder="GROSS"
                     disabled={true}
-                    // rules={[
-                    //   {
-                    //     required: basedOn?.value === 2,
-                    //     message: "Basic is required",
-                    //   },
-                    // ]}
                   />
                 </Col>
               );
@@ -1127,8 +919,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"
                   style={{
-                    // width: "27rem",
-                    // position: "sticky",
                     height: "84px",
                     margin: "10px 0",
                     top: "1px",
@@ -1144,7 +934,6 @@ const SingleIncrement: React.FC<TIncrement> = () => {
                         {roundToDecimals(Math.abs(elementSum - grossAmount))}
                       </h2>
                     </div>
-                    {/* <Divider orientation="left">Small Size</Divider> */}
                   </div>
                 </Alert>
               )

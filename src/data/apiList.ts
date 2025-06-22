@@ -216,7 +216,7 @@ export const apiList = {
   IOUApplicationCreateEdit: "Employee/IOUApplicationCreateEdit",
   IOULandingById: "Employee/IOULandingById",
   IouDocList: "/Employee/IouDocList",
-  IOULandingForAccounts: "/Employee/IOULandingForAccounts",
+  GetAllIOULanding: "/Employee/GetAllIOULanding",
   ExpenseApplicationLandingDataPaginetion:
     "/Employee/ExpenseApplicationLandingDataPaginetion",
   ExpenseApplicationCreateEdit: "/Employee/ExpenseApplicationCreateEdit",
@@ -299,13 +299,14 @@ export const apiList = {
   EmployeeConfirmationReport: "/Employee/EmployeeConfirmationReport",
   EmployeeNightShiftReport: "/LeaveMovement/EmployeeNightShiftReport",
   GetEmployeeNightShiftReport: "/LeaveMovement/GetEmployeeNightShiftReport",
+  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
+  SalaryBulkUpload: "/Employee/SalaryBulkUpload",
   GetAttendanceDataOfShiftChange: "/ShiftChange/SelfService/GetAttendanceData",
   CreateNUpdateShiftChangeRequest:
     "/ShiftChange/SelfService/CreateNUpdateShiftChangeRequest",
   FinalSettlementReportForAll: "/PdfAndExcelReport/FinalSettlementReportForAll",
   EmployeeWiseAllowance: "/Allowance/AdditionAndDeduction/Allowance",
   DeleteAllowance: "/Allowance/AdditionAndDeduction/DeleteAllowance",
-  IncrementBulkUpload: "/EmployeeIncrement/IncrementBulkUpload",
   CalendarAssignFilter: "/Employee/CalendarAssignFilter",
   CalendarAssignBySupervisorFilter:
     "/Employee/CalendarAssignBySupervisorFilter",
@@ -322,4 +323,16 @@ export const apiList = {
   HolidayNExceptionFilter: "/Employee/HolidayNExceptionFilter",
   OffdayLandingFilter: "/Employee/OffdayLandingFilter",
   GetEmployeePfAmount: "/Employee/GetEmployeePfAmount",
+  GetFinalSettlementDueSalaryReport:
+    "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
+  GetInvestmentSummaryReportByOrganization:
+    "/PFInvestment/GetInvestmentSummaryReportByOrganization",
+  GetInvestmentDetailReportByOrganization:
+    "/PFInvestment/GetInvestmentDetailReportByOrganization",
+  GetSalaryCertificate: "/PdfAndExcelReport/GetSalaryCertificate",
+  PostEmployeePfSummaryReport: "/ProvidentFund/PostEmployeePfSummaryReport",
+  GetEmployeeMonthWisePfDetailReport:
+    "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
+  GetTypeWiseReport: "/PFInvestment/GetTypeWiseReport",
+  GetTypeWiseDetailsReport: "/PFInvestment/GetTypeWiseDetailsReport",
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Select, Row, Col } from "antd";
+import { Form, Input, Select, Row, Col, Divider } from "antd";
 import { PInput, PSelect } from "Components";
 
 const CommonForm = ({ formConfig, form, children }) => {
@@ -22,6 +22,14 @@ const CommonForm = ({ formConfig, form, children }) => {
           rules={field.rules}
         />
       );
+    } else if (field.type === "component") {
+      return field.component;
+    } else if (field.type === "empty") {
+      return <></>;
+    } else if (field.type === "divider") {
+      return <Divider />;
+    } else if (field.type === "header") {
+      return <h1>{field?.label}</h1>;
     } else {
       return (
         <PInput
@@ -38,9 +46,13 @@ const CommonForm = ({ formConfig, form, children }) => {
   };
 
   return (
-    <Row gutter={16} className="mb-3">
+    <Row gutter={[10, 2]} className="mb-4">
       {formConfig.map((field, index) => (
-        <Col span={field.col || 6} key={index}>
+        <Col
+          span={field.col || 6}
+          key={index}
+          style={field.style ? field.style : {}}
+        >
           {renderField(field)}
         </Col>
       ))}
