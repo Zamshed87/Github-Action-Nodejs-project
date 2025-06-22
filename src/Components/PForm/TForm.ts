@@ -31,6 +31,8 @@ export type FormProperty = {
   onValuesChange?: (changedValues: any, allValues: any) => void;
   onFieldsChange?: (changedValues: any, allValues: any) => void;
   children?: any;
+  wrapperCol?: { span: number };
+  labelCol?: { span: number };
 };
 
 // export type InputType =
@@ -130,7 +132,7 @@ type BaseProps = FormItemProps & {
   format?: string;
   addOnBefore?: string;
   disabledDate?: (currentDate: Moment) => boolean;
-  iconRender?:(visible:boolean) => ReactNode;
+  iconRender?: (visible: boolean) => ReactNode;
 };
 
 type InputTypeMapping = {
