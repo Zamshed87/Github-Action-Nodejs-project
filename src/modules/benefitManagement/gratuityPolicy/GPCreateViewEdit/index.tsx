@@ -27,6 +27,7 @@ import { GratuityPolicyForm } from "./form";
 import { addHandler, createEditGratuityPolicy } from "./helper";
 import DeleteButton from "./components/DeleteButton";
 import { EditOutlined, ExpandOutlined, SaveOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
 export interface GratuityPolicyDetailKey {
   intServiceLengthStartInMonth: number;
   intServiceLengthEndInMonth: number;
@@ -253,8 +254,18 @@ const GPCreateViewEdit = () => {
                         ),
                       onClick: () => {
                         form
-                          .validateFields([])
+                          .validateFields([
+                            "strPolicyName",
+                            "workplace",
+                            "employmentType",
+                            "eligibilityDependOn",
+                          ])
                           .then(() => {
+                            if (data.length === 0) {
+                              return toast.error(
+                                "Please add at least one gratuity policy detail."
+                              );
+                            }
                             createEditGratuityPolicy(
                               params?.type,
                               profileData,
