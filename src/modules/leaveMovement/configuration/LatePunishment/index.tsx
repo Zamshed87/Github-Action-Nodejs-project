@@ -18,11 +18,18 @@ import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import View from "./view";
 import { getPeopleDeskAllDDL } from "common/api";
+import { statusChangePunishmentConfig } from "./helper";
 
-const LatePunishmentConfig = () => {
+interface LatePunishmentConfigProps {
+  config: string;
+}
+
+const LatePunishmentConfig = ({ config }: LatePunishmentConfigProps) => {
   const [latePunishment, getlatePunishment, latePunishmentLoader] =
     useAxiosGet();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const url =
+    config === "ELP" ? "earlyLeavePunishmentpolicy" : "LatePunishmentpolicy";
 
   const [form] = Form.useForm();
   const { profileData } = useSelector(
@@ -44,8 +51,22 @@ const LatePunishmentConfig = () => {
       pageSize: 25,
     }
   ) => {
+    const values = form.getFieldsValue(true);
+
     getlatePunishment(
-      `/LatePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
+      `/${url}?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
+        values?.workplace ? values?.workplace?.value : wId
+      }&pageSize=${pagination?.pageSize}&pageNo=${
+        pagination?.current
+      }&isActive=${
+        values?.status
+          ? values?.status?.value === "active"
+            ? true
+            : values?.status?.value === "inactive"
+            ? false
+            : ""
+          : ""
+      }`
     );
   };
   useEffect(() => {
@@ -63,8 +84,10 @@ const LatePunishmentConfig = () => {
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId]);
+  const menuReferenceId = config === "ELP" ? 30607 : 30590;
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30590),
+    () =>
+      permissionList.find((item) => item?.menuReferenceId === menuReferenceId),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -94,7 +117,21 @@ const LatePunishmentConfig = () => {
             placement="bottom"
             title={rec?.isActive ? "Inactive" : "Active"}
           >
-            <Switch size="small" checked={rec?.isActive} onChange={() => {}} />
+            <Switch
+              size="small"
+              checked={rec?.isActive}
+              onChange={() => {
+                statusChangePunishmentConfig(
+                  url,
+                  rec?.id,
+                  !rec?.isActive,
+                  () => {
+                    landingApi();
+                  },
+                  "late"
+                );
+              }}
+            />
           </Tooltip>
         </Flex>
       ),
@@ -116,9 +153,7 @@ const LatePunishmentConfig = () => {
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/administration/latePunishmentPolicy/view/" + rec?.id
-                );
+                history.push(`/administration/${url}/view/` + rec?.id);
               }}
             >
               View
@@ -135,9 +170,7 @@ const LatePunishmentConfig = () => {
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/administration/latePunishmentPolicy/extend/" + rec?.id
-                );
+                history.push(`/administration/${url}/extend/` + rec?.id);
               }}
             >
               Extend
@@ -152,7 +185,15 @@ const LatePunishmentConfig = () => {
 
   return permission?.isView ? (
     <div>
-      <PForm form={form} initialValues={{}}>
+      <PForm
+        form={form}
+        initialValues={{
+          status: {
+            label: "All",
+            value: "",
+          },
+        }}
+      >
         <PCard>
           <PCardHeader
             buttonList={[
@@ -161,7 +202,7 @@ const LatePunishmentConfig = () => {
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/administration/latePunishmentPolicy/create/1");
+                  history.push(`/administration/${url}/create/1`);
                 },
               },
             ]}
@@ -189,6 +230,10 @@ const LatePunishmentConfig = () => {
             <Col md={6} sm={24}>
               <PSelect
                 options={[
+                  {
+                    label: "All",
+                    value: "",
+                  },
                   {
                     label: "Active",
                     value: "active",
@@ -223,7 +268,7 @@ const LatePunishmentConfig = () => {
                   form
                     .validateFields([""])
                     .then(() => {
-                      const values = form.getFieldsValue(true);
+                      landingApi();
                     })
                     .catch(() => {});
                 }}
@@ -242,7 +287,7 @@ const LatePunishmentConfig = () => {
               }}
               filterData={latePunishment?.data?.filters}
               onChange={(pagination, filters) => {
-                landingApi();
+                landingApi(pagination);
               }}
             />
           </div>
