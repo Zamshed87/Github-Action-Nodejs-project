@@ -2,7 +2,12 @@ import { Row, Col } from "antd";
 import { PButton, PSelect } from "Components";
 import useTdsChallanFilters from "./useTdsChallanFilters";
 
-const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
+const TdsChallanFilters = ({
+  form,
+  hideSubmitBtn = false,
+  moreFields,
+  edit = false,
+}) => {
   const { fiscalYearDDL, workplaceDDL } = useTdsChallanFilters();
   return (
     <Row gutter={[10, 2]}>
@@ -10,12 +15,12 @@ const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
         <PSelect
           options={fiscalYearDDL?.data?.length > 0 ? fiscalYearDDL?.data : []}
           name="ListOfFiscalYear"
-          mode="multiple"
+          mode={edit ?  "":"multiple"}
           showSearch
           filterOption={true}
           label="Financial Year"
           placeholder="Financial Year"
-          onChange={(value, op) => {
+          onChange={(_, op) => {
             form.setFieldsValue({ fiscalYear: op });
           }}
           rules={[{ required: true, message: "Fiscal Year is required" }]}
@@ -24,7 +29,7 @@ const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
       <Col md={5} sm={12} xs={24}>
         <PSelect
           options={workplaceDDL.data}
-          mode="multiple"
+          mode={edit ? "" : "multiple"}
           name="ListOfWorkplace"
           label="Workplace"
           placeholder="Select Workplace"
@@ -35,11 +40,12 @@ const TdsChallanFilters = ({ form, hideSubmitBtn=false }) => {
           rules={[{ required: true, message: "Workplace Is Required" }]}
         />
       </Col>
-      {
-        !hideSubmitBtn && <Col style={{ marginTop: "23px" }}>
-        <PButton type="primary" action="submit" content="View" />
-      </Col>
-      }
+      {moreFields}
+      {!hideSubmitBtn && (
+        <Col style={{ marginTop: "23px" }}>
+          <PButton type="primary" action="submit" content="View" />
+        </Col>
+      )}
     </Row>
   );
 };

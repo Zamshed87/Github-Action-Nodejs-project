@@ -44,7 +44,7 @@ const TdsChallan = () => {
       {loading && <Loading />}
       <PCard>
         <PCardHeader
-          title={`TDS Challan`}
+          title={`Tax Challan`}
           // onSearch={(e) => {
           //   form.setFieldsValue({
           //     search: e?.target?.value,
@@ -59,7 +59,7 @@ const TdsChallan = () => {
               onClick: () => {
                 if (permission?.isCreate) {
                   history.push(
-                    "/compensationAndBenefits/incometaxmgmt/tdsChallan/create"
+                    "/compensationAndBenefits/incometaxmgmt/taxChallan/create"
                   );
                 } else {
                   toast.warn("You don't have permission");

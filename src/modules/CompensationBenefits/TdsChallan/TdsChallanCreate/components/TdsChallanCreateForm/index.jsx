@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import Loading from "common/loading/Loading";
 
-const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
+const TdsChallanCreateForm = ({ form, saveData, setSaveData,edit,view }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const removeData = (index) => {
@@ -45,13 +45,11 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData }) => {
         toast.error("Please fill all required fields.");
       });
   };
-  let data = [];
-  console.log(saveData);
   return (
     <>
       {loading && <Loading />}
-      <TdsChallanFormFields form={form} addData={addData} />
-      {!data?.length > 0 && (
+      <TdsChallanFormFields form={form} addData={addData} edit={edit} view={view} />
+      {saveData?.length > 0 && (
         <PCardBody className="mb-4">
           <DataTable
             bordered

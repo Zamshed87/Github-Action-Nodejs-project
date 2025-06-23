@@ -27,20 +27,11 @@ export const getHeader = (pages, history) => [
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
         <PButton
-          content="View"
+          content="Preview"
           type="primary-outline"
           onClick={() => {
             history.push(
               "/compensationAndBenefits/incometaxmgmt/taxChallan/view"
-            );
-          }}
-        />
-        <PButton
-          content="Edit"
-          type="primary"
-          onClick={() => {
-            history.push(
-              "/compensationAndBenefits/incometaxmgmt/taxChallan/edit"
             );
           }}
         />

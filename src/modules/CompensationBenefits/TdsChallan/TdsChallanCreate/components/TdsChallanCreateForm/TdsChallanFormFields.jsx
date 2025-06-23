@@ -6,12 +6,11 @@ import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
-const TdsChallanFormFields = ({ form, addData }) => {
+const TdsChallanFormFields = ({ form, addData, edit, view }) => {
   const { fetchBankMfs, bankOrMfsOptions, loadingBankOrMfs } =
     useTdsChallanFormFields(form);
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
-  console.log(isOpen, attachmentList, "la la");
   const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -28,7 +27,7 @@ const TdsChallanFormFields = ({ form, addData }) => {
   return (
     <>
       <PCardBody className="mb-4">
-        <TdsChallanFilters form={form} hideSubmitBtn={true} />
+        <TdsChallanFilters form={form} hideSubmitBtn={true} edit={edit}/>
       </PCardBody>
       <PCardBody className="mb-4">
         <Row gutter={[16, 16]}>
