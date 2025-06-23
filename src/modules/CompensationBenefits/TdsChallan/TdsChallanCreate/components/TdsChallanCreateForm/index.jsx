@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import Loading from "common/loading/Loading";
 
-const TdsChallanCreateForm = ({ form, saveData, setSaveData,edit,view }) => {
+const TdsChallanCreateForm = ({ form, saveData, setSaveData, edit, view }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const removeData = (index) => {
@@ -15,29 +15,36 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData,edit,view }) => {
   };
   const addData = (attachmentId) => {
     const validateFields = [
-      "StrTransactionMode",
-      "IntBankWalletId",
-      "StrBankWallet",
-      "StrBranchName",
-      "DteChallanDateF",
-      "DteChallanDate",
-      "StrChallanNumber",
-      "NumChallanAmount",
-      "StrComment",
+      "strTransactionMode",
+      "intBankWalletId",
+      "strBankWallet",
+      "strBranchName",
+      "dteChallanDateF",
+      "dteChallanDate",
+      "strChallanNumber",
+      "numChallanAmount",
+      "strComment",
     ];
 
     form
       .validateFields(validateFields)
       .then((values) => {
-        if (saveData.find((data)=> data?.StrChallanNumber == values?.StrChallanNumber)) {
-          toast.error("Overlapping challan detected. Please adjust the values.");
+        if (
+          saveData.find(
+            (data) => data?.strChallanNumber == values?.strChallanNumber
+          )
+        ) {
+          toast.error(
+            "Overlapping challan detected. Please adjust the values."
+          );
           return;
         }
         const payload = {
           ...values,
-          IntBankWalletId: values?.IntBankWalletId?.value,
-          StrBankWallet: values?.IntBankWalletId?.label,
-          IntDocumentId: attachmentId ?? 0,
+          intBankWalletId: values?.intBankWalletId?.value,
+          strBankWallet: values?.intBankWalletId?.label,
+          strBranchName: values?.strBranchName?.toString(),
+          intDocumentId: attachmentId ?? 0,
         };
         setSaveData((prev) => [...prev, payload]);
       })
@@ -48,7 +55,12 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData,edit,view }) => {
   return (
     <>
       {loading && <Loading />}
-      <TdsChallanFormFields form={form} addData={addData} edit={edit} view={view} />
+      <TdsChallanFormFields
+        form={form}
+        addData={addData}
+        edit={edit}
+        view={view}
+      />
       {saveData?.length > 0 && (
         <PCardBody className="mb-4">
           <DataTable
@@ -56,6 +68,7 @@ const TdsChallanCreateForm = ({ form, saveData, setSaveData,edit,view }) => {
             data={saveData || []}
             rowKey={(row, idx) => idx}
             header={detailsHeader({
+              action: !view,
               removeData,
               dispatch,
               setLoading,

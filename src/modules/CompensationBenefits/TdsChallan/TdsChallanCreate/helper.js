@@ -1,11 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const createTdsChallan = async (payload, setLoading, resetData) => {
+export const createUpdateTdsChallan = async (payload, setLoading, resetData, update=false) => {
   setLoading?.(true);
   try {
     const res = await axios.post(
-      `/TaxChallan/Save
+      `/TaxChallan/${update? 'Update':'Save'}
 `,
       payload
     );
@@ -13,7 +13,7 @@ export const createTdsChallan = async (payload, setLoading, resetData) => {
     setLoading?.(false);
     resetData?.();
   } catch (error) {
-    toast.error(error?.response?.data?.message || "Something went wrong");
+    toast.error(error?.response?.data?.data?.[0]?.errorMessage || "Something went wrong");
     setLoading?.(false);
   }
 };

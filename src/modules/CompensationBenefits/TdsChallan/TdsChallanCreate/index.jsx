@@ -7,14 +7,14 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
 import TdsChallanCreateForm from "./components/TdsChallanCreateForm";
-import { createTdsChallan, getTaxChallan } from "./helper";
+import { createUpdateTdsChallan, getTaxChallan } from "./helper";
 import { useHistory, useLocation } from "react-router-dom";
 
 const TdsChallanCreate = () => {
   const history = useHistory();
   const location = useLocation();
   let headerId = location.state?.record?.intId;
-  const path = location.pathname?.split('/')[4];
+  const path = location.pathname?.split("/")[4];
   const view = path == "view";
   const edit = path == "edit";
   const [form] = Form.useForm();
@@ -26,7 +26,6 @@ const TdsChallanCreate = () => {
   const [loading, setLoading] = useState(false);
   const [permission, setPermission] = useState(null);
   useEffect(() => {
-
     if (headerId && (view || edit)) {
       getTaxChallan(headerId, setLoading, setSaveData, form);
     }
@@ -43,7 +42,6 @@ const TdsChallanCreate = () => {
       document.title = "PeopleDesk";
     };
   }, []);
-  console.log(saveData)
   return permission?.isCreate ? (
     <div>
       {loading && <Loading />}
@@ -52,38 +50,53 @@ const TdsChallanCreate = () => {
           <PCardHeader
             backButton
             title={`Tax Challan ${path}`}
-            buttonList={!view && [
-              {
-                type: "primary",
-                content: "Save",
-                onClick: () => {
-                  const commonFields = ["ListOfFiscalYear", "ListOfWorkplace"];
-                  form
-                    .validateFields(commonFields)
-                    .then((values) => {
-                      if (saveData.length < 1) {
-                        toast.error("Please add at least one Challan.");
-                        return;
-                      }
+            buttonList={
+              !view && [
+                {
+                  type: "primary",
+                  content: edit ? "Update":"Save",
+                  onClick: () => {
+                    const commonFields = [
+                      "ListOfFiscalYear",
+                      "ListOfWorkplace",
+                    ];
+                    form
+                      .validateFields(commonFields)
+                      .then((values) => {
+                        if (saveData.length < 1) {
+                          toast.error("Please add at least one Challan.");
+                          return;
+                        }
 
-                      const payload = {
-                        ...values,
-                        ListOfTaxChallanDetail: saveData,
-                      };
-                      createTdsChallan(payload, setLoading, () => {
-                        setSaveData([]);
-                        form.resetFields();
-                        history.push(
-                          `/compensationAndBenefits/incometaxmgmt/taxChallan`
+                        const payload = {
+                          ...values,
+                          ...(edit && {
+                            IntId: headerId,
+                            IntWorkplaceId: values?.ListOfWorkplace?.value,
+                            IntFiscalYearId: values?.ListOfFiscalYear?.value,
+                          }),
+                          ListOfTaxChallanDetail: saveData,
+                        };
+                        createUpdateTdsChallan(
+                          payload,
+                          setLoading,
+                          () => {
+                            setSaveData([]);
+                            form.resetFields();
+                            history.push(
+                              `/compensationAndBenefits/incometaxmgmt/taxChallan`
+                            );
+                          },
+                          edit
                         );
+                      })
+                      .catch(() => {
+                        toast.error("Please fill all required fields.");
                       });
-                    })
-                    .catch(() => {
-                      toast.error("Please fill all required fields.");
-                    });
+                  },
                 },
-              },
-            ]}
+              ]
+            }
           />
           <TdsChallanCreateForm
             form={form}

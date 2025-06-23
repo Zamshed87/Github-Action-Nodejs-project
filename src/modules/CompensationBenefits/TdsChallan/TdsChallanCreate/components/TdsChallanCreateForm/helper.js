@@ -17,32 +17,32 @@ export const detailsHeader = ({
   },
   {
     title: "Transaction Mode",
-    dataIndex: "StrTransactionMode", // 'bank' | 'mfs'
+    dataIndex: "strTransactionMode", // 'bank' | 'mfs'
     render: (value) => (value ? value.toUpperCase() : "-"),
   },
   {
     title: "Bank / MFS Name",
-    dataIndex: "StrBankWallet",
+    dataIndex: "strBankWallet",
     render: (v) => v ?? "-",
   },
   {
     title: "Branch Name / MFS Number",
-    dataIndex: "StrBranchName",
+    dataIndex: "strBranchName",
     render: (v) => v ?? "-",
   },
   {
     title: "Challan Date",
-    dataIndex: "DteChallanDate",
+    dataIndex: "dteChallanDate",
     render: (v) => v ?? "-",
   },
   {
     title: "Challan Number",
-    dataIndex: "StrChallanNumber",
+    dataIndex: "strChallanNumber",
     render: (v) => v ?? "-",
   },
   {
     title: "TDS Amount",
-    dataIndex: "NumChallanAmount",
+    dataIndex: "numChallanAmount",
     align: "right",
     render: (v) =>
       v || v === 0
@@ -51,13 +51,13 @@ export const detailsHeader = ({
   },
   {
     title: "Comments",
-    dataIndex: "StrComment",
+    dataIndex: "strComment",
     render: (v) => v ?? "-",
     ellipsis: true,
   },
   {
     title: "Attachment",
-    dataIndex: "IntDocumentId", // backend ID or URL
+    dataIndex: "intDocumentId", // backend ID or URL
     align: "center",
     render: (IntDocumentId) =>
       IntDocumentId ? (

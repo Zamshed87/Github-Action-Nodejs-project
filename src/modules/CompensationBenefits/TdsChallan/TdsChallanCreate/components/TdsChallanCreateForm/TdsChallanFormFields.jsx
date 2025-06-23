@@ -15,7 +15,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  const transactionMode = Form.useWatch("StrTransactionMode", form);
+  const transactionMode = Form.useWatch("strTransactionMode", form);
   const getBankMfsLabel = () => {
     if (transactionMode == "Bank") return "Bank";
     return "MFS";
@@ -29,11 +29,12 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
       <PCardBody className="mb-4">
         <TdsChallanFilters form={form} hideSubmitBtn={true} edit={edit}/>
       </PCardBody>
-      <PCardBody className="mb-4">
+      {
+        !view && <PCardBody className="mb-4">
         <Row gutter={[16, 16]}>
           <Col md={4} sm={12} xs={24}>
             <PSelect
-              name="StrTransactionMode"
+              name="strTransactionMode"
               label="Transaction Mode"
               options={[
                 {
@@ -48,7 +49,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
               placeholder="Select Transaction Mode"
               onChange={(value) => {
                 fetchBankMfs(value);
-                form.resetFields(["IntBankWalletId","StrBranchName"]);
+                form.resetFields(["intBankWalletId","strBranchName"]);
               }}
               rules={[
                 { required: true, message: "Transaction Mode is required" },
@@ -57,12 +58,12 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
           <Col md={4} sm={12} xs={24}>
             <PSelect
-              name="IntBankWalletId"
+              name="intBankWalletId"
               label={`${getBankMfsLabel()} Name`}
               options={bankOrMfsOptions}
               loading={loadingBankOrMfs}
               onChange={(value, op) => {
-                form.setFieldsValue({ IntBankWalletId: op });
+                form.setFieldsValue({ intBankWalletId: op });
               }}
               placeholder={`Select ${getBankMfsLabel()} Name`}
               rules={[
@@ -75,7 +76,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
           <Col md={4} sm={12} xs={24}>
             <PInput
-              name="StrBranchName"
+              name="strBranchName"
               label={getBranchMfsLabel()}
               placeholder={`Enter ${getBranchMfsLabel()}`}
               type={transactionMode == 'Bank' ? 'text': 'number'}
@@ -89,13 +90,13 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
           <Col md={4} sm={12} xs={24}>
             <PInput
-              name="DteChallanDateF"
+              name="dteChallanDateF"
               label="Challan Date"
               type="date"
               format="YYYY-MM-DD"
               placeholder="Select Date"
               onChange={(date, formatDate) => {
-                form.setFieldsValue({ DteChallanDate: formatDate });
+                form.setFieldsValue({ dteChallanDate: formatDate });
               }}
               rules={[
                 { required: true, message: "Transaction Date is required" },
@@ -104,7 +105,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
           <Col md={6} sm={12} xs={24}>
             <PInput
-              name="StrChallanNumber"
+              name="strChallanNumber"
               label="Challan Number"
               placeholder="Enter Transaction Number"
               type="text"
@@ -115,7 +116,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
           <Col md={6} sm={12} xs={24}>
             <PInput
-              name="NumChallanAmount"
+              name="numChallanAmount"
               label="TDS Amount"
               placeholder="Enter TDS Amount"
               type="number"
@@ -124,7 +125,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
           <Col md={10} sm={12} xs={24}>
             <PInput
-              name="StrComment"
+              name="strComment"
               label="Comments"
               placeholder="Enter any comments"
               type="text"
@@ -163,6 +164,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
           </Col>
         </Row>
       </PCardBody>
+      }
     </>
   );
 };
