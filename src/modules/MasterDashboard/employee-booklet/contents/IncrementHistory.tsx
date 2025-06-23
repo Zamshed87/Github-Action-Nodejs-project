@@ -5,7 +5,6 @@ import { numberWithCommas } from "utility/numberWithCommas";
 
 const IncrementHistory = forwardRef((props: any, ref: any) => {
   const incHistory = props?.incrementHistory;
-  console.log({ incHistory });
   return (
     <div ref={ref} style={{ fontSize: "12px" }}>
       <center>
