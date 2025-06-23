@@ -85,9 +85,13 @@ export default function BulkIncrementEntry() {
       // history.push("/compensationAndBenefits/increment");
       setData([]);
     };
+    console.log({ data });
+
     data?.length > 0
       ? bulkUploadApi?.action({
-          urlKey: "IncrementBulkUpload",
+          urlKey: data[0]?.isGrade
+            ? "IncrementGradeBasedBulkUpload"
+            : "IncrementBulkUpload",
           method: "post",
           payload: data,
           toast: true,
@@ -131,7 +135,7 @@ export default function BulkIncrementEntry() {
         "EmployeesIncrement",
         2
       );
-
+      console.log({ elementInfo });
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,
@@ -142,7 +146,8 @@ export default function BulkIncrementEntry() {
         values,
         setErrorData,
         setOpen,
-        employeeId
+        employeeId,
+        wId
       );
     } catch (error) {
       isDevServer && console.log({ error });
@@ -164,6 +169,7 @@ export default function BulkIncrementEntry() {
           title: key,
           dataIndex: "payrollElements",
           key,
+          width: 80,
           render: (elements) => {
             const element = elements.find((el) => el.elementName === key);
             return element ? element.amount : null;
@@ -185,12 +191,20 @@ export default function BulkIncrementEntry() {
       title: "Employee Name",
       dataIndex: "empName",
       // key: "empName",
+      width: 80,
     },
     {
       title: "Employee Code",
       dataIndex: "employeeCode",
       // key: "empCode",
-      width: 40,
+      width: 80,
+    },
+    {
+      title: "Slab Count",
+      dataIndex: "slabElement",
+
+      width: 80,
+      hidden: data[0]?.isGrade ? false : true,
     },
     {
       title: "Gross Salary",
@@ -202,9 +216,10 @@ export default function BulkIncrementEntry() {
       title: "Mismatch Amount",
       dataIndex: "misMatch",
       // key: "empCode",
-      width: 40,
+      width: 80,
+      hidden: data[0]?.isGrade ? true : false,
     },
-  ];
+  ].filter((i) => !i.hidden);
   const responseColumns = (source) => {
     return [
       {
@@ -222,13 +237,14 @@ export default function BulkIncrementEntry() {
             </div>
           );
         },
+        width: 80,
         hidden: source[0]?.status ? false : true,
       },
       {
         title: "Message",
         dataIndex: "message",
         // key: "empCode",
-        width: 40,
+        width: 120,
         hidden: source[0]?.status ? false : true,
       },
     ].filter((i) => !i.hidden);
@@ -270,35 +286,40 @@ export default function BulkIncrementEntry() {
                       </div>
                     </div>
                     <div className="row mt-1">
-                      <div className="col-md-3" style={{ marginTop: "-12px" }}>
-                        <div className="input-field-main">
-                          <label>Grade Based</label>
+                      {[3, 12, 15]?.includes(orgId) && (
+                        <div
+                          className="col-md-3"
+                          style={{ marginTop: "-12px" }}
+                        >
+                          <div className="input-field-main">
+                            <label>Grade Based</label>
 
-                          <FormikSelect
-                            name="isGrade"
-                            classes="input-sm"
-                            styles={customStyles}
-                            options={[
-                              { label: "Yes", value: true },
-                              { label: "No", value: false },
-                            ]}
-                            value={values?.isGrade}
-                            onChange={(valueOption) => {
-                              if (valueOption?.value) {
-                                getPayScaleDDL();
-                              }
-                              setValues((prev) => {
-                                return {
-                                  ...prev,
-                                  isGrade: valueOption,
-                                  payScale: null, // Reset payScale when isGrade changes
-                                  pg: null, // Reset pg when isGrade changes
-                                };
-                              });
-                            }}
-                          />
+                            <FormikSelect
+                              name="isGrade"
+                              classes="input-sm"
+                              styles={customStyles}
+                              options={[
+                                { label: "Yes", value: true },
+                                { label: "No", value: false },
+                              ]}
+                              value={values?.isGrade}
+                              onChange={(valueOption) => {
+                                if (valueOption?.value) {
+                                  getPayScaleDDL();
+                                }
+                                setValues((prev) => {
+                                  return {
+                                    ...prev,
+                                    isGrade: valueOption,
+                                    payScale: null, // Reset payScale when isGrade changes
+                                    pg: null, // Reset pg when isGrade changes
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {!values?.isGrade?.value && (
                         <div
@@ -316,6 +337,13 @@ export default function BulkIncrementEntry() {
                               value={values?.pg}
                               onChange={(valueOption) => {
                                 setFieldValue("pg", valueOption);
+                                setValues((prev) => {
+                                  return {
+                                    ...prev,
+                                    payScale: null, // Reset payScale when pg changes
+                                    pg: valueOption,
+                                  };
+                                });
                               }}
                             />
                           </div>
@@ -334,9 +362,16 @@ export default function BulkIncrementEntry() {
                               classes="input-sm"
                               styles={customStyles}
                               options={payscaleDDL?.data || []}
-                              value={values?.pg}
+                              value={values?.payScale}
                               onChange={(valueOption) => {
                                 setFieldValue("payScale", valueOption);
+                                setValues((prev) => {
+                                  return {
+                                    ...prev,
+                                    pg: null, // Reset pg when payScale changes
+                                    payScale: valueOption,
+                                  };
+                                });
                               }}
                             />
                           </div>
@@ -374,7 +409,12 @@ export default function BulkIncrementEntry() {
                     </div>
 
                     {data.length > 0 && (
-                      <DataTable data={data} header={columns(data)} bordered />
+                      <DataTable
+                        data={data}
+                        header={columns(data)}
+                        bordered
+                        scroll={{ x: 1400 }}
+                      />
                     )}
                   </div>
                 ) : (
