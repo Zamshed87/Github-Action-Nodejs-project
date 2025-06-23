@@ -33,7 +33,7 @@ const PfLoanLanding = () => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Loan Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PF Loan";
     return () => {
@@ -45,7 +45,7 @@ const PfLoanLanding = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30574) {
+    if (item?.menuReferenceId === 30620) {
       permission = item;
     }
   });
@@ -146,7 +146,7 @@ const PfLoanLanding = () => {
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
 
-                history.push("/profile/pfLoan/create");
+                history.push("/loanManagement/PfLoan/create");
               }}
             />
           </div>

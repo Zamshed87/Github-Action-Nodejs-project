@@ -26,6 +26,8 @@ import { getPolicyOnEmployeeInbox } from "../../policyUpload/helper";
 import NoticeBoard from "./Noticeboard";
 import Loading from "common/loading/Loading";
 import { useHistory } from "react-router-dom";
+import { useApiRequest } from "Hooks";
+import { todayDate } from "utility/todayDate";
 
 const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const { orgId, employeeId, buId, wgId } = useSelector(
@@ -39,14 +41,28 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const [show, setShow] = useState(false);
   const [singleNoticeData, setSingleNoticeData] = useState("");
   const [rowDto, setRowDto] = useState([]);
-  const [loadingForBirth, setLoadingForBirth] = useState(false);
+  const [, setLoadingForBirth] = useState(false);
   const history = useHistory();
+  const balanceApi = useApiRequest({});
+  const balanceInfo = (id) => {
+    balanceApi?.action({
+      urlKey: "EmployeeLeaveBalanceList",
+      method: "GET",
+      params: {
+        employeeId: id,
+        date: todayDate(),
+        isAdmin: false,
+      },
+    });
+  };
 
   useEffect(() => {
     setLoading(true);
     getEmployeeDashboard(employeeId, buId, setEmployeeDashboard);
     getPolicyOnEmployeeInbox(employeeId, setPolicyLanding);
     setLoading(false);
+    balanceInfo(employeeId);
+
     // eslint-disable-next-line
   }, [employeeId, buId]);
 
@@ -154,17 +170,22 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           </th>
                           <th style={{ borderTop: "none" }}>
                             <p style={{ color: gray400, textAlign: "center" }}>
-                              Remaining
+                              Balance
+                            </p>
+                          </th>
+                          <th style={{ borderTop: "none" }}>
+                            <p style={{ color: gray400, textAlign: "center" }}>
+                              Status
                             </p>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeDashboard?.leaveBalanceHistoryList
-                          ?.filter(
-                            (item) => item?.isLveBalanceShowForSelfService
-                          )
-                          ?.map((item, i) => (
+                        {/* // ?.filter(
+                        //   (item) => item?.isLveBalanceShowForSelfService
+                        // ) */}
+                        {balanceApi?.data?.length > 0 &&
+                          balanceApi?.data?.map((item, i) => (
                             <>
                               <tr key={i}>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -174,7 +195,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       paddingLeft: "8px",
                                     }}
                                   >
-                                    {item?.strLeaveType}
+                                    {item?.type}
                                   </p>
                                 </td>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -184,7 +205,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       color: gray700,
                                     }}
                                   >
-                                    {item?.intTakenLveInDay}
+                                    {item?.totalTakenDays}
                                   </p>
                                 </td>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -194,7 +215,17 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       color: gray700,
                                     }}
                                   >
-                                    {item?.intBalanceLveInDay}
+                                    {item?.totalBalanceDays}
+                                  </p>
+                                </td>
+                                <td style={{ borderTop: "1px solid #F2F4F7" }}>
+                                  <p
+                                    style={{
+                                      textAlign: "center",
+                                      color: gray700,
+                                    }}
+                                  >
+                                    {item?.status}
                                   </p>
                                 </td>
                               </tr>

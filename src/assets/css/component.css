@@ -108,7 +108,7 @@
   justify-content: center;
   padding: 0px 24px 0px 16px;
   color: var(--white) !important;
-  background: var(--success500);
+  background: var(--primary-color);
   border-radius: 4px;
   text-transform: capitalize;
   outline: none;
@@ -118,15 +118,15 @@
 
 .btn-default:hover,
 .btn-default:focus {
-  background: var(--success800);
-  border: 1px solid var(--success800);
+  background: var(--primary-color);
+  border: 1px solid var(--primary-color);
 }
 
 .btn-default-outline,
 .btn-default-outline:hover,
 .btn-default-outline:focus {
   background: var(--color-less);
-  color: var(--success500) !important;
+  color: var(--primary-color) !important;
   border: 1px solid var(--color-less);
   padding: 0 !important;
 }
@@ -287,8 +287,8 @@
   width: 80px;
   height: 32px;
   color: var(--white);
-  background: var(--success500);
-  border: 2px solid var(--success500);
+  background: var(--primary-color);
+  border: 2px solid var(--primary-color);
   box-shadow: none;
   outline: 0;
   font-weight: 500;
@@ -303,8 +303,8 @@
 }
 .btn-green:hover,
 .btn-green:focus {
-  background: var(--success800);
-  border: 2px solid var(--success800);
+  background: var(--primary-color);
+  border: 2px solid var(--primary-color);
 }
 
 .btn-red,
@@ -346,7 +346,7 @@
 .btn-green-less,
 .btn-green-less:hover,
 .btn-green-less:focus {
-  color: var(--success500);
+  color: var(--primary-color);
   background: var(--white);
   border: 2px solid var(--white);
 }
@@ -362,13 +362,13 @@
   justify-content: center;
   border-radius: 50%;
   color: var(--white);
-  background: var(--success500);
-  border: 0px solid var(--success500);
+  background: var(--primary-color);
+  border: 0px solid var(--primary-color);
 }
 .add-ddl-btn:hover,
 .add-ddl-btn:focus {
-  background: var(--success800);
-  border: 0px solid var(--success800);
+  background: var(--primary-color);
+  border: 0px solid var(--primary-color);
 }
 
 .btn-view,
@@ -407,7 +407,7 @@
 .btn-light-green:hover,
 .btn-light-green:focus {
   background: #e4f8dd;
-  border: 2px solid #34a853;
+  border: 2px solid var(--primary-color);
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgb(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -415,7 +415,7 @@
   font-size: 12px;
   letter-spacing: 0.2px;
   padding: 8px;
-  color: #34a853;
+  color: var(--primary-color);
 }
 
 .btn-save,
@@ -928,7 +928,7 @@ span.cross-chips-icon {
 }
 
 .Toastify__toast--info .Toastify__progress-bar {
-  background: #34a853;
+  background: var(--primary-color);
 }
 
 .Toastify__close-button--success {
@@ -940,7 +940,7 @@ span.cross-chips-icon {
 }
 
 .Toastify__close-button--info {
-  color: #34a853;
+  color: var(--primary-color);
 }
 
 .Toastify__toast--success::before {
@@ -976,7 +976,7 @@ span.cross-chips-icon {
   position: relative;
   content: "Success!";
   letter-spacing: 0.15px;
-  color: #34a853;
+  color: var(--primary-color);
   font-weight: bold;
   font-size: 16px;
   line-height: 24px;
@@ -1111,7 +1111,7 @@ span.cross-chips-icon {
 }
 
 .loadMoreBtn .OfferLetterLoadMoreBtn {
-  color: #34a853 !important;
+  color: var(--primary-color) !important;
 }
 
 /* .no-result */
@@ -1442,7 +1442,7 @@ span.cross-chips-icon {
   border: 1px solid var(--gray600);
 }
 .search-form-input:focus {
-  border: 1px solid var(--success500);
+  border: 1px solid var(--primary-color);
 }
 
 /* .tab-form-application */
@@ -1561,7 +1561,7 @@ span.cross-chips-icon {
 
 .notification-popover-body-main-content:hover {
   /* background: #f2f2f7; */
-  background: var(--grayBlue100);;
+  background: var(--grayBlue100);
 }
 
 .notification-popover-body-main-content.unseen {
@@ -1800,7 +1800,7 @@ p.uplaod-para:hover,
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
-  color: var(--success500);
+  color: var(--primary-color);
   text-decoration: underline;
   cursor: pointer;
   margin-left: 10px;
@@ -2187,7 +2187,7 @@ p.uplaod-para:hover,
   .footer-employeeProfile-src-filter
   .master-filter-btn-group
   .btn-cancle {
-  color: #34a853;
+  color: var(--primary-color);
 }
 /* ==> search filter popover style end <== */
 
@@ -2284,4 +2284,3 @@ p.uplaod-para:hover,
   color: white !important;
 }
 /* approval btn component css end  ------------------------------ */
-

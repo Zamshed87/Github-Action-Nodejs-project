@@ -1,8 +1,8 @@
 .outline_btn,
 .outline_btn:hover,
 .outline_btn:focus {
-  border: 2px solid #229A16 !important;
-  color: #229A16 !important;
+  border: 2px solid #229a16 !important;
+  color: #229a16 !important;
   background: transparent !important;
 }
 
@@ -12,7 +12,7 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
-  color: #229A16 !important;
+  color: #229a16 !important;
   background: transparent !important;
   padding: 0 !important;
 }
@@ -58,8 +58,8 @@
 }
 
 .current_status {
-  background-color: #229A16;
-  border: 1px solid #34a853;
+  background-color: #229a16;
+  border: 1px solid var(--primary-color);
   width: 32px;
   height: 14px;
   color: white !important;
@@ -111,7 +111,7 @@
 }
 
 .pipeline_active {
-  background-color: #229A16;
+  background-color: #229a16;
 }
 .pipeline_active span {
   color: white !important;
@@ -138,7 +138,7 @@
 }
 
 .outline_btn {
-  border: 2px solid #229A16 !important;
-  color: #229A16 !important;
+  border: 2px solid #229a16 !important;
+  color: #229a16 !important;
   background: transparent !important;
 }

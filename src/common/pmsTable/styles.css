@@ -23,7 +23,7 @@
   vertical-align: middle !important;
 }
 .pmsCentralTableClass th {
-  background: #299647 !important;
+  background: var(--primary-color) !important;
   color: #ffffff;
   padding: 8px !important;
 }

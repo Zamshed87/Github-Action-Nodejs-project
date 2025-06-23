@@ -400,10 +400,16 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Designation",
     dataIndex: ["applicationInformation", "designation"],
+    width: 70,
+  },
+  {
+    title: "Consume Type",
+    dataIndex: ["applicationInformation", "strConsumeType"],
   },
   {
     title: "Department",
     dataIndex: ["applicationInformation", "department"],
+    width: 70,
   },
   {
     title: "Application Date",
@@ -412,6 +418,7 @@ export const columnsLeave = (dispatch) => [
   },
   {
     title: "Attachment",
+    width: 90,
     dataIndex: "attachmentId",
     render: (_, record) => (
       <AttachmentTooltip
@@ -423,7 +430,6 @@ export const columnsLeave = (dispatch) => [
     ),
     filter: false,
     sorter: false,
-    width: "90px",
   },
   {
     title: "From Date",
@@ -436,8 +442,23 @@ export const columnsLeave = (dispatch) => [
     render: (date) => <div>{dateFormatter(date)}</div>,
   },
   {
+    title: "Start Time",
+    dataIndex: ["applicationInformation", "startTime"],
+    render: (startTime) => startTime && convertTo12HourFormat(startTime),
+  },
+  {
+    title: "End Time",
+    dataIndex: ["applicationInformation", "endTime"],
+    render: (endTime) => endTime && convertTo12HourFormat(endTime),
+  },
+  {
     title: "Total Days",
-    dataIndex: ["applicationInformation", "totalDays"],
+    dataIndex: ["applicationInformation", "intTotalTakenDays"],
+  },
+  {
+    title: "Reliver",
+    dataIndex: ["applicationInformation", "strReliverName"],
+    width: 70,
   },
   {
     title: "Address",

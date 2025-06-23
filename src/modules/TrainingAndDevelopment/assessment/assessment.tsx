@@ -123,7 +123,7 @@ const TnDAssessment = () => {
                 <br />
                 <Checkbox
                   style={{
-                    color: "green",
+                    color: "var(--primary-color)",
                     fontSize: "14px",
                     cursor: "pointer",
                   }}
@@ -146,7 +146,7 @@ const TnDAssessment = () => {
               <Flex justify="center">
                 <Checkbox
                   style={{
-                    color: "green",
+                    color: "var(--primary-color)",
                     fontSize: "14px",
                     cursor: "pointer",
                   }}
@@ -179,7 +179,7 @@ const TnDAssessment = () => {
                 padding: "0 4px",
                 fontSize: "10px",
                 border: 0,
-                backgroundColor: "green",
+                backgroundColor: "var(--primary-color)",
                 color: "white",
                 borderRadius: "3px",
               }}

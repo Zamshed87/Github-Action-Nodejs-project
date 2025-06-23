@@ -342,8 +342,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {(workplaceImage?.length > 0 ||
-                singleData?.intWorkplaceLogoId !== 0) && (
+              {((workplaceImage?.length > 0 ||
+                singleData?.intWorkplaceLogoId !== 0) && isEdit) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -390,8 +390,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {(letterHeadImage?.length > 0 ||
-                singleData?.intLetterHeadId !== 0) && (
+              {((letterHeadImage?.length > 0 ||
+                singleData?.intLetterHeadId !== 0) && isEdit) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -436,8 +436,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {(signatureImage?.length > 0 ||
-                singleData?.intSignatureId !== 0) && (
+              {((signatureImage?.length > 0 ||
+                singleData?.intSignatureId !== 0) && isEdit) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -482,8 +482,8 @@ export default function AddEditForm({
                   }}
                 />
               </div>
-              {(letterBuilderImage?.length > 0 ||
-                singleData?.intLetterBuilderId !== 0) && (
+              {((letterBuilderImage?.length > 0 ||
+                singleData?.intLetterBuilderId !== 0) && isEdit) && (
                 <p
                   onClick={() => {
                     dispatch(
@@ -901,7 +901,7 @@ export default function AddEditForm({
 //                                         fontSize: "14px",
 //                                         lineHeight: "19px",
 //                                         letterSpacing: "0.15px",
-//                                         color: "#34A853",
+//                                         color: "var(--primary-color)",
 //                                         marginRight: "10px",
 //                                       }}
 //                                       onClick={() => {
