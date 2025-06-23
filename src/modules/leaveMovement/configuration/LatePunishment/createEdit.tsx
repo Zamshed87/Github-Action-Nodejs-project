@@ -398,8 +398,21 @@ const CreateEditLatePunishmentConfig = () => {
                           return;
                         }
                         form
-                          .validateFields([])
+                          .validateFields([
+                            "policyName",
+                            "workplace",
+                            "employmentType",
+                            "designation",
+                            "department",
+                            "policyDescription",
+                          ])
                           .then(() => {
+                            if (data?.length === 0) {
+                              toast.error(
+                                "Please add at least one late punishment"
+                              );
+                              return;
+                            }
                             createEditPunishmentConfig(
                               "/LatePunishmentpolicy",
 
