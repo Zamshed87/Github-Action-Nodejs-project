@@ -292,6 +292,7 @@ import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 import LatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment";
 import CreateEditLatePunishmentConfig from "modules/leaveMovement/configuration/LatePunishment/createEdit";
+import CreateEditEarlyLeavePunishmentConfig from "modules/leaveMovement/configuration/earlyLeavePunishment/CreateEditEarlyLeavePunishmentConfig";
 import SelfAttendenceAdjust from "../modules/timeSheet/attendence/attendanceApprovalRequest/index.tsx";
 import MovementHistoryDetails from "modules/timeSheet/reports/movementHistoryDetails";
 import LetterConfigLanding from "modules/employeeProfile/reportBuilder/letterConfiguration";
@@ -2654,11 +2655,19 @@ export const routingList = [
   },
   {
     path: "/administration/latePunishmentPolicy",
-    component: LatePunishmentConfig,
+    component: () => <LatePunishmentConfig config={"LP"} />,
   },
   {
     path: "/administration/latePunishmentPolicy/:type/:id",
     component: CreateEditLatePunishmentConfig,
+  },
+  {
+    path: "/administration/earlyLeavePunishmentPolicy",
+    component: () => <LatePunishmentConfig config={"ELP"} />,
+  },
+  {
+    path: "/administration/earlyLeavePunishmentPolicy/:type/:id",
+    component: CreateEditEarlyLeavePunishmentConfig,
   },
   // {
   //   path: "/SelfService/timeManagement/attendenceAdjustRequest",

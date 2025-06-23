@@ -1,115 +1,18 @@
-export const calculationType = [
-  {
-    label: "Each Day",
-    value: 1,
-  },
-  {
-    label: "Day Range",
-    value: 2,
-  },
-  {
-    label: "Time Based",
-    value: 3,
-  },
-];
+import {
+  amountDeductFrom,
+  amountDeductType,
+  calculationType,
+  daysArray,
+  getcalculatedBy,
+  getleaveDeductType,
+  punishmentType,
+} from "../LatePunishment/form";
 
-export const getcalculatedBy = (value: number) => {
-  if (value === 1)
-    return [
-      {
-        label: "Actual Late Time",
-        value: 2,
-      },
-    ];
-  else
-    return [
-      {
-        label: "Sum of Late Time",
-        value: 1,
-      },
-      {
-        label: "Actual Late Time",
-        value: 2,
-      },
-    ];
-};
-
-export const punishmentType = [
-  {
-    label: "Leave Deduct",
-    value: 1,
-  },
-  {
-    label: "Amount Deduct",
-    value: 2,
-  },
-];
-
-export const getleaveDeductType = (value: number) => {
-  if (value === 1) {
-    return [
-      {
-        label: "Full Day",
-        value: 1,
-      },
-      {
-        label: "Half Day",
-        value: 2,
-      },
-    ];
-  } else
-    return [
-      {
-        label: "Full Day",
-        value: 1,
-      },
-      {
-        label: "Half Day",
-        value: 2,
-      },
-      {
-        label: "Actual Clock Time",
-        value: 3,
-      },
-    ];
-};
-
-export const amountDeductFrom = [
-  {
-    label: "Gross Salary",
-    value: 1,
-  },
-  {
-    label: "Basic Salary",
-    value: 2,
-  },
-  {
-    label: "Fixed Amount",
-    value: 3,
-  },
-];
-
-export const amountDeductType = [
-  {
-    label: "Actual Time",
-    value: 1,
-  },
-  {
-    label: "1 Day Salary",
-    value: 2,
-  },
-];
-
-export const daysArray = Array.from({ length: 31 }, (_, i) => ({
-  label: (i + 1).toString(),
-  value: i + 1,
-}));
-
-export const LatePunishment = (
+export const EarlyLeavePunishment = (
   workplaceDDL: any[],
-  getEmploymentType: () => void,
-  getEmployeDepartment: () => void,
-  getEmployeDesignation: () => void,
+  getEmploymentType: any,
+  getEmployeDepartment: any,
+  getEmployeDesignation: any,
   employmentTypeDDL: any[],
   empDepartmentDDL: any[],
   empDesignationDDL: any[],
@@ -191,10 +94,10 @@ export const LatePunishment = (
     },
     {
       type: "ddl",
-      label: "Late Calculation Type",
-      varname: "lateCalculationType",
+      label: "Early Leave Calculation Type",
+      varname: "earlyLeaveCalculationType",
       ddl: calculationType || [],
-      placeholder: "Select late calculation type",
+      placeholder: "Select early leave calculation type",
       onChange: () => {
         form.setFieldsValue({
           eachDayCountBy: undefined,
@@ -203,11 +106,14 @@ export const LatePunishment = (
         });
       },
       rules: [
-        { required: true, message: "Late Calculation Type is required!" },
+        {
+          required: true,
+          message: "Early Leave Calculation Type is required!",
+        },
       ],
       col: 6,
     },
-    ...(values?.lateCalculationType?.value === 1
+    ...(values?.earlyLeaveCalculationType?.value === 1
       ? [
           {
             type: "ddl",
@@ -222,7 +128,7 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.lateCalculationType?.value === 2
+    ...(values?.earlyLeaveCalculationType?.value === 2
       ? [
           {
             type: "component",
@@ -231,7 +137,7 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.lateCalculationType?.value === 1
+    ...(values?.earlyLeaveCalculationType?.value === 1
       ? [
           {
             type: "component",
@@ -240,37 +146,45 @@ export const LatePunishment = (
           },
         ]
       : []),
-    ...(values?.lateCalculationType?.value !== 3
+    ...(values?.earlyLeaveCalculationType?.value !== 3
       ? [
           {
             type: "ddl",
-            label: "Late Time Calculated By",
+            label: "Early Leave Time Calculated by",
             varname: "calculatedBy",
-            ddl: getcalculatedBy(values?.lateCalculationType?.value) || [],
-            placeholder: "Select calculation type",
-            rules: [{ required: true, message: "Calculated By is required!" }],
+            ddl:
+              getcalculatedBy(values?.earlyLeaveCalculationType?.value) || [],
+            placeholder: "Select early leave calculation type",
+            rules: [
+              {
+                required: true,
+                message: "Early Leave Calculated by By is required!",
+              },
+            ],
             col: 6,
           },
         ]
       : []),
-
     {
       type: "number",
-      label: "Minimum Late Time (Minutes)",
-      varname: "minimumLateTime",
-      placeholder: "Enter minimum late time",
-      rules: [{ required: true, message: "Minimum Late Time is required!" }],
+      label: "Minimum Early Leave Time (Minutes)",
+      varname: "minimumEarlyLeaveTime",
+      placeholder: "Enter minimum early leave time",
+      rules: [
+        { required: true, message: "Minimum Early Leave Time is required!" },
+      ],
       col: 6,
     },
     {
       type: "number",
-      label: "Maximum Late Time (Minutes)",
-      varname: "maximumLateTime",
-      placeholder: "Enter maximum late time",
-      rules: [{ required: true, message: "Maximum Late Time is required!" }],
+      label: "Maximum Early Leave Time (Minutes)",
+      varname: "maximumEarlyLeaveTime",
+      placeholder: "Enter maximum early leave time",
+      rules: [
+        { required: true, message: "Maximum Early Leave Time is required!" },
+      ],
       col: 6,
     },
-
     {
       type: "ddl",
       label: "Punishment Type",
@@ -278,6 +192,7 @@ export const LatePunishment = (
       ddl: punishmentType || [],
       placeholder: "Select punishment type",
       rules: [{ required: true, message: "Punishment Type is required!" }],
+      col: 6,
       onChange: () => {
         form.setFieldsValue({
           leaveDeductType: undefined,
@@ -287,18 +202,19 @@ export const LatePunishment = (
           amountPercentage: undefined,
         });
       },
-      col: 6,
     },
     ...(values?.punishmentType?.value === 1
       ? [
           {
             type: "ddl",
-            label: "Leave Deduct Type",
+            label: "Leave Deduction Type",
             varname: "leaveDeductType",
-            ddl: getleaveDeductType(values?.lateCalculationType?.value) || [],
+            ddl:
+              getleaveDeductType(values?.earlyLeaveCalculationType?.value) ||
+              [],
             placeholder: "Select leave deduct type",
             rules: [
-              { required: true, message: "Leave Deduct Type is required!" },
+              { required: true, message: "Leave Deduction Type is required!" },
             ],
             col: 6,
           },
@@ -309,11 +225,11 @@ export const LatePunishment = (
       ? [
           {
             type: "number",
-            label: "Leave Deduct Qty.",
+            label: "Leave Deduction Qty",
             varname: "leaveDeductQty",
-            placeholder: "Enter leave deduct quantity",
+            placeholder: "Enter leave deduct type",
             rules: [
-              { required: true, message: "Leave Deduct Qty. is required!" },
+              { required: true, message: "Leave Deduction Qty is required!" },
             ],
             col: 6,
           },
@@ -323,12 +239,12 @@ export const LatePunishment = (
       ? [
           {
             type: "ddl",
-            label: "Amount Deduct From",
-            varname: "amountDeductFrom",
+            label: "Amount Deduction From",
+            varname: "amountDeductionFrom",
             ddl: amountDeductFrom || [],
             placeholder: "Select amount deduct from",
             rules: [
-              { required: true, message: "Amount Deduct From is required!" },
+              { required: true, message: "Amount Deduction From is required!" },
             ],
             col: 6,
           },
@@ -339,12 +255,12 @@ export const LatePunishment = (
       ? [
           {
             type: "ddl",
-            label: "Amount Deduct Type Time",
-            varname: "amountDeductType",
-            ddl: amountDeductType || [],
+            label: "Amount Deduction Type Time",
+            varname: "amountDeductionType",
+            dddl: amountDeductType || [],
             placeholder: "Select amount deduct type",
             rules: [
-              { required: true, message: "Amount Deduct Type is required!" },
+              { required: true, message: "Amount Deduction Type is required!" },
             ],
             col: 6,
           },
