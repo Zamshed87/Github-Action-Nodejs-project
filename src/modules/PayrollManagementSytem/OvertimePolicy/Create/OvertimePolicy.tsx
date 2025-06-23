@@ -201,8 +201,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     form.setFieldsValue({
       workplace: { value: wId, label: wName },
     });
-    form.resetFields(["calendarName","hrPosition","employmentType"]);
-    setMatchingData([])
+    form.resetFields(["calendarName", "hrPosition", "employmentType"]);
+    setMatchingData([]);
     getHRPositionDDL();
     getEmploymentTypeDDL();
     getPeopleDeskAllDDL(
@@ -290,7 +290,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         form.setFieldsValue({
                           workplace: option,
                         });
-                        form.resetFields(["calendarName","hrPosition","employmentType"]);
+                        form.resetFields([
+                          "calendarName",
+                          "hrPosition",
+                          "employmentType",
+                        ]);
                         getHRPositionDDL();
                         getEmploymentTypeDDL();
                         getPeopleDeskAllDDL(
@@ -608,10 +612,12 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       }}
                       disabled={state?.intOtconfigId}
                       rules={[
-                        orgId === 9 ? {
-                          required: true,
-                          message: "Please Select Calendar Name!",
-                        }: null,
+                        orgId === 9
+                          ? {
+                              required: true,
+                              message: "Please Select Calendar Name!",
+                            }
+                          : null,
                       ]}
                     />
                   </Col>
