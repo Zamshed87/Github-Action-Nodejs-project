@@ -387,8 +387,21 @@ const CreateEditEarlyLeavePunishmentConfig = () => {
                           return;
                         }
                         form
-                          .validateFields([])
+                          .validateFields([
+                            "policyName",
+                            "workplace",
+                            "employmentType",
+                            "designation",
+                            "department",
+                            "policyDescription",
+                          ])
                           .then(() => {
+                            if (data?.length === 0) {
+                              toast.error(
+                                "Please add at least one Early Leave punishment"
+                              );
+                              return;
+                            }
                             createEditPunishmentConfig(
                               "/EarlyLeavePunishmentpolicy",
                               profileData,
