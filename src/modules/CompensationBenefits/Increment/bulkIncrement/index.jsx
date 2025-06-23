@@ -85,7 +85,6 @@ export default function BulkIncrementEntry() {
       // history.push("/compensationAndBenefits/increment");
       setData([]);
     };
-    console.log({ data });
 
     data?.length > 0
       ? bulkUploadApi?.action({
@@ -135,7 +134,6 @@ export default function BulkIncrementEntry() {
         "EmployeesIncrement",
         2
       );
-      console.log({ elementInfo });
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,

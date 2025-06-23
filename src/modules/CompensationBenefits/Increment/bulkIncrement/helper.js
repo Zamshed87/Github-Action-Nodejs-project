@@ -18,7 +18,6 @@ export const processBulkUploadIncrementAction = async (
 ) => {
   try {
     setLoading(true);
-    console.log({ payrollInfo });
     if (!payrollInfo?.[1]?.includes("Non-Grade") && payrollInfo?.[12] !== wId) {
       setLoading(false);
       return toast.error("Please select correct Workplace");
