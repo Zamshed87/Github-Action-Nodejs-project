@@ -366,4 +366,6 @@ export const apiList = {
   GetTypeWiseDetailsReport: "/PFInvestment/GetTypeWiseDetailsReport",
   ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
+  IncrementGradeBasedBulkUpload:
+    "/EmployeeIncrement/IncrementGradeBasedBulkUpload",
 };
