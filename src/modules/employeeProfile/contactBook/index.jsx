@@ -122,6 +122,7 @@ export default function ContactBook() {
                     <Tooltip title="Download Application" className="d-none">
                       <button
                         className="btn-save "
+                        type="button"
                         style={{
                           border: "transparent",
                           width: "30px",
