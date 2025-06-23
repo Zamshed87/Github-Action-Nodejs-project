@@ -258,7 +258,7 @@ const PfLoanTable = ({
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   getLanding(
-                                    `/Employee/EmpPfLoanRowById?BusinessUnitId=${header?.intBusinessUnitId}&WorkplaceGroupId=${header?.intWorkplaceGroupId}&LoanHeaderId=${dto?.intEmployeeLoanHeaderId}&LoanRowId=${dto?.intRowId}`,
+                                    `/PfLoan/EmpPfLoanRowById?BusinessUnitId=${header?.intBusinessUnitId}&WorkplaceGroupId=${header?.intWorkplaceGroupId}&LoanHeaderId=${dto?.intEmployeeLoanHeaderId}&LoanRowId=${dto?.intRowId}`,
                                     (data) => {
                                       setModalView(true);
                                       setHoldOrCollect(false);
@@ -343,7 +343,7 @@ const PfLoanTable = ({
                 remark: obj?.strRemark,
               }));
               postData(
-                `/Employee/EmpPfLoanHoldOrCollect`,
+                `/PfLoan/EmpPfLoanHoldOrCollect`,
                 {
                   isPfLoanHold: true,
                   pfLoanId: generateRow[0].intEmployeeLoanHeaderId,
@@ -546,7 +546,7 @@ const PfLoanTable = ({
                     onClick={() => {
                       // getData(values?.search, pages);
                       postData(
-                        `/Employee/EmpPfLoanHoldOrCollect`,
+                        `/PfLoan/EmpPfLoanHoldOrCollect`,
                         {
                           isPfLoanHold: false,
                           pfLoanId: row[0]?.intEmployeeLoanHeaderId,
