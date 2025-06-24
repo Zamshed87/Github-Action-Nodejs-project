@@ -43,7 +43,8 @@ const NOCLanding = ({ isManagement, pathurl }) => {
 
   // Add state for pagination
   const [pageNo, setPageNo] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(10);
+  const [pageSize, setPageSize] = React.useState(25);
+  const [totalCount, setTotalCount] = React.useState(0);
 
   const { values, setFieldValue } = useFormik({
     enableReinitialize: true,
@@ -60,8 +61,17 @@ const NOCLanding = ({ isManagement, pathurl }) => {
 
   const getLanding = (values) => {
     // &EmployeeId=${employeeId}
-    let api = `/NocApplication?Accountid=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&EmployeeId=0&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsDescending=false`;
-    getRowDataApi(api);
+    let api = `/NocApplication?Accountid=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&EmployeeId=${
+      isManagement ? 0 : employeeId
+    }&FromDate=${values?.filterFromDate}&ToDate=${
+      values?.filterToDate
+    }&PageNo=${pageNo}&PageSize=${pageSize}&IsDescending=false`;
+    getRowDataApi(api, (data) => {
+      // Update total count when data is received
+      if (data && typeof data.totalCount !== "undefined") {
+        setTotalCount(data.totalCount);
+      }
+    });
   };
 
   const contentRef = useRef();
@@ -133,7 +143,12 @@ const NOCLanding = ({ isManagement, pathurl }) => {
       <div className="table-card">
         <div style={{ display: "none" }}>
           <div ref={contentRef}>
-            {<NOCPrintDocument nocData={printData} signatureInfo={signatureInfo} />}
+            {
+              <NOCPrintDocument
+                nocData={printData}
+                signatureInfo={signatureInfo}
+              />
+            }
           </div>
         </div>
         {/* header-employee-profile  */}
@@ -243,7 +258,16 @@ const NOCLanding = ({ isManagement, pathurl }) => {
                   setPage={setPageNo}
                   setPaginationSize={setPageSize}
                   onChange={handlePageChange}
-                  rowKey={(record) => record?.intNocApplicationId}
+                  rowKey={(record) => record?.id} // Make sure this matches your data
+                  total={totalCount} // Add total count for pagination
+                  pagination={{
+                    current: pageNo,
+                    pageSize: pageSize,
+                    total: totalCount,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["10", "25", "50", "100"],
+                    onChange: handlePageChange,
+                  }}
                 />
               </>
             ) : (
@@ -260,17 +284,26 @@ const NOCLanding = ({ isManagement, pathurl }) => {
           open={signatureModalVisible}
           onCancel={() => setSignatureModalVisible(false)}
           footer={[
-            <div key="footer-container" style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+            <div
+              key="footer-container"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "100%",
+              }}
+            >
               <button
                 key="print"
                 className="btn btn-green"
                 onClick={handlePrintWithSignature}
                 style={{ width: "180px", minWidth: "280px" }}
               >
-                <LocalPrintshopIcon style={{ fontSize: "18px", marginRight: "5px" }} />
+                <LocalPrintshopIcon
+                  style={{ fontSize: "18px", marginRight: "5px" }}
+                />
                 Print with Signature
               </button>
-            </div>
+            </div>,
           ]}
           width={600}
         >
@@ -281,8 +314,11 @@ const NOCLanding = ({ isManagement, pathurl }) => {
                 name="employee"
                 placeholder="Search minimum 2 character"
                 onChange={(value, op) => {
+                  const employeeNameWithCodeModify = op?.employeeNameWithCode
+                    ?.replace(/\([^)]*\)/g, "")
+                    .trim();
                   setSignatureInfo({
-                    name: op?.employeeNameWithCode || "",
+                    name: employeeNameWithCodeModify || "",
                     designation: op?.designationName || "",
                     department: op?.strDepartment || "",
                     workplace: op?.workplace || "",

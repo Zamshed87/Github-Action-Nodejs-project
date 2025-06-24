@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import { setNotificationMarkAsSeenAPI } from "./helper";
+import { useHistory } from "react-router-dom";
 
 const NotiBodyContent = ({
   content = {},
@@ -19,6 +20,7 @@ const NotiBodyContent = ({
   employeeId,
 }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   // const { notifyDetails, module, timeDifference, notificationMaster, isSeen } =
   //   content;
 
@@ -30,7 +32,6 @@ const NotiBodyContent = ({
     timeDifference,
     notification,
   } = content || {};
-
   return (
     <>
       <div
@@ -46,6 +47,7 @@ const NotiBodyContent = ({
         }}
         onClick={(e) => {
           e.stopPropagation();
+
           if (!isSeenRealTimeNotify) {
             setNotificationMarkAsSeenAPI({
               notificationId: content?.intId,
@@ -56,12 +58,35 @@ const NotiBodyContent = ({
             });
           }
           if (strFeature === "leave_application") {
-            const win = window.open("/approval/leaveApproval", "_blank");
-            win.focus();
+            const route =
+              content?.strLandingView === "Self"
+                ? `/SelfService/leaveAndMovement/leaveApplication`
+                : `/approval/8`;
+
+            history.push(route, {
+              state: {
+                applicationTypeId: 8,
+                applicationType: "Leave Application",
+                idToHighlight: content?.intFeatureTableAutoId,
+              },
+            });
+            // const win = window.open("/approval/8", "_blank");
+            // win.focus();
           }
           if (strFeature === "movement_application") {
-            const win = window.open("/approval/movementApproval", "_blank");
-            win.focus();
+            const route =
+              content?.strLandingView === "Self"
+                ? `/SelfService/leaveAndMovement/movementApplication`
+                : `/approval/14`;
+            history.push(route, {
+              state: {
+                applicationTypeId: 14,
+                applicationType: "Movement Application",
+              },
+            });
+
+            // const win = window.open("/approval/14", "_blank");
+            // win.focus();
           }
           if (strFeature === "salary_generate") {
             const win = window.open("/approval/salaryApproval", "_blank");
@@ -128,10 +153,12 @@ const NotiBodyContent = ({
                     >
                       {strModule?.toUpperCase() || ""}
                     </h6>
-                    <h6 style={{
-                      fontSize: "10px",
-                      marginLeft: "5px",
-                    }}>
+                    <h6
+                      style={{
+                        fontSize: "10px",
+                        marginLeft: "5px",
+                      }}
+                    >
                       {timeDifference === "now"
                         ? timeDifference
                         : `${timeDifference}`}

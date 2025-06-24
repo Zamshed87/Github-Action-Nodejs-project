@@ -102,7 +102,7 @@ const PfProfitShare = () => {
           setOpenView({ open: false, data: {} });
         }}
         components={<ProfitShareView data={openView.data} />}
-        width={1000}
+        width={1200}
       />
     </>
   ) : (
