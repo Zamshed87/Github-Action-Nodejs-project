@@ -147,10 +147,15 @@ export const processNewBulkUploadSalaryAction = async (
   values,
   setErrorData,
   setOpen,
-  employeeId
+  employeeId,
+  wId
 ) => {
   try {
     setLoading(true);
+    if (!payrollInfo?.[1]?.includes("Non-Grade") && payrollInfo?.[12] !== wId) {
+      setLoading(false);
+      return toast.error("Please select correct Workplace");
+    }
     const keyValuePairs = {};
 
     for (const item of elementInfo) {
@@ -172,6 +177,8 @@ export const processNewBulkUploadSalaryAction = async (
         "Bank Pay": bank,
         "Cash Pay": cash,
         "Digital Pay": digital,
+        "Slab Count": slabCount,
+
         ...fields
       } = item;
       const salaryElements = Object.keys(fields)
@@ -202,6 +209,8 @@ export const processNewBulkUploadSalaryAction = async (
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
         actionBy: employeeId,
+        slabCount: +slabCount?.split(" ")[1] || 0,
+        slabElement: slabCount || 0,
         salaryElements,
         pm: pm || "N/A",
         bank: bank || 0,
@@ -214,6 +223,30 @@ export const processNewBulkUploadSalaryAction = async (
     const cleanData = [];
     console.log({ modifiedData });
     modifiedData.forEach((item) => {
+      if (!payrollInfo?.[1]?.includes("Non-Grade")) {
+        if (
+          !item.empName?.result ||
+          item.empName === "N/A" ||
+          !item.employeeCode
+        ) {
+          errorData.push({
+            ...item,
+            empName: item.empName?.result || "N/A",
+            employeeCode: item.employeeCode || "N/A",
+          });
+        } else {
+          cleanData.push({
+            ...item,
+            empName: item.empName?.result || "N/A",
+            gross: item?.gross?.result || 0,
+            isGrade: true,
+            payScaleId: payrollInfo?.[13],
+          });
+        }
+
+        return;
+      }
+
       if (
         Boolean(item.misMatch) ||
         // item.empName === "N/A" ||
