@@ -27,7 +27,7 @@ const TdsChallanFormFields = ({ form, addData, edit, view }) => {
   return (
     <>
       <PCardBody className="mb-4">
-        <TdsChallanFilters form={form} hideSubmitBtn={true} edit={edit}/>
+        <TdsChallanFilters form={form} hideSubmitBtn={true} edit={edit} view={view}/>
       </PCardBody>
       {
         !view && <PCardBody className="mb-4">
