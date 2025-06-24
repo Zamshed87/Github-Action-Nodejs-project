@@ -7,15 +7,18 @@ const TdsChallanFilters = ({
   hideSubmitBtn = false,
   moreFields,
   edit = false,
+  view = false,
 }) => {
   const { fiscalYearDDL, workplaceDDL } = useTdsChallanFilters();
   return (
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
         <PSelect
+          disabled={view}
+          maxTagCount={"responsive"}
           options={fiscalYearDDL?.data?.length > 0 ? fiscalYearDDL?.data : []}
           name="ListOfFiscalYear"
-          mode={edit ?  "":"multiple"}
+          mode={edit ? "" : "multiple"}
           showSearch
           filterOption={true}
           label="Financial Year"
@@ -28,6 +31,8 @@ const TdsChallanFilters = ({
       </Col>
       <Col md={5} sm={12} xs={24}>
         <PSelect
+          disabled={view}
+          maxTagCount={"responsive"}
           options={workplaceDDL.data}
           mode={edit ? "" : "multiple"}
           name="ListOfWorkplace"
