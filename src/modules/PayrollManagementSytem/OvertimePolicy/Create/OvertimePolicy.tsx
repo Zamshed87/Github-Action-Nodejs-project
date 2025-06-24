@@ -580,6 +580,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       name="calendarName"
                       placeholder="Calendar Name"
                       mode="multiple"
+                      // disabled={state?.intOtconfigId}
                       maxTagCount={"responsive"}
                       options={calendarDDL || []}
                       onChange={(value, option) => {
@@ -588,14 +589,14 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         });
                       }}
                       disabled={state?.intOtconfigId}
-                      // rules={[
-                      //   orgId === 9
-                      //     ? {
-                      //         required: true,
-                      //         message: "Please Select Calendar Name!",
-                      //       }
-                      //     : null,
-                      // ]}
+                      rules={[
+                        orgId === 9
+                          ? {
+                              required: true,
+                              message: "Please Select Calendar Name!",
+                            }
+                          : null,
+                      ]}
                     />
                   </Col>
                   <Col md={12} sm={24}>
