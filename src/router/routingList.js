@@ -668,6 +668,12 @@ const BulkUpload = lazy(() =>
 const IncomeTaxAssign = lazy(() =>
   import("../modules/CompensationBenefits/IncomeTaxAssign/index.jsx")
 );
+const TdsChallan = lazy(() =>
+  import("../modules/CompensationBenefits/TdsChallan/index.jsx")
+);
+const TdsChallanCreate = lazy(() =>
+  import("../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx")
+);
 const BulkIncrementEntry = lazy(() =>
   import("../modules/CompensationBenefits/Increment/bulkIncrement/index.jsx")
 );
@@ -2983,6 +2989,22 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxassign",
     component: IncomeTaxAssign,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan",
+    component: TdsChallan,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/create",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/view",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/edit",
+    component: TdsChallanCreate,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssignv2",
