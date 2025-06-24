@@ -2,6 +2,7 @@ import { Tooltip } from "antd";
 import { ImAttachment } from "react-icons/im"; // or any icon you already use
 import DeleteIcon from "common/DeleteIcon/DeleteIcon";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import moment from "moment";
 
 export const detailsHeader = ({
   removeData,
@@ -33,7 +34,9 @@ export const detailsHeader = ({
   {
     title: "Challan Date",
     dataIndex: "dteChallanDate",
-    render: (v) => v ?? "-",
+    render: (v, rec) => {
+      return rec?.intId ? moment(v)?.format('YYYY-MM-DD') : v;
+    },
   },
   {
     title: "Challan Number",
