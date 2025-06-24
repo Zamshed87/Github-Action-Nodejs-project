@@ -1824,6 +1824,7 @@ import NOCManagementLanding from "modules/NOC/nocManagment";
 import NOCForm from "modules/NOC/components/NOCForm";
 import NocSelfLanding from "modules/NOC/nocSelf";
 import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
+import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -3939,6 +3940,13 @@ export const routingList = [
   {
     path: "/test/submission",
     component: SubmissionDetails,
+  },
+
+  // manpower analysis
+
+  {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning",
+    component: WorkforcePlanningLanding,
   },
   {
     path: "/administration/configuration/latepunishmentpolicy",
