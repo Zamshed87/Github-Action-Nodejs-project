@@ -2,7 +2,7 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { DataTable } from "Components";
+import { DataTable, PButton } from "Components";
 import { paginationSize } from "common/AntTable";
 import DefaultInput from "common/DefaultInput";
 import MasterFilter from "common/MasterFilter";
@@ -27,6 +27,9 @@ import PfLoanTable from "./components/pfLoanTable";
 import { getPDFAction } from "utility/downloadFile";
 import { customStyles } from "utility/selectCustomStyle";
 import FormikSelect from "common/FormikSelect";
+import { AppstoreAddOutlined } from "@ant-design/icons";
+import HeaderView from "./components/HeaderView";
+import EarlySettled from "./components/EarlySettled";
 
 const PfLoanLanding = () => {
   const { buId, wgId, wId, employeeId } = useSelector(
@@ -59,6 +62,7 @@ const PfLoanLanding = () => {
   const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState({});
   const [viewDetails, setViewDetails] = useState(false);
+  const [viewEarlySettled, setViewEarlySettled] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -261,6 +265,20 @@ const PfLoanLanding = () => {
       </div>
       <ViewModal
         size="xl"
+        title="Early Settled Loan Details"
+        backdrop="static"
+        classes="default-modal preview-modal"
+        show={viewEarlySettled}
+        onHide={() => setViewEarlySettled(false)}
+      >
+        <EarlySettled
+          loanByIdDto={loanByIdDto}
+          headerId={loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}
+          setViewEarlySettled={setViewEarlySettled}
+        />
+      </ViewModal>
+      <ViewModal
+        size="xl"
         title="View Loan Details"
         backdrop="static"
         classes="default-modal preview-modal"
@@ -269,51 +287,30 @@ const PfLoanLanding = () => {
       >
         <div className="mx-3">
           <div className="d-flex justify-content-between">
-            <div>
-              <SingleInfo
-                label={"Employee"}
-                value={`${loanByIdDto?.objHeader?.strEmployeeName}[${loanByIdDto?.objHeader?.strEmployeeCode}]`}
-              />
-              <SingleInfo
-                label={"Loan ID"}
-                value={loanByIdDto?.objHeader?.strLoanId}
-              />
-              <SingleInfo
-                label={"Loan Type"}
-                value={loanByIdDto?.objHeader?.strLoanType}
-              />
-              <SingleInfo
-                label={"Loan Amount"}
-                value={loanByIdDto?.objHeader?.numLoanAmount}
-              />
-              <SingleInfo
-                label={"Interest"}
-                value={`${loanByIdDto?.objHeader?.numInterest}%`}
-              />
-              <SingleInfo
-                label={"Installment Number"}
-                value={loanByIdDto?.objHeader?.intNumberOfInstallment}
-              />
-              <SingleInfo
-                label={"Effective Date"}
-                value={moment(loanByIdDto?.objHeader?.dteEffectiveDate).format(
-                  "MMM, YYYY"
-                )}
+            <HeaderView loanByIdDto={loanByIdDto} />
+            <div className="" style={{ marginTop: "0" }}>
+              <PButton
+                type="primary"
+                content={"Early Settled"}
+                icon={<AppstoreAddOutlined />}
+                onClick={() => {
+                  setViewDetails(false);
+                  setViewEarlySettled(true);
+                }}
               />
             </div>
             <div className="" style={{ marginTop: "0" }}>
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
+              <PButton
+                type="primary"
+                content={"Print"}
+                icon={<i className="fa fa-print mr-2" />}
                 onClick={() => {
                   getPDFAction(
                     `/PdfAndExcelReport/EmployeeLoanPdf?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`,
                     setLoading
                   );
                 }}
-              >
-                Print
-              </button>
+              />
             </div>
           </div>
 
