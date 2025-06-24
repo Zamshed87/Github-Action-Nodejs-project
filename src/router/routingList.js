@@ -681,6 +681,9 @@ const TdsChallan = lazy(() =>
 const TdsChallanCreate = lazy(() =>
   import("../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx")
 );
+const TaxSalaryCertificate = lazy(() =>
+  import("../modules/CompensationBenefits/TaxSalaryCertificate/index.jsx")
+);
 const BulkIncrementEntry = lazy(() =>
   import("../modules/CompensationBenefits/Increment/bulkIncrement/index.jsx")
 );
@@ -3006,6 +3009,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxChallan/edit",
     component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxSalaryCertificate",
+    component: TaxSalaryCertificate,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssignv2",
