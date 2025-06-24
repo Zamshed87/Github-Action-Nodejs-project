@@ -25,6 +25,8 @@ import SingleInfo from "common/SingleInfo";
 import moment from "moment";
 import PfLoanTable from "./components/pfLoanTable";
 import { getPDFAction } from "utility/downloadFile";
+import { customStyles } from "utility/selectCustomStyle";
+import FormikSelect from "common/FormikSelect";
 
 const PfLoanLanding = () => {
   const { buId, wgId, wId, employeeId } = useSelector(
@@ -75,7 +77,13 @@ const PfLoanLanding = () => {
   });
 
   const getData = (srcTxt = values?.search, pages, isPaginated = true) => {
-    const url = `/Employee/EmpPfLoanLanding?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${values?.fDate}&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${srcTxt}&IsPaginated=${isPaginated}`;
+    const url = `/PfLoan/GetAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
+      values?.fDate
+    }&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${
+      pages?.pageSize
+    }&SearchText=${srcTxt}&IsPaginated=${isPaginated}&status=${
+      values?.status?.value || 0
+    }`;
 
     getLoanLanding(url, (data) => {
       setRowDto(data?.objHeader);
@@ -186,6 +194,29 @@ const PfLoanLanding = () => {
                   />
                 </div>
               </div>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Status</label>
+                  <FormikSelect
+                    name="status"
+                    options={[
+                      { value: 0, label: "All" },
+                      { value: 1, label: "Pending" },
+                      { value: 2, label: "Inactive" },
+                      { value: 3, label: "Approved" },
+                      { value: 4, label: "Running" },
+                      { value: 5, label: "Early Settled" },
+                      { value: 6, label: "Completed" },
+                    ]}
+                    value={values?.status}
+                    onChange={(valueOption) => {
+                      setFieldValue("status", valueOption);
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
               <div className="col-lg-3" style={{ marginTop: "21px" }}>
                 <button
                   className="btn btn-green btn-green-disable"
@@ -216,7 +247,7 @@ const PfLoanLanding = () => {
               }}
               onRow={(rec) => ({
                 onClick: () => {
-                  getLoanById(`/Employee/EmpPfLoanById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${rec?.intEmployeeLoanHeaderId}
+                  getLoanById(`/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${rec?.intEmployeeLoanHeaderId}
                   `);
                   setViewDetails(true);
                   setSingleData(rec);

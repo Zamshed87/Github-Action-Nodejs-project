@@ -82,7 +82,7 @@ const PfLoanAddEdit = () => {
     );
     if (id) {
       getLoanById(
-        `/Employee/EmpPfLoanById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${id}
+        `/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${id}
       `,
         (data) => {
           setFileId(data?.objHeader?.intFileUrlId);
@@ -188,7 +188,7 @@ const PfLoanAddEdit = () => {
         toast.success(res?.message || "Submitted Successfully");
       }
     };
-    saveData("/Employee/CreateEmpLoanApplication", payload, cb, false);
+    saveData("/PfLoan/Create", payload, cb, false);
   };
   useEffect(() => {
     if (values?.loanId && id) {
