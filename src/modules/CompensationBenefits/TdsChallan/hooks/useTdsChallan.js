@@ -16,10 +16,9 @@ const useTdsChallan = (form) => {
 
   const fetchTdsChallan = () => {
     const formValues = form?.getFieldsValue(true);
-
     const formattedParams = {
-      listOfFiscalYear: formValues.ListOfFiscalYear,
-      listOfWorkplace: formValues.ListOfWorkplace,
+      StrListOfFiscalYear: formValues.ListOfFiscalYear,
+      StrListOfWorkplace: formValues.ListOfWorkplace,
     };
 
     const filteredParams = Object.entries(formattedParams)
