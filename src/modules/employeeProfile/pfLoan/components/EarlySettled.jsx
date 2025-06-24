@@ -22,13 +22,22 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
   const { values, setFieldValue, errors, touched, handleSubmit, resetForm } =
     useFormik({
       initialValues: {
-        interestOutstanding: "",
+        interestOutstanding: 0,
       },
     });
 
   const saveHandler = (values) => {
-    console.log("values", values);
-    console.log("attachmentList", attachmentList);
+    if (!values?.settlementDate) {
+      return toast.error("Please select settlement date");
+    }
+
+    if (!values?.totalOutstanding) {
+      return toast.error("Please enter total outstanding");
+    }
+    if (values?.totalOutstanding < 0) {
+      return toast.error("Total outstanding cannot be negative");
+    }
+
     const payload = {
       headerId: headerId,
       settlementDate: values?.settlementDate,
@@ -77,6 +86,14 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
       }
     );
   };
+  const numberOfDaysDifFromlastSalaryDateToSettlementDate = (
+    settlementDate
+  ) => {
+    const lastSalaryDate = new Date(loanByIdDto?.objHeader?.lastSalaryDate);
+    const timeDiff = Math.abs(new Date(settlementDate) - lastSalaryDate);
+    console.log(Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+    return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+  };
   return (
     <div className="mx-3">
       <div className="d-flex justify-content-between">
@@ -93,7 +110,7 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
             <div className="row">
               <div className="col-lg-3">
                 <div className="input-field-main">
-                  <label>Date of Settlement</label>
+                  <label>Date of Settlement *</label>
                   <DefaultInput
                     classes="input-sm"
                     value={values?.settlementDate}
@@ -103,6 +120,18 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                     className="form-control"
                     onChange={(e) => {
                       setFieldValue("settlementDate", e.target.value);
+                      setFieldValue(
+                        "principalOutstanding",
+                        loanByIdDto?.objHeader?.principalOutstandingAmount || 0
+                      );
+                      setFieldValue(
+                        "interestOutstanding",
+                        (loanByIdDto?.objHeader?.interestOutstandingAmount /
+                          30) *
+                          numberOfDaysDifFromlastSalaryDateToSettlementDate(
+                            e.target.value
+                          )
+                      );
                     }}
                   />
                 </div>
@@ -117,6 +146,7 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                     value={values?.principalOutstanding}
                     placeholder="Principal Outstanding"
                     name="principalOutstanding"
+                    disabled={true}
                     className="form-control"
                     onChange={(e) => {
                       setFieldValue("principalOutstanding", e.target.value);
@@ -133,6 +163,7 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                     min={0}
                     value={values?.interestOutstanding}
                     placeholder="Interest Outstanding"
+                    disabled={true}
                     name="interestOutstanding"
                     className="form-control"
                     onChange={(e) => {
@@ -143,7 +174,7 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
               </div>
               <div className="col-lg-3">
                 <div className="input-field-main">
-                  <label>Concession Amount</label>
+                  <label>Concession Amount *</label>
                   <DefaultInput
                     classes="input-sm"
                     type="number"
@@ -154,6 +185,11 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                     className="form-control"
                     onChange={(e) => {
                       setFieldValue("concessionAmount", e.target.value);
+                      const totalOutstanding =
+                        values?.principalOutstanding +
+                        values?.interestOutstanding -
+                        e.target.value;
+                      setFieldValue("totalOutstanding", totalOutstanding);
                     }}
                   />
                 </div>
@@ -165,6 +201,7 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                     classes="input-sm"
                     type="number"
                     min={0}
+                    disabled={true}
                     value={values?.totalOutstanding}
                     placeholder="Total Outstanding"
                     name="totalOutstanding"
