@@ -1816,6 +1816,8 @@ const FinalSettlementEdit = lazy(() =>
 
 import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
 import ChattingIndex from "modules/chattingApp/ChattingIndex";
+import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
+import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -3969,6 +3971,21 @@ export const routingList = [
   {
     path: "/test/submission",
     component: SubmissionDetails,
+  },
+
+  // manpower analysis
+
+  {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning",
+    component: WorkforcePlanningLanding,
+  },
+   {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/create",
+    component: WorkForceCreate,
+  },
+     {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/edit/:id",
+    component: WorkForceCreate,
   },
   {
     path: "/administration/configuration/latepunishmentpolicy",
