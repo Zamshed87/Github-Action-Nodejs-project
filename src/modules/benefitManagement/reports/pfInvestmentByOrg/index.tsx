@@ -99,12 +99,6 @@ const PfInvestmentByOrgReport = () => {
       sorter: true,
       width: 20,
     },
-    // {
-    //   title: "Investment Balance",
-    //   dataIndex: "intInvestmentBalance",
-    //   sorter: true,
-    //   width: 20,
-    // },
 
     {
       title: "Action",

@@ -78,10 +78,6 @@ const PfEmployeeReportView = () => {
   useEffect(() => {
     landingApiCall();
   }, []);
-  console.log("landingApi", landingApi?.data);
-  const searchFunc = debounce((values) => {
-    landingApiCall();
-  }, 500);
 
   const header = [
     {

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getBuDDLAction,
@@ -11,6 +13,7 @@ import {
   updateWAction,
   updateWgAction,
 } from "../../commonRedux/auth/actions";
+import { Autocomplete, TextField, Tooltip } from "@mui/material";
 
 const style = {
   marginTop: "3px",
@@ -48,6 +51,7 @@ export default function ResourcesDropdown() {
   } = useSelector((state) => state?.auth, shallowEqual);
   const [workPlaceWouldChange, setWorkPlaceWouldChange] = useState("");
   const dispatch = useDispatch();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleResources = (event) => {
     const filterData = businessUnitDDL?.filter(
@@ -115,50 +119,147 @@ export default function ResourcesDropdown() {
   }, [workplaceDDL]);
 
   return (
-    <div className="d-flex">
-      <FormControl sx={style}>
-        <Select
-          value={buId}
-          onChange={handleResources}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
+    <div className="d-flex ml-2">
+      <Tooltip
+        title={
+          businessUnitDDL?.find((i) => i.BusinessUnitId === buId)
+            ?.BusinessUnitName || ""
+        }
+      >
+        <FormControl sx={style}>
+          <Select
+            value={buId}
+            onChange={handleResources}
+            displayEmpty
+            inputProps={{ "aria-label": "Without label" }}
+          >
+            {businessUnitDDL?.map((item, index) => (
+              <MenuItem value={item?.BusinessUnitId} key={index}>
+                {item?.BusinessUnitName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Tooltip>
+      <Tooltip
+        title={
+          workplaceGroupDDL?.find((i) => i.WorkplaceGroupId === wgId)
+            ?.WorkplaceGroupName || ""
+        }
+      >
+        <FormControl sx={style}>
+          <Select
+            value={wgId}
+            onChange={handleWgResources}
+            displayEmpty
+            inputProps={{ "aria-label": "Without label" }}
+          >
+            {workplaceGroupDDL?.map((item, index) => (
+              <MenuItem value={item?.WorkplaceGroupId} key={index}>
+                {item?.WorkplaceGroupName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Tooltip>
+      <Tooltip
+        title={
+          workplaceDDL?.find((i) => i.WorkplaceId === wId)?.WorkplaceName || ""
+        }
+      >
+        <FormControl
+          sx={{
+            minWidth: 150,
+            marginRight: "10px",
+            "& .MuiOutlinedInput-root fieldset": {
+              borderWidth: 0,
+            },
+            "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+              borderWidth: 0,
+            },
+            "& .MuiSvgIcon-root": {
+              top: "-4px",
+            },
+          }}
         >
-          {businessUnitDDL?.map((item, index) => (
-            <MenuItem value={item?.BusinessUnitId} key={index}>
-              {item?.BusinessUnitName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl sx={style}>
-        <Select
-          value={wgId}
-          onChange={handleWgResources}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-        >
-          {workplaceGroupDDL?.map((item, index) => (
-            <MenuItem value={item?.WorkplaceGroupId} key={index}>
-              {item?.WorkplaceGroupName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl sx={style}>
-        <Select
-          value={wId}
-          onChange={handleWResources}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-        >
-          {workplaceDDL?.map((item, index) => (
-            <MenuItem value={item?.WorkplaceId} key={index}>
-              {item?.WorkplaceName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          <Autocomplete
+            size="small"
+            open={isSearchOpen}
+            onOpen={() => setIsSearchOpen(true)}
+            onClose={() => setIsSearchOpen(false)}
+            disableClearable
+            options={workplaceDDL || []}
+            getOptionLabel={(option) => option?.WorkplaceName || ""}
+            value={
+              workplaceDDL?.find((item) => item?.WorkplaceId === wId) || null
+            }
+            onChange={(event, newValue) => {
+              if (newValue) {
+                dispatch(
+                  updateWAction(newValue?.WorkplaceId, newValue?.WorkplaceName)
+                );
+              }
+            }}
+            componentsProps={{
+              paper: {
+                sx: {
+                  fontSize: "14px",
+                  minWidth: "180px",
+                  mt: "2px",
+                  "& .MuiAutocomplete-option": {
+                    paddingY: "0px", // ⬅️ slightly taller spacing
+                    fontSize: "14px", // ⬅️ increase font size here too
+                    minHeight: "30px", // ⬅️ optional for larger click targets
+                  },
+                },
+              },
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                // variant="outlined"
+                placeholder="Select workplace"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: isSearchOpen && (
+                    <InputAdornment position="end">
+                      <SearchIcon
+                        sx={{ fontSize: 16, color: "rgba(0,0,0,0.5)" }}
+                      />
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    padding: "0px !important",
+                    fontSize: "12px",
+                    fontWeight: 200,
+                    lineHeight: "5px",
+                    color: "rgba(0, 0, 0, 0.7)",
+                  },
+                }}
+                inputProps={{
+                  ...params.inputProps,
+                  sx: {
+                    padding: "2px 2px !important",
+                    fontSize: "12px",
+                    textAlign: "left",
+                    width: "100%",
+                  },
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    paddingRight: "25px !important",
+                    fontSize: "12px",
+                    minHeight: "10px", // Matches compact Select height
+                  },
+                  "& input": {
+                    padding: "2px 4px",
+                  },
+                }}
+              />
+            )}
+          />
+        </FormControl>
+      </Tooltip>
     </div>
   );
 }

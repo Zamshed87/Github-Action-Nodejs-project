@@ -61,10 +61,14 @@ const NOCLanding = ({ isManagement, pathurl }) => {
 
   const getLanding = (values) => {
     // &EmployeeId=${employeeId}
-    let api = `/NocApplication?Accountid=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&EmployeeId=${isManagement ? 0 : employeeId}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsDescending=false`;
+    let api = `/NocApplication?Accountid=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&EmployeeId=${
+      isManagement ? 0 : employeeId
+    }&FromDate=${values?.filterFromDate}&ToDate=${
+      values?.filterToDate
+    }&PageNo=${pageNo}&PageSize=${pageSize}&IsDescending=false`;
     getRowDataApi(api, (data) => {
       // Update total count when data is received
-      if (data && typeof data.totalCount !== 'undefined') {
+      if (data && typeof data.totalCount !== "undefined") {
         setTotalCount(data.totalCount);
       }
     });
@@ -261,7 +265,7 @@ const NOCLanding = ({ isManagement, pathurl }) => {
                     pageSize: pageSize,
                     total: totalCount,
                     showSizeChanger: true,
-                    pageSizeOptions: ['10', '25', '50', '100'],
+                    pageSizeOptions: ["10", "25", "50", "100"],
                     onChange: handlePageChange,
                   }}
                 />
@@ -310,8 +314,9 @@ const NOCLanding = ({ isManagement, pathurl }) => {
                 name="employee"
                 placeholder="Search minimum 2 character"
                 onChange={(value, op) => {
-                  const employeeNameWithCodeModify =
-                    op?.employeeNameWithCode?.replace(/\(\d+\)/, "");
+                  const employeeNameWithCodeModify = op?.employeeNameWithCode
+                    ?.replace(/\([^)]*\)/g, "")
+                    .trim();
                   setSignatureInfo({
                     name: employeeNameWithCodeModify || "",
                     designation: op?.designationName || "",

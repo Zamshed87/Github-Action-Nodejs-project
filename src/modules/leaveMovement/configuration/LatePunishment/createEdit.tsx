@@ -27,7 +27,7 @@ import { LatePunishment } from "./form";
 import {
   addHandler,
   addLeaveDeductions,
-  createEditLatePunishmentConfig,
+  createEditPunishmentConfig,
 } from "./helper";
 import RangeDatePicker from "./RangeDatePicker";
 import { DataState, LeaveDeductionDataState } from "./type";
@@ -398,9 +398,24 @@ const CreateEditLatePunishmentConfig = () => {
                           return;
                         }
                         form
-                          .validateFields([])
+                          .validateFields([
+                            "policyName",
+                            "workplace",
+                            "employmentType",
+                            "designation",
+                            "department",
+                            "policyDescription",
+                          ])
                           .then(() => {
-                            createEditLatePunishmentConfig(
+                            if (data?.length === 0) {
+                              toast.error(
+                                "Please add at least one late punishment"
+                              );
+                              return;
+                            }
+                            createEditPunishmentConfig(
+                              "/LatePunishmentpolicy",
+
                               profileData,
                               form,
                               data,
@@ -410,7 +425,8 @@ const CreateEditLatePunishmentConfig = () => {
                                 history.push(
                                   "/administration/latePunishmentPolicy"
                                 );
-                              }
+                              },
+                              "late"
                             );
                           })
                           .catch(() => {});

@@ -335,4 +335,7 @@ export const apiList = {
     "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
   GetTypeWiseReport: "/PFInvestment/GetTypeWiseReport",
   GetTypeWiseDetailsReport: "/PFInvestment/GetTypeWiseDetailsReport",
+
+  ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
+  ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
 };
