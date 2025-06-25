@@ -13,7 +13,6 @@ export const createTrainingRequisition = async (
 ) => {
   setLoading(true);
   try {
-    const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
 
     const payload = {
@@ -76,7 +75,6 @@ export const onUpdateTrainingRequisition = async (
 ) => {
   setLoading(true);
   try {
-    const { orgId, buId, wgId, wId, employeeId } = profileData;
     const values = form.getFieldsValue(true);
 
     const payload = {
@@ -180,4 +178,37 @@ export const setCustomFieldsValue = (
       [`${field}Id`]: value,
     });
   }
+};
+
+/**
+ * Fetch workforce planning data by type.
+ * @param params { yearType, fromDate, workplaceId, planningTypeId }
+ * @returns Promise<{statusCode: number, data: any[]>}
+ */
+export const fetchWorkforceTypeWiseData = async ({
+  yearType,
+  fromDate,
+  toDate = "",
+  workplaceId,
+  planningTypeId,
+}: {
+  yearType: number;
+  fromDate: string | number;
+  toDate?: string | number; 
+  workplaceId: number | string;
+  planningTypeId: number;
+}) => {
+  const res = await axios.get(
+    `/WorkforcePlanning/TypeWiseData`,
+    {
+      params: {
+        YearType: yearType,
+        FromDate: fromDate,
+        ToDate: toDate,
+        WorkplaceId: workplaceId,
+        PlanningTypeId: planningTypeId,
+      },
+    }
+  );
+  return res.data;
 };

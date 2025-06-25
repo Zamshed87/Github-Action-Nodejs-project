@@ -337,4 +337,6 @@ export const apiList = {
 
   ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
+  WorkforcePlanningCreate: "/WorkforcePlanning/Create",
+  WorkforcePlanningUpdate: "/WorkforcePlanning/Update",
 };

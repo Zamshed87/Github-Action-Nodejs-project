@@ -6,18 +6,25 @@ import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import moment from "moment";
 import { dateFormatter } from "utility/dateFormatter";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { downloadFile } from "utility/downloadFile";
+import CommonFilter from "common/CommonFilter";
 const WorkforcePlanningLanding = () => {
-  const defaultFromDate = moment().subtract(3, "months").startOf("month"); // 1st day of 3 months ago
-  const defaultToDate = moment().endOf("month"); // Last day of the current month
-  const dispatch = useDispatch();  const {
-    permissionList,
-  } = useSelector((state: any) => state?.auth, shallowEqual);
+  const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
+  const dispatch = useDispatch();
+  const { permissionList } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  const { orgId, buId, wgId, wId } = useSelector(
+    (state: any) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // router states
   const history = useHistory();
@@ -29,76 +36,51 @@ const WorkforcePlanningLanding = () => {
     }
   });
 
-  // Demo data for workforce planning
-  const demoWorkforcePlanningData = [
-    {
-      id: 1,
-      workplaceGroupName: "Corporate Office",
-      workplaceName: "Head Office",
-      yearType: "Fiscal Year",
-      planningYear: "2024-01-01",
-      currentManpower: 150,
-      plannedManpower: 175,
-      difference: 25
-    },
-    {
-      id: 2,
-      workplaceGroupName: "Regional Office",
-      workplaceName: "Dhaka Branch",
-      yearType: "Calendar Year",
-      planningYear: "2024-01-01",
-      currentManpower: 85,
-      plannedManpower: 95,
-      difference: 10
-    },
-    {
-      id: 3,
-      workplaceGroupName: "Regional Office",
-      workplaceName: "Chittagong Branch",
-      yearType: "Calendar Year",
-      planningYear: "2024-01-01",
-      currentManpower: 65,
-      plannedManpower: 80,
-      difference: 15
-    },
-    {
-      id: 4,
-      workplaceGroupName: "Manufacturing",
-      workplaceName: "Production Unit 1",
-      yearType: "Fiscal Year",
-      planningYear: "2024-01-01",
-      currentManpower: 200,
-      plannedManpower: 220,
-      difference: 20
-    },
-    {
-      id: 5,
-      workplaceGroupName: "Manufacturing",
-      workplaceName: "Production Unit 2",
-      yearType: "Fiscal Year",
-      planningYear: "2024-01-01",
-      currentManpower: 180,
-      plannedManpower: 190,
-      difference: 10
-    }
-  ];
-  // state
-  const [loading] = useState(false);
-  const [landingData, setLandingData] = useState({
-    data: demoWorkforcePlanningData,
-    totalCount: demoWorkforcePlanningData.length,
-    currentPage: 1,
-    pageSize: 25
-  });
+  // Pagination state
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [excelLoading, setExcelLoading] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+  // Add filter state
+  const [filterValues, setFilterValues] = useState<{
+    yearTypeId?: number;
+    fromYear?: number;
+    workplaceGroupId?: number;
+    workplaceId?: number;
+  }>({});
+
+  const landingApi = (
+    page: number = pageNo,
+    size: number = pageSize,
+    filters: {
+      yearTypeId?: number;
+      fromYear?: number;
+      workplaceGroupId?: number;
+      workplaceId?: number;
+    } = filterValues
+  ) => {
+    const yearTypeId = filters.yearTypeId ?? 0;
+    const fromYear = filters.fromYear ?? 0;
+    getCriteriaList(
+      `/WorkforcePlanning/WorkforcePlanning?WorkplaceGroupId=${
+        filters.workplaceGroupId || wgId
+      }&WorkplaceId=${
+        filters.workplaceId || wId
+      }&yearTypeId=${yearTypeId}&fromYear=${fromYear}&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
+    );
+  };
+
   // Form Instance
-  const [form] = Form.useForm();  // table column
+  const [form] = Form.useForm(); // table column
+
   const header: any = [
     {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingData?.currentPage,
-          pageSize: landingData?.pageSize,
+          currentPage: criteriaList?.pageNo,
+          pageSize: criteriaList?.pageSize,
           index,
         }),
       fixed: "left",
@@ -106,11 +88,11 @@ const WorkforcePlanningLanding = () => {
     },
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroupName",
+      dataIndex: "workplaceGroup",
     },
     {
       title: "Workplace",
-      dataIndex: "workplaceName",
+      dataIndex: "workplace",
     },
     {
       title: "Year Type",
@@ -119,21 +101,31 @@ const WorkforcePlanningLanding = () => {
     {
       title: "Planning Year",
       dataIndex: "planningYear",
-      render: (data: any) => dateFormatter(data),
+      render: (_: any, data: any) => {
+        if (data?.fromYear && data?.toYear) {
+          return `${data.fromYear} - ${data.toYear}`;
+        }
+        if (data?.fromYear) {
+          return `${data.fromYear}`;
+        }
+        return "";
+      },
     },
-     {
+    {
       title: "Current Manpower",
       dataIndex: "currentManpower",
     },
-     {
+    {
       title: "Planned Manpower",
-      dataIndex: "plannedManpower",
+      dataIndex: "targetManpower",
     },
-     {
+    {
       title: "Difference",
       dataIndex: "difference",
       render: (value: number) => (
-        <span style={{ color: value > 0 ? 'green' : value < 0 ? 'red' : 'black' }}>
+        <span
+          style={{ color: value > 0 ? "green" : value < 0 ? "red" : "black" }}
+        >
           {value > 0 ? `+${value}` : value}
         </span>
       ),
@@ -141,17 +133,8 @@ const WorkforcePlanningLanding = () => {
     {
       title: "Action",
       dataIndex: "id",
-      render: (id: number) => (
+      render: (id: number, record: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"View"}>
-            <EyeOutlined
-              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
-              onClick={() => {
-                console.log("View workforce planning:", id);
-                // Add view logic here
-              }}
-            />
-          </Tooltip>
           <Tooltip placement="bottom" title={"Edit"}>
             <EditOutlined
               style={{
@@ -165,8 +148,14 @@ const WorkforcePlanningLanding = () => {
                   toast.warning("You don't have permission to edit");
                   return;
                 }
-                console.log("Edit workforce planning:", id);
-                // Add edit logic here
+                history.push(
+                  "/profile/ManpowerAnalysis/WorkforcePlanning/edit/" + id,
+                  {
+                    workplaceId: record.workplaceId,
+                    yearTypeId: record.yearTypeId,
+                    fromYear: record.fromYear,
+                  }
+                );
               }}
             />
           </Tooltip>
@@ -174,22 +163,12 @@ const WorkforcePlanningLanding = () => {
       ),
       align: "center",
     },
-  ];  const handleDataFilter = (
-    pagination: { current: number; pageSize: number } = {
-      current: 1,
-      pageSize: 25,
-    }
-  ) => {
-    const values = form.getFieldsValue(true);
-    console.log("Filter values:", values);
-    
-    // For demo purposes, we'll just update pagination
-    setLandingData(prev => ({
-      ...prev,
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize
-    }));
-  };
+  ];
+
+  useEffect(() => {
+    landingApi(pageNo, pageSize, filterValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wgId, wId, orgId, pageNo, pageSize, filterValues]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -200,50 +179,68 @@ const WorkforcePlanningLanding = () => {
       document.title = "PeopleDesk";
     };
   }, [dispatch]);
+
+  const handleFilter = (values: any) => {
+    setFilterValues({
+      yearTypeId: values.yearTypeId,
+      fromYear: values.fromYear,
+      workplaceGroupId: values.workplaceGroup?.value,
+      workplaceId: values.workplace?.value,
+    });
+  };
+
   return permission?.isView ? (
     <div>
-      {loading && <Loading />}
-
-      <PForm
-        form={form}
-        initialValues={{
-          fromDate: defaultFromDate,
-          toDate: defaultToDate,
-          bUnit: { label: "All", value: 0 },
-          workplaceGroup: { label: "All", value: 0 },
-          workplace: { label: "All", value: 0 },
-          department: { label: "All", value: 0 },
-          hrPosition: { label: "All", value: 0 },
-          yearType: { label: "All", value: 0 },
-        }}
-      >
+      {criteriaListLoader && <Loading />}
+      <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${landingData?.totalCount || 0} Workforce Planning`}
+            title={`Total ${criteriaList?.totalCount || 0} Workforce Planning`}
             buttonList={[
               {
                 type: "primary",
                 content: "Create New",
                 icon: "plus",
                 onClick: () => {
-                  history.push("/manpowerAnalysis/workforcePlanning/create");
+                  history.push(
+                    "/profile/ManpowerAnalysis/WorkforcePlanning/create"
+                  );
                 },
               },
             ]}
+            exportIcon
+            onExport={() => {
+              const yearTypeId = filterValues.yearTypeId ?? 0;
+              const fromYear = filterValues.fromYear ?? 0;
+              const url = `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${pageNo}&pageSize=${pageSize}`;
+              downloadFile(url, `Workforce Planning`, "xlsx", setExcelLoading);
+            }}
+            filterComponent={
+              <CommonFilter
+                visible={isFilterVisible}
+                onClose={(visible) => setIsFilterVisible(visible)}
+                onFilter={handleFilter}
+                isWorkplaceGroup={true}
+                isWorkplace={true}
+              />
+            }
           />
 
           <div className="mb-3">
             <DataTable
               bordered
-              data={landingData?.data || []}
-              loading={loading}
+              data={criteriaList?.data || []}
+              loading={criteriaListLoader}
               header={header}
               pagination={{
-                pageSize: landingData?.pageSize,
-                total: landingData?.totalCount,
+                current: criteriaList?.pageNo || pageNo,
+                pageSize: criteriaList?.pageSize || pageSize,
+                total: criteriaList?.totalCount || 0,
+                showSizeChanger: true,
               }}
               onChange={(pagination) => {
-                handleDataFilter(pagination);
+                setPageNo(pagination.current || 1);
+                setPageSize(pagination.pageSize || 10);
               }}
             />
           </div>
@@ -254,5 +251,4 @@ const WorkforcePlanningLanding = () => {
     <NotPermittedPage />
   );
 };
-
 export default WorkforcePlanningLanding;
