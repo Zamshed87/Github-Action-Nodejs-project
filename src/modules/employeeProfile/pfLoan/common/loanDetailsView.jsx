@@ -6,6 +6,8 @@ import HeaderView from "../components/HeaderView";
 import PfLoanTable from "../components/pfLoanTable";
 import { Form } from "antd";
 import PrintTypeButton from "common/PrintTypeButton";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const LoanDetailsView = ({
   loanByIdLoading,
@@ -25,6 +27,27 @@ const LoanDetailsView = ({
   onlyViewDetails = null,
 }) => {
   const [form] = Form.useForm();
+
+  const loanDetailsReport = async () => {
+    const values = form.getFieldsValue(true);
+
+    const type = values?.printType?.value === 2 ? "pdfView" : "excelView";
+    setLoading?.(true);
+    try {
+      const res = await axios.get(
+        `/PdfAndExcelReport/PfLoanLifecycleGetByIdReport?Type=${type}&HeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`
+      );
+      if (res?.data) {
+        setLoading?.(false);
+      } else {
+        toast.warn("No data received !");
+        setLoading?.(false);
+      }
+    } catch (error) {
+      setLoading?.(false);
+      toast.warn(error?.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <ViewModal
@@ -53,7 +76,7 @@ const LoanDetailsView = ({
           )}
 
           {onlyViewDetails ? (
-            <PrintTypeButton form={form} onClick={() => {}} />
+            <PrintTypeButton form={form} onClick={loanDetailsReport} />
           ) : (
             <div className="" style={{ marginTop: "0" }}>
               <PButton

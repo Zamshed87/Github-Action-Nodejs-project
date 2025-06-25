@@ -31,6 +31,7 @@ import moment from "moment";
 import { PeopleDeskSaasDDL } from "common/api";
 import { statusDDL } from "../../helper";
 import PfLoanLanding from "../..";
+import PrintTypeButton from "common/PrintTypeButton";
 
 const PfLoanLifeCycle = () => {
   const defaultFromDate = moment().subtract(3, "months").startOf("month"); // 1st day of 3 months ago
@@ -195,29 +196,12 @@ const PfLoanLifeCycle = () => {
         }}
       >
         <PCard>
-          <PCardHeader
-            title={`PF Loan Life Cycle`}
-            buttonList={[
-              {
-                type: "primary",
-                content: "Print",
-                onClick: () => {},
-              },
-            ]}
-          >
-            <PSelect
-              options={[
-                { label: "Excel", value: 1 },
-                { label: "PDF", value: 2 },
-              ]}
-              name="printType"
-              label={""}
-              placeholder="Select Print Type"
-              onChange={(value, op) => {
-                form.setFieldsValue({ printType: op });
-              }}
-            />
-          </PCardHeader>
+          <PrintTypeButton
+            title="PF Loan Life Cycle"
+            form={form}
+            onClick={() => {}}
+          />
+
           <PCardBody>
             <div className="mb-3">
               <Row gutter={[10, 2]}>
