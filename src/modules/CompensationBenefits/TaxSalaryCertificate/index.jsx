@@ -31,7 +31,7 @@ const TaxSalaryCertificate = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30597) {
+    if (item?.menuReferenceId === 30628) {
       permission = item;
     }
   });
