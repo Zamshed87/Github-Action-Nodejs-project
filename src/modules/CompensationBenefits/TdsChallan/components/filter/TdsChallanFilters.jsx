@@ -14,7 +14,7 @@ const TdsChallanFilters = ({
     <Row gutter={[10, 2]}>
       <Col md={5} sm={12} xs={24}>
         <PSelect
-          disabled={view}
+          disabled={(view || edit)}
           maxTagCount={"responsive"}
           options={fiscalYearDDL?.data?.length > 0 ? fiscalYearDDL?.data : []}
           name="ListOfFiscalYear"
@@ -31,7 +31,7 @@ const TdsChallanFilters = ({
       </Col>
       <Col md={5} sm={12} xs={24}>
         <PSelect
-          disabled={view}
+          disabled={(view || edit)}
           maxTagCount={"responsive"}
           options={workplaceDDL.data}
           mode={edit ? "" : "multiple"}
