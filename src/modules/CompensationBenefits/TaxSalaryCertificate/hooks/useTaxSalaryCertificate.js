@@ -25,7 +25,7 @@ const useTaxSalaryCertificate = (form) => {
     };
 
     const filteredParams = Object.entries(formattedParams)
-      .filter(([_, value]) => value !== undefined && value !== null)
+      .filter(([_, value]) => value !== undefined && value !== null && value !== "")
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
 

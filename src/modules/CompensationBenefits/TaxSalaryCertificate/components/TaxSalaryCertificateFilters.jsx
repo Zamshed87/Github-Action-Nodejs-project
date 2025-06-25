@@ -24,7 +24,7 @@ const TaxSalaryCertificateFilters = ({ form }) => {
               onChange={(_, op) => {
                 form.setFieldsValue({ department: op });
               }}
-              rules={[{ required: true, message: "Department is required" }]}
+              // rules={[{ required: true, message: "Department is required" }]}
             />
           </Col>
           <Col md={5} sm={12} xs={24}>
@@ -40,7 +40,7 @@ const TaxSalaryCertificateFilters = ({ form }) => {
               label="Employee"
               placeholder="Search Employee"
               loading={employeeDDL.loading}
-              rules={[{ required: true, message: "Employee Is Required" }]}
+              // rules={[{ required: true, message: "Employee Is Required" }]}
             />
           </Col>
         </>
