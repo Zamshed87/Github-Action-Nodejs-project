@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "common/loading/Loading";
 import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
@@ -9,15 +9,23 @@ import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import useTaxSalaryCertificate from "./hooks/useTaxSalaryCertificate";
 import TaxSalaryCertificateFilters from "./components/TaxSalaryCertificateFilters";
+import { PModal } from "Components/Modal";
+import TaxSalaryCertificatePreview from "./components/TaxSalaryCertificatePreview";
 
 const TaxSalaryCertificate = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [form] = Form.useForm();
-
+  const [openPreview, setOpenPreview] = useState({ open: false, data: {} });
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
-  const { data, setData, fetchTaxSalaryCertificates, loading, pages, setPages } =
-    useTaxSalaryCertificate(form);
+  const {
+    data,
+    setData,
+    fetchTaxSalaryCertificates,
+    loading,
+    pages,
+    setPages,
+  } = useTaxSalaryCertificate(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
@@ -42,14 +50,12 @@ const TaxSalaryCertificate = () => {
     >
       {loading && <Loading />}
       <PCard>
-        <PCardHeader
-          title={`Tax Salary Certificate`}
-        />
+        <PCardHeader title={`Tax Salary Certificate`} />
         <PCardBody className="mb-3">
           <TaxSalaryCertificateFilters form={form} />
         </PCardBody>
         <DataTable
-          header={getHeader(pages, history)}
+          header={getHeader(pages, setOpenPreview)}
           bordered
           data={data?.data || []}
           loading={loading}
@@ -66,6 +72,20 @@ const TaxSalaryCertificate = () => {
           // }}
         />
       </PCard>
+      <PModal
+        title={"Update Investment Organization"}
+        open={openPreview.open}
+        onCancel={() => {
+          setOpenPreview({ open: false, data: {} });
+        }}
+        components={
+          <TaxSalaryCertificatePreview
+            data={openPreview.data}
+            setOpenPreview={setOpenPreview}
+          />
+        }
+        width={1000}
+      />
     </PForm>
   ) : (
     <NotPermittedPage />

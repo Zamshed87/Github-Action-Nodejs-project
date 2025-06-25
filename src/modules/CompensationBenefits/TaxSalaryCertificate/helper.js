@@ -1,6 +1,6 @@
 import { PButton } from "Components";
 
-export const getHeader = (pages) => [
+export const getHeader = (pages, setOpenPreview) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -72,7 +72,13 @@ export const getHeader = (pages) => [
     fixed: "right",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <PButton content="Preview" type="primary-outline" onClick={() => {}} />
+        <PButton
+          content="Preview"
+          type="primary-outline"
+          onClick={() => {
+            setOpenPreview({ open: true, data: record });
+          }}
+        />
       </div>
     ),
     width: 140,
