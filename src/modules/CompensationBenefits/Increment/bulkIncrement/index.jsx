@@ -93,10 +93,10 @@ export default function BulkIncrementEntry() {
             : "IncrementBulkUpload",
           method: "post",
           payload: data,
-          toast: true,
+          // toast: true,
           onSuccess: (res) => {
             // callBack();
-            // toast.success(res?.data?.message || "Successful");
+            toast.success(res?.data?.message || "Successful");
 
             const modifiedResponse = data.map((item) => {
               const responseItem = res.find((r) => r.slNo === item.slNo);
@@ -107,6 +107,15 @@ export default function BulkIncrementEntry() {
               };
             });
             setData(modifiedResponse);
+          },
+          onError: (error) => {
+            isDevServer && console.log({ error });
+            toast.error(
+              error?.response?.data?.message ||
+                error?.response?.data?.Message ||
+                error?.response?.data?.title ||
+                "Something went wrong"
+            );
           },
         })
       : toast.warn("Please Upload Excel File");
