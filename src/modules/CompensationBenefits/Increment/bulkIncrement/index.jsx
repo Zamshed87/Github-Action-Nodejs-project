@@ -163,6 +163,7 @@ export default function BulkIncrementEntry() {
   };
   useEffect(() => {
     getPayrollGroupDDL();
+    getPayScaleDDL();
   }, [wgId, wId]);
   // Generate dynamic columns for elements
   const dynamicColumns = (source) => {
