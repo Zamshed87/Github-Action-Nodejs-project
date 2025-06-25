@@ -1,7 +1,7 @@
 import { AppstoreAddOutlined } from "@ant-design/icons";
 import { PButton, PCardHeader, PSelect } from "Components";
 import ViewModal from "common/ViewModal";
-import { getPDFAction } from "utility/downloadFile";
+import { downloadFile, getPDFAction } from "utility/downloadFile";
 import HeaderView from "../components/HeaderView";
 import PfLoanTable from "../components/pfLoanTable";
 import { Form } from "antd";
@@ -34,15 +34,21 @@ const LoanDetailsView = ({
     const type = values?.printType?.value === 2 ? "pdfView" : "excelView";
     setLoading?.(true);
     try {
-      const res = await axios.get(
-        `/PdfAndExcelReport/PfLoanLifecycleGetByIdReport?Type=${type}&HeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`
+      downloadFile(
+        `/PdfAndExcelReport/PfLoanLifecycleGetByIdReport?Type=${type}&HeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`,
+        "PF Loan Details Report",
+        type === "pdfView" ? "pdf" : "xlsx",
+        setLoading
       );
-      if (res?.data) {
-        setLoading?.(false);
-      } else {
-        toast.warn("No data received !");
-        setLoading?.(false);
-      }
+      //   const res = await axios.get(
+      //     `/PdfAndExcelReport/PfLoanLifecycleGetByIdReport?Type=${type}&HeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`
+      //   );
+      //   if (res?.data) {
+      //     setLoading?.(false);
+      //   } else {
+      //     toast.warn("No data received !");
+      //     setLoading?.(false);
+      //   }
     } catch (error) {
       setLoading?.(false);
       toast.warn(error?.response?.data?.message || "Something went wrong");
