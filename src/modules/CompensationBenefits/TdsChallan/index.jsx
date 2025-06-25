@@ -28,7 +28,7 @@ const TdsChallan = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30597) {
+    if (item?.menuReferenceId === 30621) {
       permission = item;
     }
   });
