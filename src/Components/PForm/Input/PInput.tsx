@@ -8,8 +8,36 @@ import {
 } from "antd";
 import { InputProperty, InputType } from "../TForm";
 import "../styles.scss";
+import { useEffect, useRef } from "react";
 
 export const PInput = <T extends InputType>(property: InputProperty<T>) => {
+  const inputNumberRef = useRef<any>(null);
+  useEffect(() => {
+    const inputElement = inputNumberRef.current;
+
+    if (inputElement) {
+      const handleWheelEvent = (e: any) => {
+        // Check if the InputNumber is currently focused
+        // The ref.current now directly points to the native input element
+        if (document.activeElement === inputElement) {
+          e.preventDefault(); // This can now be called without error
+        }
+      };
+
+      // Attach the event listener with { passive: false }
+      inputElement.addEventListener("wheel", handleWheelEvent, {
+        passive: false,
+      });
+
+      // Clean up the event listener when the component unmounts
+      return () => {
+        inputElement.removeEventListener("wheel", handleWheelEvent, {
+          passive: false,
+        });
+      };
+    }
+  }, []); // Empty dependency array means this runs once on mount and cleans up on unmount
+
   const renderInput = <T extends InputType>(property: InputProperty<T>) => {
     const {
       type,
@@ -136,6 +164,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
         />
       ) : type === "number" ? (
         <InputNumber
+          ref={inputNumberRef}
           placeholder={placeholder}
           onChange={onChange as (e: any) => void}
           onPressEnter={onPressEnter}
@@ -188,7 +217,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           rules={rules}
           valuePropName={type === "checkbox" ? "checked" : valuePropName}
           hasFeedback={hasFeedback}
-          style={{...style, marginBottom: 0 }}
+          style={{ ...style, marginBottom: 0 }}
           className={disabled ? "peopledesk_input_disabled" : ""}
         >
           {Components}
