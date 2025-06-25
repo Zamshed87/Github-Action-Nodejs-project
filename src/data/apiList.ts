@@ -368,4 +368,5 @@ export const apiList = {
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
   IncrementGradeBasedBulkUpload:
     "/EmployeeIncrement/IncrementGradeBasedBulkUpload",
+  SalaryGradeBasedBulkUpload: "/Employee/SalaryGradeBasedBulkUpload",
 };

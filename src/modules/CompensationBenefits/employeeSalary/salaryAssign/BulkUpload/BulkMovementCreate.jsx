@@ -7,11 +7,7 @@ import {
   excelFileToArray,
   excelFileToSpecificIndexInfo,
 } from "utility/excelFileToJSON";
-import {
-  processBulkUploadSalaryAction,
-  processNewBulkUploadSalaryAction,
-  saveBulkUploadSalaryAction,
-} from "./helper";
+import { processNewBulkUploadSalaryAction } from "./helper";
 import Loading from "common/loading/Loading";
 import BackButton from "common/BackButton";
 import PrimaryButton from "common/PrimaryButton";
@@ -23,13 +19,15 @@ import { useApiRequest } from "Hooks";
 import { Tag } from "antd";
 import { DataTable } from "Components";
 import { ModalFooter, PModal } from "Components/Modal";
+import { todayDate } from "utility/todayDate";
+import { isDevServer } from "App";
 
 const initialValues = {
   file: "",
 };
 
 const BulkMovementCreate = () => {
-  const { buId, employeeId, orgId, wgId, wId } = useSelector(
+  const { buId, employeeId, orgId, wgId, wId, wName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -56,6 +54,7 @@ const BulkMovementCreate = () => {
   // const [open, setOpen] = useState(false);
   const [errorData, setErrorData] = useState([]);
   const [open, setOpen] = useState(false);
+  const payscaleDDL = useApiRequest([]);
 
   // const handleClose = () => {
   //   setOpen(false);
@@ -87,7 +86,8 @@ const BulkMovementCreate = () => {
         values,
         setErrorData,
         setOpen,
-        employeeId
+        employeeId,
+        wId
       );
     } catch (error) {
       toast.warn("Failed to process!");
@@ -100,13 +100,15 @@ const BulkMovementCreate = () => {
     // };
     data?.length > 0
       ? postBulk.action({
-          urlKey: "SalaryBulkUpload",
+          urlKey: data[0]?.isGrade
+            ? "SalaryGradeBasedBulkUpload"
+            : "SalaryBulkUpload",
           method: "post",
           payload: data,
-          toast: true,
+          // toast: true,
           onSuccess: (res) => {
             // callBack();
-            // toast.success(res?.data?.message || "Successful");
+            toast.success(res?.data?.message || "Successful");
 
             const modifiedResponse = data.map((item) => {
               const responseItem = res.find((r) => r.slNo === item.slNo);
@@ -117,6 +119,15 @@ const BulkMovementCreate = () => {
               };
             });
             setData(modifiedResponse);
+          },
+          onError: (err) => {
+            isDevServer && console.log({ err });
+            toast.error(
+              err?.response?.data?.message ||
+                err?.response?.data?.Message ||
+                err?.response?.data?.title ||
+                "Something went wrong"
+            );
           },
         })
       : toast.warn("Please Upload Excel File");
@@ -197,6 +208,13 @@ const BulkMovementCreate = () => {
       width: 70,
     },
     {
+      title: "Slab Count",
+      dataIndex: "slabElement",
+
+      width: 80,
+      hidden: data[0]?.isGrade ? false : true,
+    },
+    {
       title: "Gross Salary",
       dataIndex: "gross",
       // key: "empCode",
@@ -270,6 +288,19 @@ const BulkMovementCreate = () => {
     ...dynamicColumns(source),
     ...responseColumns(source),
   ];
+  const getPayScaleDDL = () => {
+    payscaleDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "PayscaleSetupbyWorkplaceDDL",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        accountId: orgId,
+        intWorkplaceId: wId,
+      },
+    });
+  };
   return (
     <>
       {isLoading && <Loading />}
@@ -286,40 +317,81 @@ const BulkMovementCreate = () => {
 
           <div className="card-style pb-0 mb-2">
             <div className="row py-2">
-              <div className="col-md-3" style={{ marginTop: "-12px" }}>
-                <div className="input-field-main">
-                  <label>Payroll Group</label>
+              {[3, 12, 15]?.includes(orgId) && (
+                <div className="col-md-3" style={{ marginTop: "-12px" }}>
+                  <div className="input-field-main">
+                    <label>Grade Based</label>
 
-                  <FormikSelect
-                    name="pg"
-                    classes="input-sm"
-                    styles={customStyles}
-                    options={payrollGroupDDL?.data || []}
-                    value={values?.pg}
-                    onChange={(valueOption) => {
-                      setFieldValue("pg", valueOption);
-                    }}
-                  />
+                    <FormikSelect
+                      name="isGrade"
+                      classes="input-sm"
+                      styles={customStyles}
+                      options={[
+                        { label: "Yes", value: true },
+                        { label: "No", value: false },
+                      ]}
+                      value={values?.isGrade}
+                      onChange={(valueOption) => {
+                        if (valueOption?.value) {
+                          getPayScaleDDL();
+                        }
+
+                        setFieldValue("isGrade", valueOption);
+                        setFieldValue("pg", null);
+                        setFieldValue("payScale", null);
+                      }}
+                    />
+                  </div>
                 </div>
+              )}
+              <div className="col-md-3" style={{ marginTop: "-12px" }}>
+                {!values?.isGrade?.value && (
+                  <div className="input-field-main">
+                    <label>Payroll Group</label>
+
+                    <FormikSelect
+                      name="pg"
+                      classes="input-sm"
+                      styles={customStyles}
+                      options={payrollGroupDDL?.data || []}
+                      value={values?.pg}
+                      onChange={(valueOption) => {
+                        setFieldValue("pg", valueOption);
+                      }}
+                    />
+                  </div>
+                )}
+                {values?.isGrade?.value && (
+                  <div className="input-field-main">
+                    <label>Payscale</label>
+
+                    <FormikSelect
+                      name="payScale"
+                      classes="input-sm"
+                      styles={customStyles}
+                      options={payscaleDDL?.data || []}
+                      value={values?.payScale}
+                      onChange={(valueOption) => {
+                        setFieldValue("payScale", valueOption);
+                        setFieldValue("pg", null);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
-              <div className="col-8 d-flex align-items-center my-2">
-                {/* <input
-                  type="number"
-                  value={numberOfRow}
-                  onChange={(e) => setNumberOfRow(e.target.value)}
-                  placeholder="Number of Rows"
-                  className="form-control mr-2"
-                  style={{ width: "100px", marginRight: "8px" }}
-                /> */}
+              <div className="col-6 d-flex align-items-center my-2">
                 <PrimaryButton
                   disabled={!numberOfRow}
                   className="btn btn-default mr-1"
                   label="Download Demo"
                   onClick={() => {
+                    const url = values?.isGrade?.value
+                      ? `/PdfAndExcelReport/DownloadExcelForGradeBasedSalary?payscaleId=${values?.payScale?.value}&numberOfRow=100`
+                      : `/PdfAndExcelReport/DownloadExcelforSalaryBulk?parrollGroupId=${values?.pg?.value}&numberOfRow=100`;
                     downloadFile(
-                      `/PdfAndExcelReport/DownloadExcelforSalaryBulk?parrollGroupId=${values?.pg?.value}&numberOfRow=100`,
-                      "Employees Salary",
+                      url,
+                      `${todayDate()}_${wName}_Employee_Salary_Bulk`,
                       "xlsx",
                       setIsLoading
                     );
