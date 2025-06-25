@@ -109,7 +109,7 @@ export default function TargetEntryModal({
   const getData = () => {
     if (currentItem && currentItem?.isTargetAssigned && formikRef.current) {
       getPreviousData(
-        `/PMS/GetTargetVsAchievementById?BusinessUnit=${buId}&YearId=${currentItem?.intYearId}&KpiForId=1&KpiForReffId=${empInfo?.employeeId}&objectiveId=${currentItem?.intStrategicParticularsID}&kpiId=${currentItem?.kpiId}&accountId=${intAccountId}`,
+        `/PMS/GetTargetVsAchievementById?BusinessUnit=${buId}&YearId=${empInfo?.yearId}&KpiForId=1&KpiForReffId=${empInfo?.employeeId}&objectiveId=${currentItem?.intStrategicParticularsID}&kpiId=${currentItem?.kpiId}&accountId=${intAccountId}`,
         (data) => {
           formikRef.current.setValues({
             ...initData,

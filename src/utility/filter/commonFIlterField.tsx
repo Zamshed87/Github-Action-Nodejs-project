@@ -11,21 +11,21 @@ const CommonFilterField = ({
   isDepartment,
   isDesignation,
   col,
-  mode = undefined,
+  mode = "single",
   isSection,
 }: {
   form: any;
   isDepartment?: boolean;
   isDesignation?: boolean;
   col?: number;
-  mode?: string | undefined;
+  mode?: any;
   isSection?: boolean;
 }) => {
   const { profileData } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { buId, wgId, employeeId, orgId, intAccountId } = profileData;
+  const { buId, wgId, wId, employeeId, orgId, intAccountId } = profileData;
 
   const workplaceGroup = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
@@ -132,7 +132,8 @@ const CommonFilterField = ({
         businessUnitId: buId,
         departmentId: department?.value || 0,
         workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceId:
+          typeof workplace?.value == "string" ? wId : workplace?.value,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -214,7 +215,7 @@ const CommonFilterField = ({
           label="Workplace"
           allowClear
           placeholder="Workplace"
-          mode={mode as "multiple" | undefined | "tags"}
+          mode={mode?.workplace ? "multiple" : undefined}
           showSearch
           onChange={(value, op) => {
             const { workplaceGroup } = form.getFieldsValue(true);
@@ -235,6 +236,9 @@ const CommonFilterField = ({
                 workplaceId: value,
                 workplaceGroupId: undefined,
               });
+              if (mode?.workplace) {
+                setCustomFieldsValue(form, "workplace", op);
+              }
             }
             if (isDepartment) {
               getEmployeDepartment();

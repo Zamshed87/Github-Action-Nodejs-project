@@ -1,14 +1,15 @@
-import { Attachment, InfoOutlined } from "@mui/icons-material";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { InfoOutlined } from "@mui/icons-material";
+import { getDownlloadFileView_ActionList } from "commonRedux/auth/actions";
 import { dateFormatter } from "utility/dateFormatter";
 import { EyeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import Chips from "common/Chips";
 import { LightTooltip } from "common/LightTooltip";
-import { Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import { formatTime12Hour } from "utility/formatTime12Hour";
 import { gray900 } from "utility/customColor";
 import { getMonthName } from "utility/monthUtility";
 import { convertTo12HourFormat } from "utility/timeFormatter";
+import AttachmentTooltip from "common/AttachmentTooltip";
 
 export const columnsDefault = [
   {
@@ -56,6 +57,46 @@ export const columnsDefault = [
   },
 ];
 
+export const columnNoc = [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1, // Automatically adding a serial number
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Consume Type",
+    dataIndex: ["applicationInformation", "strConsumeType"],
+  },
+  {
+    title: "Reason",
+    dataIndex: ["applicationInformation", "reason"],
+  },
+
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
+
 export const columnsAsset = [
   {
     title: "SL",
@@ -83,9 +124,7 @@ export const columnsAsset = [
     title: "Requisition Date",
     width: "90px",
     dataIndex: ["applicationInformation", "requisitionDate"],
-    render: (date) => (
-      <div>{date ? dateFormatter(date) : "N/A"}</div>
-    ),
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
   },
   {
     title: "Qty",
@@ -117,8 +156,70 @@ export const columnsAsset = [
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),
   },
+];
 
-]
+export const columnsAboutMe = (handleViewClick) => [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+    width: "30px",
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Designation",
+    dataIndex: ["applicationInformation", "designation"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Created Date",
+    width: "90px",
+    dataIndex: "dteCreatedAt",
+    render: (date) => <div>{date ? dateFormatter(date) : "N/A"}</div>,
+  },
+  {
+    title: "Waiting Stage",
+    dataIndex: ["applicationInformation", "waitingStage"],
+    width: "90px",
+  },
+  {
+    title: "Status",
+    width: "50px",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+  {
+    title: "Action",
+    key: "action",
+    width: 100,
+    align: "center",
+    render: (_, record) => {
+      return (
+        <Button
+          type="dashed"
+          cyan
+          onClick={() =>
+            handleViewClick(record?.applicationInformation?.employeeId)
+          }
+        >
+          View
+        </Button>
+      );
+    },
+  },
+];
 
 export const columnFinalSettlement = [
   {
@@ -321,26 +422,12 @@ export const columnsLeave = (dispatch) => [
 
     dataIndex: "attachmentId",
     render: (_, record) => (
-      <div className="leave-application-document ml-1">
-        <span
-          onClick={(e) => {
-            e.stopPropagation();
-            if (record?.applicationInformation?.attachmentId !== 0) {
-              dispatch(
-                getDownlloadFileView_Action(
-                  record?.applicationInformation?.attachmentId
-                )
-              );
-            }
-          }}
-        >
-          {record?.applicationInformation?.attachmentId !== 0 && (
-            <div style={{ color: "green", cursor: "pointer" }}>
-              <Attachment /> attachment
-            </div>
-          )}
-        </span>
-      </div>
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
     ),
     filter: false,
     sorter: false,
@@ -373,6 +460,11 @@ export const columnsLeave = (dispatch) => [
     title: "Reliver",
     dataIndex: ["applicationInformation", "strReliverName"],
     width: 70,
+  },
+  {
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
+    width: "60px",
   },
   {
     title: "Waiting Stage",
@@ -721,8 +813,8 @@ export const columnsMovement = (page) => [
     render: (time) => formatTime12Hour(time),
   },
   {
-    title: "Remarks",
-    dataIndex: ["applicationInformation", "remarks"],
+    title: "Address",
+    dataIndex: ["applicationInformation", "address"],
   },
   {
     title: "Waiting Stage",
@@ -738,7 +830,7 @@ export const columnsMovement = (page) => [
   },
 ];
 
-export const columnsSeparation = (setViewData, setViewModal) => [
+export const columnsSeparation = (setViewData, setViewModal, dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -769,6 +861,21 @@ export const columnsSeparation = (setViewData, setViewModal) => [
   {
     title: "Application Type",
     dataIndex: ["applicationType"],
+    width: "90px",
+  },
+  {
+    title: "Attachment",
+    dataIndex: "attachmentId",
+    render: (text, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    filter: false,
+    sorter: false,
     width: "90px",
   },
 
@@ -908,7 +1015,7 @@ export const columnsAdvancedSalary = [
   },
 ];
 
-export const columnsExpense = [
+export const columnsExpense = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -930,6 +1037,19 @@ export const columnsExpense = [
   {
     title: "Department",
     dataIndex: ["applicationInformation", "department"],
+  },
+  {
+    title: "Attachment",
+    dataIndex: "attachmentId",
+    render: (text, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    width: "80px",
   },
   {
     title: "Application Date",
@@ -976,7 +1096,7 @@ export const columnsExpense = [
   },
 ];
 
-export const columnsIOU = [
+export const columnsIOU = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -1003,6 +1123,19 @@ export const columnsIOU = [
   {
     title: "Application Type",
     dataIndex: "applicationType",
+  },
+  {
+    title: "Attachment",
+    dataIndex: "attachmentId",
+    render: (text, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    width: "80px",
   },
   {
     title: "Application Date",
@@ -1056,7 +1189,7 @@ export const columnsIOU = [
     ),
   },
 ];
-export const columnsLoan = [
+export const columnsLoan = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -1082,6 +1215,19 @@ export const columnsLoan = [
   {
     title: "Application Type",
     dataIndex: "applicationType",
+  },
+  {
+    title: "Attachment",
+    dataIndex: "attachmentId",
+    render: (text, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    width: "80px",
   },
   {
     title: "Application Date",
@@ -1894,7 +2040,7 @@ export const columnAdditionDeduction = [
   },
 ];
 
-export const columnTransferPromotion = [
+export const columnTransferPromotion = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -1918,19 +2064,23 @@ export const columnTransferPromotion = [
     dataIndex: ["applicationInformation", "department"],
   },
   {
+    title: "Attachment",
+    dataIndex: "attachmentId",
+    render: (text, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    width: "80px",
+  },
+  {
     title: "Application Date",
     dataIndex: ["applicationInformation", "applicationDate"],
     render: (date) => <div>{dateFormatter(date)}</div>,
   },
-  // {
-  //   title: "Transfer/Promotion Type",
-  //   dataIndex: ["applicationInformation", "transferPromotionType"],
-  // },
-  // {
-  //   title: "Effective Date",
-  //   dataIndex: ["applicationInformation", "effectiveDate"],
-  //   render: (date) => <div>{dateFormatter(date)}</div>,
-  // },
   {
     title: "Remarks",
     dataIndex: ["applicationInformation", "remarks"],

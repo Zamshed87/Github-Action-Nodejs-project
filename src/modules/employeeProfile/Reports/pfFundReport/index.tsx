@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Form } from "antd";
-import {
-  DataTable,
-  PCard,
-  PCardHeader,
-  PForm,
-  PSelect,
-} from "Components";
+import { DataTable, PCard, PCardHeader, PForm, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -44,7 +38,10 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
   });
 
   //State
-  const [fundReportView, setFundReportView] = useState<boolean>(false);
+  const [fundReportView, setFundReportView] = useState<{
+    open: boolean;
+    data: Record<string, unknown>;
+  }>({ open: false, data: {} });
 
   const [form] = Form.useForm();
 
@@ -220,7 +217,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
             total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
           }}
           loading={pfFundReportApi?.loading}
-          scroll={{ x: 1000 }}
+          scroll={{ x: 1500 }}
           onChange={(pagination, filters, sorter, extra) => {
             if (extra.action === "sort") return;
             landingApi({
@@ -232,11 +229,11 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
       </PCard>
       <PModal
         title="PF Fund Report"
-        open={fundReportView}
+        open={fundReportView.open}
         onCancel={() => {
-          setFundReportView(false);
+          setFundReportView({ open: false, data: {} });
         }}
-        components={<PFFundReportDetails form={form}/>}
+        components={<PFFundReportDetails form={form} data={fundReportView.data}/>}
         width={1400}
         height={"600px"}
       />

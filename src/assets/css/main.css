@@ -1080,3 +1080,9 @@ font-size: 12px !important;
 .ant-pagination-item-ellipsis{
   display: flex !important;
 }
+
+.people_dex_button .ant-btn.button-normal-view {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+}

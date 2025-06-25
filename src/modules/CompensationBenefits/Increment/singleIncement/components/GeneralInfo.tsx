@@ -1,5 +1,5 @@
 import { Col, Divider, Form, Row } from "antd";
-import { PInput, PSelect } from "Components";
+import { PButton, PInput, PSelect } from "Components";
 import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -39,230 +39,12 @@ export const GeneralInfo = ({
   setSlabDDL,
   payrollGroupDDL,
   getById,
+  history,
+  rowDto,
+  oldAmount
 }: any) => {
-  // ------------- transfer⚠️
-  // const [transferRowDto, setTransferRowDtoRowDto] = useState<any[]>([]);
-  // const [organizationDDL, setOrganizationDDL] = useState([]);
-  // const [fileId, setFileId] = useState<any>(0);
-  // const organizationTypeList = [
-  //   {
-  //     label: "Business Unit",
-  //     value: 1,
-  //   },
-  //   {
-  //     label: "Workplace Group",
-  //     value: 2,
-  //   },
-  //   {
-  //     label: "Workplace",
-  //     value: 3,
-  //   },
-  // ];
-  // const [historyData, setHistoryData] = useState([]);
-  // const onRoleAdd = (values: any) => {
-  //   setTransferRowDtoRowDto([
-  //     ...transferRowDto,
-  //     {
-  //       intOrganizationTypeId: +values?.orgType?.value,
-  //       strOrganizationTypeName: values?.orgType?.label,
-  //       intOrganizationReffId: values?.orgName?.value,
-  //       strOrganizationReffName: values?.orgName?.label,
-  //     },
-  //   ]);
-  // };
-  // const isPromotionEligibleCheckApi = useApiRequest([]);
-  // const buApi = useApiRequest([]);
-  // const userRoleApi = useApiRequest([]);
-  // const workplaceGroupApi = useApiRequest([]);
-  // const workplaceApi = useApiRequest([]);
-  // const departmentApi = useApiRequest([]);
-  // const designationApi = useApiRequest([]);
-  // const supervisorDDL = useApiRequest([]);
-  // -----------
-  // ------------- transfer⚠️
-  // const getBU = () => {
-  //   // const { employee } = form.getFieldsValue(true);
-  //   buApi?.action({
-  //     urlKey: "BusinessUnitIdAll",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strBusinessUnit;
-  //         res[i].value = item?.intBusinessUnitId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getworkplaceGroup = () => {
-  //   const { businessUnit } = form.getFieldsValue(true);
-  //   workplaceGroupApi?.action({
-  //     urlKey: "WorkplaceGroupIdAll",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: businessUnit?.value || buId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplaceGroup;
-  //         res[i].value = item?.intWorkplaceGroupId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getworkplace = () => {
-  //   const { businessUnit, workplaceGroup } = form.getFieldsValue(true);
-  //   workplaceApi?.action({
-  //     urlKey: "WorkplaceIdAll",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: businessUnit?.value || buId,
-  //       workplaceGroupId: workplaceGroup?.value || wgId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplace;
-  //         res[i].value = item?.intWorkplaceId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getDepartment = () => {
-  //   const { businessUnit, workplaceGroup, workplace } =
-  //     form.getFieldsValue(true);
-  //   departmentApi?.action({
-  //     urlKey: "DepartmentIdAll",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: businessUnit?.value || buId,
-  //       workplaceGroupId: workplaceGroup?.value || wgId,
-  //       workplaceId: workplace?.value || wId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strDepartment;
-  //         res[i].value = item?.intDepartmentId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getDesignation = () => {
-  //   const { businessUnit, workplaceGroup, workplace } =
-  //     form.getFieldsValue(true);
-  //   designationApi?.action({
-  //     urlKey: "DesignationIdAll",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: businessUnit?.value || buId,
-  //       workplaceGroupId: workplaceGroup?.value || wgId,
-  //       workplaceId: workplace?.value || wId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.designationName;
-  //         res[i].value = item?.designationId;
-  //       });
-  //     },
-  //   });
-  // };
-  // const getUserRole = () => {
-  //   const { businessUnit } = form.getFieldsValue(true);
-  //   userRoleApi?.action({
-  //     urlKey: "PeopleDeskAllDDL",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       BusinessUnitId: businessUnit?.value || buId,
-  //       DDLType: "UserRoleDDLWithoutDefault",
-  //       WorkplaceGroupId: wgId,
-  //       intId: 0,
-  //       intWorkplaceId: wId,
-  //       intYear: "",
-  //     },
-  //     // onSuccess: (res) => {
-  //     //   res.forEach((item: any, i: any) => {
-  //     //     res[i].label = item?.strWorkplaceGroup;
-  //     //     res[i].value = item?.intWorkplaceGroupId;
-  //     //   });
-  //     // },
-  //   });
-  // };
-  // const getSupervisor = (value: any) => {
-  //   if (value?.length < 2) return supervisorDDL?.reset();
-
-  //   supervisorDDL?.action({
-  //     urlKey: "CommonEmployeeDDL",
-  //     method: "GET",
-  //     params: {
-  //       businessUnitId: buId,
-  //       workplaceGroupId: wgId,
-  //       searchText: value,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.employeeName;
-  //         res[i].value = item?.employeeId;
-  //       });
-  //     },
-  //   });
-  // };
-  // image
-  // const inputFile = useRef<any>(null);
-  // const onButtonClick = () => {
-  //   inputFile.current.click();
-  // };
-  // -------------------
-
-  // ------------- transfer⚠️
-
-  // const transferheader: any = [
-  //   {
-  //     title: "SL",
-  //     render: (value: any, row: any, index: number) => index + 1,
-  //     align: "center",
-  //     width: 20,
-  //     // fixed: "left",
-  //   },
-
-  //   {
-  //     title: "Org Type",
-  //     dataIndex: "strOrganizationTypeName",
-  //   },
-  //   {
-  //     title: "Org Name",
-  //     dataIndex: "strOrganizationReffName",
-  //   },
-  //   {
-  //     width: 20,
-  //     align: "center",
-  //     render: (_: any, rec: any, index: any) => (
-  //       <TableButton
-  //         buttonsList={[
-  //           {
-  //             type: "delete",
-  //             onClick: () => {
-  //               setTransferRowDtoRowDto((prev) => [
-  //                 ...prev.filter(
-  //                   (prev_item, item_index) => item_index !== index
-  //                 ),
-  //               ]);
-  //             },
-  //           },
-  //         ]}
-  //       />
-  //     ),
-  //   },
-  // ];
-  // ---------------
   const getEmployee = (value: any) => {
     if (value?.length < 2) return employeeDDLApi?.reset();
-    // const { salaryType } = form.getFieldsValue(true);
 
     employeeDDLApi?.action({
       urlKey: "CommonEmployeeDDL",
@@ -271,7 +53,6 @@ export const GeneralInfo = ({
         businessUnitId: buId,
         workplaceGroupId: wgId,
         searchText: value,
-        // isGradeBased: salaryType?.value === "Grade" ? true : false,
       },
       onSuccess: (res: any) => {
         res.forEach((item: any, i: any) => {
@@ -495,20 +276,6 @@ export const GeneralInfo = ({
             ?.strIncrementDependOn === "Basic"
             ? { value: 2, label: "Basic" }
             : { value: 1, label: "Gross" },
-
-        // basedOn: {
-        //   value:
-        //     (location?.state as any)?.singleData?.incrementList?.[0]
-        //       ?.strIncrementDependOn === "Basic"
-        //       ? 2
-        //       :
-        //       (location?.state as any)?.singleData?.incrementList?.[0]
-        //           ?.strIncrementDependOn === "Gross"
-        //       ? 1
-        //       : 3,
-        //   label: (location?.state as any)?.singleData?.incrementList?.[0]
-        //     ?.strIncrementDependOn,
-        // },
         numIncrementPercentageOrAmount: (location?.state as any)?.singleData
           ?.incrementList?.[0]?.numIncrementPercentageOrAmount,
         dteEffectiveDate: moment(
@@ -522,31 +289,6 @@ export const GeneralInfo = ({
             : true,
       });
     }
-    // ------------- transfer⚠️
-
-    // if (
-    //   (location?.state as any)?.singleData?.transferPromotionObj?.intEmployeeId
-    // ) {
-    //   getTransferAndPromotionHistoryById(
-    //     orgId,
-    //     (location?.state as any)?.singleData?.transferPromotionObj
-    //       ?.intEmployeeId,
-    //     setHistoryData,
-    //     setLoading,
-    //     buId,
-    //     wgId
-    //   );
-    //   (location?.state as any)?.singleData?.transferPromotionObj &&
-    //     setTransferRowDtoRowDto(
-    //       (location?.state as any)?.singleData?.transferPromotionObj
-    //         ?.empTransferNpromotionRoleExtensionVMList
-    //     );
-    //   setFileId(
-    //     (location?.state as any)?.singleData?.transferPromotionObj
-    //       ?.intAttachementId
-    //   );
-    // }
-    // ----------
   }, [location?.state]);
   useEffect(() => {
     getPayscale();
@@ -577,23 +319,10 @@ export const GeneralInfo = ({
               buId,
               wgId
             );
-            // ------------- transfer⚠️
-
-            // getTransferAndPromotionHistoryById(
-            //   orgId,
-            //   value,
-            //   setHistoryData,
-            //   setLoading,
-            //   buId,
-            //   wgId
-            // );
-
             setRowDto([]);
-            // getAssignedBreakdown();
           }}
           showSearch
           filterOption={false}
-          // notFoundContent={null}
           loading={employeeDDLApi?.loading}
           onSearch={(value) => {
             getEmployee(value);
@@ -633,6 +362,25 @@ export const GeneralInfo = ({
           ) : undefined;
         }}
       </Form.Item>
+      <Col
+        md={6}
+        className="d-flex align-items-center justify-content-end mt-3"
+      >
+        <PButton
+          type="primary"
+          content="Generate Print"
+          onClick={() => {
+            history.push({
+              pathname: `/compensationAndBenefits/increment/singleIncrement/grade/print`,
+              state: {
+                rowDto: rowDto,
+                empBasic: empBasic,
+                oldAmount: oldAmount,
+              },
+            });
+          }}
+        />
+      </Col>
 
       <Divider
         style={{

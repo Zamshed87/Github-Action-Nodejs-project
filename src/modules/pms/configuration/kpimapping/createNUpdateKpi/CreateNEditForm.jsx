@@ -156,16 +156,18 @@ const CreateNEditForm = ({ propsObj }) => {
             </div>
           </div> */}
           {component === "employee" && (
-            <div className="col-md-9 mt-3">
+            <div className="">
               {values?.employee && employeeBasicId && (
-                <EmployeeShortDetails
-                  DesignationName={values?.employee?.employeeInfoDesignation}
-                  DepartmentName={values?.employee?.employeeInfoDepartment}
-                />
+                <div className="col-md-9 mt-3">
+                  <EmployeeShortDetails
+                    DesignationName={values?.employee?.employeeInfoDesignation}
+                    DepartmentName={values?.employee?.employeeInfoDepartment}
+                  />
+                </div>
               )}
             </div>
           )}
-          {isOfficeAdmin && (
+          {/* {isOfficeAdmin && (
             <>
               <div className="col-lg-3">
                 <label>Supervisor Type</label>
@@ -220,7 +222,7 @@ const CreateNEditForm = ({ propsObj }) => {
                 </div>
               </div>
             </>
-          )}
+          )} */}
           {component !== "employee" && (
             <div className="col-md-3">
               <div className="input-field-main">

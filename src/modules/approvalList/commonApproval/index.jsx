@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Input, Spin } from "antd";
+import { Col, Input, Spin } from "antd";
 import { fetchPendingApprovals } from "./helper";
-import { DataTable } from "Components";
+import { DataTable, PSelect } from "Components";
 import { useLocation } from "react-router";
 import ApproveRejectComp from "common/ApproveRejectComp";
 import BackButton from "common/BackButton";
@@ -17,7 +17,9 @@ import {
   columnDisbursment,
   columnFinalSettlement,
   columnIncrement,
+  columnNoc,
   columnOvertime,
+  columnsAboutMe,
   columnsAdvancedSalary,
   columnSalaryGenerate,
   columnsAsset,
@@ -45,21 +47,29 @@ import ViewFormComponent from "./utils/ViewFormComponent";
 import { getFilteredValues } from "./filterValues";
 import { SearchOutlined } from "@mui/icons-material";
 import { debounce } from "lodash";
+import {
+  getEmployeeProfileViewData,
+  getEmployeeProfileViewPendingData,
+} from "modules/employeeProfile/employeeFeature/helper";
+import EmployeeViewModal from "modules/employeeProfile/aboutMe/ViewModal";
 
 const CommonApprovalComponent = () => {
   // redux
-  const { orgId, employeeId, wId, buId, wgId } = useSelector(
+  const { orgId, employeeId, wId, buId, wgId, logWgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const isFirstRun = useRef(true);
+  const rowRefs = useRef({}); // To store refs for each row
   // props
   const location = useLocation();
   const state = location.state;
   const id = state?.state?.applicationTypeId;
+
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   // state
+  const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [data, setData] = useState([]);
   const [viewData, setViewData] = useState({});
@@ -71,6 +81,9 @@ const CommonApprovalComponent = () => {
   const [filterData, setFilterData] = useState({});
   const [page, setpage] = useState({ pageSize: 25, pageNo: 1 });
   const [totalRecords, setTotalRecords] = useState(0);
+  const [empBasicPending, setEmpBasicPending] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [empBasic, setEmpBasic] = useState({});
 
   const [filteredWId, setFilteredWId] = useState(wId);
   const [filteredWgId, setFilteredWgId] = useState(wgId);
@@ -85,6 +98,36 @@ const CommonApprovalComponent = () => {
     }
   }, [wId, wgId]);
 
+  const getEmpData = (employeeId) => {
+    getEmployeeProfileViewData(
+      employeeId,
+      setEmpBasic,
+      setLoading,
+      buId,
+      logWgId
+    );
+  };
+
+  const getEmpPendingData = (empId) => {
+    getEmployeeProfileViewPendingData(
+      empId,
+      setEmpBasicPending,
+      setLoading,
+      buId,
+      logWgId
+    );
+  };
+
+  const handleViewModalClose = () => {
+    setIsOpen(false);
+  };
+
+  const handleViewClick = (empId) => {
+    setIsOpen(true);
+    getEmpPendingData(empId);
+    getEmpData(empId);
+  };
+
   useEffect(() => {
     const fetchData = debounce(() => {
       fetchPendingApprovals({
@@ -94,11 +137,13 @@ const CommonApprovalComponent = () => {
         buId,
         wgId: filteredWgId,
         wId: filteredWId,
-        employeeId,
+        employeeId: employeeId || 0,
+        employeeCode: filterData?.employee?.employeeCode || 0,
         setData,
         setTotalRecords,
         departmentId: filterData?.department?.value || 0,
         designationId: filterData?.designation?.value || 0,
+        waitingStage: filterData?.waitingStage || "",
         searchText: searchTerm,
         page,
       });
@@ -114,7 +159,6 @@ const CommonApprovalComponent = () => {
     const { workplaceGroup, workplace } = getFilteredValues(values, wId, wgId);
     setFilteredWId(workplace);
     setFilteredWgId(workplaceGroup);
-
     fetchPendingApprovals({
       id,
       setLoading,
@@ -122,11 +166,13 @@ const CommonApprovalComponent = () => {
       buId,
       wgId: workplaceGroup,
       wId: workplace,
-      employeeId,
+      employeeId: employeeId || 0,
+      employeeCode: values?.employee?.employeeCode || 0,
       setData,
       setTotalRecords,
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
+      waitingStage: values?.waitingStage || "",
       searchText: searchTerm,
       page,
     });
@@ -143,7 +189,7 @@ const CommonApprovalComponent = () => {
   // handle approve or reject
   const handleApproveReject = async (isApprove) => {
     const payload = selectedRow.map((key) => {
-      const row = data.find((item) => item.id === key?.key);
+      const row = data?.data?.find((item) => item.id === key?.key);
       return {
         configHeaderId: row.configHeaderId,
         approvalTransactionId: row.id,
@@ -167,11 +213,13 @@ const CommonApprovalComponent = () => {
         buId,
         wgId: filteredWgId,
         wId: filteredWId,
-        employeeId,
+        employeeId: employeeId || 0,
+        employeeCode: filterData?.employee?.employeeCode || 0,
         setData,
         setTotalRecords,
         departmentId: filterData?.department?.value || 0,
         designationId: filterData?.designation?.value || 0,
+        waitingStage: filterData?.waitingStage || "",
         searchText: searchTerm,
         page,
       });
@@ -211,15 +259,41 @@ const CommonApprovalComponent = () => {
       buId,
       wgId: filteredWgId,
       wId: filteredWId,
-      employeeId,
+      employeeId: employeeId || 0,
+      employeeCode: filterData?.employee?.employeeCode || 0,
       setData,
       setTotalRecords,
       departmentId: filterData?.department?.value || 0,
       designationId: filterData?.designation?.value,
+      waitingStage: filterData?.waitingStage || "",
       searchText: value,
     });
   }, 300);
 
+  const waitingStageDDL = data?.waitingStageList?.map((item) => ({
+    label: item,
+    value: item,
+  }));
+  useEffect(() => {
+    if (location.state && location.state.state.idToHighlight) {
+      setHighlightedRowId(location.state.state.idToHighlight);
+
+      // Optional: Scroll to the row after a short delay to ensure it's rendered
+      const timer = setTimeout(() => {
+        if (rowRefs.current[location.state.state.idToHighlight]) {
+          rowRefs.current[location.state.state.idToHighlight].scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          // After blinking for a few seconds, you might want to remove the highlight
+          setTimeout(() => {
+            setHighlightedRowId(null);
+          }, 3000); // Remove highlight after 3 seconds
+        }
+      }, 100); // Small delay
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
   // render
   return (
     <div className="approval-container mt-4">
@@ -265,7 +339,17 @@ const CommonApprovalComponent = () => {
             isDesignation={true}
             isEmployee={true}
             isAllValue={true}
-          />
+          >
+            <Col md={12} sm={12}>
+              <PSelect
+                allowClear
+                options={waitingStageDDL || []}
+                name="waitingStage"
+                label="Waiting Stage"
+                placeholder="Select Waiting Stage"
+              />
+            </Col>
+          </CommonFilter>
         </div>
       </div>
 
@@ -282,6 +366,20 @@ const CommonApprovalComponent = () => {
               setSelectedRow(selectedRows);
             },
           }}
+          rowClassName={(record) => {
+            if (record.applicationId === highlightedRowId) {
+              return "blink-row";
+            }
+            return "";
+          }}
+          onRow={(record) => {
+            return {
+              ref: (node) => {
+                // Store a ref for each row using its ID
+                rowRefs.current[record.applicationId] = node;
+              },
+            };
+          }}
           header={
             id == 8
               ? columnsLeave(dispatch)
@@ -294,15 +392,15 @@ const CommonApprovalComponent = () => {
               : id == 14
               ? columnsMovement(page)
               : id == 21
-              ? columnsSeparation(setViewData, setViewModal)
+              ? columnsSeparation(setViewData, setViewModal, dispatch)
               : id == 26
               ? columnsAdvancedSalary
               : id == 3
-              ? columnsExpense
+              ? columnsExpense(dispatch)
               : id == 6
-              ? columnsIOU
+              ? columnsIOU(dispatch)
               : id == 9
-              ? columnsLoan
+              ? columnsLoan(dispatch)
               : id == 12
               ? columnsMarketVisit
               : id == 13
@@ -328,19 +426,23 @@ const CommonApprovalComponent = () => {
               : id == 18
               ? columnAdditionDeduction
               : id == 24
-              ? columnTransferPromotion
+              ? columnTransferPromotion(dispatch)
               : id == 20
               ? columnSalaryGenerate
               : id == 30
               ? columnFinalSettlement
               : id == 29
-              ? columnsSeparation(setViewData, setViewModal)
+              ? columnsSeparation(setViewData, setViewModal, dispatch)
               : id == 32
               ? columnsAsset
+              : id == 33
+              ? columnsAboutMe(handleViewClick)
+              : id == 34
+              ? columnNoc
               : columnsDefault
           }
           bordered
-          data={data.map((item) => ({ ...item, key: item.id }))}
+          data={data?.data?.map((item) => ({ ...item, key: item.id }))}
           pagination={{
             pageSize: page.pageSize,
             current: page.pageNo,
@@ -374,6 +476,12 @@ const CommonApprovalComponent = () => {
           viewData,
           setViewData,
         }}
+      />
+      <EmployeeViewModal
+        visible={isOpen}
+        onClose={handleViewModalClose}
+        empData={empBasicPending}
+        originalData={empBasic}
       />
     </div>
   );

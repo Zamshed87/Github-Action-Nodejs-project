@@ -18,6 +18,7 @@ import {
 import { useHistory } from "react-router-dom";
 import FinalSettlementViewModal from "./components/FinalSettlementViewModal";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { useApiRequest } from "Hooks";
 
 export default function FinalSettlementLanding() {
   const {
@@ -164,6 +165,20 @@ export default function FinalSettlementLanding() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
+
+  const landingApi = useApiRequest({});
+
+  const salaryReport = (separationId) => {
+    landingApi.action({
+      urlKey: "GetFinalSettlementDueSalaryReport",
+      method: "GET",
+      params: {
+        format: "HTML",
+        separationId: separationId || 0,
+      },
+    });
+  };
+
   return (
     <>
       {loading && <Loading />}
@@ -199,7 +214,9 @@ export default function FinalSettlementLanding() {
                     setId,
                     empId,
                     setEmpId,
-                    setClearanceId
+                    setClearanceId,
+                    setLoading,
+                    salaryReport
                   )}
                   pages={pages}
                   rowDto={rowDto || []}
@@ -244,6 +261,7 @@ export default function FinalSettlementLanding() {
                         id={id}
                         empId={empId}
                         clearanceId={clearanceId}
+                        landingApi={landingApi}
                       />
                     </>
                   }

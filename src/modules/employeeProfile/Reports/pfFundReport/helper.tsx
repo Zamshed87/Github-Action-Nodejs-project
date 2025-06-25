@@ -3,7 +3,11 @@ import { getSerial } from "Utils";
 import PBadge from "Components/Badge";
 import PrimaryButton from "common/PrimaryButton";
 
-export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReportView?:any) =>
+export const getHeader = (
+  pfFundReportApi: any,
+  isHidden: boolean,
+  setFundReportView?: any
+) =>
   [
     {
       title: "SL",
@@ -46,19 +50,19 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
       title: "Type",
       dataIndex: "types",
       isHidden: isHidden,
-      width:60,
+      width: 60,
     },
     {
       title: "Month",
       dataIndex: "month",
       isHidden: isHidden,
-      width:40,
+      width: 50,
     },
     {
       title: "Year",
       dataIndex: "year",
       isHidden: isHidden,
-      width:30,
+      width: 30,
     },
     {
       title: "Employee Amount",
@@ -68,11 +72,23 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
         formatMoney(record?.employeeContributionAmount),
     },
     {
-      title: "Employer Amount",
+      title: "Company Amount",
       dataIndex: "companyContributionAmount",
       align: "right",
       render: (data: any, record: any) =>
         formatMoney(record?.companyContributionAmount),
+    },
+    {
+      title: "Employee Profit",
+      dataIndex: "employeeProfit",
+      align: "right",
+      render: (data: any, record: any) => formatMoney(record?.employeeProfit),
+    },
+    {
+      title: "Company Profit",
+      dataIndex: "companyProfit",
+      align: "right",
+      render: (data: any, record: any) => formatMoney(record?.companyProfit),
     },
     {
       title: "Status",
@@ -94,9 +110,9 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
       dataIndex: "action",
       sort: false,
       filter: false,
-      width: 30,
+      width: 40,
       className: "text-center",
-      render: () => (
+      render: (value: any, rec: any) => (
         <PrimaryButton
           icon={""}
           type="button"
@@ -104,7 +120,7 @@ export const getHeader = (pfFundReportApi: any, isHidden: boolean, setFundReport
           label="Details"
           customStyle={{ padding: "5px 10px" }}
           onClick={() => {
-            setFundReportView && setFundReportView(true)
+            setFundReportView && setFundReportView({ open: true, data: rec });
           }}
         />
       ),

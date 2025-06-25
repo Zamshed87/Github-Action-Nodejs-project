@@ -20,6 +20,7 @@ type CommonFilterProps = {
   statusDDL?: any;
   isAllValue?: boolean;
   isEmployee?: boolean;
+  children?: React.ReactNode;
 };
 
 type TokenData = {
@@ -53,6 +54,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   statusDDL,
   isAllValue,
   isEmployee,
+  children,
 }) => {
   // Form Instance
   const [form] = Form.useForm();
@@ -242,6 +244,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
         res.forEach((item: any, i: number) => {
           res[i].label = item?.employeeName;
           res[i].value = item?.employeeId;
+          res[i].employeeCode = item?.employeeCode;
         });
       },
     });
@@ -461,6 +464,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 />
               </Col>
             )}
+            {children && children}
           </Row>
 
           <Col md={12} sm={24}>

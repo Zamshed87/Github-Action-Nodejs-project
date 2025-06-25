@@ -10,11 +10,11 @@ import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import GoogleIcon from "@mui/icons-material/Google";
 import { getEmployeeProfileViewDataAuth } from "../../../../../../modules/employeeProfile/employeeFeature/helper";
-import { updateEmployeeProfile } from "../helper";
 import Loading from "../../../../../../common/loading/Loading";
 import FormikInput from "../../../../../../common/FormikInput";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import ActionMenu from "../../../../../../common/ActionMenu";
+import { updateEmployeeProfile } from "../../helper";
 const initData = {
   gemail: "",
 };

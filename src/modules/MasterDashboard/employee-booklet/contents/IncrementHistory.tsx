@@ -25,6 +25,8 @@ const IncrementHistory = forwardRef((props: any, ref: any) => {
                 <th>Increment Amount</th>
                 <th>Curr. Gross Salary</th>
                 <th>Prev Gross Salary</th>
+                <th>Salary Type</th>
+                <th>Slab Count</th>
               </tr>
             </thead>
             <tbody>
@@ -70,6 +72,22 @@ const IncrementHistory = forwardRef((props: any, ref: any) => {
                       }}
                     >
                       <div>{numberWithCommas(data?.numOldGrossAmount)}</div>
+                    </td>
+                    <td
+                      style={{
+                        background:
+                          data?.strStatus === "Pending" ? "#FEF9DF" : "",
+                      }}
+                    >
+                      <div>{data?.isGradeBasedSalary ? "Grade" : "Non-Grade"}</div>
+                    </td>
+                    <td
+                      style={{
+                        background:
+                          data?.strStatus === "Pending" ? "#FEF9DF" : "",
+                      }}
+                    >
+                      <div>{data?.slabCount}</div>
                     </td>
                   </tr>
                 ))}
