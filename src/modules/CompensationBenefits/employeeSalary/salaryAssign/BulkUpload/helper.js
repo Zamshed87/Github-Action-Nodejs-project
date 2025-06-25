@@ -166,7 +166,6 @@ export const processNewBulkUploadSalaryAction = async (
         keyValuePairs[key] = value; // Add to the object
       }
     }
-    console.log({ data });
     const modifiedData = data.slice(2).map((item, index) => {
       const {
         "Employee Name": empName,
@@ -224,7 +223,6 @@ export const processNewBulkUploadSalaryAction = async (
     });
     const errorData = [];
     const cleanData = [];
-    console.log({ modifiedData });
     modifiedData.forEach((item) => {
       if (isGrade) {
         if (
@@ -299,7 +297,6 @@ export const saveBulkUploadSalaryAction = async (
     });
 
     setErrorData(res?.data?.Result);
-    console.log("res", res);
     setData(res?.data);
 
     setLoading(false);
