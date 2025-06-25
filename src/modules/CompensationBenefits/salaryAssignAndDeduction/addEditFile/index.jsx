@@ -1118,7 +1118,7 @@ function AddEditForm() {
                                                     [
                                                       {
                                                         value: 1,
-                                                        label: "Default",
+                                                        label: "Payable Days",
                                                       },
                                                       {
                                                         value: 2,
