@@ -116,7 +116,7 @@ export default function ProfileSidebar({
             <Logout />
             <div
               style={{
-                color: "#00AB55",
+                color: "#var(--primary-color)",
                 marginLeft: "20px",
               }}
             >

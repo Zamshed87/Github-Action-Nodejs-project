@@ -181,7 +181,7 @@
   .footer-employeeProfile-src-filter
   .master-filter-btn-group
   .btn-cancle {
-  color: #34a853;
+  color: var(--primary-color);
 }
 /* ==> search filter popover style end <== */
 

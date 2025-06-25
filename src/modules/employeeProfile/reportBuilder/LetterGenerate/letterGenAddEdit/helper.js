@@ -127,8 +127,7 @@ export const createNEditLetterGenerate = async (
     setLoading(false);
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
-    toast.warn(error?.response?.data?.message, { toastId: 1 });
-  } finally {
+    toast.warn(error?.response?.data?.message ?? "something went wrong");
     setLoading(false);
   }
 };

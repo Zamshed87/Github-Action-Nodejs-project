@@ -406,7 +406,7 @@ export default function DataDisplay({ index, tabIndex }) {
                   sx={{
                     padding: "6px 22px",
                     borderRadius: "8px",
-                    color: "#34A853",
+                    color: "var(--primary-color)",
                     fontSize: "12px",
                     lineHeight: "16px",
                     fontWeight: "bold",

@@ -220,7 +220,7 @@ const PfLoanTable = ({
                                   e.preventDefault();
                                   setHoldOrCollect(true);
                                   // getLanding(
-                                  //   `/Employee/EmpPfLoanRowById?BusinessUnitId=${header?.intBusinessUnitId}&WorkplaceGroupId=${header?.intWorkplaceGroupId}&LoanHeaderId=${dto?.intEmployeeLoanHeaderId}&LoanRowId=${dto?.intRowId}`,
+                                  //   `/Employee/GetPfLoanRowById?BusinessUnitId=${header?.intBusinessUnitId}&WorkplaceGroupId=${header?.intWorkplaceGroupId}&LoanHeaderId=${dto?.intEmployeeLoanHeaderId}&LoanRowId=${dto?.intRowId}`,
                                   //   (data) => {
                                   //     setModalView(true);
                                   //     setHoldOrCollect(true);
@@ -258,7 +258,7 @@ const PfLoanTable = ({
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   getLanding(
-                                    `/Employee/EmpPfLoanRowById?BusinessUnitId=${header?.intBusinessUnitId}&WorkplaceGroupId=${header?.intWorkplaceGroupId}&LoanHeaderId=${dto?.intEmployeeLoanHeaderId}&LoanRowId=${dto?.intRowId}`,
+                                    `/PfLoan/GetPfLoanRowById?BusinessUnitId=${header?.intBusinessUnitId}&WorkplaceGroupId=${header?.intWorkplaceGroupId}&LoanHeaderId=${dto?.intEmployeeLoanHeaderId}&LoanRowId=${dto?.intRowId}`,
                                     (data) => {
                                       setModalView(true);
                                       setHoldOrCollect(false);
@@ -343,7 +343,7 @@ const PfLoanTable = ({
                 remark: obj?.strRemark,
               }));
               postData(
-                `/Employee/EmpPfLoanHoldOrCollect`,
+                `/PfLoan/PfLoanHoldOrCollect`,
                 {
                   isPfLoanHold: true,
                   pfLoanId: generateRow[0].intEmployeeLoanHeaderId,
@@ -546,7 +546,7 @@ const PfLoanTable = ({
                     onClick={() => {
                       // getData(values?.search, pages);
                       postData(
-                        `/Employee/EmpPfLoanHoldOrCollect`,
+                        `/PfLoan/PfLoanHoldOrCollect`,
                         {
                           isPfLoanHold: false,
                           pfLoanId: row[0]?.intEmployeeLoanHeaderId,

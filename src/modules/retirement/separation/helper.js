@@ -420,7 +420,7 @@ export const separationApplicationLandingTableColumn = (
               }}
             >
               <VisibilityOutlined
-                sx={{ color: "#34a853" }}
+                sx={{ color: "var(--primary-color)" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setId(item?.separationId);
@@ -441,7 +441,7 @@ export const separationApplicationLandingTableColumn = (
                 }}
               >
                 <EditOutlined
-                  sx={{ color: "#34a853" }}
+                  sx={{ color: "var(--primary-color)" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!permission?.isEdit)

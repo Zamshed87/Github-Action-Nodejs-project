@@ -280,7 +280,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           justifyContent: "center",
           width: "30px",
           height: "30px",
-          background: "#27b327",
+          background: "var(--primary-color)",
           border: "none",
         }}
       />

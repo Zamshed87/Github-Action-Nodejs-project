@@ -2,7 +2,7 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { DataTable } from "Components";
+import { DataTable, PButton } from "Components";
 import { paginationSize } from "common/AntTable";
 import DefaultInput from "common/DefaultInput";
 import MasterFilter from "common/MasterFilter";
@@ -25,6 +25,11 @@ import SingleInfo from "common/SingleInfo";
 import moment from "moment";
 import PfLoanTable from "./components/pfLoanTable";
 import { getPDFAction } from "utility/downloadFile";
+import { customStyles } from "utility/selectCustomStyle";
+import FormikSelect from "common/FormikSelect";
+import { AppstoreAddOutlined } from "@ant-design/icons";
+import HeaderView from "./components/HeaderView";
+import EarlySettled from "./components/EarlySettled";
 
 const PfLoanLanding = () => {
   const { buId, wgId, wId, employeeId } = useSelector(
@@ -33,7 +38,7 @@ const PfLoanLanding = () => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Loan Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PF Loan";
     return () => {
@@ -45,7 +50,7 @@ const PfLoanLanding = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30574) {
+    if (item?.menuReferenceId === 30620) {
       permission = item;
     }
   });
@@ -57,6 +62,7 @@ const PfLoanLanding = () => {
   const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState({});
   const [viewDetails, setViewDetails] = useState(false);
+  const [viewEarlySettled, setViewEarlySettled] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -75,7 +81,13 @@ const PfLoanLanding = () => {
   });
 
   const getData = (srcTxt = values?.search, pages, isPaginated = true) => {
-    const url = `/Employee/EmpPfLoanLanding?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${values?.fDate}&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${srcTxt}&IsPaginated=${isPaginated}`;
+    const url = `/PfLoan/GetAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
+      values?.fDate
+    }&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${
+      pages?.pageSize
+    }&SearchText=${srcTxt}&IsPaginated=${isPaginated}&status=${
+      values?.status?.value || 0
+    }`;
 
     getLoanLanding(url, (data) => {
       setRowDto(data?.objHeader);
@@ -146,7 +158,7 @@ const PfLoanLanding = () => {
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
 
-                history.push("/profile/pfLoan/create");
+                history.push("/loanManagement/PfLoan/create");
               }}
             />
           </div>
@@ -186,6 +198,29 @@ const PfLoanLanding = () => {
                   />
                 </div>
               </div>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Status</label>
+                  <FormikSelect
+                    name="status"
+                    options={[
+                      { value: 0, label: "All" },
+                      { value: 1, label: "Pending" },
+                      { value: 2, label: "Inactive" },
+                      { value: 3, label: "Approved" },
+                      { value: 4, label: "Running" },
+                      { value: 5, label: "Early Settled" },
+                      { value: 6, label: "Completed" },
+                    ]}
+                    value={values?.status}
+                    onChange={(valueOption) => {
+                      setFieldValue("status", valueOption);
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
               <div className="col-lg-3" style={{ marginTop: "21px" }}>
                 <button
                   className="btn btn-green btn-green-disable"
@@ -216,7 +251,7 @@ const PfLoanLanding = () => {
               }}
               onRow={(rec) => ({
                 onClick: () => {
-                  getLoanById(`/Employee/EmpPfLoanById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${rec?.intEmployeeLoanHeaderId}
+                  getLoanById(`/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${rec?.intEmployeeLoanHeaderId}
                   `);
                   setViewDetails(true);
                   setSingleData(rec);
@@ -230,6 +265,20 @@ const PfLoanLanding = () => {
       </div>
       <ViewModal
         size="xl"
+        title="Early Settled Loan Details"
+        backdrop="static"
+        classes="default-modal preview-modal"
+        show={viewEarlySettled}
+        onHide={() => setViewEarlySettled(false)}
+      >
+        <EarlySettled
+          loanByIdDto={loanByIdDto}
+          headerId={loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}
+          setViewEarlySettled={setViewEarlySettled}
+        />
+      </ViewModal>
+      <ViewModal
+        size="xl"
         title="View Loan Details"
         backdrop="static"
         classes="default-modal preview-modal"
@@ -238,51 +287,30 @@ const PfLoanLanding = () => {
       >
         <div className="mx-3">
           <div className="d-flex justify-content-between">
-            <div>
-              <SingleInfo
-                label={"Employee"}
-                value={`${loanByIdDto?.objHeader?.strEmployeeName}[${loanByIdDto?.objHeader?.strEmployeeCode}]`}
-              />
-              <SingleInfo
-                label={"Loan ID"}
-                value={loanByIdDto?.objHeader?.strLoanId}
-              />
-              <SingleInfo
-                label={"Loan Type"}
-                value={loanByIdDto?.objHeader?.strLoanType}
-              />
-              <SingleInfo
-                label={"Loan Amount"}
-                value={loanByIdDto?.objHeader?.numLoanAmount}
-              />
-              <SingleInfo
-                label={"Interest"}
-                value={`${loanByIdDto?.objHeader?.numInterest}%`}
-              />
-              <SingleInfo
-                label={"Installment Number"}
-                value={loanByIdDto?.objHeader?.intNumberOfInstallment}
-              />
-              <SingleInfo
-                label={"Effective Date"}
-                value={moment(loanByIdDto?.objHeader?.dteEffectiveDate).format(
-                  "MMM, YYYY"
-                )}
+            <HeaderView loanByIdDto={loanByIdDto} />
+            <div className="" style={{ marginTop: "0" }}>
+              <PButton
+                type="primary"
+                content={"Early Settled"}
+                icon={<AppstoreAddOutlined />}
+                onClick={() => {
+                  setViewDetails(false);
+                  setViewEarlySettled(true);
+                }}
               />
             </div>
             <div className="" style={{ marginTop: "0" }}>
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
+              <PButton
+                type="primary"
+                content={"Print"}
+                icon={<i className="fa fa-print mr-2" />}
                 onClick={() => {
                   getPDFAction(
                     `/PdfAndExcelReport/EmployeeLoanPdf?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`,
                     setLoading
                   );
                 }}
-              >
-                Print
-              </button>
+              />
             </div>
           </div>
 

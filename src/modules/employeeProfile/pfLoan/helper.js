@@ -132,8 +132,35 @@ export const pfLandingColData = (history) => {
       fieldType: "string",
     },
     {
-      title: "Installment Number",
+      title: "Loan Amount with Interest",
+      dataIndex: "numTotalInstallment",
+      sort: true,
+      fieldType: "string",
+      width: 180,
+    },
+    {
+      title: "Installment",
       dataIndex: "intNumberOfInstallment",
+      sort: true,
+      fieldType: "string",
+    },
+    {
+      title: "settlement Installment",
+      dataIndex: "settledInstallment",
+      sort: true,
+      fieldType: "string",
+      width: 100,
+    },
+    {
+      title: "settlement Amount",
+      dataIndex: "settledAmount",
+      sort: true,
+      fieldType: "string",
+      width: 100,
+    },
+    {
+      title: "Unsettlement Amount",
+      dataIndex: "unSettledAmount",
       sort: true,
       fieldType: "string",
     },
@@ -179,7 +206,7 @@ export const pfLandingColData = (history) => {
                   type: "edit",
                   onClick: () => {
                     history.push({
-                      pathname: `/profile/pfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
+                      pathname: `/loanManagement/PfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
                     });
                   },
                 },
