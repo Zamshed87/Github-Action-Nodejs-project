@@ -7,9 +7,8 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useHistory } from "react-router-dom";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import TdsChallanFilters from "./components/filter/TaxSalaryCertificateFilters";
-import useTdsChallan from "./hooks/useTaxSalaryCertificate";
-import { toast } from "react-toastify";
+import useTaxSalaryCertificate from "./hooks/useTaxSalaryCertificate";
+import TaxSalaryCertificateFilters from "./components/TaxSalaryCertificateFilters";
 
 const TaxSalaryCertificate = () => {
   const dispatch = useDispatch();
@@ -18,11 +17,11 @@ const TaxSalaryCertificate = () => {
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const { data, setData, fetchTaxSalaryCertificates, loading, pages, setPages } =
-    useTdsChallan(form);
+    useTaxSalaryCertificate(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
-    document.title = "Benefits Management - TDS CHALLAN";
+    document.title = "Benefits Management - Tax Salary Certificate";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -44,32 +43,10 @@ const TaxSalaryCertificate = () => {
       {loading && <Loading />}
       <PCard>
         <PCardHeader
-          title={`TDS Challan`}
-          // onSearch={(e) => {
-          //   form.setFieldsValue({
-          //     search: e?.target?.value,
-          //   });
-          //   fetchPfPolicy({ search: e.target.value });
-          // }}
-          buttonList={[
-            {
-              type: "primary",
-              content: "Create New",
-              icon: "plus",
-              onClick: () => {
-                if (permission?.isCreate) {
-                  history.push(
-                    "/compensationAndBenefits/incometaxmgmt/taxChallan/create"
-                  );
-                } else {
-                  toast.warn("You don't have permission");
-                }
-              },
-            },
-          ]}
+          title={`Tax Salary Certificate`}
         />
         <PCardBody className="mb-3">
-          <TdsChallanFilters form={form} />
+          <TaxSalaryCertificateFilters form={form} />
         </PCardBody>
         <DataTable
           header={getHeader(pages, history)}

@@ -18,16 +18,18 @@ const useTaxSalaryCertificate = (form) => {
     const formValues = form?.getFieldsValue(true);
 
     const formattedParams = {
-      listOfFiscalYear: formValues.ListOfFiscalYear,
-      listOfWorkplace: formValues.ListOfWorkplace,
+      StrListOfFiscalYear: formValues.ListOfFiscalYear,
+      StrListOfWorkplace: formValues.ListOfWorkplace,
+      StrListOfDepartment: formValues.ListOfDepartment,
+      StrListOfEmployee: formValues.ListOfEmployee,
     };
 
     const filteredParams = Object.entries(formattedParams)
-      .filter(([_, value]) => value !== undefined && value !== null)
+      .filter(([_, value]) => value !== undefined && value !== null && value !== "")
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const url = `/TaxChallan/GetAll?${filteredParams}`;
+    const url = `/TaxReport/GetTaxInfo?${filteredParams}`;
 
     getData(url, (res) => {
       setData(res);

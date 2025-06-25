@@ -72,8 +72,8 @@ const TdsChallanCreate = () => {
                           ...values,
                           ...(edit && {
                             IntId: headerId,
-                            IntWorkplaceId: values?.ListOfWorkplace?.value,
-                            IntFiscalYearId: values?.ListOfFiscalYear?.value,
+                            IntWorkplaceId: values?.ListOfWorkplace?.value ?? values?.ListOfWorkplace,
+                            IntFiscalYearId: values?.ListOfFiscalYear?.value ?? values?.ListOfFiscalYear,
                           }),
                           ListOfTaxChallanDetail: saveData,
                         };

@@ -8,7 +8,7 @@ const useTdsChallanFilters = () => {
   } = useSelector((store) => store?.auth, shallowEqual);
 
   const workplaceDDL = useApiRequest([]);
-  const fiscalYearDDL = useApiRequest({});
+  const fiscalYearDDL = useApiRequest([]);
 
   const getWorkplaceDDL = () => {
     workplaceDDL?.action({
