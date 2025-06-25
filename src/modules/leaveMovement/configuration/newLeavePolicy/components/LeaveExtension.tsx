@@ -1,7 +1,7 @@
 import { ModalFooter } from "Components/Modal";
-import { PForm, PInput, PSelect } from "Components/PForm";
+import { PForm, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Switch } from "antd";
+import { Col, Form, Row } from "antd";
 import IConfirmModal from "common/IConfirmModal";
 import { getWorkplaceDDL } from "common/api/commonApi";
 import { useEffect } from "react";
@@ -105,7 +105,8 @@ export default function LeaveExtension({
           },
           onError: (res: any) => {
             toast.error(
-              res?.response?.data?.[0] ||
+              res?.response?.data?.message?.[0] ||
+                res?.response?.data?.[0] ||
                 res?.response?.data?.message ||
                 res?.response?.data?.errors?.[
                   "GeneralPayload.Description"
@@ -130,7 +131,8 @@ export default function LeaveExtension({
           },
           onError: (res: any) => {
             toast.error(
-              res?.response?.data?.[0] ||
+              res?.response?.data?.message?.[0] ||
+                res?.response?.data?.[0] ||
                 res?.response?.data?.message ||
                 res?.response?.data?.errors?.[
                   "GeneralPayload.Description"

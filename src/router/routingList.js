@@ -672,7 +672,9 @@ const TdsChallan = lazy(() =>
   import("../modules/CompensationBenefits/TdsChallan/index.jsx")
 );
 const TdsChallanCreate = lazy(() =>
-  import("../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx")
+  import(
+    "../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx"
+  )
 );
 const BulkIncrementEntry = lazy(() =>
   import("../modules/CompensationBenefits/Increment/bulkIncrement/index.jsx")

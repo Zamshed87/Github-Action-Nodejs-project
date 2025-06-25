@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
   PCardBody,
   PCardHeader,
   PForm,
-  PInput,
   PSelect,
   TableButton,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Switch, Tag } from "antd";
@@ -67,48 +64,6 @@ export const NewLeavePolicy = () => {
     getLeaveTypes();
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  // workplace wise
-  // const getWorkplaceGroup = () => {
-  //   workplaceGroup?.action({
-  //     urlKey: "WorkplaceGroupWithRoleExtension",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: buId,
-  //       workplaceGroupId: wgId,
-  //       empId: employeeId,
-  //     },
-  //     onSuccess: (res) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplaceGroup;
-  //         res[i].value = item?.intWorkplaceGroupId;
-  //       });
-  //     },
-  //   });
-  // };
-
-  // const getWorkplace = () => {
-  //   const { workplaceGroup } = form.getFieldsValue(true);
-  //   workplace?.action({
-  //     urlKey: "WorkplaceWithRoleExtension",
-  //     method: "GET",
-  //     params: {
-  //       accountId: orgId,
-  //       businessUnitId: buId,
-  //       workplaceGroupId: workplaceGroup?.value,
-  //       empId: employeeId,
-  //     },
-  //     onSuccess: (res: any) => {
-  //       res.forEach((item: any, i: any) => {
-  //         res[i].label = item?.strWorkplace;
-  //         res[i].value = item?.intWorkplaceId;
-  //       });
-  //     },
-  //   });
-  // };
-
   const getLeaveTypes = () => {
     leaveTypeApi?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -140,7 +95,6 @@ export const NewLeavePolicy = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
     const ids = values?.leaveType?.map((i: any) => i?.value).join(",");

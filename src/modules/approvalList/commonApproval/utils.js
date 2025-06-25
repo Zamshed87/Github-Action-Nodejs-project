@@ -472,7 +472,8 @@ export const columnsLeave = (dispatch) => [
   {
     title: "Status",
     dataIndex: ["applicationInformation", "status"],
-    width: "50px",
+    width: 70,
+
     render: (status) => (
       <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
     ),

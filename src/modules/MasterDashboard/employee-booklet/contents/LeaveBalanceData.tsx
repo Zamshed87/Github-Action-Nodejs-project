@@ -3,7 +3,6 @@ import { DataTable } from "Components";
 import React, { forwardRef } from "react";
 
 const LeaveBalanceData = forwardRef((props: any, ref: any) => {
-  const leaveBalanceDto = props?.leaveBalanceDto;
   const { balanceApi } = props;
 
   const header = [
@@ -55,6 +54,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           <p>{record?.details?.carryTakenDays}</p>
         </>
       ),
+      width: 70,
     },
     {
       title: "Carry Balance",
@@ -64,6 +64,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           <p>{record?.details?.carryBalanceDays}</p>
         </>
       ),
+      width: 70,
     },
     {
       title: "Carry Allocated",
@@ -73,6 +74,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           <p>{record?.details?.carryTotalAllocatedDays}</p>
         </>
       ),
+      width: 70,
     },
     {
       title: "Carry Expire Balance",
@@ -82,6 +84,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           <p>{record?.details?.carryExpiredDays}</p>
         </>
       ),
+      width: 70,
     },
     {
       title: "Carry Expire Date",
@@ -90,6 +93,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           <p>{record?.details?.expireDate}</p>
         </>
       ),
+      width: 70,
     },
     {
       title: "Status",
@@ -108,7 +112,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           </div>
         );
       },
-      width: 35,
+      width: 75,
     },
   ];
   return (
@@ -123,6 +127,7 @@ const LeaveBalanceData = forwardRef((props: any, ref: any) => {
           header={header}
           nodataStyle={{ marginTop: "-35px", height: "175px" }}
           bordered
+          scroll={{ x: 2000 }}
           data={balanceApi?.data?.length > 0 ? balanceApi?.data : []}
         />
       </div>
