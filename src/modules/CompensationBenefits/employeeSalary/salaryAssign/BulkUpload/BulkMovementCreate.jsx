@@ -163,6 +163,7 @@ const BulkMovementCreate = () => {
   };
   useEffect(() => {
     getPayrollGroupDDL();
+    getPayScaleDDL();
   }, [wgId, wId]);
 
   // Generate dynamic columns for elements
