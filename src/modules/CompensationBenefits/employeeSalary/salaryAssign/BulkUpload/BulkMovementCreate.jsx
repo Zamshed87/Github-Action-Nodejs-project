@@ -19,13 +19,15 @@ import { useApiRequest } from "Hooks";
 import { Tag } from "antd";
 import { DataTable } from "Components";
 import { ModalFooter, PModal } from "Components/Modal";
+import { todayDate } from "utility/todayDate";
+import { isDevServer } from "App";
 
 const initialValues = {
   file: "",
 };
 
 const BulkMovementCreate = () => {
-  const { buId, employeeId, orgId, wgId, wId } = useSelector(
+  const { buId, employeeId, orgId, wgId, wId, wName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -98,13 +100,15 @@ const BulkMovementCreate = () => {
     // };
     data?.length > 0
       ? postBulk.action({
-          urlKey: "SalaryBulkUpload",
+          urlKey: data[0]?.isGrade
+            ? "SalaryGradeBasedBulkUpload"
+            : "SalaryBulkUpload",
           method: "post",
           payload: data,
-          toast: true,
+          // toast: true,
           onSuccess: (res) => {
             // callBack();
-            // toast.success(res?.data?.message || "Successful");
+            toast.success(res?.data?.message || "Successful");
 
             const modifiedResponse = data.map((item) => {
               const responseItem = res.find((r) => r.slNo === item.slNo);
@@ -115,6 +119,15 @@ const BulkMovementCreate = () => {
               };
             });
             setData(modifiedResponse);
+          },
+          onError: (err) => {
+            isDevServer && console.log({ err });
+            toast.error(
+              err?.response?.data?.message ||
+                err?.response?.data?.Message ||
+                err?.response?.data?.title ||
+                "Something went wrong"
+            );
           },
         })
       : toast.warn("Please Upload Excel File");
@@ -373,9 +386,12 @@ const BulkMovementCreate = () => {
                   className="btn btn-default mr-1"
                   label="Download Demo"
                   onClick={() => {
+                    const url = values?.isGrade?.value
+                      ? `/PdfAndExcelReport/DownloadExcelForGradeBasedSalary?payscaleId=${values?.payScale?.value}&numberOfRow=100`
+                      : `/PdfAndExcelReport/DownloadExcelforSalaryBulk?parrollGroupId=${values?.pg?.value}&numberOfRow=100`;
                     downloadFile(
-                      `/PdfAndExcelReport/DownloadExcelforSalaryBulk?parrollGroupId=${values?.pg?.value}&numberOfRow=100`,
-                      "Employees Salary",
+                      url,
+                      `${todayDate()}_${wName}_Employee_Salary_Bulk`,
                       "xlsx",
                       setIsLoading
                     );
