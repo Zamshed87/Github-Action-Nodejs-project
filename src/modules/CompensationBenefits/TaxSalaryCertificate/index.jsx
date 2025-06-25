@@ -51,7 +51,7 @@ const TaxSalaryCertificate = () => {
         <DataTable
           header={getHeader(pages, history)}
           bordered
-          data={[]}
+          data={data?.data || []}
           loading={loading}
           // pagination={{
           //   pageSize: data?.pageSize,
