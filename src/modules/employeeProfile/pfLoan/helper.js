@@ -1,6 +1,9 @@
 import { Avatar, TableButton } from "Components";
+import { Tooltip } from "antd";
+import axios from "axios";
 import Chips from "common/Chips";
 import moment from "moment";
+import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 
 export const initialValues = {
@@ -75,19 +78,21 @@ export const viewHandler = (values, setGeneratedData) => {
   setGeneratedData(() => modifiedArr);
 };
 
-export const pfLandingColData = (history) => {
+export const pfLandingColData = (history, setLoading) => {
   return [
     {
       title: "SL",
       render: (text, record, index) => index + 1,
       className: "text-center",
       width: 20,
+      fixed: "left",
     },
     {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
       sort: true,
       fieldType: "string",
+      fixed: "left",
     },
     {
       title: "Employee",
@@ -105,18 +110,21 @@ export const pfLandingColData = (history) => {
       ),
       fieldType: "string",
       width: 100,
+      fixed: "left",
     },
     {
       title: "Loan ID",
       dataIndex: "strLoanId",
       sort: true,
       fieldType: "string",
+      fixed: "left",
     },
     {
       title: "Loan Type",
       dataIndex: "strLoanType",
       sort: true,
       fieldType: "string",
+      fixed: "left",
     },
     {
       title: "Loan Amount",
@@ -191,15 +199,16 @@ export const pfLandingColData = (history) => {
       ),
       sort: true,
       fieldType: "string",
-      width: 50,
+      width: 70,
+      fixed: "right",
     },
     {
-      title: "",
+      title: "Action",
       dataIndex: "strStatus",
-      width: 30,
+      width: 80,
       render: (text, record) => (
         <>
-          {text.toLowerCase() === "pending" && (
+          {text?.toLowerCase() === "pending" && (
             <TableButton
               buttonsList={[
                 {
@@ -213,8 +222,61 @@ export const pfLandingColData = (history) => {
               ]}
             />
           )}
+
+          <Tooltip
+            placement="bottom"
+            title={record?.isActive ? "Inactive" : "Active"}
+          >
+            <button
+              style={{
+                height: "24px",
+                fontSize: "12px",
+                padding: "0px 12px",
+              }}
+              className="btn btn-default"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log(setLoading);
+                handleInActive(record, setLoading);
+              }}
+            >
+              InActive
+            </button>
+          </Tooltip>
         </>
       ),
+      fixed: "right",
     },
   ];
 };
+
+export const handleInActive = async (data, setLoading) => {
+  console.log("data", data);
+
+  setLoading(true);
+  try {
+    const res = await axios.delete(
+      `/PfLoan/DeleteById?HeaderId=${data?.intEmployeeLoanHeaderId}`
+    );
+    toast.success("InActive Successfully", { toastId: 1222 });
+    setLoading(false);
+  } catch (error) {
+    toast.warn(error.response.data.message || "An unexpected error occurred", {
+      toastId: 1222,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const statusDDL = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Pending" },
+  { value: 2, label: "Inactive" },
+  { value: 3, label: "Approved" },
+  { value: 4, label: "Running" },
+  { value: 5, label: "Early Settled" },
+  { value: 6, label: "Completed" },
+];
