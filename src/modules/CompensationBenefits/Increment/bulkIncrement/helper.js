@@ -18,7 +18,8 @@ export const processBulkUploadIncrementAction = async (
 ) => {
   try {
     setLoading(true);
-    if (!payrollInfo?.[1]?.includes("Non-Grade") && payrollInfo?.[12] !== wId) {
+    const isGrade = payrollInfo?.[1]?.split(":")?.[1]?.trim() !== "Non-Grade";
+    if (isGrade && payrollInfo?.[12] !== wId) {
       setLoading(false);
       return toast.error("Please select correct Workplace");
     }
@@ -77,7 +78,7 @@ export const processBulkUploadIncrementAction = async (
     const errorData = [];
     const cleanData = [];
     modifiedData.forEach((item) => {
-      if (!payrollInfo?.[1]?.includes("Non-Grade")) {
+      if (isGrade) {
         if (
           !item.empName?.result ||
           item.empName === "N/A" ||
@@ -108,7 +109,10 @@ export const processBulkUploadIncrementAction = async (
       ) {
         errorData.push(item);
       } else {
-        cleanData.push(item);
+        cleanData.push({
+          ...item,
+          gross: item?.gross?.result || item?.gross || 0,
+        });
       }
     });
     setter(cleanData);
