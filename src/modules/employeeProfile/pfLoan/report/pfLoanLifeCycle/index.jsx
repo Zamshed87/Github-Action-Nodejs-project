@@ -70,8 +70,8 @@ const PfLoanLifeCycle = () => {
       title: "SL",
       render: (_, rec, index) =>
         getSerial({
-          currentPage: landingApi?.currentPage,
-          pageSize: landingApi?.pageSize,
+          currentPage: 1,
+          pageSize: 500,
           index,
         }),
       fixed: "left",

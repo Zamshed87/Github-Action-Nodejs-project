@@ -57,7 +57,6 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
         return toast.error(res?.message);
       } else {
         resetForm();
-        history.push("/profile/pfLoan");
         setViewEarlySettled(false);
         toast.success(res?.message || "Submitted Successfully");
       }
