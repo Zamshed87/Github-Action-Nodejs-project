@@ -529,11 +529,11 @@ const SalaryGenerateCreate = () => {
                               value: "Salary",
                               label: "Full Salary",
                             },
-                            {
+                            orgId !== 16 && {
                               value: "PartialSalary",
                               label: "Partial Salary",
                             },
-                          ] || []
+                          ].filter(Boolean) || []
                         }
                         value={values?.salaryTpe}
                         onChange={(valueOption) => {
