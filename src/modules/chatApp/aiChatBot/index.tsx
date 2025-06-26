@@ -193,13 +193,13 @@ export default function AssistantChatbot() {
           bottom: 24,
           right: 24,
           zIndex: 1000,
-          background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+          background: "var(--primary-color)",
           "&:hover": {
-            background: "linear-gradient(45deg, #1976D2 30%, #1CB5E0 90%)",
+            background: "var(--primary-color-dark)",
             transform: "scale(1.1)",
           },
           transition: "all 0.3s ease-in-out",
-          boxShadow: "0 8px 16px rgba(33, 150, 243, 0.3)",
+          boxShadow: "0 8px 16px rgba(41, 150, 71, 0.3)",
         }}
       >
         <ChatIcon />
@@ -219,15 +219,15 @@ export default function AssistantChatbot() {
             height: isMobile ? "100vh" : "700px",
             maxHeight: isMobile ? "100vh" : "90vh",
             borderRadius: isMobile ? 0 : 2,
-            background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+            background: "var(--gray100)",
           },
         }}
       >
         {/* Header */}
         <DialogTitle
           sx={{
-            background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
-            color: "white",
+            background: "var(--primary-color)",
+            color: "var(--white)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -264,7 +264,7 @@ export default function AssistantChatbot() {
             display: "flex",
             flexDirection: "column",
             padding: 1,
-            background: "#f8f9fa",
+            background: "var(--gray100)",
           }}
         >
           <Box
@@ -289,7 +289,13 @@ export default function AssistantChatbot() {
                 }}
               >
                 {message.role === "assistant" && (
-                  <Avatar sx={{ bgcolor: "#2196F3", width: 32, height: 32 }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: "var(--primary-color)",
+                      width: 32,
+                      height: 32,
+                    }}
+                  >
                     <BotIcon fontSize="small" />
                   </Avatar>
                 )}
@@ -300,8 +306,13 @@ export default function AssistantChatbot() {
                     padding: 2,
                     maxWidth: "75%",
                     backgroundColor:
-                      message.role === "user" ? "#2196F3" : "#ffffff",
-                    color: message.role === "user" ? "white" : "black",
+                      message.role === "user"
+                        ? "var(--primary-color)"
+                        : "var(--white)",
+                    color:
+                      message.role === "user"
+                        ? "var(--white)"
+                        : "var(--gray900)",
                     borderRadius: 2,
                     borderTopLeftRadius: message.role === "assistant" ? 0 : 2,
                     borderTopRightRadius: message.role === "user" ? 0 : 2,
@@ -310,7 +321,19 @@ export default function AssistantChatbot() {
                   {message.role === "assistant" ? (
                     <MarkdownDiagramPreview markdown={message.content} />
                   ) : (
-                    <Typography variant="body2">{message.content}</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                        color:
+                          message.role === "user"
+                            ? "var(--white)"
+                            : "var(--gray900)",
+                      }}
+                    >
+                      {message.content}
+                    </Typography>
                   )}
                   <Typography
                     variant="caption"
@@ -328,7 +351,12 @@ export default function AssistantChatbot() {
 
                 {message.role === "user" && (
                   <Avatar
-                    sx={{ width: 32, height: 32, textTransform: "uppercase" }}
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      textTransform: "uppercase",
+                      bgcolor: "var(--primary-color)",
+                    }}
                     {...stringAvatar(userName)}
                   ></Avatar>
                 )}
@@ -337,14 +365,20 @@ export default function AssistantChatbot() {
 
             {isLoading && (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Avatar sx={{ bgcolor: "#2196F3", width: 32, height: 32 }}>
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--primary-color)",
+                    width: 32,
+                    height: 32,
+                  }}
+                >
                   <BotIcon fontSize="small" />
                 </Avatar>
                 <Paper
                   elevation={2}
                   sx={{
                     padding: 2,
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "var(--white)",
                     borderRadius: 2,
                     borderTopLeftRadius: 0,
                   }}
@@ -367,7 +401,7 @@ export default function AssistantChatbot() {
               display: "flex",
               gap: 1,
               padding: 1,
-              backgroundColor: "white",
+              backgroundColor: "var(--white)",
               borderRadius: 2,
               margin: 1,
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -399,10 +433,10 @@ export default function AssistantChatbot() {
                 onClick={handleSendMessage}
                 disabled={!input.trim() || isLoading}
                 sx={{
-                  backgroundColor: "#2196F3",
-                  color: "white",
+                  backgroundColor: "var(--primary-color)",
+                  color: "var(--white)",
                   "&:hover": {
-                    backgroundColor: "#1976D2",
+                    backgroundColor: "var(--primary-color-dark)",
                   },
                   "&:disabled": {
                     backgroundColor: "#e0e0e0",
