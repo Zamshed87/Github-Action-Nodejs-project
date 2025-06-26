@@ -1826,6 +1826,7 @@ import NocSelfLanding from "modules/NOC/nocSelf";
 import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
 import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
 import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
+import WorkForceComparison from "modules/manpowerAnalysis/workforceComparison/workforceComparison";
 
 const AttendanceShiftChange = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceShiftChange/index.tsx")
@@ -3948,6 +3949,10 @@ export const routingList = [
   {
     path: "/profile/ManpowerAnalysis/WorkforcePlanning",
     component: WorkforcePlanningLanding,
+  },
+   {
+    path: "/profile/ManpowerAnalysis/WorkforceComparison",
+    component: WorkForceComparison,
   },
    {
     path: "/profile/ManpowerAnalysis/WorkforcePlanning/create",
