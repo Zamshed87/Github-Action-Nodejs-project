@@ -41,6 +41,7 @@ const WorkforcePlanningLanding = () => {
   const [pageSize, setPageSize] = useState(10);
   const [excelLoading, setExcelLoading] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Add filter state
   const [filterValues, setFilterValues] = useState<{
@@ -154,6 +155,7 @@ const WorkforcePlanningLanding = () => {
                     workplaceId: record.workplaceId,
                     yearTypeId: record.yearTypeId,
                     fromYear: record.fromYear,
+                    toYear: record.toYear,
                   }
                 );
               }}
@@ -212,8 +214,24 @@ const WorkforcePlanningLanding = () => {
             onExport={() => {
               const yearTypeId = filterValues.yearTypeId ?? 0;
               const fromYear = filterValues.fromYear ?? 0;
-              const url = `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${pageNo}&pageSize=${pageSize}`;
-              downloadFile(url, `Workforce Planning`, "xlsx", setExcelLoading);
+              const excelLanding = async () => {
+                setExcelLoading(true);
+                if (criteriaList?.data?.length === 0) return null;
+                try {
+                  downloadFile(
+                    `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${pageNo}&pageSize=${pageSize}`,
+                    "Workforce Planning",
+                    "xlsx",
+                    setLoading
+                  );
+                  setExcelLoading(false);
+                } catch (error: any) {
+                  console.log("error", error);
+                  toast.error("Failed to download excel");
+                  setExcelLoading(false);
+                }
+              };
+              excelLanding();
             }}
             filterComponent={
               <CommonFilter
