@@ -27,6 +27,7 @@ import {
 } from "@mui/icons-material";
 import type { TransitionProps } from "@mui/material/transitions";
 import MarkdownDiagramPreview from "./markdownDiagramPreview/markdownDiagramPreview";
+import { shallowEqual, useSelector } from "react-redux";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -51,6 +52,11 @@ interface ApiResponse {
 }
 
 export default function AssistantChatbot() {
+  const { orgId, buId, wgId, wId } = useSelector(
+      (state:any) => state?.auth?.profileData,
+      shallowEqual
+    );
+  
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -93,10 +99,10 @@ export default function AssistantChatbot() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            UnitId: "4, 94, 144",
-            intAccountId: 1,
-            intWorkplaceGroupId: "6, 7",
-            intWorkplaceId: "53, 54",
+            UnitId: buId,
+            intAccountId: orgId,
+            intWorkplaceGroupId: wgId,
+            intWorkplaceId: wId,
             question: question,
           }),
         }
