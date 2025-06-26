@@ -10,14 +10,13 @@ import {
   PSelect,
   PButton,
 } from "Components";
-import { Col, Form, Row, Input, InputNumber } from "antd";
+import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { useApiRequest } from "Hooks";
 import { fetchWorkforceTypeWiseData } from "./helper";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 import { downloadFile } from "utility/downloadFile";
 
 const WorkForceComparison = () => {
@@ -347,12 +346,12 @@ const WorkForceComparison = () => {
                 const pageNo = 1;
                 const pageSize = pagination.total || 1000;
 
-                let url = `/GetWorkforceComparisonReport?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
+                let url = `/WorkforcePlanning/ExportWorkforceComparisonToExcel?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
                 if (toDate) url += `&ToDate=${toDate}`;
 
                 downloadFile(
                   url,
-                  "Workforce Planning",
+                  "Workforce Comparison",
                   "xlsx",
                   setLoading
                 );
