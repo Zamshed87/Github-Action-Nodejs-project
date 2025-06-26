@@ -93,4 +93,4 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     </PForm>
   );
 };
-export default withLeaveApplication(TLeaveApplication);
+export default withLeaveApplication(TLeaveApplication, false);
