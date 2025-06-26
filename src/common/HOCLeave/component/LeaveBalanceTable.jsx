@@ -14,6 +14,7 @@ const LeaveBalanceTable = ({
   leaveBalanceData = [],
   show = false,
   values,
+  isHistory = false,
   casualLvePunishment = [],
   medicalLvePunishment = [],
 }) => {
@@ -146,6 +147,26 @@ const LeaveBalanceTable = ({
       width: 80,
     },
     {
+      title: "Start Date",
+      render: (_, record) => (
+        <>
+          <p>{record?.startDate}</p>
+        </>
+      ),
+      width: 80,
+      hidden: isHistory ? false : true,
+    },
+    {
+      title: "End Date",
+      render: (_, record) => (
+        <>
+          <p>{record?.endDate}</p>
+        </>
+      ),
+      width: 80,
+      hidden: isHistory ? false : true,
+    },
+    {
       title: "Taken",
       render: (data, record) => (
         <>
@@ -216,7 +237,7 @@ const LeaveBalanceTable = ({
           </div>
         );
       },
-      width: 35,
+      width: isHistory ? 85 : 35,
     },
     {
       width: 20,
@@ -322,7 +343,7 @@ const LeaveBalanceTable = ({
       <div>
         <PCardBody styles={{ minHeight: "240px" }}>
           <DataTable
-            header={header}
+            header={header.filter((item) => !item.hidden)}
             nodataStyle={{ marginTop: "-35px", height: "175px" }}
             // bordered
             data={leaves?.length > 0 ? leaves : []}

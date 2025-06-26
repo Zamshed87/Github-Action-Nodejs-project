@@ -1,4 +1,4 @@
-import { PCard, PCardHeader, PForm, PSelect } from "Components";
+import { PButton, PCard, PCardHeader, PForm, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import withLeaveApplication from "common/HOCLeave/withLeaveApplication";
@@ -50,6 +50,10 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
     buId,
     wgId,
     isOfficeAdmin,
+
+    showHistoryBalanceData,
+    setShowHistoryBalanceData,
+    historyBalanceData,
     // demoPopupForDeleteAdmin,
   } = props?.propjObj;
   // Form Instance
@@ -108,7 +112,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
               // const { employee, year } = form.getFieldsValue();
               return (
                 <Row gutter={[10, 2]} style={{ width: "500px" }}>
-                  <Col xs={24}>
+                  <Col xs={16}>
                     <PSelect
                       name="employee"
                       placeholder="Search Min 2 char"
@@ -126,6 +130,16 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                       }}
                       showSearch
                       filterOption={false}
+                    />
+                  </Col>
+                  <Col xs={8}>
+                    <PButton
+                      type="primary"
+                      action="button"
+                      content="Balance History"
+                      onClick={() => {
+                        setShowHistoryBalanceData(true);
+                      }}
                     />
                   </Col>
                 </Row>
@@ -152,6 +166,9 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
             setIsEdit={setIsEdit}
             isOfficeAdmin={isOfficeAdmin}
             getData={getData}
+            showHistoryBalanceData={showHistoryBalanceData}
+            setShowHistoryBalanceData={setShowHistoryBalanceData}
+            historyBalanceData={historyBalanceData}
           />
 
           <Col

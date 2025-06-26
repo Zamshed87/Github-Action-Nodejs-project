@@ -4,6 +4,7 @@ import { Col, Row } from "antd";
 import TLeaveApplicationForm from "./TLeaveApplicationForm";
 import LeaveBalanceTable from "./LeaveBalanceTable";
 import { LeaveApp_History } from "./LeaveHistory";
+import { PModal } from "Components/Modal";
 
 export const CommonView = ({
   employeeInfo,
@@ -26,6 +27,9 @@ export const CommonView = ({
   getData,
   loadingForInfo,
   progress,
+  historyBalanceData,
+  showHistoryBalanceData,
+  setShowHistoryBalanceData,
 }: any) => {
   return (
     <div className="table-card">
@@ -86,6 +90,26 @@ export const CommonView = ({
           />
         </Col>
       </Row>
+      {showHistoryBalanceData && (
+        <PModal
+          open={showHistoryBalanceData}
+          title={"History Balance Data"}
+          width=""
+          onCancel={() => {
+            setShowHistoryBalanceData(false);
+          }}
+          maskClosable={false}
+          components={
+            <>
+              <LeaveBalanceTable
+                leaveBalanceData={historyBalanceData}
+                isHistory={true}
+                values=""
+              />
+            </>
+          }
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { PCard, PForm } from "Components";
+import { PButton, PCard, PCardHeader, PForm } from "Components";
 import { Col, Form, Row } from "antd";
 import withLeaveApplication from "common/HOCLeave/withLeaveApplication";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -38,6 +38,10 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     isOfficeAdmin,
     casualLvePunishment,
     medicalLvePunishment,
+    historyBalanceData,
+
+    showHistoryBalanceData,
+    setShowHistoryBalanceData,
   } = props?.propjObj;
   // Form Instance
   const [form] = Form.useForm();
@@ -63,7 +67,28 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
       {/* {loading && <Loading />} */}
 
       <PCard>
-        <Row gutter={[10, 2]} style={{ marginTop: "-3rem" }}>
+        <PCardHeader>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              // const { employee, year } = form.getFieldsValue();
+              return (
+                <Row gutter={[10, 2]}>
+                  <Col xs={8}>
+                    <PButton
+                      type="primary"
+                      action="button"
+                      content="Balance History"
+                      onClick={() => {
+                        setShowHistoryBalanceData(true);
+                      }}
+                    />
+                  </Col>
+                </Row>
+              );
+            }}
+          </Form.Item>
+        </PCardHeader>
+        <Row gutter={[10, 2]} style={{ marginTop: "-5.4rem" }}>
           <CommonView
             employeeInfo={employeeInfo}
             saveHandler={saveHandler}
@@ -82,6 +107,9 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
             setIsEdit={setIsEdit}
             isOfficeAdmin={isOfficeAdmin}
             getData={getData}
+            historyBalanceData={historyBalanceData}
+            showHistoryBalanceData={showHistoryBalanceData}
+            setShowHistoryBalanceData={setShowHistoryBalanceData}
           />
           <Col
             style={{
@@ -93,4 +121,4 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     </PForm>
   );
 };
-export default withLeaveApplication(TLeaveApplication);
+export default withLeaveApplication(TLeaveApplication, false);
