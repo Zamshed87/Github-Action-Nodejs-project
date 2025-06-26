@@ -1,33 +1,31 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
 import {
-  Fab,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Box,
-  TextField,
-  IconButton,
-  Typography,
-  Paper,
-  Avatar,
-  Slide,
-  useTheme,
-  useMediaQuery,
-  CircularProgress,
-  Chip,
-} from "@mui/material";
-import {
+  SmartToy as BotIcon,
   Chat as ChatIcon,
   Close as CloseIcon,
-  Send as SendIcon,
-  SmartToy as BotIcon,
-  Person as PersonIcon,
+  Send as SendIcon
 } from "@mui/icons-material";
+import {
+  Avatar,
+  Box,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Fab,
+  IconButton,
+  Paper,
+  Slide,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import type { TransitionProps } from "@mui/material/transitions";
-import MarkdownDiagramPreview from "./markdownDiagramPreview/markdownDiagramPreview";
+import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import MarkdownDiagramPreview from "./markdownDiagramPreview/markdownDiagramPreview";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -356,6 +354,7 @@ export default function AssistantChatbot() {
                       height: 32,
                       textTransform: "uppercase",
                       bgcolor: "var(--primary-color)",
+                      fontSize: "0.75rem",
                     }}
                     {...stringAvatar(userName)}
                   ></Avatar>
