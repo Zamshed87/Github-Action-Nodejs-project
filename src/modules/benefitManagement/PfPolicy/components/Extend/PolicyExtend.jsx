@@ -5,41 +5,17 @@ import { toast } from "react-toastify";
 import Loading from "common/loading/Loading";
 import { createPFPolicy } from "../../PfPolicyCreate/helper";
 import { PSelect } from "Components";
-import { useApiRequest } from "Hooks";
-import { shallowEqual, useSelector } from "react-redux";
+import useConfigSelectionHook from "../../PfPolicyCreate/components/PfPolicyConfiguration/useConfigSelectionHook";
+import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
 const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
-  const {
-    profileData: { orgId, buId, wgId, wId, employeeId },
-  } = useSelector((store) => store?.auth, shallowEqual);
-
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-
-  const workplaceDDL = useApiRequest([]);
-
-  const getWorkplaceDDL = () => {
-    workplaceDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
-      },
+  const { workplaceDDL, employmentTypeDDL, getEmploymentTypeDDL } =
+    useConfigSelectionHook(form, {
+      fetchWorkplace: true,
+      fetchEmploymentType: true,
     });
-  };
-
-  useEffect(() => {
-    getWorkplaceDDL();
-  }, [orgId, buId, wId]);
 
   const onCancel = () => {
     setOpenExtend({ extend: false, data: {} });
@@ -53,9 +29,7 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
           intBusinessUnitId: data.intBusinessUnitId,
           intWorkPlaceGroupId: data.intWorkPlaceGroupId,
           intWorkPlaceId: values?.intWorkPlaceId,
-          intEmploymentTypeIds: data?.isForAllEmploymentType
-            ? [0]
-            : data.employmentTypes?.map((et) => et.value),
+          intEmploymentTypeIds: values?.intEmploymentTypeIds,
           strPolicyName: data.strPolicyName,
           strPolicyCode: data.strPolicyCode,
           intPfEligibilityDependOn: data.intPfEligibilityDependOn,
@@ -78,7 +52,16 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
         toast.error("Please fill the form correctly");
       });
   };
-
+  useEffect(() => {
+    if (data?.intWorkPlaceId) {
+      form.setFieldsValue({ intWorkPlaceId: data.intWorkPlaceId });
+      form.setFieldsValue({
+        intEmploymentTypeIds: data?.isForAllEmploymentType
+          ? [0]
+          : data?.employmentTypes?.map((et) => et.value),
+      });
+    }
+  }, [data?.intWorkPlaceId]);
   return (
     <>
       {loading && <Loading />}
@@ -92,9 +75,25 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
               placeholder="Select Workplace"
               onChange={(value) => {
                 form.setFieldsValue({ intWorkPlaceId: value });
+                form.resetFields(["intEmploymentTypeIds"]);
+                getEmploymentTypeDDL(value);
               }}
               loading={workplaceDDL.loading}
               rules={[{ required: true, message: "Workplace Is Required" }]}
+            />
+          </Col>
+          <Col md={24} sm={24} xs={24}>
+            <PSelectWithAll
+              form={form}
+              name="intEmploymentTypeIds"
+              label="Employment Type"
+              placeholder="Select Employment Type"
+              options={employmentTypeDDL.data}
+              loading={employmentTypeDDL.loading}
+              AllValueZero={true}
+              rules={[
+                { required: true, message: "Employment Type is required" },
+              ]}
             />
           </Col>
         </Row>

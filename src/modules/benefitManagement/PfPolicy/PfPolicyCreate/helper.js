@@ -14,7 +14,7 @@ export const createPFPolicy = async (
     setLoading?.(false);
     resetData?.();
   } catch (error) {
-    toast.error(error?.response?.data?.message || "Something went wrong");
+    toast.error(error?.response?.data?.data?.[0]?.errorMessage || "Something went wrong");
     setLoading?.(false);
   }
 };
