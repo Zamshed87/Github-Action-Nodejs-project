@@ -7,17 +7,12 @@ import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { dateFormatter } from "../../../../utility/dateFormatter";
 import { downloadFile } from "../../../../utility/downloadFile";
 import {
   excelFileToArray,
   excelFileToSpecificIndexInfo,
 } from "../../../../utility/excelFileToJSON";
-import {
-  processBulkUploadIncrementAction,
-  saveBulkUploadIncrementAction,
-  saveBulkUploadIncrementActionUpdate,
-} from "./helper";
+import { processBulkUploadIncrementAction } from "./helper";
 import { isDevServer } from "App";
 import BackButton from "common/BackButton";
 import FormikSelect from "common/FormikSelect";
@@ -43,6 +38,7 @@ export default function BulkIncrementEntry() {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const payrollGroupDDL = useApiRequest([]);
+  const payscaleDDL = useApiRequest([]);
   const bulkUploadApi = useApiRequest([]);
 
   const { buId, orgId, employeeId, wgId, wId } = useSelector(
@@ -71,20 +67,36 @@ export default function BulkIncrementEntry() {
       },
     });
   };
+  const getPayScaleDDL = () => {
+    payscaleDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "PayscaleSetupbyWorkplaceDDL",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        accountId: orgId,
+        intWorkplaceId: wId,
+      },
+    });
+  };
   const saveHandler = () => {
     const callBack = () => {
       // history.push("/compensationAndBenefits/increment");
       setData([]);
     };
+
     data?.length > 0
       ? bulkUploadApi?.action({
-          urlKey: "IncrementBulkUpload",
+          urlKey: data[0]?.isGrade
+            ? "IncrementGradeBasedBulkUpload"
+            : "IncrementBulkUpload",
           method: "post",
           payload: data,
-          toast: true,
+          // toast: true,
           onSuccess: (res) => {
             // callBack();
-            // toast.success(res?.data?.message || "Successful");
+            toast.success(res?.data?.message || "Successful");
 
             const modifiedResponse = data.map((item) => {
               const responseItem = res.find((r) => r.slNo === item.slNo);
@@ -95,6 +107,15 @@ export default function BulkIncrementEntry() {
               };
             });
             setData(modifiedResponse);
+          },
+          onError: (error) => {
+            isDevServer && console.log({ error });
+            toast.error(
+              error?.response?.data?.message ||
+                error?.response?.data?.Message ||
+                error?.response?.data?.title ||
+                "Something went wrong"
+            );
           },
         })
       : toast.warn("Please Upload Excel File");
@@ -122,7 +143,6 @@ export default function BulkIncrementEntry() {
         "EmployeesIncrement",
         2
       );
-
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadIncrementAction(
         processData,
@@ -133,7 +153,8 @@ export default function BulkIncrementEntry() {
         values,
         setErrorData,
         setOpen,
-        employeeId
+        employeeId,
+        wId
       );
     } catch (error) {
       isDevServer && console.log({ error });
@@ -142,6 +163,7 @@ export default function BulkIncrementEntry() {
   };
   useEffect(() => {
     getPayrollGroupDDL();
+    getPayScaleDDL();
   }, [wgId, wId]);
   // Generate dynamic columns for elements
   const dynamicColumns = (source) => {
@@ -155,6 +177,7 @@ export default function BulkIncrementEntry() {
           title: key,
           dataIndex: "payrollElements",
           key,
+          width: 80,
           render: (elements) => {
             const element = elements.find((el) => el.elementName === key);
             return element ? element.amount : null;
@@ -176,12 +199,20 @@ export default function BulkIncrementEntry() {
       title: "Employee Name",
       dataIndex: "empName",
       // key: "empName",
+      width: 80,
     },
     {
       title: "Employee Code",
       dataIndex: "employeeCode",
       // key: "empCode",
-      width: 40,
+      width: 80,
+    },
+    {
+      title: "Slab Count",
+      dataIndex: "slabElement",
+
+      width: 80,
+      hidden: data[0]?.isGrade ? false : true,
     },
     {
       title: "Gross Salary",
@@ -193,9 +224,10 @@ export default function BulkIncrementEntry() {
       title: "Mismatch Amount",
       dataIndex: "misMatch",
       // key: "empCode",
-      width: 40,
+      width: 80,
+      hidden: data[0]?.isGrade ? true : false,
     },
-  ];
+  ].filter((i) => !i.hidden);
   const responseColumns = (source) => {
     return [
       {
@@ -213,13 +245,14 @@ export default function BulkIncrementEntry() {
             </div>
           );
         },
+        width: 80,
         hidden: source[0]?.status ? false : true,
       },
       {
         title: "Message",
         dataIndex: "message",
         // key: "empCode",
-        width: 40,
+        width: 120,
         hidden: source[0]?.status ? false : true,
       },
     ].filter((i) => !i.hidden);
@@ -252,6 +285,21 @@ export default function BulkIncrementEntry() {
                   <div className="table-card">
                     <div className="d-flex justify-content-between">
                       <BackButton title={"Bulk Increment"} />
+                      {[3, 12, 15]?.includes(orgId) && (
+                        <p
+                          style={{
+                            color: "rgb(219, 76, 76)",
+                            letterSpacing: "0.3px",
+                            fontWeight: "bold",
+                            fontSize: "13px",
+                            marginTop: "10px",
+                          }}
+                        >
+                          An increment cannot be granted from a graded employee
+                          to a non-graded employee. Please change the salary
+                          type first from the Salary Assign page.
+                        </p>
+                      )}
                       <div className="table-card-heading justify-content-end">
                         <PrimaryButton
                           className="btn btn-green btn-green-disable"
@@ -260,31 +308,110 @@ export default function BulkIncrementEntry() {
                         />
                       </div>
                     </div>
-                    <div className="row mt-1">
-                      <div className="col-md-3" style={{ marginTop: "-12px" }}>
-                        <div className="input-field-main">
-                          <label>Payroll Group</label>
 
-                          <FormikSelect
-                            name="pg"
-                            classes="input-sm"
-                            styles={customStyles}
-                            options={payrollGroupDDL?.data || []}
-                            value={values?.pg}
-                            onChange={(valueOption) => {
-                              setFieldValue("pg", valueOption);
-                            }}
-                          />
+                    <div className="row mt-2">
+                      {[3, 12, 15]?.includes(orgId) && (
+                        <div
+                          className="col-md-3"
+                          style={{ marginTop: "-12px" }}
+                        >
+                          <div className="input-field-main">
+                            <label>Grade Based</label>
+
+                            <FormikSelect
+                              name="isGrade"
+                              classes="input-sm"
+                              styles={customStyles}
+                              options={[
+                                { label: "Yes", value: true },
+                                { label: "No", value: false },
+                              ]}
+                              value={values?.isGrade}
+                              onChange={(valueOption) => {
+                                if (valueOption?.value) {
+                                  getPayScaleDDL();
+                                }
+                                setValues((prev) => {
+                                  return {
+                                    ...prev,
+                                    isGrade: valueOption,
+                                    payScale: null, // Reset payScale when isGrade changes
+                                    pg: null, // Reset pg when isGrade changes
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
+
+                      {!values?.isGrade?.value && (
+                        <div
+                          className="col-md-3"
+                          style={{ marginTop: "-12px" }}
+                        >
+                          <div className="input-field-main">
+                            <label>Payroll Group</label>
+
+                            <FormikSelect
+                              name="pg"
+                              classes="input-sm"
+                              styles={customStyles}
+                              options={payrollGroupDDL?.data || []}
+                              value={values?.pg}
+                              onChange={(valueOption) => {
+                                setFieldValue("pg", valueOption);
+                                setValues((prev) => {
+                                  return {
+                                    ...prev,
+                                    payScale: null, // Reset payScale when pg changes
+                                    pg: valueOption,
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {values?.isGrade?.value && (
+                        <div
+                          className="col-md-3"
+                          style={{ marginTop: "-12px" }}
+                        >
+                          <div className="input-field-main">
+                            <label>Payscale</label>
+
+                            <FormikSelect
+                              name="payScale"
+                              classes="input-sm"
+                              styles={customStyles}
+                              options={payscaleDDL?.data || []}
+                              value={values?.payScale}
+                              onChange={(valueOption) => {
+                                setFieldValue("payScale", valueOption);
+                                setValues((prev) => {
+                                  return {
+                                    ...prev,
+                                    pg: null, // Reset pg when payScale changes
+                                    payScale: valueOption,
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
 
                       <div className="col-md-6 d-flex align-items-center">
                         <PrimaryButton
                           className="btn btn-default mr-1"
                           label="Download Demo"
                           onClick={() => {
+                            const url = values?.isGrade?.value
+                              ? `/PdfAndExcelReport/DownloadExcelForGradeBasedSalaryIncrement?payscaleId=${values?.payScale?.value}&numberOfRow=100`
+                              : `/PdfAndExcelReport/DownloadExcelforSalaryIncrement?parrollGroupId=${values?.pg?.value}&numberOfRow=100`;
                             downloadFile(
-                              `/PdfAndExcelReport/DownloadExcelforSalaryIncrement?parrollGroupId=${values?.pg?.value}&numberOfRow=100`,
+                              url,
                               "EmployeesIncrement",
                               "xlsx",
                               setIsLoading
@@ -306,104 +433,12 @@ export default function BulkIncrementEntry() {
                     </div>
 
                     {data.length > 0 && (
-                      // <div className="table-card-body mt-3">
-                      //   <div className="table-card-styled tableOne">
-                      //     <table className="table">
-                      //       <thead>
-                      //         <tr>
-                      //           <th>
-                      //             <div>SL</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Employee Id</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Name</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Designation</div>
-                      //           </th>
-                      //           {/* <th>
-                      //             <div>Depend On</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Increment Percentage/Amount</div>
-                      //           </th> */}
-                      //           <th>
-                      //             <div>Fixed Amount</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Percentage Based On Basic</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Percentage Based On Gross</div>
-                      //           </th>
-                      //           <th>
-                      //             <div>Effective Date</div>
-                      //           </th>
-                      //         </tr>
-                      //       </thead>
-                      //       <tbody>
-                      //         {data.map((item, index) => (
-                      //           <tr key={item?.intEmployeeId}>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {index + 1}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.intEmployeeId}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.strEmployeeName}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.strDesignation}
-                      //               </div>
-                      //             </td>
-                      //             {/* <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.strIncrementDependOn}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.numIncrementPercentageOrAmount}
-                      //               </div>
-                      //             </td> */}
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.numIncrementAmountBasedOnAmount}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.numIncrementPercentageBasedOnBasic}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {item?.numIncrementPercentBasedOnGross}
-                      //               </div>
-                      //             </td>
-                      //             <td>
-                      //               <div className="content tableBody-title">
-                      //                 {/* {item?.dteEffectiveDate} */}
-                      //                 {dateFormatter(item?.dteEffectiveDate)}
-                      //               </div>
-                      //             </td>
-                      //           </tr>
-                      //         ))}
-                      //       </tbody>
-                      //     </table>
-                      //   </div>
-                      // </div>
-                      <DataTable data={data} header={columns(data)} bordered />
+                      <DataTable
+                        data={data}
+                        header={columns(data)}
+                        bordered
+                        scroll={{ x: 1400 }}
+                      />
                     )}
                   </div>
                 ) : (
