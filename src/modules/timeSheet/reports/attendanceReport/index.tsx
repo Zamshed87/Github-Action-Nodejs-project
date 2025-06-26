@@ -334,6 +334,11 @@ const AttendanceReport = () => {
       dataIndex: "totalSinglePunchDays",
       width: 120,
     },
+    {
+      title: "Early Out",
+      dataIndex: "earlyOut",
+      width: 120,
+    },
   ];
   const searchFunc = debounce((value) => {
     landingApiCall({
