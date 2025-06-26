@@ -285,6 +285,21 @@ export default function BulkIncrementEntry() {
                   <div className="table-card">
                     <div className="d-flex justify-content-between">
                       <BackButton title={"Bulk Increment"} />
+                      {[3, 12, 15]?.includes(orgId) && (
+                        <p
+                          style={{
+                            color: "rgb(219, 76, 76)",
+                            letterSpacing: "0.3px",
+                            fontWeight: "bold",
+                            fontSize: "13px",
+                            marginTop: "10px",
+                          }}
+                        >
+                          An increment cannot be granted from a graded employee
+                          to a non-graded employee. Please change the salary
+                          type first from the Salary Assign page.
+                        </p>
+                      )}
                       <div className="table-card-heading justify-content-end">
                         <PrimaryButton
                           className="btn btn-green btn-green-disable"
@@ -293,7 +308,8 @@ export default function BulkIncrementEntry() {
                         />
                       </div>
                     </div>
-                    <div className="row mt-1">
+
+                    <div className="row mt-2">
                       {[3, 12, 15]?.includes(orgId) && (
                         <div
                           className="col-md-3"
