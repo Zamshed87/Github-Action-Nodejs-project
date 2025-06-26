@@ -5,7 +5,6 @@ import TLeaveApplicationForm from "./TLeaveApplicationForm";
 import LeaveBalanceTable from "./LeaveBalanceTable";
 import { LeaveApp_History } from "./LeaveHistory";
 import { PModal } from "Components/Modal";
-import HistoryBalance from "./HistoryBalance";
 
 export const CommonView = ({
   employeeInfo,
@@ -102,7 +101,11 @@ export const CommonView = ({
           maskClosable={false}
           components={
             <>
-              <HistoryBalance history={historyBalanceData} />
+              <LeaveBalanceTable
+                leaveBalanceData={historyBalanceData}
+                isHistory={true}
+                values=""
+              />
             </>
           }
         />
