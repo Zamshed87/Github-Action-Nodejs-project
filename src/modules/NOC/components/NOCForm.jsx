@@ -5,8 +5,15 @@ import { useLocation, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import axios from "axios";
-import { initialValueForNOCApplication, updateDataById, validationSchemaForNOCApplication } from "./utils";
-import { getPeopleDeskAllDDL, getPeopleDeskAllLanding } from "common/api";
+import {
+  initialValueForNOCApplication,
+  updateDataById,
+  validationSchemaForNOCApplication,
+} from "./utils";
+import {
+  getPeopleDeskAllLanding,
+  getSearchEmployeeListWithWarning,
+} from "common/api";
 import { todayDate } from "utility/todayDate";
 import { APIUrl } from "App";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -17,17 +24,15 @@ import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 import DefaultInput from "common/DefaultInput";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
-import DemoImg from '../../../assets/images/demo.png'
+import DemoImg from "../../../assets/images/demo.png";
 import { toast } from "react-toastify";
-
-
+import AsyncFormikSelect from "common/AsyncFormikSelect";
 
 const NOCForm = () => {
   const {
-    profileData: { orgId,intAccountId, buId, employeeId, wgId, wId },
+    profileData: { orgId, intAccountId, buId, employeeId, wgId, wId },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
-  const [employeeDDL, setEmployeeDDL] = useState([]);
   const { state } = useLocation() || false;
   const [countryDDL, setCountryDDL] = useState([]);
 
@@ -53,21 +58,27 @@ const NOCForm = () => {
     initialValues: initialValueForNOCApplication || {},
     validationSchema: validationSchemaForNOCApplication,
     onSubmit: (values) => {
-      saveHandler(attachmentList, values, () => {
+      // Ensure attachmentList is always an array, even if empty
+      const safeAttachmentList = attachmentList || [];
+      saveHandler(safeAttachmentList, values, () => {
         setEmployeeInfo([]);
         setAttachmentList([]);
         resetForm(initialValueForNOCApplication);
       });
     },
   });
-
   const saveHandler = (attachmentList, values, cb) => {
-    let fileList = [];
-    attachmentList.forEach((item) => {
-      const data = item?.response?.[0];
-      fileList.push(data?.globalFileUrlId);
-    });
-    
+    const fileList = [];
+    // Handle case when attachmentList is empty or undefined
+    if (attachmentList && attachmentList.length > 0) {
+      attachmentList.forEach((item) => {
+        const data = item?.response?.[0];
+        if (data?.globalFileUrlId) {
+          fileList.push(data?.globalFileUrlId);
+        }
+      });
+    }
+
     const payload = {
       nocType: values?.nocType?.label || "",
       fromDate: values?.fromDate,
@@ -77,19 +88,20 @@ const NOCForm = () => {
       countryId: values?.country?.value || 0,
       purpose: values?.purpose || "",
       fileIds: fileList?.length > 0 ? fileList.join(",") : "",
-      actionBy: employeeId
+      actionBy: employeeId,
     };
-    
+
     if (id && type === "edit") {
       setLoading(true);
-      axios.put(`${APIUrl}/NocApplication/${id}`, payload)
-        .then(response => {
+      axios
+        .put(`${APIUrl}/NocApplication/${id}`, payload)
+        .then((response) => {
           if (response.status === 200 || response.status === 201) {
             toast.success("NOC application updated successfully!");
             cb?.();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error updating NOC application:", error);
           toast.warn("Failed to update NOC application. Please try again.");
         })
@@ -107,11 +119,10 @@ const NOCForm = () => {
         ...payload,
         isActive: true,
       };
-      
       saveNOCApplicationReq(
         `/NocApplication`,
         newPayload,
-        (res) => {
+        () => {
           !id && cb?.();
         },
         true
@@ -130,63 +141,96 @@ const NOCForm = () => {
       setLoading
     );
   };
-
   const getNOCApplicationInfoById = (id) => {
-    getReqInfoById(
-      `/NocApplication/${+id}`,
-      (res) => {
-        const { updateInitialValue } = updateDataById(res);
-        const attachmentList =
-          res?.fileIds && res.fileIds.length > 0
-            ? res.fileIds.map((item, index) => {
-                return {
-                  lastModified: new Date(),
-                  lastModifiedDate: todayDate(),
-                  name: `Attachment ${index + 1}`,
-                  response: [
-                    {
-                      fileName: `Attachment ${index + 1}`,
-                      globalFileUrlId: item,
-                      intAutoId: item,
-                      isActive: true,
-                    },
-                  ],
-                  url: `${APIUrl}/Document/DownloadFile?id=${item}`,
-                  status: "done",
-                  type: "image/jpeg",
-                  uid: `Attachment ${item}-${index + 1}`,
-                };
-              })
-            : // Fallback to the old format if needed
-              res?.strFileIds
-              ? res?.strFileIds?.split(",")?.map((item, index) => {
-                  return {
-                    lastModified: new Date(),
-                    lastModifiedDate: todayDate(),
-                    name: `Attachment ${index + 1}`,
-                    response: [
-                      {
-                        fileName: `Attachment ${index + 1}`,
-                        globalFileUrlId: item,
-                        intAutoId: item,
-                        isActive: true,
-                      },
-                    ],
-                    url: `${APIUrl}/Document/DownloadFile?id=${item}`,
-                    status: "done",
-                    type: "image/jpeg",
-                    uid: `Attachment ${item}-${index + 1}`,
-                  };
-                })
-              : [];
-        getEmpInfoDetails(res?.intEmployeeBasicInfoId || res?.employeeId);
-        setAttachmentList(attachmentList);
-        setValues((prev) => ({
-          ...prev,
-          ...updateInitialValue,
-        }));
+    getReqInfoById(`/NocApplication/${+id}`, (res) => {
+      const { updateInitialValue } = updateDataById(res);
+
+      // Helper function to determine file type
+      const getFileType = (fileName) => {
+        if (!fileName) return "document";
+        const extension = fileName?.split(".").pop()?.toLowerCase();
+        if (["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(extension)) {
+          return "image";
+        } else if (extension === "pdf") {
+          return "pdf";
+        }
+        return "document";
+      };
+
+      // Handle attachment list safely
+      let attachmentList = [];
+
+      if (
+        res?.fileIds &&
+        Array.isArray(res.fileIds) &&
+        res.fileIds.length > 0
+      ) {
+        attachmentList = res.fileIds.map((item, index) => {
+          const fileName = `Attachment ${index + 1}`;
+          const fileType = getFileType(fileName);
+          return {
+            lastModified: new Date(),
+            lastModifiedDate: todayDate(),
+            name: fileName,
+            response: [
+              {
+                fileName: fileName,
+                globalFileUrlId: item,
+                intAutoId: item,
+                isActive: true,
+              },
+            ],
+            url: `${APIUrl}/Document/DownloadFile?id=${item}`,
+            status: "done",
+            type:
+              fileType === "image"
+                ? "image/jpeg"
+                : fileType === "pdf"
+                ? "application/pdf"
+                : "application/octet-stream",
+            uid: `Attachment ${item}-${index + 1}`,
+          };
+        });
+      } else if (res?.strFileIds && typeof res.strFileIds === "string") {
+        // Fallback to the old format if needed
+        const fileIds = res.strFileIds
+          .split(",")
+          .filter((id) => id.trim() !== "");
+        attachmentList = fileIds.map((item, index) => {
+          const fileName = `Attachment ${index + 1}`;
+          const fileType = getFileType(fileName);
+          return {
+            lastModified: new Date(),
+            lastModifiedDate: todayDate(),
+            name: fileName,
+            response: [
+              {
+                fileName: fileName,
+                globalFileUrlId: item.trim(),
+                intAutoId: item.trim(),
+                isActive: true,
+              },
+            ],
+            url: `${APIUrl}/Document/DownloadFile?id=${item.trim()}`,
+            status: "done",
+            type:
+              fileType === "image"
+                ? "image/jpeg"
+                : fileType === "pdf"
+                ? "application/pdf"
+                : "application/octet-stream",
+            uid: `Attachment ${item.trim()}-${index + 1}`,
+          };
+        });
       }
-    );
+
+      getEmpInfoDetails(res?.intEmployeeBasicInfoId || res?.employeeId);
+      setAttachmentList(attachmentList);
+      setValues((prev) => ({
+        ...prev,
+        ...updateInitialValue,
+      }));
+    });
   };
 
   useEffect(() => {
@@ -206,14 +250,7 @@ const NOCForm = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, type]);
-
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      "intEmployeeBasicInfoId",
-      "strEmployeeName",
-      setEmployeeDDL
-    );
     DDLForAddress(
       "Country",
       orgId,
@@ -223,7 +260,6 @@ const NOCForm = () => {
       "CountryName"
     );
   }, [employeeId, buId, orgId]);
-
   useEffect(() => {
     if (employeeInfo?.[0]?.EmployeeId) {
       setFieldValue(
@@ -247,13 +283,15 @@ const NOCForm = () => {
             <h2>{`NOC Application Form`}</h2>
           </div>
           <ul className={type === "view" ? "d-none" : "d-flex flex-wrap"}>
+            {" "}
             <li>
               <button
                 type="button"
                 className="btn btn-cancel mr-2"
                 onClick={() => {
                   setEmployeeInfo([]);
-                  //   resetForm(initialValueForNOCApplication);
+                  setAttachmentList([]);
+                  resetForm(initialValueForNOCApplication);
                 }}
               >
                 Reset
@@ -271,26 +309,21 @@ const NOCForm = () => {
           <div className="row pb-2">
             <div className="col-md-3 col-lg-4">
               <label>Employee</label>
-              <FormikSelect
-                name="employee"
-                options={employeeDDL}
-                value={values?.employee}
-                onChange={(valueOption) => {
+              <AsyncFormikSelect
+                selectedValue={values?.employee}
+                isSearchIcon={true}
+                handleChange={(valueOption) => {
                   setEmployeeInfo([]);
                   setFieldValue("employee", valueOption);
-                  setFieldValue(
-                    "strEmployeeName",
-                    valueOption?.strEmployeeName
-                  );
                   setFieldValue("setGetAssignShiftInfo", []);
                   if (valueOption) {
                     getEmpInfoDetails(valueOption?.value);
                   }
                 }}
-                placeholder=""
-                styles={customStyles}
-                errors={errors}
-                touched={touched}
+                placeholder="Search (min 3 letter)"
+                loadOptions={(v) =>
+                  getSearchEmployeeListWithWarning(buId, wgId, v)
+                }
                 isDisabled={id || !isManagement}
               />
             </div>
@@ -488,20 +521,26 @@ const NOCForm = () => {
                   disabled={type === "view"}
                 />
               </div>
-            </div>
+            </div>{" "}
             <div className="col-md-3 col-lg-4 mt-3">
               <FileUploadComponents
                 propsObj={{
                   isOpen,
                   setIsOpen,
                   destroyOnClose: false,
-                  attachmentList,
+                  attachmentList: attachmentList || [],
                   setAttachmentList,
                   accountId: orgId,
-                  tableReferrence: "IOU",
+                  tableReferrence: "NOC",
                   documentTypeId: 24,
                   userId: employeeId,
                   buId,
+                  accept: "image/png, image/jpeg, image/jpg, application/pdf",
+                  maxCount: 5,
+                  listType: "picture",
+                  title: "Upload Attachment",
+                  subText: "Supported: Images (PNG, JPG, JPEG) and PDF files",
+                  showUploadList: attachmentList && attachmentList.length > 0,
                 }}
               />
             </div>

@@ -1,4 +1,4 @@
-const calculationType = [
+export const calculationType = [
   {
     label: "Each Day",
     value: 1,
@@ -13,7 +13,7 @@ const calculationType = [
   },
 ];
 
-const getcalculatedBy = (value: number) => {
+export const getcalculatedBy = (value: number) => {
   if (value === 1)
     return [
       {
@@ -34,7 +34,7 @@ const getcalculatedBy = (value: number) => {
     ];
 };
 
-const punishmentType = [
+export const punishmentType = [
   {
     label: "Leave Deduct",
     value: 1,
@@ -45,7 +45,7 @@ const punishmentType = [
   },
 ];
 
-const getleaveDeductType = (value: number) => {
+export const getleaveDeductType = (value: number) => {
   if (value === 1) {
     return [
       {
@@ -74,7 +74,7 @@ const getleaveDeductType = (value: number) => {
     ];
 };
 
-const amountDeductFrom = [
+export const amountDeductFrom = [
   {
     label: "Gross Salary",
     value: 1,
@@ -89,7 +89,7 @@ const amountDeductFrom = [
   },
 ];
 
-const amountDeductType = [
+export const amountDeductType = [
   {
     label: "Actual Time",
     value: 1,
@@ -100,7 +100,7 @@ const amountDeductType = [
   },
 ];
 
-const daysArray = Array.from({ length: 31 }, (_, i) => ({
+export const daysArray = Array.from({ length: 31 }, (_, i) => ({
   label: (i + 1).toString(),
   value: i + 1,
 }));
@@ -278,6 +278,15 @@ export const LatePunishment = (
       ddl: punishmentType || [],
       placeholder: "Select punishment type",
       rules: [{ required: true, message: "Punishment Type is required!" }],
+      onChange: () => {
+        form.setFieldsValue({
+          leaveDeductType: undefined,
+          leaveDeductQty: undefined,
+          amountDeductFrom: undefined,
+          amountDeductType: undefined,
+          amountPercentage: undefined,
+        });
+      },
       col: 6,
     },
     ...(values?.punishmentType?.value === 1
