@@ -413,14 +413,6 @@ const WorkForceCreate = () => {
             mergedRowData = Object.values(map);
           }
 
-          // Find fiscal year option from DDL if fiscal
-          let fiscalYearOption = null;
-          if (d.yearTypeId === 2 && Array.isArray(getFiscalDDL.data)) {
-            fiscalYearOption = getFiscalDDL.data.find(
-              fy => fy.value === d.fromDate
-            );
-          }
-
           form.setFieldsValue({
             workplace: { value: d.workplaceId, label: d.workplaceName },
             yearType: {
@@ -430,11 +422,7 @@ const WorkForceCreate = () => {
             },
             selectYear:
               d.yearTypeId === 2
-                ? (
-                    Array.isArray(getFiscalDDL.data)
-                      ? getFiscalDDL.data.find(fy => fy.value === d.fromDate)
-                      : null
-                  ) || { value: d.fromDate, label: d.fromDate?.toString() }
+                ? { value: d.calenderYearId, label: `${d.fromDate}-${d.toDate}` }
                 : { value: d.fromDate, label: d.fromDate?.toString() },
             planningType: {
               value: getPlanningTypeValue(d.planningTypeId),
