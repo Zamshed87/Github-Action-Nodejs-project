@@ -328,7 +328,6 @@ const WorkForceComparison = () => {
       {loading && <Loading />}
       <PCard>
         <PCardHeader
-          backButton={true}
           title={`Workforce Comparison`}
           exportIcon
           onExport={() => {
