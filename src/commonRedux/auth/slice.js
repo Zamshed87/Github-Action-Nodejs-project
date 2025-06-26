@@ -158,7 +158,7 @@ export const authSlice = createSlice({
       };
       state.tokenData = "";
       state.isExpiredToken = false;
-      state.decodedTokenData={};
+      state.decodedTokenData = {};
     },
     SetImageView: (state, action) => {
       const { payload } = action;
@@ -173,6 +173,9 @@ export const authSlice = createSlice({
     },
     setToken: (state, action) => {
       state.tokenData = action.payload;
+    },
+    setBaseColor: (state, action) => {
+      state.baseColor = action.payload;
     },
     setIsExpiredToken: (state, action) => {
       state.isExpiredToken = action.payload;
@@ -196,15 +199,14 @@ export const authSlice = createSlice({
     },
     setDecodedTokenData: (state, action) => {
       const decodedToken = action.payload
-      ? JSON.parse(atob(action.payload.split(".")[1]))
-      : null;
+        ? JSON.parse(atob(action.payload.split(".")[1]))
+        : null;
       const { workplaceGroupList, workplaceList } = decodedToken || {};
       state.decodedTokenData = {
         workplaceGroupList,
         workplaceList,
       };
     },
-    // most clicked menu list updataion and clear end  -----------  
-
+    // most clicked menu list updataion and clear end  -----------
   },
 });

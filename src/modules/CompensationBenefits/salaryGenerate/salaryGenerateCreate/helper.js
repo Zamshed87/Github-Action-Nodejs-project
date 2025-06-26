@@ -335,7 +335,7 @@ export const salaryGenerateCreateEditTableColumn = (
     dataIndex: "numDigitalPayInAmount",
     render: (_, record) => (
       <div className="align-items-left">
-        {record?.numDigitalPayInAmount === null
+        {record?.numDigitalPayInAmount == null
           ? "0"
           : record?.numDigitalPayInAmount}
       </div>

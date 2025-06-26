@@ -94,7 +94,7 @@ const FileUploadComponents = ({ propsObj }) => {
   return (
     <Upload {...props}>
       <Button
-        style={{ color: "green", border: "green 1px solid" }}
+        style={{ color: "var(--primary-color)", border: "green 1px solid" }}
         icon={<UploadOutlined />}
       >
         {title ? title : "Upload Attachment"}

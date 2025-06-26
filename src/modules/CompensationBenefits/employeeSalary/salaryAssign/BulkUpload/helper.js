@@ -147,10 +147,17 @@ export const processNewBulkUploadSalaryAction = async (
   values,
   setErrorData,
   setOpen,
-  employeeId
+  employeeId,
+  wId
 ) => {
   try {
     setLoading(true);
+    const isGrade = payrollInfo?.[1]?.split(":")?.[1]?.trim() !== "Non-Grade";
+
+    if (isGrade && payrollInfo?.[12] !== wId) {
+      setLoading(false);
+      return toast.error("Please select correct Workplace");
+    }
     const keyValuePairs = {};
 
     for (const item of elementInfo) {
@@ -159,19 +166,20 @@ export const processNewBulkUploadSalaryAction = async (
         keyValuePairs[key] = value; // Add to the object
       }
     }
-    console.log({ data });
     const modifiedData = data.slice(2).map((item, index) => {
       const {
         "Employee Name": empName,
         "Employee Code": employeeCode,
         "Gross Salary": gross,
         "Mismatch Amount": misMatch,
-        // "Effective Date": effectiveDate,
+        "Effective Date": effectiveDate,
         "Payment Method": pm,
         "Payment Mismatch": pmm,
         "Bank Pay": bank,
         "Cash Pay": cash,
         "Digital Pay": digital,
+        "Slab Count": slabCount,
+
         ...fields
       } = item;
       const salaryElements = Object.keys(fields)
@@ -202,6 +210,9 @@ export const processNewBulkUploadSalaryAction = async (
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
         actionBy: employeeId,
+        createdBy: employeeId,
+        slabCount: +slabCount?.split(" ")[1] || 0,
+        slabElement: slabCount || 0,
         salaryElements,
         pm: pm || "N/A",
         bank: bank || 0,
@@ -212,8 +223,33 @@ export const processNewBulkUploadSalaryAction = async (
     });
     const errorData = [];
     const cleanData = [];
-    console.log({ modifiedData });
     modifiedData.forEach((item) => {
+      if (isGrade) {
+        if (
+          !item.empName?.result ||
+          item.empName === "N/A" ||
+          !item.employeeCode ||
+          Boolean(item.misMatch) ||
+          Boolean(item?.pmm)
+        ) {
+          errorData.push({
+            ...item,
+            empName: item.empName?.result || "N/A",
+            employeeCode: item.employeeCode || "N/A",
+          });
+        } else {
+          cleanData.push({
+            ...item,
+            empName: item.empName?.result || "N/A",
+            gross: item.gross || 0,
+            isGrade: true,
+            payScaleId: payrollInfo?.[13],
+          });
+        }
+
+        return;
+      }
+
       if (
         Boolean(item.misMatch) ||
         // item.empName === "N/A" ||
@@ -261,7 +297,6 @@ export const saveBulkUploadSalaryAction = async (
     });
 
     setErrorData(res?.data?.Result);
-    console.log("res", res);
     setData(res?.data);
 
     setLoading(false);

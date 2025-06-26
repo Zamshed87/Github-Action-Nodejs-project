@@ -11,7 +11,7 @@
   background: #009cde;
 }
 .bg-green {
-  background: #34a853;
+  background: var(--primary-color);
 }
 .bg-seagreen {
   background: #26b86e;
@@ -803,7 +803,7 @@ p.title {
 
 .set-as-default .switch input:checked + .slider:before {
   transform: translate(15px, -50%);
-  background-color: #34a853;
+  background-color: var(--primary-color);
 }
 
 /* Rounded sliders */

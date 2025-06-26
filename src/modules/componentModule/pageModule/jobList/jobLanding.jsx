@@ -2,7 +2,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   RemoveRedEyeOutlined,
-  RoomOutlined
+  RoomOutlined,
 } from "@mui/icons-material";
 import { TableCell, TableRow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -97,7 +97,9 @@ export default function JobLanding() {
                 <h4>{data.totalCadidate}</h4>
               </div>
               <div className="td-para">
-                <p style={{ color: "#34A853" }}>{data.newCadidate} new</p>
+                <p style={{ color: "var(--primary-color)" }}>
+                  {data.newCadidate} new
+                </p>
               </div>
             </TableCell>
             <TableCell align="left" className={classes?.tableCell}>

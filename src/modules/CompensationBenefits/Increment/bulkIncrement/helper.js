@@ -13,10 +13,16 @@ export const processBulkUploadIncrementAction = async (
   values,
   setErrorData,
   setOpen,
-  employeeId
+  employeeId,
+  wId
 ) => {
   try {
     setLoading(true);
+    const isGrade = payrollInfo?.[1]?.split(":")?.[1]?.trim() !== "Non-Grade";
+    if (isGrade && payrollInfo?.[12] !== wId) {
+      setLoading(false);
+      return toast.error("Please select correct Workplace");
+    }
     const keyValuePairs = {};
 
     for (const item of elementInfo) {
@@ -32,6 +38,7 @@ export const processBulkUploadIncrementAction = async (
         "Gross Salary": gross,
         "Mismatch Amount": misMatch,
         "Effective Date": effectiveDate,
+        "Slab Count": slabCount,
         ...fields
       } = item;
       const payrollElements = Object.keys(fields)
@@ -45,6 +52,7 @@ export const processBulkUploadIncrementAction = async (
               elementId: keyValuePairs[key],
             };
           }
+
           return {
             elementName: key,
             amount: 0,
@@ -58,6 +66,8 @@ export const processBulkUploadIncrementAction = async (
         empName: empName || "N/A",
         employeeCode: `${employeeCode}` || "N/A",
         gross: gross,
+        slabCount: +slabCount?.split(" ")[1] || 0,
+        slabElement: slabCount || 0,
         effectiveDate: effectiveDate || todayDate(),
         payrollGroupId: values?.pg?.value || payrollInfo[7],
         misMatch: misMatch?.result || 0,
@@ -68,6 +78,30 @@ export const processBulkUploadIncrementAction = async (
     const errorData = [];
     const cleanData = [];
     modifiedData.forEach((item) => {
+      if (isGrade) {
+        if (
+          !item.empName?.result ||
+          item.empName === "N/A" ||
+          !item.employeeCode
+        ) {
+          errorData.push({
+            ...item,
+            empName: item.empName?.result || "N/A",
+            employeeCode: item.employeeCode || "N/A",
+          });
+        } else {
+          cleanData.push({
+            ...item,
+            empName: item.empName?.result || "N/A",
+            gross: item?.gross?.result || 0,
+            isGrade: true,
+            payScaleId: payrollInfo?.[13],
+          });
+        }
+
+        return;
+      }
+
       if (
         Boolean(item.misMatch) ||
         item.empName === "N/A" ||
@@ -75,7 +109,10 @@ export const processBulkUploadIncrementAction = async (
       ) {
         errorData.push(item);
       } else {
-        cleanData.push(item);
+        cleanData.push({
+          ...item,
+          gross: item?.gross?.result || item?.gross || 0,
+        });
       }
     });
     setter(cleanData);

@@ -107,10 +107,15 @@ function RewardsAndPunishmentView() {
                           sx={{
                             marginRight: "5px",
                             fontSize: "18px",
-                            color: "#34A853",
+                            color: "var(--primary-color)",
                           }}
                         />
-                        <p style={{ color: "#34A853", fontSize: "14px" }}>
+                        <p
+                          style={{
+                            color: "var(--primary-color)",
+                            fontSize: "14px",
+                          }}
+                        >
                           History
                         </p>
                       </div>

@@ -289,8 +289,8 @@ const getMatchingPolicy = (values: any, allData: any) => {
       // !workplace &&
       (!hrPosition || hrPosition.length === 0) &&
       (!employmentType || employmentType.length === 0) &&
-      (fromSalary === null || fromSalary === undefined) &&
-      (toSalary === null || toSalary === undefined)
+      (fromSalary == null || fromSalary === undefined) &&
+      (toSalary == null || toSalary === undefined)
     ) {
       resolve([]);
     }
