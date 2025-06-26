@@ -4005,7 +4005,7 @@ export const routingList = [
     component: WorkForceCreate,
   },
      {
-    path: "/profile/ManpowerAnalysis/WorkforcePlanning/edit/:id",
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
     component: WorkForceCreate,
   },
   {

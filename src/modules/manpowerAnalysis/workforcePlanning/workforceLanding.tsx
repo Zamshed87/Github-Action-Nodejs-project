@@ -150,7 +150,7 @@ const WorkforcePlanningLanding = () => {
                   return;
                 }
                 history.push(
-                  "/profile/ManpowerAnalysis/WorkforcePlanning/edit/" + id,
+                  "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
                   {
                     workplaceId: record.workplaceId,
                     yearTypeId: record.yearTypeId,
