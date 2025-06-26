@@ -52,11 +52,11 @@ interface ApiResponse {
 }
 
 export default function AssistantChatbot() {
-  const { orgId, buId, wgId, wId } = useSelector(
-      (state:any) => state?.auth?.profileData,
-      shallowEqual
-    );
-  
+  const { orgId, buId, wgId, wId, userName } = useSelector(
+    (state: any) => state?.auth?.profileData,
+    shallowEqual
+  );
+
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -174,6 +174,12 @@ export default function AssistantChatbot() {
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
+
+  function stringAvatar(name: string) {
+    return {
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    };
+  }
 
   return (
     <>
@@ -321,9 +327,10 @@ export default function AssistantChatbot() {
                 </Paper>
 
                 {message.role === "user" && (
-                  <Avatar sx={{ bgcolor: "#4CAF50", width: 32, height: 32 }}>
-                    <PersonIcon fontSize="small" />
-                  </Avatar>
+                  <Avatar
+                    sx={{ width: 32, height: 32, textTransform: "uppercase" }}
+                    {...stringAvatar(userName)}
+                  ></Avatar>
                 )}
               </Box>
             ))}
