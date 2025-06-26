@@ -67,7 +67,7 @@ const LoanDetailsView = ({
       <div className="mx-3">
         <div className="d-flex justify-content-between">
           <HeaderView loanByIdDto={loanByIdDto} />
-          {!onlyViewDetails && (
+          {!onlyViewDetails && !loanByIdDto?.objHeader?.isEarlySettlement && (
             <div className="" style={{ marginTop: "0" }}>
               <PButton
                 type="primary"
@@ -101,7 +101,7 @@ const LoanDetailsView = ({
         </div>
 
         <div
-          style={{ maxHeight: "300px", overflowY: "scroll" }}
+          style={{ maxHeight: "900px", overflowY: "scroll" }}
           className="pfLoan mt-2 mb-3"
         >
           {loanByIdDto?.objRow?.length > 0 && (

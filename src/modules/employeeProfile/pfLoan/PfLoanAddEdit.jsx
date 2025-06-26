@@ -113,7 +113,11 @@ const PfLoanAddEdit = () => {
             ).format("YYYY-MM-DD"),
             description: loanByIdDto?.objHeader?.strDescription,
           }
-        : initialValues,
+        : {
+            ...initialValues,
+            loanType:
+              loanTypeDDL && loanTypeDDL.length > 0 ? loanTypeDDL[0] : null,
+          },
       onSubmit: (values) => {
         viewHandler(values, setGeneratedData);
       },
@@ -295,7 +299,6 @@ const PfLoanAddEdit = () => {
                 <label>Loan Type</label>
                 <FormikSelect
                   name="loanType"
-                  // options={[{ value: 12, label: "PF Loan" }]}
                   options={loanTypeDDL}
                   value={values?.loanType}
                   onChange={(valueOption) => {

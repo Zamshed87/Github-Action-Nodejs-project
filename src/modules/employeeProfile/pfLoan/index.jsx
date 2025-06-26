@@ -76,7 +76,7 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
       fDate: getDateOfYear("first"),
       tDate: todayDate(),
       search: "",
-      monthYear: moment().format("YYYY-MM"),
+      status: { value: 0, label: "All" },
       monthId: new Date().getMonth() + 1,
       yearId: new Date().getFullYear(),
     },
@@ -247,6 +247,7 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
                 data={rowDto?.length > 0 ? rowDto : []}
                 loading={loanLandingLoading}
                 header={pfLandingColData(history, setLoading)}
+                scroll={{ x: 1500 }}
                 pagination={{
                   pageSize: pages?.pageSize,
                   total: pages?.totalCount,
