@@ -367,4 +367,6 @@ export const apiList = {
   ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
   EmployeeLeaveBalanceHistory: "/LeaveBalance/EmployeeLeaveBalanceHistory",
+  IncrementGradeBasedBulkUpload:
+    "/EmployeeIncrement/IncrementGradeBasedBulkUpload",
 };
