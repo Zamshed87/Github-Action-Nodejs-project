@@ -339,6 +339,7 @@ export const apiList = {
   LeaveBalanceReport: "PdfAndExcelReport/LeaveBalanceReport",
   GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
   OffdayLandingFilter: "/Employee/OffdayLandingFilter",
+  GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
   LeaveAdjustmentCreate: "/LeaveAdjustment/Create",
   LeaveAdjustmentLanding: "/LeaveAdjustment/Get",
   LeaveAdjustmentGetById: "/LeaveAdjustment/GetById",
@@ -366,5 +367,7 @@ export const apiList = {
 
   ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
-  GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
+  IncrementGradeBasedBulkUpload:
+    "/EmployeeIncrement/IncrementGradeBasedBulkUpload",
+  EmployeeLeaveBalanceHistory: "/LeaveBalance/EmployeeLeaveBalanceHistory",
 };
