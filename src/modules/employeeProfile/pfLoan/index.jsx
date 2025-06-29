@@ -2,7 +2,7 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { DataTable } from "Components";
+import { DataTable, PButton } from "Components";
 import { paginationSize } from "common/AntTable";
 import DefaultInput from "common/DefaultInput";
 import MasterFilter from "common/MasterFilter";
@@ -19,21 +19,28 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getDateOfYear } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
-import { pfLandingColData } from "./helper";
+import { pfLandingColData, statusDDL } from "./helper";
 import ViewModal from "common/ViewModal";
 import SingleInfo from "common/SingleInfo";
 import moment from "moment";
 import PfLoanTable from "./components/pfLoanTable";
 import { getPDFAction } from "utility/downloadFile";
+import { customStyles } from "utility/selectCustomStyle";
+import FormikSelect from "common/FormikSelect";
+import { AppstoreAddOutlined } from "@ant-design/icons";
+import HeaderView from "./components/HeaderView";
+import EarlySettled from "./components/EarlySettled";
+import LoanDetailsView from "./common/loanDetailsView";
 
-const PfLoanLanding = () => {
+const PfLoanLanding = ({ onlyViewDetails = null }) => {
+  console.log("PfLoanLanding Rendered", onlyViewDetails);
   const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Loan Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PF Loan";
     return () => {
@@ -45,7 +52,7 @@ const PfLoanLanding = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30574) {
+    if (item?.menuReferenceId === 30620) {
       permission = item;
     }
   });
@@ -57,6 +64,7 @@ const PfLoanLanding = () => {
   const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState({});
   const [viewDetails, setViewDetails] = useState(false);
+  const [viewEarlySettled, setViewEarlySettled] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -68,14 +76,20 @@ const PfLoanLanding = () => {
       fDate: getDateOfYear("first"),
       tDate: todayDate(),
       search: "",
-      monthYear: moment().format("YYYY-MM"),
+      status: { value: 0, label: "All" },
       monthId: new Date().getMonth() + 1,
       yearId: new Date().getFullYear(),
     },
   });
 
   const getData = (srcTxt = values?.search, pages, isPaginated = true) => {
-    const url = `/Employee/EmpPfLoanLanding?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${values?.fDate}&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchText=${srcTxt}&IsPaginated=${isPaginated}`;
+    const url = `/PfLoan/GetAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
+      values?.fDate
+    }&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${
+      pages?.pageSize
+    }&SearchText=${srcTxt}&IsPaginated=${isPaginated}&status=${
+      values?.status?.value || 0
+    }`;
 
     getLoanLanding(url, (data) => {
       setRowDto(data?.objHeader);
@@ -88,227 +102,207 @@ const PfLoanLanding = () => {
   };
 
   useEffect(() => {
-    getData("", pages);
-  }, [wId, wgId]);
+    if (!onlyViewDetails) {
+      getData("", pages);
+    } else {
+      getLoanById(
+        `/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${onlyViewDetails?.intEmployeeLoanHeaderId}
+                  `,
+        (data) => {
+          setSingleData(data);
+          setViewDetails(true);
+        }
+      );
+    }
+  }, [wId, wgId, onlyViewDetails]);
 
   return permission?.isView ? (
     <>
       {(loanLandingLoading || loanByIdLoading || loading) && <Loading />}
-      <div className="table-card">
-        <div className="table-card-heading" style={{ marginBottom: "12px" }}>
-          <div>
-            <h6>PF Loan</h6>
-          </div>
-          <div className="table-card-head-right">
-            <ul>
-              {values?.search && (
+      {!onlyViewDetails && (
+        <div className="table-card">
+          <div className="table-card-heading" style={{ marginBottom: "12px" }}>
+            <div>
+              <h6>PF Loan</h6>
+            </div>
+            <div className="table-card-head-right">
+              <ul>
+                {values?.search && (
+                  <li>
+                    <ResetButton
+                      title="reset"
+                      icon={
+                        <SettingsBackupRestoreOutlined
+                          sx={{ marginRight: "10px" }}
+                        />
+                      }
+                      onClick={() => {
+                        setFieldValue("search", "");
+                        getData("", pages);
+                      }}
+                    />
+                  </li>
+                )}
                 <li>
-                  <ResetButton
-                    title="reset"
-                    icon={
-                      <SettingsBackupRestoreOutlined
-                        sx={{ marginRight: "10px" }}
-                      />
-                    }
-                    onClick={() => {
+                  <MasterFilter
+                    isHiddenFilter
+                    width="200px"
+                    inputWidth="200px"
+                    value={values?.search}
+                    setValue={(value) => {
+                      setFieldValue("search", value);
+                      getData(value, pages);
+                    }}
+                    cancelHandler={() => {
                       setFieldValue("search", "");
                       getData("", pages);
                     }}
                   />
                 </li>
-              )}
-              <li>
-                <MasterFilter
-                  isHiddenFilter
-                  width="200px"
-                  inputWidth="200px"
-                  value={values?.search}
-                  setValue={(value) => {
-                    setFieldValue("search", value);
-                    getData(value, pages);
-                  }}
-                  cancelHandler={() => {
-                    setFieldValue("search", "");
-                    getData("", pages);
-                  }}
-                />
-              </li>
-            </ul>
+              </ul>
 
-            <PrimaryButton
-              type="button"
-              className="btn btn-default flex-center"
-              label={"PF Loan Create"}
-              icon={
-                <AddOutlined sx={{ marginRight: "0px", fontSize: "15px" }} />
-              }
-              onClick={() => {
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
+              <PrimaryButton
+                type="button"
+                className="btn btn-default flex-center"
+                label={"PF Loan Create"}
+                icon={
+                  <AddOutlined sx={{ marginRight: "0px", fontSize: "15px" }} />
+                }
+                onClick={() => {
+                  if (!permission?.isCreate)
+                    return toast.warn("You don't have permission");
 
-                history.push("/profile/pfLoan/create");
-              }}
-            />
-          </div>
-        </div>
-        <div className="table-card-body">
-          <div className="card-style my-2">
-            <div className="row">
-              <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>From Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.fDate}
-                    placeholder="From Date"
-                    name="fDate"
-                    type="date"
-                    className="form-control"
-                    onChange={(e) => {
-                      setFieldValue("fDate", e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>To Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.tDate}
-                    placeholder="From Date"
-                    name="tDate"
-                    type="date"
-                    className="form-control"
-                    onChange={(e) => {
-                      setFieldValue("tDate", e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="col-lg-3" style={{ marginTop: "21px" }}>
-                <button
-                  className="btn btn-green btn-green-disable"
-                  type="button"
-                  disabled={!values?.fDate || !values?.tDate}
-                  onClick={() => {
-                    getData(values?.search, pages);
-                  }}
-                >
-                  View
-                </button>
-              </div>
+                  history.push("/loanManagement/PfLoan/create");
+                }}
+              />
             </div>
           </div>
-          <div className="mt-2">
-            <DataTable
-              bordered
-              data={rowDto?.length > 0 ? rowDto : []}
-              loading={loanLandingLoading}
-              header={pfLandingColData(history)}
-              pagination={{
-                pageSize: pages?.pageSize,
-                total: pages?.totalCount,
-              }}
-              onChange={(pagination, filters, sorter, extra) => {
-                if (extra.action === "sort") return;
-                getData(values?.search, pagination);
-              }}
-              onRow={(rec) => ({
-                onClick: () => {
-                  getLoanById(`/Employee/EmpPfLoanById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${rec?.intEmployeeLoanHeaderId}
+          <div className="table-card-body">
+            <div className="card-style my-2">
+              <div className="row">
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>From Date</label>
+                    <DefaultInput
+                      classes="input-sm"
+                      value={values?.fDate}
+                      placeholder="From Date"
+                      name="fDate"
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => {
+                        setFieldValue("fDate", e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>To Date</label>
+                    <DefaultInput
+                      classes="input-sm"
+                      value={values?.tDate}
+                      placeholder="From Date"
+                      name="tDate"
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => {
+                        setFieldValue("tDate", e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Status</label>
+                    <FormikSelect
+                      name="status"
+                      options={statusDDL}
+                      value={values?.status}
+                      onChange={(valueOption) => {
+                        setFieldValue("status", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3" style={{ marginTop: "21px" }}>
+                  <button
+                    className="btn btn-green btn-green-disable"
+                    type="button"
+                    disabled={!values?.fDate || !values?.tDate}
+                    onClick={() => {
+                      getData(values?.search, pages);
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="mt-2">
+              <DataTable
+                bordered
+                data={rowDto?.length > 0 ? rowDto : []}
+                loading={loanLandingLoading}
+                header={pfLandingColData(history, setLoading)}
+                scroll={{ x: 1500 }}
+                pagination={{
+                  pageSize: pages?.pageSize,
+                  total: pages?.totalCount,
+                }}
+                onChange={(pagination, filters, sorter, extra) => {
+                  if (extra.action === "sort") return;
+                  getData(values?.search, pagination);
+                }}
+                onRow={(rec) => ({
+                  onClick: () => {
+                    getLoanById(`/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${rec?.intEmployeeLoanHeaderId}
                   `);
-                  setViewDetails(true);
-                  setSingleData(rec);
-                },
+                    setViewDetails(true);
+                    setSingleData(rec);
+                  },
 
-                className: "pointer",
-              })}
-            />
+                  className: "pointer",
+                })}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       <ViewModal
         size="xl"
-        title="View Loan Details"
+        title="Early Settled Loan Details"
         backdrop="static"
         classes="default-modal preview-modal"
-        show={!loanByIdLoading && viewDetails}
-        onHide={() => setViewDetails(false)}
+        show={viewEarlySettled}
+        onHide={() => setViewEarlySettled(false)}
       >
-        <div className="mx-3">
-          <div className="d-flex justify-content-between">
-            <div>
-              <SingleInfo
-                label={"Employee"}
-                value={`${loanByIdDto?.objHeader?.strEmployeeName}[${loanByIdDto?.objHeader?.strEmployeeCode}]`}
-              />
-              <SingleInfo
-                label={"Loan ID"}
-                value={loanByIdDto?.objHeader?.strLoanId}
-              />
-              <SingleInfo
-                label={"Loan Type"}
-                value={loanByIdDto?.objHeader?.strLoanType}
-              />
-              <SingleInfo
-                label={"Loan Amount"}
-                value={loanByIdDto?.objHeader?.numLoanAmount}
-              />
-              <SingleInfo
-                label={"Interest"}
-                value={`${loanByIdDto?.objHeader?.numInterest}%`}
-              />
-              <SingleInfo
-                label={"Installment Number"}
-                value={loanByIdDto?.objHeader?.intNumberOfInstallment}
-              />
-              <SingleInfo
-                label={"Effective Date"}
-                value={moment(loanByIdDto?.objHeader?.dteEffectiveDate).format(
-                  "MMM, YYYY"
-                )}
-              />
-            </div>
-            <div className="" style={{ marginTop: "0" }}>
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={() => {
-                  getPDFAction(
-                    `/PdfAndExcelReport/EmployeeLoanPdf?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`,
-                    setLoading
-                  );
-                }}
-              >
-                Print
-              </button>
-            </div>
-          </div>
-
-          <div
-            style={{ maxHeight: "300px", overflowY: "scroll" }}
-            className="pfLoan mt-2 mb-3"
-          >
-            {loanByIdDto?.objRow?.length > 0 && (
-              <PfLoanTable
-                header={loanByIdDto?.objHeader}
-                generatedData={loanByIdDto?.objRow}
-                isModal={true}
-                totalInterest={loanByIdDto?.objHeader?.numTotalInterest}
-                totalPrinciple={loanByIdDto?.objHeader?.numTotalPrincipal}
-                totalInstallment={loanByIdDto?.objHeader?.numTotalInstallment}
-                values={values}
-                setFieldValue={setFieldValue}
-                employeeId={employeeId}
-                close={() => setViewDetails(false)}
-                landing={() => getData("", pages)}
-                singleData={singleData}
-              />
-            )}
-          </div>
-        </div>
+        <EarlySettled
+          loanByIdDto={loanByIdDto}
+          headerId={loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}
+          setViewEarlySettled={setViewEarlySettled}
+        />
       </ViewModal>
+      <LoanDetailsView
+        loanByIdLoading={loanByIdLoading}
+        viewDetails={viewDetails}
+        setViewDetails={setViewDetails}
+        loanByIdDto={loanByIdDto}
+        setViewEarlySettled={setViewEarlySettled}
+        setLoading={setLoading}
+        buId={buId}
+        wgId={wgId}
+        values={values}
+        setFieldValue={setFieldValue}
+        employeeId={employeeId}
+        getData={getData}
+        pages={pages}
+        singleData={singleData}
+        onlyViewDetails={onlyViewDetails}
+      />
     </>
   ) : (
     <NotPermittedPage />

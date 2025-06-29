@@ -28,12 +28,14 @@ import BackButton from "common/BackButton";
 import PfLoanTable from "./components/pfLoanTable";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { useApiRequest } from "Hooks";
+import { isDevServer } from "App";
 
 const PfLoanAddEdit = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
+    dispatch(setFirstLevelNameAction("Loan Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PF Loan";
     return () => {
@@ -54,6 +56,7 @@ const PfLoanAddEdit = () => {
       permission = item;
     }
   });
+  const pfInfoApi = useApiRequest({});
 
   const [generatedData, setGeneratedData] = useState([]);
   const [loanTypeDDL, setLoanTypeDDL] = useState([]);
@@ -79,10 +82,11 @@ const PfLoanAddEdit = () => {
     );
     if (id) {
       getLoanById(
-        `/Employee/EmpPfLoanById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${id}
+        `/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${id}
       `,
         (data) => {
           setFileId(data?.objHeader?.intFileUrlId);
+          getEmployeePfAmount(data?.objHeader);
         }
       );
     }
@@ -110,11 +114,49 @@ const PfLoanAddEdit = () => {
             ).format("YYYY-MM-DD"),
             description: loanByIdDto?.objHeader?.strDescription,
           }
-        : initialValues,
+        : {
+            ...initialValues,
+            loanType:
+              loanTypeDDL && loanTypeDDL.length > 0 ? loanTypeDDL[0] : null,
+          },
       onSubmit: (values) => {
         viewHandler(values, setGeneratedData);
       },
     });
+
+  const getEmployeePfAmount = (valueOption) => {
+    console.log(valueOption, "valueOptionvalueOption");
+    pfInfoApi.action({
+      urlKey: "GetEmployeePfAmount",
+      method: "GET",
+      params: {
+        employeeId: !id ? valueOption?.value : valueOption?.intEmployeeId,
+        AccountId: orgId,
+      },
+      onSuccess: (res) => {
+        if (orgId === 14) {
+          console.log("first", res?.data);
+          setFieldValue("loanAmount", res?.data?.employeeContribution * 0.7);
+          return;
+        }
+        if (
+          orgId === 15 &&
+          res?.data?.serviceLength > 3 &&
+          ((!id && valueOption?.employmentType === "Permanent") ||
+            (id && valueOption?.strEmploymentType === "Permanent"))
+        ) {
+          setFieldValue("loanAmount", res?.data?.totalPfAmount * 0.85 || 0);
+        } else {
+          setFieldValue("employee", "");
+          setFieldValue("loanAmount", 0);
+          return toast.warning("Employee is not eligible for PF Loan");
+        }
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.message);
+      },
+    });
+  };
 
   const saveHandler = (values) => {
     viewHandler(values, setGeneratedData);
@@ -185,7 +227,7 @@ const PfLoanAddEdit = () => {
         toast.success(res?.message || "Submitted Successfully");
       }
     };
-    saveData("/Employee/CreateEmpLoanApplication", payload, cb, false);
+    saveData("/PfLoan/Create", payload, cb, false);
   };
   useEffect(() => {
     if (values?.loanId && id) {
@@ -225,6 +267,9 @@ const PfLoanAddEdit = () => {
                 isSearchIcon={true}
                 handleChange={(valueOption) => {
                   setFieldValue("employee", valueOption);
+                  [14, 15].includes(orgId) &&
+                    valueOption?.value &&
+                    getEmployeePfAmount(valueOption);
                 }}
                 placeholder="Search (min 3 letter)"
                 loadOptions={(v) => getSearchEmployeeList(buId, wgId, v, 4)}
@@ -253,7 +298,6 @@ const PfLoanAddEdit = () => {
                 <label>Loan Type</label>
                 <FormikSelect
                   name="loanType"
-                  // options={[{ value: 12, label: "PF Loan" }]}
                   options={loanTypeDDL}
                   value={values?.loanType}
                   onChange={(valueOption) => {
@@ -269,15 +313,46 @@ const PfLoanAddEdit = () => {
             </div>
             <div className="col-lg-3">
               <div className="input-field-main">
-                <label>Loan Amount</label>
+                <label>
+                  Loan Amount{" "}
+                  {[14, 15].includes(orgId) ? (
+                    <span>
+                      <b>Pf Own:</b>
+                      {pfInfoApi?.data?.data?.employeeContribution || 0}{" "}
+                      <b>Pf Total:</b>
+                      {pfInfoApi?.data?.data?.totalPfAmount || 0}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </label>
                 <DefaultInput
                   classes="input-sm"
                   value={values?.loanAmount}
                   placeholder="Loan Amount"
                   name="loanAmount"
                   type="number"
+                  min={0}
                   className="form-control"
                   onChange={(e) => {
+                    if (
+                      orgId === 14 &&
+                      e.target.value >
+                        pfInfoApi?.data?.data?.employeeContribution * 0.7
+                    ) {
+                      return toast.warning(
+                        "Loan amount should be less than 70% of Own PF amount"
+                      );
+                    }
+                    if (
+                      orgId === 15 &&
+                      e.target.value >
+                        pfInfoApi?.data?.data?.totalPfAmount * 0.85
+                    ) {
+                      return toast.warning(
+                        "Loan amount should be less than 85% of total PF amount"
+                      );
+                    }
                     setFieldValue("loanAmount", e.target.value);
                     setGeneratedData([]);
                   }}

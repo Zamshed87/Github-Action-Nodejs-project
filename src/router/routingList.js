@@ -1086,6 +1086,9 @@ const PfLoanLanding = lazy(() =>
 const PfLoanAddEdit = lazy(() =>
   import("../modules/employeeProfile/pfLoan/PfLoanAddEdit")
 );
+const PfLoanLifeCycle = lazy(() =>
+  import("../modules/employeeProfile/pfLoan/report/pfLoanLifeCycle")
+);
 const EmMovementApplication = lazy(() =>
   import("../modules/employeeProfile/movementApplication/index.tsx")
 );
@@ -2047,10 +2050,13 @@ export const routingList = [
   { path: "/profile/leave/leaveAdjustment", component: LeaveAdjustment },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
-  { path: "/profile/pfLoan", component: PfLoanLanding },
-  { path: "/profile/pfLoan/create", component: PfLoanAddEdit },
-  { path: "/profile/pfLoan/edit/:id", component: PfLoanAddEdit },
-
+  { path: "/loanManagement/PfLoan", component: PfLoanLanding },
+  { path: "/loanManagement/PfLoan/create", component: PfLoanAddEdit },
+  { path: "/loanManagement/PfLoan/edit/:id", component: PfLoanAddEdit },
+  {
+    path: "/loanManagement/report/PfLoanLifeCycle",
+    component: PfLoanLifeCycle,
+  },
   { path: "/profile/confirmation", component: Confirmation },
   {
     path: "/profile/cafeteriaManagement/cafeteriaPricingSetup",

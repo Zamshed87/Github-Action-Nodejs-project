@@ -1,7 +1,6 @@
 import { gray700 } from "utility/customColor";
 
 const SingleInfo = ({ label, value }) => {
-  console.log(label, value);
   return (
     <div className="single-info">
       <p
