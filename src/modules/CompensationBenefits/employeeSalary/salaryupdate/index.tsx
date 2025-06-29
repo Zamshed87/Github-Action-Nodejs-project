@@ -780,7 +780,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
           ? undefined
           : (location?.state as any)?.intSalaryBreakdownHeaderId,
         basedOn:
-          (location?.state as any)?.strDependOn.toLowerCase() === "basic"
+          (location?.state as any)?.strDependOn?.toLowerCase() === "basic"
             ? { value: 2, label: "Basic" }
             : { value: 1, label: "Gross" },
 

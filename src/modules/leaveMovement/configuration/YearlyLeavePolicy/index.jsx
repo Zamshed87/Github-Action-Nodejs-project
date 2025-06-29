@@ -313,7 +313,7 @@ const YearlyLeavePolicy = () => {
                                                 <ModeEditOutlineOutlined
                                                   onClick={() =>
                                                     history.push(
-                                                      `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}`
+                                                      `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}/old`
                                                     )
                                                   }
                                                   style={{ fontSize: "15px" }}
