@@ -86,6 +86,7 @@ const PfLoanAddEdit = () => {
       `,
         (data) => {
           setFileId(data?.objHeader?.intFileUrlId);
+          getEmployeePfAmount(data?.objHeader);
         }
       );
     }
@@ -122,6 +123,40 @@ const PfLoanAddEdit = () => {
         viewHandler(values, setGeneratedData);
       },
     });
+
+  const getEmployeePfAmount = (valueOption) => {
+    console.log(valueOption, "valueOptionvalueOption");
+    pfInfoApi.action({
+      urlKey: "GetEmployeePfAmount",
+      method: "GET",
+      params: {
+        employeeId: !id ? valueOption?.value : valueOption?.intEmployeeId,
+        AccountId: orgId,
+      },
+      onSuccess: (res) => {
+        if (orgId === 14) {
+          console.log("first", res?.data);
+          setFieldValue("loanAmount", res?.data?.employeeContribution * 0.7);
+          return;
+        }
+        if (
+          orgId === 15 &&
+          res?.data?.serviceLength > 3 &&
+          ((!id && valueOption?.employmentType === "Permanent") ||
+            (id && valueOption?.strEmploymentType === "Permanent"))
+        ) {
+          setFieldValue("loanAmount", res?.data?.totalPfAmount * 0.85 || 0);
+        } else {
+          setFieldValue("employee", "");
+          setFieldValue("loanAmount", 0);
+          return toast.warning("Employee is not eligible for PF Loan");
+        }
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.message);
+      },
+    });
+  };
 
   const saveHandler = (values) => {
     viewHandler(values, setGeneratedData);
@@ -234,43 +269,7 @@ const PfLoanAddEdit = () => {
                   setFieldValue("employee", valueOption);
                   [14, 15].includes(orgId) &&
                     valueOption?.value &&
-                    pfInfoApi.action({
-                      urlKey: "GetEmployeePfAmount",
-                      method: "GET",
-                      params: {
-                        employeeId: valueOption?.value,
-                        AccountId: orgId,
-                      },
-                      onSuccess: (res) => {
-                        if (orgId === 14) {
-                          console.log("first", res?.data);
-                          setFieldValue(
-                            "loanAmount",
-                            res?.data?.employeeContribution * 0.7
-                          );
-                          return;
-                        }
-                        if (
-                          orgId === 15 &&
-                          res?.data?.serviceLength > 3 &&
-                          valueOption?.employmentType === "Permanent"
-                        ) {
-                          setFieldValue(
-                            "loanAmount",
-                            res?.data?.totalPfAmount * 0.85 || 0
-                          );
-                        } else {
-                          setFieldValue("employee", "");
-                          setFieldValue("loanAmount", 0);
-                          return toast.warning(
-                            "Employee is not eligible for PF Loan"
-                          );
-                        }
-                      },
-                      onError: (error) => {
-                        toast.error(error?.response?.data?.message);
-                      },
-                    });
+                    getEmployeePfAmount(valueOption);
                 }}
                 placeholder="Search (min 3 letter)"
                 loadOptions={(v) => getSearchEmployeeList(buId, wgId, v, 4)}
