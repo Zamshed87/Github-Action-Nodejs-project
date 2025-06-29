@@ -8,7 +8,7 @@ export default function SONALIBankLetterHead({
     <>
       {letterHeadImage && (
         <img
-          src={letterHeadImage.src}
+          src={letterHeadImage?.src}
           style={{
             height: "1570px",
             width: "1130px",
@@ -38,7 +38,7 @@ export default function SONALIBankLetterHead({
         </thead>
         <tbody>
           {/* CONTENT GOES HERE */}
-          {landingViewPdf.length > 0 && (
+          {landingViewPdf?.length > 0 && (
             <div
               style={{
                 margin: "0px 96px",
@@ -197,7 +197,7 @@ export default function SONALIBankLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.NeyPayableSalary.toFixed(2)}
+                          {item?.NeyPayableSalary?.toFixed(2)}
                         </td>
                         <td
                           style={{
@@ -228,7 +228,7 @@ export default function SONALIBankLetterHead({
                             textAlign: "center",
                           }}
                         >
-                          {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}
+                          {landingViewPdf?.[0]?.TotalBankPay?.toFixed(2)}
                         </th>
                         <th
                           style={{
@@ -246,7 +246,7 @@ export default function SONALIBankLetterHead({
               </div>
               {signatureImage && (
                 <img
-                  src={signatureImage.src}
+                  src={signatureImage?.src}
                   alt="signature"
                   style={{
                     marginTop: "50px",
