@@ -73,7 +73,7 @@ const LoanDetailsView = ({
               <div className="" style={{ marginTop: "0" }}>
                 <PButton
                   type="primary"
-                  content={"Early Settled"}
+                  content={"Early Settlement"}
                   icon={<AppstoreAddOutlined />}
                   onClick={() => {
                     setViewDetails(false);
