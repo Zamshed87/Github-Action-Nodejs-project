@@ -67,19 +67,21 @@ const LoanDetailsView = ({
       <div className="mx-3">
         <div className="d-flex justify-content-between">
           <HeaderView loanByIdDto={loanByIdDto} />
-          {!onlyViewDetails && !loanByIdDto?.objHeader?.isEarlySettlement && (
-            <div className="" style={{ marginTop: "0" }}>
-              <PButton
-                type="primary"
-                content={"Early Settled"}
-                icon={<AppstoreAddOutlined />}
-                onClick={() => {
-                  setViewDetails(false);
-                  setViewEarlySettled(true);
-                }}
-              />
-            </div>
-          )}
+          {!onlyViewDetails &&
+            loanByIdDto?.objHeader &&
+            !loanByIdDto?.objHeader?.isEarlySettlement && (
+              <div className="" style={{ marginTop: "0" }}>
+                <PButton
+                  type="primary"
+                  content={"Early Settled"}
+                  icon={<AppstoreAddOutlined />}
+                  onClick={() => {
+                    setViewDetails(false);
+                    setViewEarlySettled(true);
+                  }}
+                />
+              </div>
+            )}
 
           {onlyViewDetails ? (
             <PrintTypeButton form={form} onClick={loanDetailsReport} />

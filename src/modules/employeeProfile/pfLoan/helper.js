@@ -235,29 +235,30 @@ export const pfLandingColData = (history, setLoading) => {
               Edit
             </button>
           )}
-
-          <Tooltip
-            placement="bottom"
-            title={record?.isActive ? "Inactive" : "Active"}
-          >
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px",
-              }}
-              className="btn btn-info"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                console.log(setLoading);
-                handleInActive(record, setLoading);
-              }}
+          {record?.isActive && (
+            <Tooltip
+              placement="bottom"
+              title={record?.isActive ? "Inactive" : "Active"}
             >
-              InActive
-            </button>
-          </Tooltip>
+              <button
+                style={{
+                  height: "24px",
+                  fontSize: "12px",
+                  padding: "0px 12px",
+                }}
+                className="btn btn-info"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  console.log(setLoading);
+                  handleInActive(record, setLoading);
+                }}
+              >
+                InActive
+              </button>
+            </Tooltip>
+          )}
         </Flex>
       ),
       fixed: "right",
