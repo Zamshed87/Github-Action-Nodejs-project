@@ -68,7 +68,7 @@ export default function SONALIBankLetterHead({
                 <b style={{ color: "black", fontSize: "14px" }}>
                   Subject: Request for Salary Disbursement for the month
                   of&nbsp;
-                  {landingViewPdf?.[0]?.MonthName}
+                  {landingViewPdf?.[0]?.MonthName}&nbsp;{landingViewPdf?.[0]?.YearId}
                 </b>
               </p>
               <br />
@@ -86,7 +86,7 @@ export default function SONALIBankLetterHead({
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>
-                We kindly request the disbursement of salaries for the month of {landingViewPdf?.[0]?.MonthName} from the above-mentioned account to the respective employees' individual accounts. These accounts are maintained under the names of the designated employees at your branch.
+                We kindly request the disbursement of salaries for the month of {landingViewPdf?.[0]?.MonthName}&nbsp;{landingViewPdf?.[0]?.YearId} from the above-mentioned account to the respective employees' individual accounts. These accounts are maintained under the names of the designated employees at your branch.
               </p>
               <br />
               <p style={{ color: "black", fontSize: "14px" }}>Thank you for your cooperation and prompt action.</p>
