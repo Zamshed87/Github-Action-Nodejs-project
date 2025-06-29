@@ -5,7 +5,7 @@ import PlaylistAddOutlinedIcon from "@mui/icons-material/PlaylistAddOutlined";
 import { Tooltip } from "@mui/material";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewModal from "common/ViewModal";
 import FormikCheckBox from "common/FormikCheckbox";
 import { gray900, greenColor } from "utility/customColor";
@@ -118,6 +118,9 @@ const PfLoanTable = ({
     // Set the state with the updated array
     setTableData(updatedTableData);
   };
+  useEffect(() => {
+    setGenerateRow(generatedData);
+  }, [generatedData]);
   return (
     <>
       {holdOrCollect && (
