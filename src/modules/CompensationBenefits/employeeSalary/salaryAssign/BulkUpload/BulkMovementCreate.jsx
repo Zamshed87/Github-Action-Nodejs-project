@@ -194,6 +194,7 @@ const BulkMovementCreate = () => {
     {
       title: "SL",
       dataIndex: "slNo",
+      width: 30,
       // key: "empName",
     },
     {
