@@ -370,8 +370,6 @@ export const apiList = {
     "/EmployeeIncrement/IncrementGradeBasedBulkUpload",
   SalaryGradeBasedBulkUpload: "/Employee/SalaryGradeBasedBulkUpload",
   EmployeeLeaveBalanceHistory: "/LeaveBalance/EmployeeLeaveBalanceHistory",
-  GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
   WorkforcePlanningCreate: "/WorkforcePlanning/Create",
   WorkforcePlanningUpdate: "/WorkforcePlanning/Update",
-  EmployeeLeaveBalanceHistory: "/LeaveBalance/EmployeeLeaveBalanceHistory",
 };
