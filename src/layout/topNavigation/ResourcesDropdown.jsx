@@ -52,6 +52,8 @@ export default function ResourcesDropdown() {
   const [workPlaceWouldChange, setWorkPlaceWouldChange] = useState("");
   const dispatch = useDispatch();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [buSelectOpen, setbuSelectOpen] = useState(false);
+  const [wgSelectOpen, setWgSelectOpen] = useState(false);
 
   const handleResources = (event) => {
     const filterData = businessUnitDDL?.filter(
@@ -122,8 +124,10 @@ export default function ResourcesDropdown() {
     <div className="d-flex ml-2">
       <Tooltip
         title={
-          businessUnitDDL?.find((i) => i.BusinessUnitId === buId)
-            ?.BusinessUnitName || ""
+          (!buSelectOpen &&
+            businessUnitDDL?.find((i) => i.BusinessUnitId === buId)
+              ?.BusinessUnitName) ||
+          ""
         }
       >
         <FormControl sx={style}>
@@ -132,6 +136,8 @@ export default function ResourcesDropdown() {
             onChange={handleResources}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
+            onOpen={() => setbuSelectOpen(true)}
+            onClose={() => setbuSelectOpen(false)}
           >
             {businessUnitDDL?.map((item, index) => (
               <MenuItem value={item?.BusinessUnitId} key={index}>
@@ -143,8 +149,10 @@ export default function ResourcesDropdown() {
       </Tooltip>
       <Tooltip
         title={
-          workplaceGroupDDL?.find((i) => i.WorkplaceGroupId === wgId)
-            ?.WorkplaceGroupName || ""
+          (!wgSelectOpen &&
+            workplaceGroupDDL?.find((i) => i.WorkplaceGroupId === wgId)
+              ?.WorkplaceGroupName) ||
+          ""
         }
       >
         <FormControl sx={style}>
@@ -153,6 +161,8 @@ export default function ResourcesDropdown() {
             onChange={handleWgResources}
             displayEmpty
             inputProps={{ "aria-label": "Without label" }}
+            onOpen={() => setWgSelectOpen(true)}
+            onClose={() => setWgSelectOpen(false)}
           >
             {workplaceGroupDDL?.map((item, index) => (
               <MenuItem value={item?.WorkplaceGroupId} key={index}>
@@ -164,7 +174,9 @@ export default function ResourcesDropdown() {
       </Tooltip>
       <Tooltip
         title={
-          workplaceDDL?.find((i) => i.WorkplaceId === wId)?.WorkplaceName || ""
+          (!isSearchOpen &&
+            workplaceDDL?.find((i) => i.WorkplaceId === wId)?.WorkplaceName) ||
+          ""
         }
       >
         <FormControl
