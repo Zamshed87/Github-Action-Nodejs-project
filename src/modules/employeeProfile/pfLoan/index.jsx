@@ -21,14 +21,8 @@ import { getDateOfYear } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 import { pfLandingColData, statusDDL } from "./helper";
 import ViewModal from "common/ViewModal";
-import SingleInfo from "common/SingleInfo";
-import moment from "moment";
-import PfLoanTable from "./components/pfLoanTable";
-import { getPDFAction } from "utility/downloadFile";
 import { customStyles } from "utility/selectCustomStyle";
 import FormikSelect from "common/FormikSelect";
-import { AppstoreAddOutlined } from "@ant-design/icons";
-import HeaderView from "./components/HeaderView";
 import EarlySettled from "./components/EarlySettled";
 import LoanDetailsView from "./common/loanDetailsView";
 
