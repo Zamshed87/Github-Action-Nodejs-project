@@ -66,7 +66,7 @@ const EmployeeContribution = ({
       default:
         label = " ";
     }
-    return `Employee Contribution (${label})`;
+    return `${company ? 'Company':'Employee'} Contribution (${label})`;
   };
   const setPrefixedFieldValue = (name, value) => {
     form.setFieldsValue({ [`${prefix}${name}`]: value });
@@ -157,8 +157,8 @@ const EmployeeContribution = ({
             <PSelect
               options={contributionOpts}
               name={`${prefix}intContributionDependOn`}
-              label="Employee Contribution Depend On"
-              placeholder="Select Employee Contribution Depend On"
+              label={`${company ? 'Company':'Employee'} Contribution Depend On`}
+              placeholder={`Select ${company ? 'Company':'Employee'} Contribution Depend On`}
               onChange={(_, op) => {
                 setPrefixedFieldValue("intContributionDependOn", op);
               }}
@@ -166,7 +166,7 @@ const EmployeeContribution = ({
               rules={[
                 {
                   required: true,
-                  message: "Employee Contribution Depend On Is Required",
+                  message: `${company ? 'Company':'Employee'} Contribution Depend On Is Required`,
                 },
               ]}
             />

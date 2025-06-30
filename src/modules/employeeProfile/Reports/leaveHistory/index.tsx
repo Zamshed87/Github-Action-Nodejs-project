@@ -14,6 +14,7 @@ import PFilter from "utility/filter/PFilter";
 import { formatFilterValue } from "utility/filter/helper";
 import { todayDate } from "utility/todayDate";
 import { yearDDLAction } from "utility/yearDDL";
+import moment from "moment";
 
 const EmLeaveHistory = () => {
   const dispatch = useDispatch();
@@ -54,14 +55,14 @@ const EmLeaveHistory = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetLeaveHistoryReport",
+      urlKey: "LeaveBalanceReport",
       method: "GET",
       params: {
-        strPartName: "htmlView",
+        PartName: "htmlView",
         intAccountId: orgId,
         intYear: values?.yearDDL?.value,
-        departments: formatFilterValue(values?.department),
-        designations: formatFilterValue(values?.designation),
+        Departments: formatFilterValue(values?.department),
+        Designations: formatFilterValue(values?.designation),
         strSearchTxt: searchText || "",
         BusinessUnitId: buId,
         WorkplaceGroupList:
@@ -73,6 +74,7 @@ const EmLeaveHistory = () => {
           values?.workplace?.value == 0 || values?.workplace?.value == undefined
             ? decodedToken.workplaceList
             : values?.workplace?.value.toString(),
+        Date: moment().startOf("year").format("YYYY-MM-DD"),
       },
       onSuccess: (res) => {
         setData(res);
@@ -148,11 +150,11 @@ const EmLeaveHistory = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=excelView&intAccountId=${orgId}&intYear=${
+                        const url = `/PdfAndExcelReport/LeaveBalanceReport?PartName=excelView&IntAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
-                        }&departments=${formatFilterValue(
+                        }&Departments=${formatFilterValue(
                           values?.department
-                        )}&designations=${formatFilterValue(
+                        )}&Designations=${formatFilterValue(
                           values?.designation
                         )}&strSearchTxt=${
                           values?.search || ""
@@ -166,7 +168,9 @@ const EmLeaveHistory = () => {
                           values?.workplace?.value == undefined
                             ? decodedToken.workplaceList
                             : values?.workplace?.value.toString()
-                        }`;
+                        }&Date=${moment()
+                          .startOf("year")
+                          .format("YYYY-MM-DD")}`;
 
                         downloadFile(
                           url,
@@ -200,11 +204,11 @@ const EmLeaveHistory = () => {
                       onClick={(e) => {
                         const values = form.getFieldsValue(true);
                         e.stopPropagation();
-                        const url = `/PdfAndExcelReport/GetLeaveHistoryReport?strPartName=pdfView&intAccountId=${orgId}&intYear=${
+                        const url = `PdfAndExcelReport/LeaveBalanceReport?PartName=pdfView&intAccountId=${orgId}&intYear=${
                           values?.yearDDL?.value
-                        }&departments=${formatFilterValue(
+                        }&Departments=${formatFilterValue(
                           values?.department
-                        )}&designations=${formatFilterValue(
+                        )}&Designations=${formatFilterValue(
                           values?.designation
                         )}&strSearchTxt=${
                           values?.search || ""
@@ -218,7 +222,9 @@ const EmLeaveHistory = () => {
                           values?.workplace?.value == undefined
                             ? decodedToken.workplaceList
                             : values?.workplace?.value.toString()
-                        }`;
+                        }&Date=${moment()
+                          .startOf("year")
+                          .format("YYYY-MM-DD")}`;
 
                         getPDFAction(url, setLoading);
                       }}

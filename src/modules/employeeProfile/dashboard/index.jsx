@@ -27,6 +27,8 @@ import EmployeeSelfManagerList from "./components/EmployeeSelfManagerList";
 import NoticeBoard from "./Noticeboard";
 import "./style.css";
 import { useHistory } from "react-router-dom";
+import { useApiRequest } from "Hooks";
+import { todayDate } from "utility/todayDate";
 export default function SelfDashboard() {
   const dispatch = useDispatch();
 
@@ -44,8 +46,21 @@ export default function SelfDashboard() {
   const [allNoticeData, setAllNoticeData] = useState([]);
   const [singleNoticeData, setSingleNoticeData] = useState("");
   const [policyLanding, setPolicyLanding] = useState([]);
+  const balanceApi = useApiRequest({});
+  const balanceInfo = (id) => {
+    balanceApi?.action({
+      urlKey: "EmployeeLeaveBalanceList",
+      method: "GET",
+      params: {
+        employeeId: id,
+        date: todayDate(),
+        isAdmin: false,
+      },
+    });
+  };
   useEffect(() => {
     getEmployeeDashboard(employeeId, buId, setEmployeeDashboard);
+    balanceInfo(employeeId);
   }, [employeeId, buId]);
 
   useEffect(() => {
@@ -160,6 +175,7 @@ export default function SelfDashboard() {
                             <th style={{ borderTop: "none" }}>
                               <p
                                 style={{ color: gray400, textAlign: "center" }}
+                                className="px-1"
                               >
                                 Taken
                               </p>
@@ -167,18 +183,29 @@ export default function SelfDashboard() {
                             <th style={{ borderTop: "none" }}>
                               <p
                                 style={{ color: gray400, textAlign: "center" }}
+                                className="px-1"
                               >
-                                Remaining
+                                Balance
+                              </p>
+                            </th>
+                            <th style={{ borderTop: "none" }}>
+                              <p
+                                style={{ color: gray400, textAlign: "center" }}
+                              >
+                                Status
                               </p>
                             </th>
                           </tr>
                         </thead>
                         <tbody>
-                          {employeeDashboard?.leaveBalanceHistoryList
-                            ?.filter(
-                              (item) => item?.isLveBalanceShowForSelfService
-                            )
-                            ?.map((item, i) => (
+                          {console.log(
+                            employeeDashboard?.leaveBalanceHistoryList
+                          )}
+                          {/* // ?.filter(
+                            //   (item) => item?.isLveBalanceShowForSelfService
+                            // ) */}
+                          {balanceApi?.data?.length > 0 &&
+                            balanceApi?.data?.map((item, i) => (
                               <>
                                 <tr key={i}>
                                   <td
@@ -190,7 +217,7 @@ export default function SelfDashboard() {
                                         paddingLeft: "8px",
                                       }}
                                     >
-                                      {item?.strLeaveType}
+                                      {item?.type}
                                     </p>
                                   </td>
                                   <td
@@ -202,7 +229,7 @@ export default function SelfDashboard() {
                                         color: gray700,
                                       }}
                                     >
-                                      {item?.intTakenLveInDay}
+                                      {item?.totalTakenDays}
                                     </p>
                                   </td>
                                   <td
@@ -214,7 +241,19 @@ export default function SelfDashboard() {
                                         color: gray700,
                                       }}
                                     >
-                                      {item?.intBalanceLveInDay}
+                                      {item?.totalBalanceDays}
+                                    </p>
+                                  </td>
+                                  <td
+                                    style={{ borderTop: "1px solid #F2F4F7" }}
+                                  >
+                                    <p
+                                      style={{
+                                        textAlign: "center",
+                                        color: gray700,
+                                      }}
+                                    >
+                                      {item?.status}
                                     </p>
                                   </td>
                                 </tr>

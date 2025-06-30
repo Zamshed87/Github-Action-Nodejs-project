@@ -48,7 +48,7 @@ export const summaryHeaders = () => {
       },
     },
     {
-      title: "Total Emp",
+      title: "Total Employee",
       dataIndex: "TotapEmp",
     },
     {
@@ -60,7 +60,7 @@ export const summaryHeaders = () => {
       dataIndex: "IntAbsent",
     },
     {
-      title: "Abs (%)",
+      title: "Absent (%)",
       dataIndex: "IntAbsentPercentage",
       render: (text, record) => {
         if (!record?.strWorkplace) {
@@ -120,7 +120,7 @@ export const attendanceSummaryReportColumn = [
     },
   },
   {
-    title: "Total Emp",
+    title: "Total Employee",
     dataIndex: "IntTotalEmp",
     render: renderConditionalColumnData("IntTotalEmp"),
   },
@@ -135,9 +135,19 @@ export const attendanceSummaryReportColumn = [
     render: renderConditionalColumnData("IntHoliday"),
   },
   {
-    title: "Weekend",
-    dataIndex: "IntWeekend",
-    render: renderConditionalColumnData("IntWeekend"),
+    title: "Off-day",
+    dataIndex: "IntOffday",
+    render: renderConditionalColumnData("IntOffday"),
+  },
+  {
+    title: "Movement",
+    dataIndex: "IntMovement",
+    render: renderConditionalColumnData("IntMovement"),
+  },
+  {
+    title: "Inactive",
+    dataIndex: "IntSuspended",
+    render: renderConditionalColumnData("IntSuspended"),
   },
   {
     title: "Absent",
@@ -166,7 +176,9 @@ export const excelHeadAttandanceSummaryDataForExcel = {
   IntTotalEmp: "Total Employee",
   IntLeave: "Leave",
   IntHoliday: "Holiday",
-  IntWeekend: "Weekend",
+  IntOffday: "Off-day",
+  IntMovement: "Movement",
+  IntSuspended: "Inactive",
   IntAbsent: "Absent",
   IntPresent: "Present",
   NumPresentPercentage: "Present (%)",
@@ -204,7 +216,17 @@ export const generateAttandanceSummaryDataForExcel = (arryData) => {
         "text"
       ).getCell(),
       new Cell(
-        conditionalTD(item, "IntWeekend") || 0,
+        conditionalTD(item, "IntOffday") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntMovement") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntSuspended") || 0,
         "center",
         "text"
       ).getCell(),
@@ -267,7 +289,9 @@ export const generateSubTableDataForExcel = (arryData = []) => {
         !item?.strWorkplace ? 11 : 9
       ).getCell(),
       new Cell(
-        !item?.strWorkplace ? parseInt((item?.IntAbsent / item?.TotapEmp) * 100) || 0 : item?.IntAbsentPercentage,
+        !item?.strWorkplace
+          ? parseInt((item?.IntAbsent / item?.TotapEmp) * 100) || 0
+          : item?.IntAbsentPercentage,
         "center",
         "text",
         !item?.strWorkplace ? true : false,
