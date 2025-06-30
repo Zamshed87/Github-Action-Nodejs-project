@@ -1,13 +1,13 @@
 export const whiteColor = "#ffffff";
 export const blueColor = "#026AA2";
-export const greenColor = "var(--primary-color)";
+export const greenColor = "#299647";
 export const ratingColor = "rgb(250, 175, 0)!important";
 
 export const failColor = "#F04438";
 export const failBg = "#FEE4E2";
 export const warningColor = "#B54708";
 export const warningBg = "#FEF0C7";
-export const successColor = "var(--primary-color)";
+export const successColor = "#34a853";
 export const successBg = "#E2FDE9";
 export const progress = "#5925dc";
 export const progressBg = "#ebe9fe";
@@ -50,11 +50,10 @@ export const success100 = "#d6fbdb";
 export const success200 = "#cdf5db";
 export const success300 = "#65d380";
 export const success400 = "#65d380";
-export const success500 = "var(--primary-color)";
+export const success500 = "#34a853";
 export const success600 = "#34a44f";
-export const success700 = "var(--primary-color)";
+export const success700 = "#299647";
 export const success800 = "#1f843c";
 export const success900 = "#096529";
-export const lightGreen100 = "#e6f4d7";
-export const navyGray = "#707991";
+
 export const colorLess = "transparent";

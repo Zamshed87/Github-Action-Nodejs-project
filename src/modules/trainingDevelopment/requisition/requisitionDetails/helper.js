@@ -436,7 +436,7 @@ export const employeeListColumn = (
             <Tooltip title="Save" arrow>
               <button className="iconButton" type="button">
                 <CheckOutlined
-                  sx={{ color: "var(--primary-color)" }}
+                  sx={{ color: "#34A853" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     setEdit(false);

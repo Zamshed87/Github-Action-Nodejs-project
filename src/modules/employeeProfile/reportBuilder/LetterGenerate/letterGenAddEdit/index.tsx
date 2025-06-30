@@ -33,7 +33,6 @@ import { postPDFAction } from "utility/downloadFile";
 import RichTextEditor from "common/RichTextEditor/RichTextEditor";
 import Loading from "common/loading/Loading";
 
-import html2pdf from 'html2pdf.js';
 const LetterGenAddEdit = () => {
   // Router state
   // const { letterId }: any = useParams();
@@ -92,7 +91,7 @@ const LetterGenAddEdit = () => {
       },
     }).then();
   };
-
+  
   return letterGenPermission?.isCreate ? (
     <PForm
       formName="tempCreate"
@@ -126,6 +125,7 @@ const LetterGenAddEdit = () => {
               disabled: loading,
               onClick: () => {
                 const values = form.getFieldsValue(true);
+
                 form
                   .validateFields()
                   .then(() => {
@@ -221,8 +221,6 @@ const LetterGenAddEdit = () => {
                 letterGenerateId: letterId || 0,
                 letterBody: letter,
               };
-              handleDownload();
-              return;
               postPDFAction(
                 "/PdfAndExcelReport/GetGeneratedLetterPreviewPDF",
                 payload,

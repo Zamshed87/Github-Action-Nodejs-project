@@ -16,9 +16,7 @@ const isOverlapping = (
 export const addHandler = (setData: any, data: DataState, form: any) => {
   const values = form.getFieldsValue(true);
 
-  if (
-    values?.intServiceLengthStartInMonth > values?.intServiceLengthEndInMonth
-  ) {
+  if (values?.serviceLengthStart > values?.serviceLengthEnd) {
     return toast.error(
       "Service Length end should be bigger than Service Length Start"
     );
@@ -26,14 +24,8 @@ export const addHandler = (setData: any, data: DataState, form: any) => {
 
   const { serviceLengthStart: newStart, serviceLengthEnd: newEnd } = values;
 
-  const isConflict = data.some(
-    ({ intServiceLengthStartInMonth, intServiceLengthEndInMonth }) =>
-      isOverlapping(
-        newStart,
-        newEnd,
-        intServiceLengthStartInMonth,
-        intServiceLengthEndInMonth
-      )
+  const isConflict = data.some(({ serviceLengthStart, serviceLengthEnd }) =>
+    isOverlapping(newStart, newEnd, serviceLengthStart, serviceLengthEnd)
   );
 
   if (isConflict) {
@@ -44,28 +36,26 @@ export const addHandler = (setData: any, data: DataState, form: any) => {
     ...data,
     {
       idx: crypto.randomUUID(),
-      intServiceLengthStartInMonth: values?.intServiceLengthStartInMonth,
-      intServiceLengthEndInMonth: values?.intServiceLengthEndInMonth,
+      serviceLengthStart: values?.serviceLengthStart,
+      serviceLengthEnd: values?.serviceLengthEnd,
       intServiceLengthInMonth:
-        values?.intServiceLengthEndInMonth -
-        values?.intServiceLengthStartInMonth,
+        values?.serviceLengthEnd - values?.serviceLengthStart,
       intDisbursementDependOnId: values?.disbursementDependOn?.value,
       disbursementDependOnName: values?.disbursementDependOn?.label,
-      numPercentageOrFixedAmount: values?.numPercentageOrFixedAmount,
+      numPercentage: values?.numPercentage,
     },
   ]);
   form.resetFields(fieldsToReset);
 };
 
 const fieldsToReset = [
-  "intServiceLengthStartInMonth",
-  "intServiceLengthEndInMonth",
+  "serviceLengthStart",
+  "serviceLengthEnd",
   "disbursementDependOn",
-  "numPercentageOrFixedAmount",
+  "numPercentage",
 ]; // dynamically computed array
 
-export const createEditGratuityPolicy = async (
-  type: string | undefined,
+export const createEditLatePunishmentConfig = async (
   profileData: any,
   form: FormInstance<any>,
   data: DataState,
@@ -75,17 +65,20 @@ export const createEditGratuityPolicy = async (
 ) => {
   setLoading(true);
   try {
+    const { orgId, buId, wgId, wId, employeeId, intAccountId } = profileData;
     const values = form.getFieldsValue(true);
-    console.log(values, "values");
-    console.log(data, "data");
-    const payload = mapGratuityPolicy(values, data);
-    const url =
-      type === "edit"
-        ? "/GratuityPolicy/" + values?.intPolicyId
-        : "/GratuityPolicy";
-    const method = type === "edit" ? "put" : "post";
 
-    const res = await axios[method](url, payload);
+    // const payload = mapLatePunishmentPayload(
+    //   values,
+    //   data,
+    //   "",
+    //   orgId,
+    //   buId,
+    //   wgId,
+    //   wId,
+    //   intAccountId
+    // );
+    const res = await axios.post(`/LatePunishmentpolicy`, {}); // change
     form.resetFields();
     toast.success("Created Successfully", { toastId: 1222 });
     cb && cb();
@@ -97,27 +90,4 @@ export const createEditGratuityPolicy = async (
   } finally {
     setLoading(false);
   }
-};
-
-const mapGratuityPolicy = (values: any, data: DataState) => {
-  console.log(values?.employmentType, "values?.employmentType");
-  return {
-    strPolicyName: values.strPolicyName,
-    intWorkplaceId: values.workplace?.intWorkplaceId ?? values.workplace?.value,
-    intEmploymentTypeId:
-      values.employmentType?.Id ?? values.employmentType?.value,
-    intEligibilityDependOn: values.eligibilityDependOn?.value,
-    isActive: true,
-    employmentTypes: values?.employmentType?.map((item: any) => ({
-      strEmploymentTypeName: item?.label || null,
-      intEmploymentTypeId: item?.value || null,
-    })),
-    gratuityPolicyDetails: data.map((item) => ({
-      intPolicyDetailsId: item?.intPolicyDetailsId || null,
-      intServiceLengthStartInMonth: item.intServiceLengthStartInMonth,
-      intServiceLengthEndInMonth: item.intServiceLengthEndInMonth,
-      intDisbursementDependOnId: item.intDisbursementDependOnId,
-      numPercentageOrFixedAmount: item.numPercentageOrFixedAmount, // or item.numFixedAmount if needed
-    })),
-  };
 };

@@ -901,7 +901,7 @@ export default function AddEditForm({
 //                                         fontSize: "14px",
 //                                         lineHeight: "19px",
 //                                         letterSpacing: "0.15px",
-//                                         color: "var(--primary-color)",
+//                                         color: "#34A853",
 //                                         marginRight: "10px",
 //                                       }}
 //                                       onClick={() => {

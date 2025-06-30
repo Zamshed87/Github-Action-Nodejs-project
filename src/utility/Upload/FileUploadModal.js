@@ -96,7 +96,7 @@ const UploadModal = ({ propsObj, children }) => {
     >
       <Upload {...props}>
         <Button
-          style={{ color: "var(--primary-color)", border: "green 1px solid" }}
+          style={{ color: "green", border: "green 1px solid" }}
           icon={<UploadOutlined />}
         >
           Upload

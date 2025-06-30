@@ -330,9 +330,9 @@ function Passport({ empId, buId, wgId }) {
                   {!singleData && (
                     <>
                       {rowDto?.empEmployeePhotoIdentity === "" ||
-                      rowDto?.empEmployeePhotoIdentity == null ||
+                      rowDto?.empEmployeePhotoIdentity === null ||
                       rowDto?.empEmployeePhotoIdentity?.strPassport === "" ||
-                      rowDto?.empEmployeePhotoIdentity?.strPassport == null ? (
+                      rowDto?.empEmployeePhotoIdentity?.strPassport === null ? (
                         <>
                           <h5>Passport</h5>
                           <div
@@ -406,11 +406,7 @@ function Passport({ empId, buId, wgId }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                setSingleData(
-                                                  rowDto
-                                                    ?.empEmployeePhotoIdentity
-                                                    ?.strPassport
-                                                );
+                                                setSingleData(rowDto?.empEmployeePhotoIdentity?.strPassport);
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -445,10 +441,7 @@ function Passport({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(
-                                                rowDto?.empEmployeePhotoIdentity
-                                                  ?.strPassport
-                                              );
+                                              setSingleData(rowDto?.empEmployeePhotoIdentity?.strPassport);
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -470,6 +463,7 @@ function Passport({ empId, buId, wgId }) {
                                           },
                                         ]),
                                   ]}
+                                  
                                 />
                               </div>
                             </div>

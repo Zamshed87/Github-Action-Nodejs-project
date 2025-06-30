@@ -167,7 +167,7 @@ export default function TMDashboard() {
                       className="d-flex align-items-center"
                       style={{ marginRight: "5px" }}
                     >
-                      <Today sx={{ color: "var(--primary-color)" }} />
+                      <Today sx={{ color: "#34A853" }} />
                       <p className="date">{dateFormatterForDashboard()}</p>
                     </div>
                   </div>
@@ -188,7 +188,7 @@ export default function TMDashboard() {
                           >
                             <Star
                               sx={{
-                                color: "var(--primary-color)",
+                                color: "#34A853",
                                 height: "20px",
                                 width: "20px",
                               }}

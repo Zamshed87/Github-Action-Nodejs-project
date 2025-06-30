@@ -31,11 +31,13 @@ const GratuityPolicy = () => {
       pageSize: 25,
     }
   ) => {
-    getgratuityPolicy(`/GratuityPolicy`);
+    getgratuityPolicy(
+      `/latePunishmentpolicy?accountId=${intAccountId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&pageId=1&pageNo=10`
+    );
   };
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management";
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Late Punishment";
     () => {
       document.title = "PeopleDesk";
     };
@@ -43,7 +45,7 @@ const GratuityPolicy = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30599),
+    () => permissionList.find((item) => item?.menuReferenceId === 30590),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -54,19 +56,15 @@ const GratuityPolicy = () => {
     },
     {
       title: "Policy Name",
-      dataIndex: "strPolicyName",
-    },
-    {
-      title: "Workplace Group",
-      dataIndex: "strWorkplaceGroupName",
+      dataIndex: "name",
     },
     {
       title: "Workplace",
-      dataIndex: "strWorkplaceName",
+      dataIndex: "workplace",
     },
     {
       title: "Employment Type",
-      dataIndex: "strEmploymentTypeNames",
+      dataIndex: "employmentTypes",
     },
     {
       title: "Action",
@@ -76,17 +74,14 @@ const GratuityPolicy = () => {
           <Tooltip placement="bottom" title="View">
             <button
               style={{
-                color: "var(--primary-color)",
+                color: "green",
                 fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/BenefitsManagement/gratuity/gratuityPolicy/view/" +
-                    rec?.intPolicyId
-                );
+                history.push("/bm/gratuityPolicy/view/" + rec?.id);
               }}
             >
               View
@@ -96,17 +91,14 @@ const GratuityPolicy = () => {
           <Tooltip placement="bottom" title="Edit">
             <button
               style={{
-                color: "var(--primary-color)",
+                color: "green",
                 fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/BenefitsManagement/gratuity/gratuityPolicy/edit/" +
-                    rec?.intPolicyId
-                );
+                history.push("/bm/gratuityPolicy/edit/" + rec?.id);
               }}
             >
               Edit
@@ -116,17 +108,14 @@ const GratuityPolicy = () => {
           <Tooltip placement="bottom" title="Extend">
             <button
               style={{
-                color: "var(--primary-color)",
+                color: "green",
                 fontSize: "12px",
                 cursor: "pointer",
                 margin: "0 5px",
                 border: "none",
               }}
               onClick={() => {
-                history.push(
-                  "/BenefitsManagement/gratuity/gratuityPolicy/extend/" +
-                    rec?.intPolicyId
-                );
+                history.push("/bm/gratuityPolicy/extend/" + rec?.id);
               }}
             >
               Extend
@@ -141,21 +130,19 @@ const GratuityPolicy = () => {
 
   return permission?.isView ? (
     <div>
-      {/* {gratuityPolicyLoader && <Loading />} */}
+      {gratuityPolicyLoader && <Loading />}
 
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Gratuity Policy`}
+            title={`Total ${gratuityPolicy?.totalCount || 0} Gratuity Policy`}
             buttonList={[
               {
                 type: "primary",
                 content: "Create Policy",
                 icon: "plus",
                 onClick: () => {
-                  history.push(
-                    "/BenefitsManagement/gratuity/gratuityPolicy/create/0"
-                  );
+                  history.push("/bm/gratuityPolicy/create/0");
                 },
               },
             ]}

@@ -42,11 +42,7 @@ const RewardHistory = forwardRef((props: any, ref: any) => {
         <Flex justify="flex-start" gap="4">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
-              style={{
-                color: "var(--primary-color)",
-                fontSize: "14px",
-                cursor: "pointer",
-              }}
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
                 ViewRewardPunishmentRecord(
                   rec?.recordId,
@@ -60,7 +56,7 @@ const RewardHistory = forwardRef((props: any, ref: any) => {
           <Tooltip placement="bottom" title={"Print"}>
             <PrinterOutlined
               style={{
-                color: "var(--primary-color)",
+                color: "green",
                 fontSize: "14px",
                 cursor: "pointer",
                 margin: "0 5px",

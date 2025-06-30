@@ -111,7 +111,7 @@ export default function TMProject() {
                       sx={{
                         "& .MuiTabs-indicator": {
                           borderBottom: 3,
-                          borderColor: "var(--primary-color)",
+                          borderColor: "#34A853",
                         },
                       }}
                     >
@@ -121,7 +121,7 @@ export default function TMProject() {
                         value="running"
                         sx={{
                           "&.Mui-selected": {
-                            color: "var(--primary-color)",
+                            color: "#34A853",
                           },
                         }}
                       />
@@ -131,7 +131,7 @@ export default function TMProject() {
                         value="complete"
                         sx={{
                           "&.Mui-selected": {
-                            color: "var(--primary-color)",
+                            color: "#34A853",
                           },
                         }}
                       />

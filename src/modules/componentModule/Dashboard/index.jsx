@@ -85,7 +85,7 @@ const fakeCardData = [
     value: {
       total: 100,
     },
-    border: "var(--primary-color)",
+    border: "#34A853",
   },
 ];
 
