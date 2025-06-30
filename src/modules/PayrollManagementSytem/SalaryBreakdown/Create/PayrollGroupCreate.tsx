@@ -38,6 +38,7 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
+import FormulaInputWrapper from "Components/PForm/Input/Formula";
 
 type TOvertimePolicy = unknown;
 const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
@@ -607,7 +608,8 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
             <Row gutter={[24, 2]}>
               <Form.Item noStyle shouldUpdate>
                 {() => {
-                  const { isPerdaySalary } = form.getFieldsValue();
+                  const { isPerdaySalary, dependsOn } =
+                    form.getFieldsValue(true);
                   return (
                     <>
                       {!isPerdaySalary && (
@@ -694,8 +696,14 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                               }
                                             />
                                           ) : (
-                                            <PInput
-                                              type="text"
+                                            <FormulaInputWrapper
+                                              formulaOptions={
+                                                dependsOn?.value === 2
+                                                  ? payrollElementDDL?.filter(
+                                                      (i: any) => !i?.isBasic
+                                                    )
+                                                  : payrollElementDDL || []
+                                              }
                                               label={
                                                 <>
                                                   {itm?.strPayrollElementName}{" "}
@@ -734,9 +742,15 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                                 </>
                                               }
                                               value={itm?.[itm?.levelVariable]}
-                                              onChange={(e) => {
+                                              onChange={(e: any) => {
+                                                console.log(
+                                                  { e },
+                                                  e.target?.value,
+                                                  { dynamicForm }
+                                                );
+
                                                 rowDtoHandler(
-                                                  `${itm?.levelVariable}`,
+                                                  itm?.levelVariable,
                                                   index,
                                                   e.target?.value
                                                 );
