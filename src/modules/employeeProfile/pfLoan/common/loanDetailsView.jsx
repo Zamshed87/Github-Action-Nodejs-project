@@ -1,5 +1,5 @@
 import { AppstoreAddOutlined } from "@ant-design/icons";
-import { PButton, PCardHeader, PSelect } from "Components";
+import { PButton } from "Components";
 import ViewModal from "common/ViewModal";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import HeaderView from "../components/HeaderView";
@@ -7,7 +7,6 @@ import PfLoanTable from "../components/pfLoanTable";
 import { Form } from "antd";
 import PrintTypeButton from "common/PrintTypeButton";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const LoanDetailsView = ({
   loanByIdLoading,
@@ -28,6 +27,7 @@ const LoanDetailsView = ({
 }) => {
   const [form] = Form.useForm();
 
+
   const loanDetailsReport = async () => {
     const values = form.getFieldsValue(true);
 
@@ -40,15 +40,6 @@ const LoanDetailsView = ({
         type === "pdfView" ? "pdf" : "xlsx",
         setLoading
       );
-      //   const res = await axios.get(
-      //     `/PdfAndExcelReport/PfLoanLifecycleGetByIdReport?Type=${type}&HeaderId=${loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}`
-      //   );
-      //   if (res?.data) {
-      //     setLoading?.(false);
-      //   } else {
-      //     toast.warn("No data received !");
-      //     setLoading?.(false);
-      //   }
     } catch (error) {
       setLoading?.(false);
       toast.warn(error?.response?.data?.message || "Something went wrong");
@@ -69,7 +60,9 @@ const LoanDetailsView = ({
           <HeaderView loanByIdDto={loanByIdDto} />
           {!onlyViewDetails &&
             loanByIdDto?.objHeader &&
-            !loanByIdDto?.objHeader?.isEarlySettlement && (
+            !loanByIdDto?.objHeader?.isEarlySettlement &&
+            singleData?.isActive !== false &&
+            singleData?.isReject !== true && (
               <div className="" style={{ marginTop: "0" }}>
                 <PButton
                   type="primary"
