@@ -418,7 +418,8 @@ export const columnsLeave = (dispatch) => [
   },
   {
     title: "Attachment",
-    width: 90,
+    width: 70,
+
     dataIndex: "attachmentId",
     render: (_, record) => (
       <AttachmentTooltip

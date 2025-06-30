@@ -117,7 +117,7 @@ export default function Remarks({ empId, buId, wgId }) {
                 ) : (
                   <>
                     {comment?.employeeProfileLandingView?.remarks === "" ||
-                    comment?.employeeProfileLandingView?.remarks == null ? (
+                    comment?.employeeProfileLandingView?.remarks === null ? (
                       <div className={isForm ? "d-none" : "d-block"}>
                         <h5>Remarks</h5>
                         <div

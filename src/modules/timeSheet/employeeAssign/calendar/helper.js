@@ -154,10 +154,9 @@ export const columns = (
       dataIndex: "hrPosition",
       sort: true,
       filter: true,
-      filterDropDownList:
-        headerList[`hrPositionList`]?.length > 0
-          ? headerList[`hrPositionList`]
-          : [],
+      filterDropDownList: headerList[`hrPositionList`]?.length > 0
+        ? headerList[`hrPositionList`]
+        : [],
       fieldType: "string",
     },
     {
@@ -322,7 +321,7 @@ export const initData = {
 export const validationSchema = Yup.object({});
 
 export const colors = [
-  "var(--primary-color)",
+  "#299647",
   "#B54708",
   "#B42318",
   "#6927DA",

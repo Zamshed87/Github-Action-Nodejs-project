@@ -195,7 +195,7 @@ const PlanningInfo = ({
                       setOpenTraingTypeModal(true);
                     }}
                     style={{
-                      color: "var(--primary-color)",
+                      color: "green",
                       fontSize: "15px",
                       cursor: "pointer",
                       margin: "0 5px",
@@ -229,7 +229,7 @@ const PlanningInfo = ({
                       setOpenTrainingTitleModal(true);
                     }}
                     style={{
-                      color: "var(--primary-color)",
+                      color: "green",
                       fontSize: "15px",
                       cursor: "pointer",
                       margin: "0 5px",

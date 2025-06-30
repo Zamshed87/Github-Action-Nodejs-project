@@ -35,7 +35,7 @@ export default function AddEditFormComponent({
   isVisibleHeading = true,
   fullscreen,
   title,
-  getData,
+  getData
 }) {
   const [loading, setLoading] = useState(false);
   const { supervisor } = useSelector(
@@ -158,9 +158,9 @@ export default function AddEditFormComponent({
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
-            getData();
+            getData()
             resetForm(initData);
-            setRowDto([]);
+            setRowDto([])
           });
         }}
       >
@@ -225,9 +225,7 @@ export default function AddEditFormComponent({
                               }}
                             >
                               {tabClickLeave ? (
-                                <RadioButtonChecked
-                                  sx={{ color: "var(--primary-color)" }}
-                                />
+                                <RadioButtonChecked sx={{ color: "#34A853" }} />
                               ) : (
                                 <RadioButtonUnchecked />
                               )}
@@ -241,9 +239,7 @@ export default function AddEditFormComponent({
                               }}
                             >
                               {tabClickMovement ? (
-                                <RadioButtonChecked
-                                  sx={{ color: "var(--primary-color)" }}
-                                />
+                                <RadioButtonChecked sx={{ color: "#34A853" }} />
                               ) : (
                                 <RadioButtonUnchecked />
                               )}
@@ -387,27 +383,29 @@ export default function AddEditFormComponent({
                     </div>
                   </Modal.Body>
                   <Modal.Footer className="form-modal-footer">
-                    <button
-                      type="button"
-                      className="modal-btn modal-btn-cancel"
-                      onClick={() => {
-                        if (id) {
-                          resetForm(modifySingleData);
-                        } else {
-                          resetForm(initData);
-                        }
-                        onHide();
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="modal-btn modal-btn-save"
-                      type="submit"
-                      onSubmit={() => handleSubmit()}
-                    >
-                      Save
-                    </button>
+                   
+                      <button
+                        type="button"
+                        className="modal-btn modal-btn-cancel"
+                        onClick={() => {
+                          if (id) {
+                            resetForm(modifySingleData);
+                          } else {
+                            resetForm(initData);
+                          }
+                          onHide();
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="modal-btn modal-btn-save"
+                        type="submit"
+                        onSubmit={() => handleSubmit()}
+                      >
+                        Save
+                      </button>
+             
                   </Modal.Footer>
                 </Form>
               </Modal>

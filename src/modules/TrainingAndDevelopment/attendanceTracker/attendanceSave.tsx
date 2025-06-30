@@ -98,11 +98,7 @@ const TnDAttendanceSave = () => {
           Attendance
           <br />
           <Checkbox
-            style={{
-              color: "var(--primary-color)",
-              fontSize: "14px",
-              cursor: "pointer",
-            }}
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
             checked={rowData?.every(
               (item: any) => item.attendanceStatus?.value == 0
             )}
@@ -124,11 +120,7 @@ const TnDAttendanceSave = () => {
       render: (_: any, rec: any) => (
         <Flex justify="center">
           <Checkbox
-            style={{
-              color: "var(--primary-color)",
-              fontSize: "14px",
-              cursor: "pointer",
-            }}
+            style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
             checked={rec.attendanceStatus?.value == 0}
             onChange={(e) => {
               setRowData(

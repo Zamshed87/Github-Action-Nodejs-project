@@ -184,5 +184,4 @@ export const column = {
   weekend: "Off Day",
   holiday: "Holiday",
   totalSinglePunchDays: "Single Punch Count",
-  earlyOut: "Early Out",
 };

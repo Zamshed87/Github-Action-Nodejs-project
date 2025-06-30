@@ -204,7 +204,7 @@ h3.table-card-sub-title {
 
 /* Data grid table */
 .data-grid-table .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked {
-  color: var(--primary-color);
+  color: green !important;
   font-size: 12px !important;
 }
 .data-grid-table .css-r11z79-MuiDataGrid-root {
@@ -309,24 +309,24 @@ h3.table-card-sub-title {
 }
 
 .ant-table-filter-trigger.active {
-  color: var(--primary-color) !important;
+  color: #34a853 !important;
 }
 .ant-table-filter-dropdown-btns .ant-btn-link {
-  color: var(--primary-color) !important;
+  color: #34a853 !important;
 }
 .ant-table-filter-dropdown-btns .ant-btn-primary {
-  background-color: var(--primary-color) !important;
+  background-color: #34a853 !important;
 }
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
+  background-color: #34a853 !important;
+  border-color: #34a853 !important;
 }
 .ant-dropdown-menu-title-content {
   color: var(--gray500) !important;
 }
 
 .ant-table-column-sorter-inner .active svg path {
-  fill: var(--primary-color);
+  fill: #34a853;
 }
 
 .ant-table-cell {

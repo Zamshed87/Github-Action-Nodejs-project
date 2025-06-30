@@ -11,13 +11,13 @@
   border: none;
   cursor: pointer;
   &.primary {
-    @include badgeColor(var(--primary-color), #e6f9e9);
+    @include badgeColor(#299647, #e6f9e9);
   }
   &.secondary {
     @include badgeColor(#616163, #e8e8e8);
   }
   &.success {
-    @include badgeColor(var(--primary-color), #e6f9e9);
+    @include badgeColor(#299647, #e6f9e9);
   }
   &.danger {
     @include badgeColor(#b42318, #fee4e2);

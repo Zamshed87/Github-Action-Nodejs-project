@@ -436,7 +436,7 @@ p.title {
 
 .set-as-default .switch input:checked + .slider:before {
   transform: translate(15px, -50%);
-  background-color: var(--primary-color);
+  background-color: #34a853;
 }
 
 /* Rounded sliders */

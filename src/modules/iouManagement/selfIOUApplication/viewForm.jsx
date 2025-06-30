@@ -744,7 +744,7 @@ export default function SelfIOUApplicationView() {
                             {!edit &&
                               singleData?.status === "Approved" &&
                               (singleData?.adjustmentStatus === "Pending" ||
-                                singleData?.adjustmentStatus == null) && (
+                                singleData?.adjustmentStatus === null) && (
                                 <div className="col-lg-2 text-right">
                                   <button
                                     type="button"

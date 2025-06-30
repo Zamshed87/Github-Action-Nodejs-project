@@ -213,10 +213,7 @@ const AttendanceReport = () => {
         return (
           <div className="d-flex align-items-center">
             <Avatar title={rec?.employeeName} />
-            <span className="ml-2" style={{ wordBreak: "break-word" }}>
-              {rec?.employeeName}
-            </span>{" "}
-            {/* Added style here */}
+            <span className="ml-2">{rec?.employeeName}</span>
           </div>
         );
       },
@@ -335,11 +332,6 @@ const AttendanceReport = () => {
     {
       title: "Single Punch Count",
       dataIndex: "totalSinglePunchDays",
-      width: 120,
-    },
-    {
-      title: "Early Out",
-      dataIndex: "earlyOut",
       width: 120,
     },
   ];

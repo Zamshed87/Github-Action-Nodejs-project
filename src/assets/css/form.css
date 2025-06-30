@@ -538,7 +538,7 @@
 
 .leave-movement-FormCard .button {
   background: #e4f8dd;
-  border: 2px solid var(--primary-color);
+  border: 2px solid #34a853;
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -546,7 +546,7 @@
   font-size: 12px;
   letter-spacing: 0.2px;
   padding: 8px;
-  color: var(--primary-color);
+  color: #34a853;
 }
 
 .filterChip {
@@ -742,7 +742,7 @@
   letter-spacing: 1.25px;
   text-transform: uppercase;
   color: #ffffff;
-  background: var(--primary-color);
+  background: #34a853;
   border-radius: 4px;
   padding: 7px 30px;
   font-weight: 700;
@@ -795,7 +795,7 @@
 
 /* ant switch color */
 .ant-switch-checked {
-  background-color: var(--primary-color);
+  background-color: var(--success500);
 }
 
 .custom_quill .ql-mention-list-container ul {

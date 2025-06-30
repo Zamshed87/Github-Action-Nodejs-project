@@ -151,11 +151,7 @@ const TnDRequisitionLanding = () => {
         <Flex justify="center">
           <Tooltip placement="bottom" title={"View"}>
             <EyeOutlined
-              style={{
-                color: "var(--primary-color)",
-                fontSize: "14px",
-                cursor: "pointer",
-              }}
+              style={{ color: "green", fontSize: "14px", cursor: "pointer" }}
               onClick={() => {
                 ViewTrainingRequistion(rec?.id, setLoading, setViewData, () => {
                   setViewModalModal(true);
@@ -169,7 +165,7 @@ const TnDRequisitionLanding = () => {
           <Tooltip placement="bottom" title={"Edit"}>
             <EditOutlined
               style={{
-                color: "var(--primary-color)",
+                color: "green",
                 fontSize: "14px",
                 cursor: "pointer",
                 margin: "0 5px",

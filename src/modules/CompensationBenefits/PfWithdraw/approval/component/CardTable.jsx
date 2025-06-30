@@ -97,7 +97,7 @@ const CardTable = ({ propsObj }) => {
       yesAlertFunc: () => {
         withdrawalApproveReject(payload, callback);
       },
-      noAlertFunc: () => {},
+      noAlertFunc: () => { },
     };
     IConfirmModal(confirmObject);
   };
@@ -128,34 +128,34 @@ const CardTable = ({ propsObj }) => {
                 appliedStatus?.label === "Approved" ||
                 appliedStatus?.label === "Rejected"
               ) && (
-                <th scope="col">
-                  <FormikCheckBox
-                    styleObj={{
-                      margin: "0 auto!important",
-                      color: gray900,
-                      checkedColor: greenColor,
-                    }}
-                    name="allSelected"
-                    checked={
-                      applicationListData?.listData?.length > 0 &&
-                      applicationListData?.listData?.every(
-                        (item) => item?.selectCheckbox
-                      )
-                    }
-                    onChange={(e) => {
-                      setApplicationListData({
-                        listData: applicationListData?.listData?.map(
-                          (item) => ({
-                            ...item,
-                            selectCheckbox: e.target.checked,
-                          })
-                        ),
-                      });
-                      setFieldValue("allSelected", e.target.checked);
-                    }}
-                  />
-                </th>
-              )}
+                  <th scope="col">
+                    <FormikCheckBox
+                      styleObj={{
+                        margin: "0 auto!important",
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      name="allSelected"
+                      checked={
+                        applicationListData?.listData?.length > 0 &&
+                        applicationListData?.listData?.every(
+                          (item) => item?.selectCheckbox
+                        )
+                      }
+                      onChange={(e) => {
+                        setApplicationListData({
+                          listData: applicationListData?.listData?.map(
+                            (item) => ({
+                              ...item,
+                              selectCheckbox: e.target.checked,
+                            })
+                          ),
+                        });
+                        setFieldValue("allSelected", e.target.checked);
+                      }}
+                    />
+                  </th>
+                )}
               <th style={{ width: "100px" }}>Code</th>
               <th scope="col">
                 <div
@@ -231,31 +231,31 @@ const CardTable = ({ propsObj }) => {
                     appliedStatus?.label === "Approved" ||
                     appliedStatus?.label === "Rejected"
                   ) && (
-                    <td
-                      className="m-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <FormikCheckBox
-                        styleObj={{
-                          margin: "0 0 0 1px",
-                          color: gray900,
-                          checkedColor: greenColor,
+                      <td
+                        className="m-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
                         }}
-                        name="selectCheckbox"
-                        color={greenColor}
-                        checked={
-                          applicationListData?.listData[i]?.selectCheckbox
-                        }
-                        onChange={(e) => {
-                          let data = [...applicationListData?.listData];
-                          data[i].selectCheckbox = e.target.checked;
-                          setApplicationListData({ listData: [...data] });
-                        }}
-                      />
-                    </td>
-                  )}
+                      >
+                        <FormikCheckBox
+                          styleObj={{
+                            margin: "0 0 0 1px",
+                            color: gray900,
+                            checkedColor: greenColor,
+                          }}
+                          name="selectCheckbox"
+                          color={greenColor}
+                          checked={
+                            applicationListData?.listData[i]?.selectCheckbox
+                          }
+                          onChange={(e) => {
+                            let data = [...applicationListData?.listData];
+                            data[i].selectCheckbox = e.target.checked;
+                            setApplicationListData({ listData: [...data] });
+                          }}
+                        />
+                      </td>
+                    )}
                   <td>
                     <div className="tableBody-title"> {data?.employeeCode}</div>
                   </td>
@@ -346,11 +346,7 @@ const CardTable = ({ propsObj }) => {
                               }}
                             >
                               <MuiIcon
-                                icon={
-                                  <CheckCircle
-                                    sx={{ color: "var(--primary-color)" }}
-                                  />
-                                }
+                                icon={<CheckCircle sx={{ color: "#34A853" }} />}
                               />
                             </div>
                           </Tooltip>

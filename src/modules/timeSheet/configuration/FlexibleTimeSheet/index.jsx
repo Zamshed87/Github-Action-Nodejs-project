@@ -329,7 +329,7 @@ const MonthlyAttendanceReport = () => {
             onClick={() => {
               navigator.clipboard.writeText(text);
             }}
-            style={{ cursor: "pointer", color: "var(--primary-color)" }}
+            style={{ cursor: "pointer", color: "#34a853" }}
           >
             {text}
           </span>
@@ -391,7 +391,7 @@ const MonthlyAttendanceReport = () => {
               style={{
                 marginLeft: "10px",
                 padding: "5px 10px",
-                backgroundColor: "var(--primary-color)",
+                backgroundColor: "#34a853",
                 color: "white",
                 border: "none",
                 borderRadius: "4px",
