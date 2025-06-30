@@ -277,7 +277,7 @@ const BulkMovementCreate = () => {
         title: "Message",
         dataIndex: "message",
         // key: "empCode",
-        width: 40,
+        width: 70,
         hidden: source[0]?.status ? false : true,
       },
     ].filter((i) => !i.hidden);
@@ -416,150 +416,11 @@ const BulkMovementCreate = () => {
           </div>
 
           {data.length > 0 && (
-            // <div className="table-card-body mt-3">
-            //   <div className="table-card-styled tableOne">
-            //     <table className="table">
-            //       <thead>
-            //         <tr>
-            //           <th>
-            //             <div>SL</div>
-            //           </th>
-            //           <th>
-            //             <div>Employee Code</div>
-            //           </th>
-            //           <th>
-            //             <div>Employee Name</div>
-            //           </th>
-            //           <th>
-            //             <div>Payroll Group</div>
-            //           </th>
-            //           <th>
-            //             <div>Gross Salary</div>
-            //           </th>
-            //           <th>
-            //             <div>Bank</div>
-            //           </th>
-            //           <th>
-            //             <div>Cash</div>
-            //           </th>
-            //           <th>
-            //             <div>Digital</div>
-            //           </th>
-            //           <th>
-            //             <div>Routing No</div>
-            //           </th>
-            //           <th>
-            //             <div>Swift Code</div>
-            //           </th>
-            //           <th>
-            //             <div>Account No</div>
-            //           </th>
-            //           <th>
-            //             <div>Account Name</div>
-            //           </th>
-            //           <th>
-            //             <div>Message</div>
-            //           </th>
-            //         </tr>
-            //       </thead>
-            //       <tbody>
-            //         {data.map((item, index) => (
-            //           <tr key={index}>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {index + 1}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.employeeCode || item?.EmployeeCode}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.employeeName}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.payrollGroup}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.grossSalary}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.bankPay}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.cashPay}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.digitalPay}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.routingNo}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.swiftCode}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.accountNo}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 {item?.accountName}
-            //               </div>
-            //             </td>
-            //             <td>
-            //               <div className="content tableBody-title">
-            //                 <span
-            //                   style={{
-            //                     color:
-            //                       item?.isBankDetailsInserted &&
-            //                       item?.isSalaryInserted
-            //                         ? "green"
-            //                         : item?.isBankDetailsInserted ||
-            //                           item?.isSalaryInserted
-            //                         ? "orange"
-            //                         : "red",
-            //                   }}
-            //                 >
-            //                   {item?.exMessage || item?.ExMessage}
-            //                 </span>
-            //               </div>
-            //             </td>
-
-            //             {/* <td>
-            //               <div className="content tableBody-title">
-            //                 {moment(item?.dteToTime, "HH:mm:ss").format("h:mm")}
-            //               </div>
-            //             </td> */}
-            //           </tr>
-            //         ))}
-            //       </tbody>
-            //     </table>
-            //   </div>
-            // </div>
             <DataTable
               data={data}
               header={columns(data)}
               bordered
-              scroll={{ x: 2000 }}
+              scroll={{ x: 2300 }}
             />
           )}
         </form>
