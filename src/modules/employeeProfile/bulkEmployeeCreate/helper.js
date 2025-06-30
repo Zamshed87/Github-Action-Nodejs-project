@@ -81,6 +81,7 @@ export const processBulkUploadEmployeeAction = async (
       intOTFixedHour: +item?.["OT Fixed Hour"] || 0,
       strJobLocation: item["Job Location"] || "",
       strJobTerritory: item["Job Territory"] || "",
+      strPayScaleGrade: item["Pay Scale Grade"] || "",
     }));
 
     setter(modifiedData);
@@ -110,7 +111,7 @@ export const saveBulkUploadEmployeeAction = async (
     setLoading(false);
     setErrorData(error?.response?.data?.listData);
     setOpen(true);
-    console.log("error",error?.response);
+    console.log("error", error?.response);
     toast.error(error?.response?.data?.message || "Failed to process!");
   }
 };

@@ -20,6 +20,7 @@ type CommonFilterProps = {
   statusDDL?: any;
   isAllValue?: boolean;
   isEmployee?: boolean;
+  isYear?: boolean;
   children?: React.ReactNode;
 };
 
@@ -54,6 +55,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
   statusDDL,
   isAllValue,
   isEmployee,
+  isYear,
   children,
 }) => {
   // Form Instance
@@ -280,7 +282,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
           justifyContent: "center",
           width: "30px",
           height: "30px",
-          background: "#27b327",
+          background: "var(--primary-color)",
           border: "none",
         }}
       />
@@ -356,6 +358,7 @@ const CommonFilter: React.FC<CommonFilterProps> = ({
                 </Col>
               </>
             )}
+
 
             {isWorkplaceGroup && (
               <Col md={12} sm={12}>

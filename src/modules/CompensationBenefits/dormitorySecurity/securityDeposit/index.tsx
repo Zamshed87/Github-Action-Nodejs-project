@@ -178,7 +178,6 @@ export const SecurityDepositLanding = () => {
                   return toast.warn("You don't have permission");
                   e.stopPropagation();
                 }
-                //   setOpen(true);
                 detailsApi?.action({
                   urlKey: "DepositDetails",
                   method: "GET",
@@ -198,23 +197,22 @@ export const SecurityDepositLanding = () => {
                 });
               },
             },
-            {
-              type: "edit",
-              onClick: (e: any) => {
-                if (!employeeFeature?.isEdit) {
-                  return toast.warn("You don't have permission");
-                }
-                history.push({
-                  pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
-                  state: {
-                    month: item?.monthId,
-                    year: item?.yearId,
-                  },
-                });
-                //   setOpen(true);
-                //   setId(rec);
-              },
-            },
+            // talk with business team
+            // {
+            //   type: "edit",
+            //   onClick: (e: any) => {
+            //     if (!employeeFeature?.isEdit) {
+            //       return toast.warn("You don't have permission");
+            //     }
+            //     history.push({
+            //       pathname: `/compensationAndBenefits/securityDeposit/edit/${item?.depositTypeId}`,
+            //       state: {
+            //         month: item?.monthId,
+            //         year: item?.yearId,
+            //       },
+            //     });
+            //   },
+            // },
             // {
             //   type: "delete",
             //   onClick: () => {

@@ -247,7 +247,7 @@ function DragAndDrop() {
                                     <PrimaryButton
                                       style={{
                                         backgroundColor: "#EBECF0",
-                                        color: "#34A853",
+                                        color: "var(--primary-color)",
                                         margin: "0px auto",
                                         pointer: "cursor",
                                         fontSize: "14px",
@@ -287,7 +287,8 @@ function DragAndDrop() {
                                       <div className="master-filter-btn-group d-flex ">
                                         <button
                                           style={{
-                                            backgroundColor: "#34A853",
+                                            backgroundColor:
+                                              "var(--primary-color)",
                                             fontSize: "14px",
                                             color: "white",
                                           }}

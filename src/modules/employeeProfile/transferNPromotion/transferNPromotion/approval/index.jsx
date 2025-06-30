@@ -707,7 +707,9 @@ export default function TransferNPromotionApproval() {
                       }}
                     >
                       <MuiIcon
-                        icon={<CheckCircle sx={{ color: "#34A853" }} />}
+                        icon={
+                          <CheckCircle sx={{ color: "var(--primary-color)" }} />
+                        }
                       />
                     </div>
                   </Tooltip>
@@ -766,7 +768,6 @@ export default function TransferNPromotionApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          
                           <div className="d-flex align-items-center">
                             <BackButton
                               title={"Transfer And Promotion Approval"}
@@ -795,7 +796,6 @@ export default function TransferNPromotionApproval() {
                               />
                             ) : null}
                           </div>
-                        
                         </div>
 
                         {permission?.isCreate ? (

@@ -62,40 +62,41 @@ const AssessmentFormDetailsLanding = () => {
               <h2>{singleData?.strTrainingName}</h2>
             </div>
             <div className="table-header-right">
-              {moment().format() < moment(singleData?.dteCourseCompletionDate).format() &&
-              <BtnActionMenu
-                className="btn btn-default flex-center btn-deafult-create-job"
-                icon={
-                  <AddOutlined
-                    sx={{
-                      marginRight: "0px",
-                      fontSize: "15px",
-                    }}
-                  />
-                }
-                label="Assessment"
-                options={[
-                  {
-                    value: 1,
-                    label: "Pre Assessment",
-                    onClick: () => {
-                      history.push(
-                        `/trainingAndDevelopment/assessment/assessmentForm/create/pre/${params?.id}`
-                      );
+              {moment().format() <
+                moment(singleData?.dteCourseCompletionDate).format() && (
+                <BtnActionMenu
+                  className="btn btn-default flex-center btn-deafult-create-job"
+                  icon={
+                    <AddOutlined
+                      sx={{
+                        marginRight: "0px",
+                        fontSize: "15px",
+                      }}
+                    />
+                  }
+                  label="Assessment"
+                  options={[
+                    {
+                      value: 1,
+                      label: "Pre Assessment",
+                      onClick: () => {
+                        history.push(
+                          `/trainingAndDevelopment/assessment/assessmentForm/create/pre/${params?.id}`
+                        );
+                      },
                     },
-                  },
-                  {
-                    value: 2,
-                    label: "Post Assessment",
-                    onClick: () => {
-                      history.push(
-                        `/trainingAndDevelopment/assessment/assessmentForm/create/post/${params?.id}`
-                      );
+                    {
+                      value: 2,
+                      label: "Post Assessment",
+                      onClick: () => {
+                        history.push(
+                          `/trainingAndDevelopment/assessment/assessmentForm/create/post/${params?.id}`
+                        );
+                      },
                     },
-                  },
-                ]}
-              />
-              }
+                  ]}
+                />
+              )}
             </div>
           </div>
 
@@ -107,12 +108,14 @@ const AssessmentFormDetailsLanding = () => {
                   onChange={handleChange}
                   aria-label="basic tabs example"
                   TabIndicatorProps={{
-                    style: { background: "#299647", height: 3 },
+                    style: { background: "var(--primary-color)", height: 3 },
                   }}
                   sx={{
-                    "& .MuiTabs-indicator": { backgroundColor: "#299647" },
+                    "& .MuiTabs-indicator": {
+                      backgroundColor: "var(--primary-color)",
+                    },
                     "& .MuiTab-root": { color: "#667085" },
-                    "& .Mui-selected": { color: "#299647" },
+                    "& .Mui-selected": { color: "var(--primary-color)" },
                   }}
                 >
                   <Tab label="Assessment" {...a11yProps(0)} />

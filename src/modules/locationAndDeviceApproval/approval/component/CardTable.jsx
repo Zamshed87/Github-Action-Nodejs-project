@@ -302,7 +302,11 @@ const CardTable = ({ propsObj }) => {
                       demoPopup("approve", "Approve", record);
                     }}
                   >
-                    <MuiIcon icon={<CheckCircle sx={{ color: "#34A853" }} />} />
+                    <MuiIcon
+                      icon={
+                        <CheckCircle sx={{ color: "var(--primary-color)" }} />
+                      }
+                    />
                   </div>
                 </Tooltip>
                 <Tooltip title="Reject">
@@ -567,7 +571,7 @@ const CardTable = ({ propsObj }) => {
         //                       }}
         //                     >
         //                       <MuiIcon
-        //                         icon={<CheckCircle sx={{ color: "#34A853" }} />}
+        //                         icon={<CheckCircle sx={{ color: "var(--primary-color)" }} />}
         //                       />
         //                     </div>
         //                   </Tooltip>

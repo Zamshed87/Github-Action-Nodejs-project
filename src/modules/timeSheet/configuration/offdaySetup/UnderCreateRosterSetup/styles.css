@@ -3,22 +3,35 @@
 .UnderCreateRosterSetup .container-UnderCreateRosterSetup {
   /* padding: 0 40px; */
 }
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .header-UnderCreateRosterSetup {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .header-UnderCreateRosterSetup {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 25px 0 35px 0;
 }
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .header-UnderCreateRosterSetup .header-left {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .header-UnderCreateRosterSetup
+  .header-left {
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .header-UnderCreateRosterSetup .header-left h4 {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .header-UnderCreateRosterSetup
+  .header-left
+  h4 {
   color: rgba(0, 0, 0, 0.8);
   font-size: 14px;
 }
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .header-UnderCreateRosterSetup .header-left .holiday-icon-edit {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .header-UnderCreateRosterSetup
+  .header-left
+  .holiday-icon-edit {
   visibility: visible;
   opacity: 1;
   border: transparent;
@@ -29,7 +42,11 @@
   width: 25px;
   height: 25px;
 }
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .header-UnderCreateRosterSetup .header-right .save-create-holiday {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .header-UnderCreateRosterSetup
+  .header-right
+  .save-create-holiday {
   padding: 12px 18px;
   border-radius: 8px;
 }
@@ -37,25 +54,37 @@
 /* ==> create UnderCreateRosterSetup header end */
 
 /* ==> create UnderCreateRosterSetup form start */
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .body-UnderCreateRosterSetup .form-UnderCreateRosterSetup {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .body-UnderCreateRosterSetup
+  .form-UnderCreateRosterSetup {
   background: #ffffff;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08),
+    0px 1px 5px rgba(0, 0, 0, 0.05);
   padding: 27px;
 }
 
- .input-field .form-container {
+.input-field .form-container {
   margin-bottom: 5px !important;
 }
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .body-UnderCreateRosterSetup .form-UnderCreateRosterSetup .depend-on-moon-field {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .body-UnderCreateRosterSetup
+  .form-UnderCreateRosterSetup
+  .depend-on-moon-field {
   /* margin-bottom: 24px; */
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
-.UnderCreateRosterSetup .container-UnderCreateRosterSetup .body-UnderCreateRosterSetup .form-UnderCreateRosterSetup .add-btn {
+.UnderCreateRosterSetup
+  .container-UnderCreateRosterSetup
+  .body-UnderCreateRosterSetup
+  .form-UnderCreateRosterSetup
+  .add-btn {
   background: #e4f8dd;
-  border: 2px solid #34a853;
+  border: 2px solid var(--primary-color);
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -66,7 +95,7 @@
   padding: 5px;
   /* height: 56px; */
   margin-top: 1rem;
-  color: #34a853;
+  color: var(--primary-color);
   width: 100%;
   cursor: pointer;
 }
@@ -103,20 +132,29 @@
 }
 
 /* // table-body-UnderCreateRosterSetup */
-.table-UnderCreateRosterSetup-main h4{
+.table-UnderCreateRosterSetup-main h4 {
   font-size: 14px;
 }
 .table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table {
   border-spacing: 0 1rem;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table thead th small {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  thead
+  th
+  small {
   font-size: 14px;
   line-height: 16px;
   letter-spacing: 0.2px;
   color: rgba(0, 0, 0, 0.6);
 }
 
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table thead th {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  thead
+  th {
   border-bottom: none;
   border-top: 2px solid #dee2e6;
   border-bottom: 2px solid #dee2e6;
@@ -124,23 +162,53 @@
   padding: 0.5rem;
   color: rgba(0, 0, 0, 0.6);
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table thead th:hover {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  thead
+  th:hover {
   cursor: pointer;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table thead th:first-child {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  thead
+  th:first-child {
   padding-left: 37px;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table thead th:nth-child(2) {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  thead
+  th:nth-child(2) {
   width: 30%;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup .table-card-styled table tbody tr td {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  .table-card-styled
+  table
+  tbody
+  tr
+  td {
   height: 73px;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup .table-card-styled table tbody tr td:nth-child(2) {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  .table-card-styled
+  table
+  tbody
+  tr
+  td:nth-child(2) {
   text-align: center;
   width: 30%;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup .table-card-styled table tbody tr td,
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  .table-card-styled
+  table
+  tbody
+  tr
+  td,
 small {
   font-style: normal;
   font-weight: 500;
@@ -148,29 +216,71 @@ small {
   line-height: 19px;
   color: rgba(0, 0, 0, 0.6);
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup .table-card-styled table tbody tr td:first-child {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  .table-card-styled
+  table
+  tbody
+  tr
+  td:first-child {
   padding-left: 37px;
   width: 40%;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup .table-card-styled table tbody tr td:nth-child(2) {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  .table-card-styled
+  table
+  tbody
+  tr
+  td:nth-child(2) {
   padding-left: 37px;
   width: 20%;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table tbody tr td:last-child {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  tbody
+  tr
+  td:last-child {
   width: 40% !important;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table tbody tr .icons-table-list {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  tbody
+  tr
+  .icons-table-list {
   justify-content: space-between;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table tbody tr .icons-table-list .icons-single-list {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  tbody
+  tr
+  .icons-table-list
+  .icons-single-list {
   padding-right: 40px;
 }
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table tbody tr .icons-table-list .icons-single-list button {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  tbody
+  tr
+  .icons-table-list
+  .icons-single-list
+  button {
   background-color: transparent;
   color: rgba(0, 0, 0, 0.6);
 }
 
-.table-UnderCreateRosterSetup-main .body-table-UnderCreateRosterSetup table tbody tr:hover .icons-table-list .icons-single-list button {
+.table-UnderCreateRosterSetup-main
+  .body-table-UnderCreateRosterSetup
+  table
+  tbody
+  tr:hover
+  .icons-table-list
+  .icons-single-list
+  button {
   visibility: visible;
   opacity: 1;
 }
