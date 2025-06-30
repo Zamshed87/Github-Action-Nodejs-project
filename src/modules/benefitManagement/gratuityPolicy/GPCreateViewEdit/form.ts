@@ -35,7 +35,6 @@ export const GratuityPolicyForm = (
       type: "ddl",
       label: "Employment Type",
       varname: "employmentType",
-      mode: "multiple",
       ddl: employmentTypeDDL || [],
       placeholder: "Select employment type",
       rules: [{ required: true, message: "Employment Type is required!" }],
@@ -77,7 +76,7 @@ export const GratuityPolicyForm = (
     {
       type: "number",
       label: "Service Length Start (Month)",
-      varname: "intServiceLengthStartInMonth",
+      varname: "serviceLengthStart",
       placeholder: "Enter Service Length Start (Month)",
       rules: [{ required: true, message: "Service Length Start is required!" }],
       col: 6,
@@ -85,7 +84,7 @@ export const GratuityPolicyForm = (
     {
       type: "number",
       label: "Service Length End (Month)",
-      varname: "intServiceLengthEndInMonth",
+      varname: "serviceLengthEnd",
       placeholder: "Enter Service Length End (Month)",
       rules: [{ required: true, message: "Service Length End is required!" }],
       col: 6,
@@ -97,11 +96,11 @@ export const GratuityPolicyForm = (
       ddl: [
         {
           label: "Gross",
-          value: 2,
+          value: 1,
         },
         {
           label: "Basic",
-          value: 1,
+          value: 2,
         },
         {
           label: "Fixed Amount",
@@ -120,7 +119,7 @@ export const GratuityPolicyForm = (
     {
       type: "number",
       label: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
-      varname: "numPercentageOrFixedAmount",
+      varname: "numPercentage",
       placeholder: "Enter Gratuity Disbursement",
       rules: [
         { required: true, message: "Gratuity Disbursement is required!" },

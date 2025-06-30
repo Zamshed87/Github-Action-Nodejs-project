@@ -122,7 +122,7 @@ const TnDFeedback = () => {
                 <br />
                 <Checkbox
                   style={{
-                    color: "var(--primary-color)",
+                    color: "green",
                     fontSize: "14px",
                     cursor: "pointer",
                   }}
@@ -145,7 +145,7 @@ const TnDFeedback = () => {
               <Flex justify="center">
                 <Checkbox
                   style={{
-                    color: "var(--primary-color)",
+                    color: "green",
                     fontSize: "14px",
                     cursor: "pointer",
                   }}
@@ -178,7 +178,7 @@ const TnDFeedback = () => {
                 padding: "0 4px",
                 fontSize: "10px",
                 border: 0,
-                backgroundColor: "var(--primary-color)",
+                backgroundColor: "green",
                 color: "white",
                 borderRadius: "3px",
               }}

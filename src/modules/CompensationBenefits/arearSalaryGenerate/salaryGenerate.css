@@ -1,4 +1,4 @@
-.salary-generate-page {
+.salary-generate-page{
   margin-top: 44px;
 }
 .generate-salary-form .input-field-main .form-container {
@@ -33,7 +33,7 @@
 
 .salary-generate-btn button {
   background: #e4f8dd;
-  border: 2px solid var(--primary-color);
+  border: 2px solid #34a853;
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
   border-radius: 4px;
@@ -41,7 +41,7 @@
   font-size: 12px;
   letter-spacing: 0.2px;
   padding: 5px;
-  color: var(--primary-color);
+  color: #34a853;
   display: block;
   width: 100%;
 }

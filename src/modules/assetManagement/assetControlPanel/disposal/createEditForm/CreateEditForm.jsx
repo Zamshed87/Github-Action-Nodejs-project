@@ -238,9 +238,7 @@ const AssetDisposalForm = () => {
                     <div className="col-lg-12 mt-2 mb-3">
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
-                          <ViewList
-                            sx={{ color: "var(--primary-color) !important" }}
-                          />
+                          <ViewList sx={{ color: "#299647 !important" }} />
                           <p style={{ marginLeft: "10px" }}>Asset Lists</p>
                         </div>
                         {disposalId === 1 && (

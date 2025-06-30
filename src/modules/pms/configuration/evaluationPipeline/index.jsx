@@ -80,7 +80,7 @@ const EvaluationPipeline = () => {
           <Tooltip placement="bottom" title={"Edit"}>
             <EditOutlined
               style={{
-                color: "var(--primary-color)",
+                color: "green",
                 fontSize: "14px",
                 cursor: "pointer",
                 margin: "0 5px",

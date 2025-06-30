@@ -1,6 +1,6 @@
 export const colorList = {
   preset: {
-    color: "var(--primary-color)",
+    color: "green",
     backgroundColor: {
       // backgroundColor: "rgba(91, 203, 79, 1)",
       backgroundColor: "rgba(125,227,154,1)",

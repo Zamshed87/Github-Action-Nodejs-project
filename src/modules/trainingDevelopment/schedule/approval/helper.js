@@ -234,11 +234,7 @@ export const scheduleApprovalColumn = (
                       demoPopupForTable("approve", "Approve", data);
                     }}
                   >
-                    <MuiIcon
-                      icon={
-                        <CheckCircle sx={{ color: "var(--primary-color)" }} />
-                      }
-                    />
+                    <MuiIcon icon={<CheckCircle sx={{ color: "#34A853" }} />} />
                   </div>
                 </Tooltip>
                 <Tooltip title="Reject">
