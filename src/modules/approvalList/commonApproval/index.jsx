@@ -225,6 +225,7 @@ const CommonApprovalComponent = () => {
       });
       setSelectedRow([]);
     } catch (error) {
+      console.error("Error processing approvals:", error);
       toast.error("Failed to process approvals.");
     }
   };
