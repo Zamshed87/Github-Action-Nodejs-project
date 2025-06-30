@@ -363,7 +363,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                     form.setFieldsValue({
                       payScale: option,
                     });
-                    form.resetFields(["workplace"])
+                    form.resetFields(["workplace"]);
                     getWorkplaceDDL(
                       orgId,
                       buId,
@@ -535,6 +535,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             options={[
                               { value: 1, label: "Percentage" },
                               { value: 2, label: "Amount" },
+                              { value: 3, label: "Calculative" },
                             ]}
                             onChange={(value, option) => {
                               form.setFieldsValue({
@@ -602,54 +603,114 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             <>
                               <div className="d-flex align-items-center">
                                 <Col md={24} sm={24}>
-                                  <PInput
-                                    type="number"
-                                    label={
-                                      <>
-                                        {itm?.strPayrollElementName}
-                                        {itm?.strBasedOn === "Percentage" &&
-                                          `( % )`}
-                                        {`[Depends on ${
-                                          itm?.strDependOn === "Basic"
-                                            ? "Basic"
-                                            : "Gross"
-                                        }]`}
-                                        {!state?.intSalaryBreakdownHeaderId && (
-                                          <span
-                                            style={{
-                                              color: success800,
-                                              fontWeight: "500",
-                                              fontSize: "12px",
-                                              lineHeight: "18px",
-                                              textDecoration: "underline",
-                                              cursor: "pointer",
-                                              marginLeft: "8px",
-                                            }}
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              remover(itm?.levelVariable);
-                                              form.setFieldsValue({
-                                                levelVariable:
-                                                  itm?.levelVariable,
-                                              });
-                                            }}
-                                          >
-                                            Remove
-                                          </span>
-                                        )}
-                                      </>
-                                    }
-                                    value={itm?.[itm?.levelVariable]}
-                                    // name={itm?.levelVariable}
-                                    onChange={(value) => {
-                                      rowDtoHandler(
-                                        `${itm?.levelVariable}`,
-                                        index,
-                                        value
-                                      );
-                                    }}
-                                    disabled={state?.intSalaryBreakdownHeaderId}
-                                  />
+                                  {itm?.strBasedOn !== "Calculative" && (
+                                    <PInput
+                                      type="number"
+                                      label={
+                                        <>
+                                          {itm?.strPayrollElementName}
+                                          {itm?.strBasedOn === "Percentage" &&
+                                            `(%)`}
+                                          {itm?.strBasedOn === "Amount" &&
+                                            `(#)`}
+                                          {`[Depends on ${
+                                            itm?.strDependOn === "Basic"
+                                              ? "Basic"
+                                              : "Gross"
+                                          }]`}
+                                          {!state?.intSalaryBreakdownHeaderId && (
+                                            <span
+                                              style={{
+                                                color: success800,
+                                                fontWeight: "500",
+                                                fontSize: "12px",
+                                                lineHeight: "18px",
+                                                textDecoration: "underline",
+                                                cursor: "pointer",
+                                                marginLeft: "8px",
+                                              }}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                remover(itm?.levelVariable);
+                                                form.setFieldsValue({
+                                                  levelVariable:
+                                                    itm?.levelVariable,
+                                                });
+                                              }}
+                                            >
+                                              Remove
+                                            </span>
+                                          )}
+                                        </>
+                                      }
+                                      value={itm?.[itm?.levelVariable]}
+                                      // name={itm?.levelVariable}
+                                      onChange={(value) => {
+                                        rowDtoHandler(
+                                          `${itm?.levelVariable}`,
+                                          index,
+                                          value
+                                        );
+                                      }}
+                                      disabled={
+                                        state?.intSalaryBreakdownHeaderId
+                                      }
+                                    />
+                                  )}
+                                  {itm?.strBasedOn === "Calculative" && (
+                                    <PInput
+                                      type="text"
+                                      label={
+                                        <>
+                                          {itm?.strPayrollElementName}
+
+                                          {itm?.strBasedOn === "Calculative" &&
+                                            `(Calc)`}
+                                          {`[Depends on ${
+                                            itm?.strDependOn === "Basic"
+                                              ? "Basic"
+                                              : "Gross"
+                                          }]`}
+                                          {!state?.intSalaryBreakdownHeaderId && (
+                                            <span
+                                              style={{
+                                                color: success800,
+                                                fontWeight: "500",
+                                                fontSize: "12px",
+                                                lineHeight: "18px",
+                                                textDecoration: "underline",
+                                                cursor: "pointer",
+                                                marginLeft: "8px",
+                                              }}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                remover(itm?.levelVariable);
+                                                form.setFieldsValue({
+                                                  levelVariable:
+                                                    itm?.levelVariable,
+                                                });
+                                              }}
+                                            >
+                                              Remove
+                                            </span>
+                                          )}
+                                        </>
+                                      }
+                                      value={itm?.[itm?.levelVariable]}
+                                      // name={itm?.levelVariable}
+                                      onChange={(e) => {
+                                        console.log(e.target?.value);
+                                        rowDtoHandler(
+                                          `${itm?.levelVariable}`,
+                                          index,
+                                          e.target?.value
+                                        );
+                                      }}
+                                      disabled={
+                                        state?.intSalaryBreakdownHeaderId
+                                      }
+                                    />
+                                  )}
                                 </Col>
                               </div>
                             </>
