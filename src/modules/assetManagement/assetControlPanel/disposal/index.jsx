@@ -233,12 +233,14 @@ const AssetDisposal = () => {
                     onChange={handleChange}
                     aria-label="basic tabs example"
                     TabIndicatorProps={{
-                      style: { background: "#299647", height: 3 },
+                      style: { background: "var(--primary-color)", height: 3 },
                     }}
                     sx={{
-                      "& .MuiTabs-indicator": { backgroundColor: "#299647" },
+                      "& .MuiTabs-indicator": {
+                        backgroundColor: "var(--primary-color)",
+                      },
                       "& .MuiTab-root": { color: "#667085" },
-                      "& .Mui-selected": { color: "#299647" },
+                      "& .Mui-selected": { color: "var(--primary-color)" },
                     }}
                   >
                     <Tab label="Sales" {...a11yProps(0)} />

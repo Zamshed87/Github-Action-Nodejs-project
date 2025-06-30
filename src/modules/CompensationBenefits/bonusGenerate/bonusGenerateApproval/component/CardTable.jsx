@@ -13,7 +13,8 @@ import SortingIcon from "../../../../../common/SortingIcon";
 import { gray900, greenColor } from "../../../../../utility/customColor";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
 import {
-  bonusGenerateApproveReject, getAllBonusGenerateListDataForApproval
+  bonusGenerateApproveReject,
+  getAllBonusGenerateListDataForApproval,
 } from "../../helper";
 
 const CardTable = ({ propsObj }) => {
@@ -97,7 +98,7 @@ const CardTable = ({ propsObj }) => {
       yesAlertFunc: () => {
         bonusGenerateApproveReject(payload, callback);
       },
-      noAlertFunc: () => { },
+      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
@@ -111,8 +112,8 @@ const CardTable = ({ propsObj }) => {
           ...data,
           intBonusHeaderId: data?.intId,
           strBusinessUnit: data?.strBusinessUnitName,
-          strStatus: data?.application?.strStatus
-        }
+          strStatus: data?.application?.strStatus,
+        },
       },
     });
   };
@@ -128,35 +129,35 @@ const CardTable = ({ propsObj }) => {
                 appliedStatus?.label === "Approved" ||
                 appliedStatus?.label === "Rejected"
               ) && (
-                  <th scope="col" style={{ width: "35px" }}>
-                    <FormikCheckBox
-                      styleObj={{
-                        margin: "0 auto!important",
-                        color: gray900,
-                        checkColor: greenColor,
-                      }}
-                      name="allSelected"
-                      checked={
-                        applicationListData?.listData?.length > 0 &&
-                        applicationListData?.listData?.every(
-                          (item) => item?.selectCheckbox
-                        )
-                      }
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        setApplicationListData({
-                          listData: applicationListData?.listData?.map(
-                            (item) => ({
-                              ...item,
-                              selectCheckbox: e.target.checked,
-                            })
-                          ),
-                        });
-                        setFieldValue("allSelected", e.target.checked);
-                      }}
-                    />
-                  </th>
-                )}
+                <th scope="col" style={{ width: "35px" }}>
+                  <FormikCheckBox
+                    styleObj={{
+                      margin: "0 auto!important",
+                      color: gray900,
+                      checkColor: greenColor,
+                    }}
+                    name="allSelected"
+                    checked={
+                      applicationListData?.listData?.length > 0 &&
+                      applicationListData?.listData?.every(
+                        (item) => item?.selectCheckbox
+                      )
+                    }
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      setApplicationListData({
+                        listData: applicationListData?.listData?.map(
+                          (item) => ({
+                            ...item,
+                            selectCheckbox: e.target.checked,
+                          })
+                        ),
+                      });
+                      setFieldValue("allSelected", e.target.checked);
+                    }}
+                  />
+                </th>
+              )}
               <th scope="col">
                 <div
                   className="d-flex align-items-center pointer"
@@ -164,7 +165,10 @@ const CardTable = ({ propsObj }) => {
                     setBusinessUnitOrder(
                       businessUnitOrder === "desc" ? "asc" : "desc"
                     );
-                    commonSortByFilter(businessUnitOrder, "strBusinessUnitName");
+                    commonSortByFilter(
+                      businessUnitOrder,
+                      "strBusinessUnitName"
+                    );
                   }}
                 >
                   Business Unit
@@ -192,9 +196,7 @@ const CardTable = ({ propsObj }) => {
               <th>Effective Date</th>
               {isOfficeAdmin && (
                 <th scope="col">
-                  <div className="d-flex align-items-center">
-                    Waiting Stage
-                  </div>
+                  <div className="d-flex align-items-center">Waiting Stage</div>
                 </th>
               )}
               <th>
@@ -213,7 +215,7 @@ const CardTable = ({ propsObj }) => {
                     e.stopPropagation();
                   }}
                   style={{
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
                   <td className="text-center">{i + 1}</td>
@@ -221,27 +223,27 @@ const CardTable = ({ propsObj }) => {
                     appliedStatus?.label === "Approved" ||
                     appliedStatus?.label === "Rejected"
                   ) && (
-                      <td>
-                        <FormikCheckBox
-                          styleObj={{
-                            margin: "0 0 0 1px",
-                            checkedColor: greenColor,
-                            color: gray900,
-                          }}
-                          name="selectCheckbox"
-                          color={greenColor}
-                          checked={
-                            applicationListData?.listData[i]?.selectCheckbox
-                          }
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            let data = [...applicationListData?.listData];
-                            data[i].selectCheckbox = e.target.checked;
-                            setApplicationListData({ listData: [...data] });
-                          }}
-                        />
-                      </td>
-                    )}
+                    <td>
+                      <FormikCheckBox
+                        styleObj={{
+                          margin: "0 0 0 1px",
+                          checkedColor: greenColor,
+                          color: gray900,
+                        }}
+                        name="selectCheckbox"
+                        color={greenColor}
+                        checked={
+                          applicationListData?.listData[i]?.selectCheckbox
+                        }
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          let data = [...applicationListData?.listData];
+                          data[i].selectCheckbox = e.target.checked;
+                          setApplicationListData({ listData: [...data] });
+                        }}
+                      />
+                    </td>
+                  )}
                   <td onClick={() => singleViewRoute(data)}>
                     <div className="employeeInfo d-flex align-items-center">
                       <AvatarComponent
@@ -257,7 +259,9 @@ const CardTable = ({ propsObj }) => {
                   </td>
                   <td onClick={() => singleViewRoute(data)}>
                     <p className="tableBody-title">
-                      {data?.intArrearBonusReferenceId ? "Arrear Bonus Generate" : "Bonus Generate"}
+                      {data?.intArrearBonusReferenceId
+                        ? "Arrear Bonus Generate"
+                        : "Bonus Generate"}
                     </p>
                   </td>
                   <td onClick={() => singleViewRoute(data)}>
@@ -285,7 +289,9 @@ const CardTable = ({ propsObj }) => {
                   </td>
                   {isOfficeAdmin && (
                     <td>
-                      <div className="tableBody-title">{data?.currentStage}</div>
+                      <div className="tableBody-title">
+                        {data?.currentStage}
+                      </div>
                     </td>
                   )}
                   <td className="text-center" width="10%">
@@ -307,7 +313,11 @@ const CardTable = ({ propsObj }) => {
                               }}
                             >
                               <MuiIcon
-                                icon={<CheckCircle sx={{ color: "#34A853" }} />}
+                                icon={
+                                  <CheckCircle
+                                    sx={{ color: "var(--primary-color)" }}
+                                  />
+                                }
                               />
                             </div>
                           </Tooltip>

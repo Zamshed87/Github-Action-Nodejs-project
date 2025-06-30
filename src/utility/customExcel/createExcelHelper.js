@@ -157,7 +157,7 @@ export const createFile = (excel, colWidth) => {
       let lastCellIndex = 0;
       // eslint-disable-next-line no-unused-expressions
       row?.forEach((cell) => {
-        if (cell === null) {
+        if (cell == null) {
           cell = "";
         }
         if (typeof cell !== "object") {

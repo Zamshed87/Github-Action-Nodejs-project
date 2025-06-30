@@ -295,7 +295,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
 
             <div
               className="managerDashboard-Report-Card"
-              style={{ borderTop: `3px solid #34A853` }}
+              style={{ borderTop: `3px solid var(--primary-color)` }}
             >
               <div className="inner">
                 <div className="card-head">

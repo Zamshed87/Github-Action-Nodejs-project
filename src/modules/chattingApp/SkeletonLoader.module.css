@@ -1,0 +1,46 @@
+.loaderContainer {
+  display: flex;
+  padding: 5px 8px;
+}
+
+.loaderAvatar {
+  background-color: var(--skeleton-color);
+  width: 45px;
+  height: 45px;
+  border-radius: 100%;
+  margin-right: 10px;
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+.loaderTextContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.nameLoader {
+  background-color: var(--skeleton-color);
+  width: 150px;
+  height: 10px;
+  margin-bottom: 5px;
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+.messageLoader {
+  background-color: var(--skeleton-color);
+  width: 220px;
+  height: 10px;
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}

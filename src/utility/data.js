@@ -1,3 +1,5 @@
+export const signalR_KEY = "iBOS__" + window.location.origin;
+
 export const landingData = {
   currentPage: 1,
   data: [

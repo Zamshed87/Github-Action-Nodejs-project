@@ -5,7 +5,10 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import RoasterInfo from "./component/RosterInfo";
 import { dateFormatter } from "utility/dateFormatter";
-import { createPayloadStructure, setHeaderListDataDynamically } from "common/peopleDeskTable/helper";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "common/peopleDeskTable/helper";
 
 export const getShiftInfo = async (id, setter) => {
   try {
@@ -150,9 +153,10 @@ export const columns = (
       dataIndex: "hrPosition",
       sort: true,
       filter: true,
-      filterDropDownList: headerList[`hrPositionList`]?.length > 0
-        ? headerList[`hrPositionList`]
-        : [],
+      filterDropDownList:
+        headerList[`hrPositionList`]?.length > 0
+          ? headerList[`hrPositionList`]
+          : [],
       fieldType: "string",
     },
     {
@@ -317,7 +321,7 @@ export const initData = {
 export const validationSchema = Yup.object({});
 
 export const colors = [
-  "#299647",
+  "var(--primary-color)",
   "#B54708",
   "#B42318",
   "#6927DA",

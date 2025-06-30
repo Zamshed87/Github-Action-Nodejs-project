@@ -351,6 +351,7 @@ export const apiList = {
   LeavePunishmentCreate: "/LeavePunishment/Create",
   LeavePunishmentGetById: "/LeavePunishment/GetById",
   LeavePunishmentExtend: "/LeavePunishment/Extend",
+  GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
   GetFinalSettlementDueSalaryReport:
     "/PdfAndExcelReport/GetFinalSettlementDueSalaryReport",
   GetInvestmentSummaryReportByOrganization:
@@ -363,11 +364,12 @@ export const apiList = {
     "/ProvidentFund/GetEmployeeMonthWisePfDetailReport",
   GetTypeWiseReport: "/PFInvestment/GetTypeWiseReport",
   GetTypeWiseDetailsReport: "/PFInvestment/GetTypeWiseDetailsReport",
-
   ManageriumIntregation: "/ManageriumIntregation/CreateAndUpdate",
   ManageriumIntregationGetByAccountId: "/ManageriumIntregation/GetByAccountId",
   IncrementGradeBasedBulkUpload:
     "/EmployeeIncrement/IncrementGradeBasedBulkUpload",
+  SalaryGradeBasedBulkUpload: "/Employee/SalaryGradeBasedBulkUpload",
   EmployeeLeaveBalanceHistory: "/LeaveBalance/EmployeeLeaveBalanceHistory",
-  GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
+  WorkforcePlanningCreate: "/WorkforcePlanning/Create",
+  WorkforcePlanningUpdate: "/WorkforcePlanning/Update",
 };

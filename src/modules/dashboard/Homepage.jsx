@@ -36,12 +36,15 @@ const initData = {
 };
 
 const Homepage = () => {
-  const { strDisplayName, isOwner } = useSelector(
+  const { strDisplayName, isOwner, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const { menuList } = useSelector((state) => state?.auth, shallowEqual);
+  const { menuList, baseColor } = useSelector(
+    (state) => state?.auth,
+    shallowEqual
+  );
 
   const history = useHistory();
 
@@ -199,8 +202,10 @@ const Homepage = () => {
   };
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "PeopleDesk";
   }, []);
