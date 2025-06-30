@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import HeaderView from "./HeaderView";
-import PrimaryButton from "common/PrimaryButton";
 import DefaultInput from "common/DefaultInput";
 import { useFormik } from "formik";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
@@ -8,23 +7,24 @@ import { shallowEqual, useSelector } from "react-redux";
 import { PButton } from "Components";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { toast } from "react-toastify";
+import moment from "moment";
+import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
 
 const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
-  const [, saveData, dataLoading] = useAxiosPost({});
+  const [, saveData] = useAxiosPost({});
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const [isOpen, setIsOpen] = useState(false);
   const [attachmentList, setAttachmentList] = useState([]);
 
-  const { values, setFieldValue, errors, touched, handleSubmit, resetForm } =
-    useFormik({
-      initialValues: {
-        interestOutstanding: 0,
-      },
-    });
+  const { values, setFieldValue, handleSubmit, resetForm } = useFormik({
+    initialValues: {
+      interestOutstanding: 0,
+    },
+  });
 
   const saveHandler = (values) => {
     if (!values?.settlementDate) {
@@ -52,7 +52,6 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
         0,
     };
     const cb = (res) => {
-      console.log("res", res);
       if (res?.statusCode > 299) {
         return toast.error(res?.message);
       } else {
@@ -90,7 +89,6 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
   ) => {
     const lastSalaryDate = new Date(loanByIdDto?.objHeader?.lastSalaryDate);
     const timeDiff = Math.abs(new Date(settlementDate) - lastSalaryDate);
-    console.log(Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
     return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
   };
   return (
@@ -117,6 +115,9 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                     name="settlementDate"
                     type="date"
                     className="form-control"
+                    min={moment(loanByIdDto?.objHeader?.lastSalaryDate)
+                      .add(1, "days")
+                      .format("YYYY-MM-DD")}
                     onChange={(e) => {
                       setFieldValue("settlementDate", e.target.value);
                       setFieldValue(
@@ -125,8 +126,9 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                       );
                       setFieldValue(
                         "interestOutstanding",
-                        (loanByIdDto?.objHeader?.interestOutstandingAmount /
-                          30) *
+                        roundToDecimals(
+                          loanByIdDto?.objHeader?.interestOutstandingAmount / 30
+                        ) *
                           numberOfDaysDifFromlastSalaryDateToSettlementDate(
                             e.target.value
                           )
