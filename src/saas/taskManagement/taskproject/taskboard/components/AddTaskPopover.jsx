@@ -63,7 +63,7 @@ const AddTaskPopover = ({ propsObj }) => {
                     className="master-filter-btn-group d-flex "
                   >
                     {/* <button
-                      style={{ backgroundColor: "var(--primary-color)", color: "white", padding: '6px 6px 6px 8px', height: '32px' }}
+                      style={{ backgroundColor: "#34A853", color: "white", padding: '6px 6px 6px 8px', height: '32px' }}
                       type="button"
                       className="btn mt-3"
                       onClick={() => {}}
@@ -76,7 +76,7 @@ const AddTaskPopover = ({ propsObj }) => {
                         height: "32px",
                         fontSize: "14px",
                         fontWeight: "500",
-                        backgroundColor: "var(--primary-color)",
+                        backgroundColor: "#34A853",
                         color: "#FFFFFF",
                       }}
                       className="btn  flex-center"

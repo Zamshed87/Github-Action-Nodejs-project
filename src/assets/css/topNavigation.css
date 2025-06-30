@@ -216,7 +216,7 @@ ul.profile-popup-list li {
   border-bottom: 1px solid rgba(99, 115, 129, 0.2);
   margin-bottom: 10px;
   border-radius: 5px;
-  transition: all 0.03 linear;
+  transition: all .03 linear;
 }
 .single-profile-popup-list-icon {
   display: flex;
@@ -229,7 +229,7 @@ ul.profile-popup-list li {
   background: #e4e6eb;
   overflow: hidden;
   margin-right: 20px;
-  transition: all 0.03 linear;
+  transition: all .03 linear;
 }
 .single-profile-popup-list-icon-wrapper img {
   display: flex;
@@ -250,7 +250,7 @@ ul.profile-popup-list li {
   line-height: 21px;
   color: var(--black90);
   margin-bottom: 4px;
-  transition: all 0.03 linear;
+  transition: all .03 linear;
 }
 .single-profile-popup-list-txt p {
   font-weight: 400;
@@ -259,7 +259,7 @@ ul.profile-popup-list li {
   color: var(--black50);
 }
 ul.profile-popup-list li {
-  transition: all 0.03 linear;
+  transition: all .03 linear;
 }
 ul.profile-popup-list li:hover {
   background: #ebf8f2;
@@ -268,15 +268,15 @@ ul.profile-popup-list li:hover {
 }
 ul.profile-popup-list li:first-child:hover {
   background: transparent;
-  border-bottom: 1px solid rgba(99, 115, 129, 0.2);
+  border-bottom:  1px solid rgba(99, 115, 129, 0.2);
   cursor: default;
 }
 ul.profile-popup-list li:hover .single-profile-popup-list-icon {
   color: #ffffff;
-  background: var(--primary-color);
+  background: #00ab55;
 }
 ul.profile-popup-list li:hover .single-profile-popup-list-txt h3 {
-  color: var(--primary-color);
+  color: #00ab55;
 }
 .profile-popup-footer ul li {
   font-weight: 400;

@@ -11,27 +11,16 @@
   justify-content: space-between;
   margin: 25px 0 50px 0;
 }
-.create-holiday-setup-main
-  .container-holiday-setup
-  .header-holiday-setup
-  .header-left {
+.create-holiday-setup-main .container-holiday-setup .header-holiday-setup .header-left {
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
-.create-holiday-setup-main
-  .container-holiday-setup
-  .header-holiday-setup
-  .header-left
-  h4 {
+.create-holiday-setup-main .container-holiday-setup .header-holiday-setup .header-left h4 {
   color: rgba(0, 0, 0, 0.8);
   font-size: 14px;
 }
-.create-holiday-setup-main
-  .container-holiday-setup
-  .header-holiday-setup
-  .header-left
-  .holiday-icon-edit {
+.create-holiday-setup-main .container-holiday-setup .header-holiday-setup .header-left .holiday-icon-edit {
   visibility: visible;
   opacity: 1;
   border: transparent;
@@ -42,11 +31,7 @@
   width: 25px;
   height: 25px;
 }
-.create-holiday-setup-main
-  .container-holiday-setup
-  .header-holiday-setup
-  .header-right
-  .save-create-holiday {
+.create-holiday-setup-main .container-holiday-setup .header-holiday-setup .header-right .save-create-holiday {
   padding: 12px 18px;
   border-radius: 8px;
 }
@@ -54,29 +39,16 @@
 /* ==> create holiday-setup header end */
 
 /* ==> create holiday-setup form start */
-.create-holiday-setup-main
-  .container-holiday-setup
-  .body-holiday-setup
-  .form-holiday-setup {
+.create-holiday-setup-main .container-holiday-setup .body-holiday-setup .form-holiday-setup {
   background: #ffffff;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08),
-    0px 1px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05);
   padding: 27px;
 }
 
-.create-holiday-setup-main
-  .container-holiday-setup
-  .body-holiday-setup
-  .form-holiday-setup
-  .input-field
-  .form-container {
+.create-holiday-setup-main .container-holiday-setup .body-holiday-setup .form-holiday-setup .input-field .form-container {
   margin-bottom: 5px;
 }
-.create-holiday-setup-main
-  .container-holiday-setup
-  .body-holiday-setup
-  .form-holiday-setup
-  .depend-on-moon-field {
+.create-holiday-setup-main .container-holiday-setup .body-holiday-setup .form-holiday-setup .depend-on-moon-field {
   margin-bottom: 5px;
   display: flex;
   align-items: center;
@@ -86,13 +58,9 @@
 /* .create-holiday-setup-main .container-holiday-setup .body-holiday-setup .form-holiday-setup .description-field {
   margin-bottom: 24px;
 } */
-.create-holiday-setup-main
-  .container-holiday-setup
-  .body-holiday-setup
-  .form-holiday-setup
-  .add-btn {
+.create-holiday-setup-main .container-holiday-setup .body-holiday-setup .form-holiday-setup .add-btn {
   background: #e4f8dd;
-  border: 2px solid var(--primary-color);
+  border: 2px solid #34a853;
   box-sizing: border-box;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -102,7 +70,7 @@
   align-items: center;
   padding: 5px;
   /* height: 56px; */
-  color: var(--primary-color);
+  color: #34a853;
   width: 100%;
 }
 
@@ -161,86 +129,42 @@
 .table-holiday-setup-main .body-table-holiday-setup table thead th:first-child {
   padding-left: 37px;
 }
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  .table-card-styled
-  table
-  tbody
-  tr
-  td {
+.table-holiday-setup-main .body-table-holiday-setup .table-card-styled table tbody tr td {
   height: 73px;
 }
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  .table-card-styled
-  table
-  tbody
-  tr
-  td:first-child {
+.table-holiday-setup-main .body-table-holiday-setup .table-card-styled table tbody tr td:first-child {
   padding-left: 37px;
   width: 50%;
 }
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  table
-  tbody
-  tr
-  td:last-child {
+.table-holiday-setup-main .body-table-holiday-setup table tbody tr td:last-child {
   width: 30% !important;
 }
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  table
-  tbody
-  tr
-  .icons-table-list {
+.table-holiday-setup-main .body-table-holiday-setup table tbody tr .icons-table-list {
   justify-content: space-between;
 }
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  table
-  tbody
-  tr
-  .icons-table-list
-  .icons-single-list {
+.table-holiday-setup-main .body-table-holiday-setup table tbody tr .icons-table-list .icons-single-list {
   padding-right: 40px;
 }
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  table
-  tbody
-  tr
-  .icons-table-list
-  .icons-single-list
-  button {
+.table-holiday-setup-main .body-table-holiday-setup table tbody tr .icons-table-list .icons-single-list button {
   background-color: transparent;
   color: rgba(0, 0, 0, 0.6);
 }
 
-.table-holiday-setup-main
-  .body-table-holiday-setup
-  table
-  tbody
-  tr:hover
-  .icons-table-list
-  .icons-single-list
-  button {
+.table-holiday-setup-main .body-table-holiday-setup table tbody tr:hover .icons-table-list .icons-single-list button {
   visibility: visible;
   opacity: 1;
 }
 
 /* ==> table holiday setup end */
 
-.create-holiday-setup-main .css-i4bv87-MuiSvgIcon-root {
+.create-holiday-setup-main .css-i4bv87-MuiSvgIcon-root{
   width: 16px;
   height: 16px;
 }
-.create-holiday-setup-main
-  .css-j204z7-MuiFormControlLabel-root
-  .MuiFormControlLabel-label {
+.create-holiday-setup-main .css-j204z7-MuiFormControlLabel-root .MuiFormControlLabel-label{
   font-size: 12px;
 }
 
-.holiday-description .input-xl textarea.form-control {
+.holiday-description .input-xl textarea.form-control{
   padding-top: 9px !important;
 }

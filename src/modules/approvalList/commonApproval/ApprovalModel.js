@@ -26,8 +26,7 @@ const ApprovalModel = ({
       }}
       okButtonProps={{
         style: {
-          background:
-            "linear-gradient(135deg, rgb(67 225 4), var(--primary-color))",
+          background: "linear-gradient(135deg, rgb(67 225 4), #34a853)",
           border: "none",
           borderRadius: "8px",
           fontWeight: "bold",
@@ -38,7 +37,7 @@ const ApprovalModel = ({
         style: {
           borderRadius: "8px",
           fontWeight: "bold",
-          color: "var(--primary-color)",
+          color: "#34a853",
         },
       }}
     >

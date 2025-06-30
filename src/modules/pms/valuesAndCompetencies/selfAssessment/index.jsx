@@ -30,14 +30,12 @@ const SelfAssessment = () => {
                   }}
                   aria-label="basic tabs example"
                   TabIndicatorProps={{
-                    style: { background: "var(--primary-color)", height: 3 },
+                    style: { background: "#299647", height: 3 },
                   }}
                   sx={{
-                    "& .MuiTabs-indicator": {
-                      backgroundColor: "var(--primary-color)",
-                    },
+                    "& .MuiTabs-indicator": { backgroundColor: "#299647" },
                     "& .MuiTab-root": { color: "#667085" },
-                    "& .Mui-selected": { color: "var(--primary-color)" },
+                    "& .Mui-selected": { color: "#299647" },
                   }}
                 >
                   <Tab label="VALUES" value="2" />

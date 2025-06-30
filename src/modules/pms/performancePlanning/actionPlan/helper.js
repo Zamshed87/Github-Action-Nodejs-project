@@ -32,7 +32,7 @@ export const actionPlanColumnData = (activities, setActivities) => {
           <DefaultInput
             classes="input-sm"
             value={
-              record?.actualStardDate == null
+              record?.actualStardDate === null
                 ? ""
                 : dateFormatterForInput(record?.actualStardDate)
             }
@@ -55,7 +55,7 @@ export const actionPlanColumnData = (activities, setActivities) => {
           <DefaultInput
             classes="input-sm"
             value={
-              record?.actualEndDate == null
+              record?.actualEndDate === null
                 ? ""
                 : dateFormatterForInput(record?.actualEndDate)
             }

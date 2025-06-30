@@ -24,17 +24,9 @@ import { getSerial } from "Utils";
 import { DataState } from "../type";
 import View from "./components/view";
 import { GratuityPolicyForm } from "./form";
-import { addHandler, createEditGratuityPolicy } from "./helper";
+import { addHandler, createEditLatePunishmentConfig } from "./helper";
 import DeleteButton from "./components/DeleteButton";
-import { EditOutlined, ExpandOutlined, SaveOutlined } from "@ant-design/icons";
-import { toast } from "react-toastify";
-export interface GratuityPolicyDetailKey {
-  intServiceLengthStartInMonth: number;
-  intServiceLengthEndInMonth: number;
-  disbursementDependOnName: string;
-  numPercentageOrFixedAmount: number;
-  [key: string]: any; // Add additional properties if necessary
-}
+
 const GPCreateViewEdit = () => {
   const [form] = Form.useForm();
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
@@ -75,17 +67,17 @@ const GPCreateViewEdit = () => {
   };
 
   const permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30599),
+    () => permissionList.find((item) => item?.menuReferenceId === 30590),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  const getEmploymentType = (intWorkplaceId?: number) => {
+  const getEmploymentType = () => {
     form.setFieldsValue({
       employmentType: undefined,
     });
     const { workplace } = form.getFieldsValue(true);
-    console.log(workplace, "workplace");
+
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -93,7 +85,7 @@ const GPCreateViewEdit = () => {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: workplace?.value || intWorkplaceId,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -106,57 +98,29 @@ const GPCreateViewEdit = () => {
   };
 
   useEffect(() => {
-    dispatch(setFirstLevelNameAction("Benefits Management"));
-    document.title = "Benefits Management";
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Late Punishment";
     () => {
       document.title = "PeopleDesk";
     };
-
     // have a need new useEffect to set the title
-    if (params?.type !== "create") {
-      getgratuityPolicy(`/GratuityPolicy/${params?.id}`, (data: any) => {
+    if (params?.type === "extend" || params?.type === "view") {
+      getgratuityPolicy(`/LatePunishmentpolicy/${params?.id}`, (data: any) => {
         // Populate the form with the fetched data
-        if (params?.type === "edit") {
-          getEmploymentType(data?.intWorkplaceId);
-          form.setFieldsValue({
-            strPolicyName: data?.strPolicyName,
-            intPolicyId: data?.intPolicyId,
-            workplace: {
-              label: data?.workplaceName,
-              value: data?.intWorkplaceId,
-            },
-            employmentType: data?.employmentTypeName
-              ? data.employmentTypeName.map((item: any) => ({
-                  label: item.strEmploymentTypeName,
-                  value: item.intEmploymentTypeId, // or whatever unique id property exists
-                }))
-              : [],
-            eligibilityDependOn: {
-              label: data?.eligibilityDependOnName,
-              value: data?.intEligibilityDependOn,
-            },
-          });
-        }
+        // form.setFieldsValue({
+        //   lateCalculationType: data?.name,
+        // });
 
-        const gratuityPolicyDetails = data?.gratuityPolicyDetails.map(
-          (item: GratuityPolicyDetailKey) => ({
-            ...item,
-            idx: crypto.randomUUID(),
-          })
-        );
-
-        setData(gratuityPolicyDetails || []); // need to modify
+        setData(data?.elements || []); // need to modify
       });
     }
 
-    if (params?.type !== "view") {
-      getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-        "intWorkplaceId",
-        "strWorkplace",
-        setWorkplaceDDL
-      );
-    }
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
   }, [wgId]);
 
   const header = [
@@ -177,10 +141,7 @@ const GPCreateViewEdit = () => {
       dataIndex: "",
       render: (value: any, rec: any) => {
         return (
-          rec?.intServiceLengthStartInMonth +
-          " to " +
-          rec?.intServiceLengthEndInMonth +
-          " Month"
+          rec?.serviceLengthStart + " to " + rec?.serviceLengthEnd + " Month"
         );
       },
     },
@@ -190,45 +151,25 @@ const GPCreateViewEdit = () => {
     },
     {
       title: "Gratuity Disbursement (% of Gross/ Basic Salary/ Amount)",
-      dataIndex: "numPercentageOrFixedAmount",
+      dataIndex: "numPercentage",
     },
-    ...(params?.type !== "view"
-      ? [
-          {
-            title: "Action",
-            dataIndex: "status",
-            render: (_: any, rec: any) => (
-              <DeleteButton data={data} setData={setData} rec={rec} />
-            ),
-            align: "center",
-            width: 40,
-          },
-        ]
-      : []),
+    {
+      title: "Action",
+      dataIndex: "status",
+      render: (_: any, rec: any) => (
+        <DeleteButton data={data} setData={setData} rec={rec} />
+      ),
+      align: "center",
+      width: 40,
+    },
   ];
 
   const lateCalculationType = Form.useWatch("lateCalculationType", form);
-  console.log(gratuityPolicy, "gratuityPolicy");
 
   return permission?.isCreate ? (
     <div>
       {(loading || gratuityPolicyLoader) && <Loading />}
-      <PForm
-        form={form}
-        initialValues={
-          params?.type === "edit"
-            ? {
-                strPolicyName: gratuityPolicy?.strPolicyName,
-                employmentType: gratuityPolicy?.employmentTypeName
-                  ? gratuityPolicy.employmentTypeName.map((item: any) => ({
-                      label: item.strEmploymentTypeName,
-                      value: item.intEmploymentTypeId, // or whatever unique id property exists
-                    }))
-                  : [],
-              }
-            : {}
-        }
-      >
+      <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
             backButton
@@ -238,43 +179,21 @@ const GPCreateViewEdit = () => {
                 ? [
                     {
                       type: "primary",
-                      content:
-                        params?.type === "create"
-                          ? "Save"
-                          : params?.type === "edit"
-                          ? "Edit"
-                          : "Extend",
-                      icon:
-                        params?.type === "create" ? (
-                          <SaveOutlined />
-                        ) : params?.type === "edit" ? (
-                          <EditOutlined />
-                        ) : (
-                          <ExpandOutlined />
-                        ),
+                      content: "Save",
+                      // icon:
+                      //   type === "create" ? <SaveOutlined /> : <EditOutlined />,
                       onClick: () => {
                         form
-                          .validateFields([
-                            "strPolicyName",
-                            "workplace",
-                            "employmentType",
-                            "eligibilityDependOn",
-                          ])
+                          .validateFields([])
                           .then(() => {
-                            if (data.length === 0) {
-                              return toast.error(
-                                "Please add at least one gratuity policy detail."
-                              );
-                            }
-                            createEditGratuityPolicy(
-                              params?.type,
+                            createEditLatePunishmentConfig(
                               profileData,
                               form,
                               data,
                               setLoading,
                               () => {
                                 history.push(
-                                  "/BenefitsManagement/gratuity/gratuityPolicy"
+                                  "/administration/latePunishmentPolicy"
                                 );
                               }
                             );

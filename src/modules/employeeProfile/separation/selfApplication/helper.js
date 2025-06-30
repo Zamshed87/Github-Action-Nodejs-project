@@ -190,7 +190,7 @@ export const separationApplicationLandingTableColumn = (
           }}
           label={"Exit Interview"}
           disabled={
-            data?.intQuestionAssignId == null
+            data?.intQuestionAssignId === null
               ? true
               : false || data?.isExitInterviewDone === true
               ? true
@@ -509,11 +509,7 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
-          <Tooltip
-            placement="top"
-            color={"var(--primary-color)"}
-            title={"Manage"}
-          >
+          <Tooltip placement="top" color={"#34a853"} title={"Manage"}>
             <Dropdown
               menu={{
                 items: getMenuItems(item),
@@ -529,7 +525,7 @@ export const separationApplicationLandingTableColumn = (
             >
               <PrimaryButton
                 type="button"
-                icon={<SettingTwoTone twoToneColor="var(--primary-color)" />}
+                icon={<SettingTwoTone twoToneColor="#34a853" />}
                 customStyle={{
                   height: "30px",
                   fontSize: "16px",

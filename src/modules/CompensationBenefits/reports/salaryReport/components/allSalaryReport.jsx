@@ -100,7 +100,7 @@ export default function AllSalaryReport({ rowDto, index, tabIndex }) {
             {rowDto?.map((item, index) => (
               <tr
                 key={index}
-                colSpan={item?.SalaryGenerateHeaderId == null ? 16 : 1}
+                colSpan={item?.SalaryGenerateHeaderId === null ? 16 : 1}
               >
                 <td>{item?.SL}</td>
                 {item?.SalaryGenerateHeaderId !== null && (

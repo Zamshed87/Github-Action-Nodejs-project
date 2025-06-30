@@ -48,7 +48,6 @@ import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
 import MBLBankLetterHead from "./letterheadReports/MBLBankLetterHead";
 import BFTNEBLBankLetterHead from "./letterheadReports/BFTNEBLBankLetterHead";
 import PrimeBankLetterHead from "./letterheadReports/PrimeBankLetterHead";
-import SONALIBankLetterHead from "./letterheadReports/SONALIBankLetterHead";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -1109,7 +1108,6 @@ const BankAdviceReport = () => {
                               "SOIBL",
                               "MBL",
                               "PRIME",
-                              "SONALI"
                             ];
                             if (
                               advicenames.includes(values?.adviceType?.value)
@@ -1324,13 +1322,6 @@ const BankAdviceReport = () => {
               {!commonLanding1?.loading && (
                 <div style={{ display: "none" }}>
                   <div ref={contentRef}>
-                    {values?.adviceType?.value === "SONALI" && (
-                      <SONALIBankLetterHead
-                        letterHeadImage={letterHeadImage}
-                        landingViewPdf={landingViewPdf}
-                        signatureImage={signatureImage}
-                      />
-                    )}
                     {values?.adviceType?.value === "IBBL" && (
                       <IbblBankLetterHead
                         letterHeadImage={letterHeadImage}

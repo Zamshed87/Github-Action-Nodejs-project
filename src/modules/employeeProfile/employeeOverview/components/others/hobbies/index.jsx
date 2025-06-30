@@ -94,7 +94,7 @@ export default function Hobbies({ empId, buId, wgId }) {
               {loading && <Loading />}
               <div className="others">
                 {(empBasic?.empEmployeePhotoIdentity?.strHobbies === "" ||
-                  empBasic?.empEmployeePhotoIdentity?.strHobbies == null) && (
+                  empBasic?.empEmployeePhotoIdentity?.strHobbies === null) && (
                   <div className={isForm ? "d-none" : "d-block"}>
                     <h5>Hobbies</h5>
                     <div
@@ -217,6 +217,7 @@ export default function Hobbies({ empId, buId, wgId }) {
                               },
                             ]),
                       ]}
+                      
                     />
                   </div>
                 )}

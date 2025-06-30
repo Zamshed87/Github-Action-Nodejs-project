@@ -86,7 +86,7 @@ export default function TrainingDevelopment() {
               {!isTrainingDevelopment && (
                 <div className="d-flex align-items-center" style={{ marginBottom: "40px", cursor: "pointer" }} onClick={() => setIsTrainingDevelopment(true)}>
                   <div className="item">
-                    <ControlPoint sx={{ color: "var(--primary-color)" }} />
+                    <ControlPoint sx={{ color: "#34A853" }} />
                   </div>
                   <div className="item">
                     <p>Add your training & development</p>
@@ -160,7 +160,7 @@ export default function TrainingDevelopment() {
                     <FileUploadField />
                     <p className="file-formate">Uploading file support for JPG, JPEG, PNG</p>
                     <div className="file d-flex align-items-center mb-4">
-                      <small style={{ color: "var(--primary-color)", fontSize: "16px", fontWeight: "500" }}>Certificate.pdf</small>
+                      <small style={{ color: "#34A853", fontSize: "16px", fontWeight: "500" }}>Certificate.pdf</small>
                       <ClearOutlined sx={{ marginLeft: "20px", color: "rgba(0, 0, 0, 0.4)", cursor: "pointer" }} />
                     </div>
                   </div>

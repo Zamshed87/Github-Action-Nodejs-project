@@ -163,7 +163,7 @@ const RewardsAndPunishmentAdd = () => {
                           className="btn btn-cancle"
                           style={{
                             marginRight: "15px",
-                            color: " var(--primary-color)",
+                            color: " #34A853",
                           }}
                         >
                           Cancel
@@ -252,10 +252,10 @@ const RewardsAndPunishmentAdd = () => {
                         style={{
                           marginTop: "10px",
                           width: "100%",
-                          border: "2px solid var(--primary-color)",
+                          border: "2px solid #34A853",
                           borderRadius: "4px",
                           background: "#E4F8DD",
-                          color: "var(--primary-color)",
+                          color: "#34A853",
                         }}
                       >
                         Save

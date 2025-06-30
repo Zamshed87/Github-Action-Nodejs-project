@@ -337,7 +337,7 @@ const BonusApproval = () => {
                         icon={
                           <CheckCircle
                             sx={{
-                              color: "var(--primary-color)",
+                              color: "#34A853",
                             }}
                           />
                         }

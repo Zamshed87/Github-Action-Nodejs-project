@@ -173,7 +173,7 @@ function Gmails({ empId }) {
                   {!singleData && (
                     <>
                       {rowDto?.userVM?.loginGmailId === "" ||
-                      rowDto?.userVM?.loginGmailId == null ? (
+                      rowDto?.userVM?.loginGmailId === null ? (
                         <>
                           <h5>Gmail</h5>
                           <div

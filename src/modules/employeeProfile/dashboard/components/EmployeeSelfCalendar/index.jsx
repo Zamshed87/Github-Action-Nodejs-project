@@ -84,14 +84,11 @@ const EmployeeSelfCalendar = ({ employeeDashboard }) => {
               }}
             >
               <div>
-                <h2
-                  style={{ color: gray500, fontSize: "1rem" }}
-                  className="pointer"
-                  onClick={() => {
-                    history.push(
-                      "/SelfService/timeManagement/attendenceAdjustRequest"
-                    );
-                  }}
+                <h2 style={{ color: gray500, fontSize: "1rem" }}
+                className="pointer"
+                onClick={() => {
+                  history.push("/SelfService/timeManagement/attendenceAdjustRequest");
+                }}
                 >
                   Attendance Calendar
                 </h2>
@@ -115,7 +112,7 @@ const EmployeeSelfCalendar = ({ employeeDashboard }) => {
               <div className="d-flex align-items-center calendar-time-block-wrapper">
                 <div className="" style={{ borderColor: "#98A2B3" }}>
                   <h2>{days?.workingDays}</h2>
-                  <p>Payable Days</p>
+                  <p>Payable Days</p> 
                   {/* Working Days */}
                 </div>
                 <div style={{ borderColor: "#65D380" }}>
@@ -394,7 +391,7 @@ export const getChipStyle = (status) => ({
       : status === "Absent"
       ? "#B42318"
       : status === "Present"
-      ? "var(--primary-color)"
+      ? "#299647"
       : status === "Late"
       ? " #B54708"
       : status === "Holiday"

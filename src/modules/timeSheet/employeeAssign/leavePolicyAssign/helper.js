@@ -316,7 +316,7 @@ export const initData = {
 export const validationSchema = Yup.object({});
 
 export const colors = [
-  "var(--primary-color)",
+  "#299647",
   "#B54708",
   "#B42318",
   "#6927DA",
