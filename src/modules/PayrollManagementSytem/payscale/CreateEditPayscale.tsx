@@ -16,6 +16,8 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import CreateGrade from "./CreateGrade";
 import CreateJobLevel from "./CreateJoblevel";
 import { toast } from "react-toastify";
+import FormulaInputWrapper from "Components/PForm/Input/Formula";
+import { BasedOn } from "../OvertimePolicy/Utils";
 
 type CreateEditPayscaleType = {
   rowData: any;
@@ -132,7 +134,12 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     // getGradeDDL();
     // getJobLevelDDL();
   }, []);
-
+  //formula element handler
+  const rowDtoHandler = (name: any, index: any, value: any) => {
+    const data: any = [...elementDto];
+    data[index][name] = value;
+    setElementDto(data);
+  };
   //   Functions
   const onFinish = () => {
     const values = form.getFieldsValue(true);
@@ -229,10 +236,11 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     },
 
     {
-      title: "Amount/Percentage",
+      title: "Amount/Percentage/Calculative",
       render: (value: any, row: any, index: number) => (
         <>
-          {row?.id ? (
+          {console.log({ row })}
+          {row?.id && row?.basedOn !== "Calculative" ? (
             <PInput
               type="number"
               // name={`amountOrPercentage_${index}`}
@@ -258,7 +266,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                 elementDtoHandler(e, row, index);
               }}
             />
-          ) : (
+          ) : row?.basedOn !== "Calculative" ? (
             <PInput
               type="number"
               // name={`amountOrPercentage_${index}`}
@@ -283,6 +291,18 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                 elementDtoHandler(e, row, index);
               }}
             />
+          ) : (
+            <div style={{ height: "50px" }}>
+              <FormulaInputWrapper
+                formulaOptions={
+                  elementDDL?.data?.length > 0 ? elementDDL?.data : []
+                }
+                value={row?.formula || ""}
+                onChange={(e: any) => {
+                  rowDtoHandler("formula", index, e.target.value);
+                }}
+              />
+            </div>
           )}
         </>
       ),
@@ -686,6 +706,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             onChange={(value, op) => {
               form.setFieldsValue({
                 element: op,
+                basedOn: undefined,
               });
             }}
             filterOption={false}
@@ -706,6 +727,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       : [
                           { value: 1, label: "Amount" },
                           { value: 2, label: "Percentage" },
+                          { value: 3, label: "Calculative" },
                         ]
                   }
                   onChange={(value, op) => {
@@ -751,6 +773,8 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                     payrollElementId: values?.element?.value,
                     basedOn: values?.basedOn?.label,
                     netAmount: 0,
+                    sl: elementDto?.length,
+                    formula: "",
                     amountOrPercentage: 0,
                   },
                 ];
