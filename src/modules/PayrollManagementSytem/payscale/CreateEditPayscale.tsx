@@ -17,7 +17,6 @@ import CreateGrade from "./CreateGrade";
 import CreateJobLevel from "./CreateJoblevel";
 import { toast } from "react-toastify";
 import FormulaInputWrapper from "Components/PForm/Input/Formula";
-import { BasedOn } from "../OvertimePolicy/Utils";
 
 type CreateEditPayscaleType = {
   rowData: any;
@@ -43,7 +42,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   const jobLevelDDL = useApiRequest({});
   const getById = useApiRequest({});
   const elementDDL = useApiRequest({});
-  const [elementDto, setElementDto] = useState([]);
+  const [elementDto, setElementDto] = useState<any[]>([]);
   const [incrementDto, setIncrementDto] = useState([]);
   const [designationDto, setDesignationDto] = useState([]);
   const [efficiencyDto, setEfficiencyDto] = useState([]);
@@ -138,8 +137,10 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   const rowDtoHandler = (name: any, index: any, value: any) => {
     const data: any = [...elementDto];
     data[index][name] = value;
-    setElementDto(data);
+    const updated = calculateFormulaNetAmounts(data);
+    setElementDto(updated);
   };
+
   //   Functions
   const onFinish = () => {
     const values = form.getFieldsValue(true);
@@ -188,6 +189,32 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       },
     });
   };
+  const calculateFormulaNetAmounts = (data: any[]) => {
+    const updated = [...data];
+
+    updated.forEach((row) => {
+      if (row.basedOn === "Calculative" && row.formula) {
+        let formula = row.formula;
+
+        updated.forEach((el) => {
+          const label = el.payrollElementName;
+          const value = el.netAmount ?? 0;
+          const regex = new RegExp(`#${label}#`, "g");
+          formula = formula.replace(regex, value);
+        });
+
+        try {
+          const result = eval(formula);
+          row.netAmount = Number.isFinite(result) ? result : 0;
+        } catch (err) {
+          row.netAmount = 0;
+        }
+      }
+    });
+
+    return updated;
+  };
+
   const elementDtoHandler = (e: number, row: any, index: number) => {
     if (e < 0) {
       return toast.warn("number must be positive");
@@ -218,6 +245,10 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       });
     }
 
+    // Calculate formula-based rows (Calculative)
+    temp = calculateFormulaNetAmounts(temp);
+
+    // Final state update
     setElementDto(temp);
   };
   const header: any = [

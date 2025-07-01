@@ -648,11 +648,13 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       dataIndex: "strBasedOn",
     },
     {
-      title: "Amount/Percentage",
+      title: "Amount/Percentage/Calculative",
       render: (value: any, row: any) => (
         <>
           {row?.strBasedOn === "Amount"
             ? row?.numAmount
+            : row?.strBasedOn === "Calculative"
+            ? row?.formula || row?.strFormula
             : row?.numNumberOfPercent}
         </>
       ),
