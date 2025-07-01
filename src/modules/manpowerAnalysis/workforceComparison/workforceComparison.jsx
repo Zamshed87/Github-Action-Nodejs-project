@@ -10,19 +10,21 @@ import {
   PSelect,
   PButton,
 } from "Components";
-import { Col, Form, Row, Input, InputNumber } from "antd";
+import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { useApiRequest } from "Hooks";
 import { fetchWorkforceTypeWiseData } from "./helper";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { downloadFile } from "utility/downloadFile";
 
-const WorkForceCreate = () => {
+const WorkForceComparison = () => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const location = useLocation();
+
+  
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const { orgId, buId, wgId, wId } = useSelector(
@@ -31,16 +33,27 @@ const WorkForceCreate = () => {
   );
 
   const [selectedYearType, setSelectedYearType] = useState(null);
-  const [selectedPlanningType, setSelectedPlanningType] = useState(null);
+  const [selectedComparisonType, setSelectedComparisonType] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [showData, setShowData] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+
   // State for form data and loading
   const hideSubmitBtn = false;
+  useEffect(() => {
+    // Data will be loaded when user clicks "View" button
+    console.log("Component initialized - no data loaded yet");
+  }, []);
 
-  const fetchWorkforceData = async () => {
-    const { yearType, selectYear, workplace, planningType } =
+  const fetchWorkforceData = async (page = 1, pageSize = 10) => {
+    const { yearType, selectYear, workplace, ComparisonType } =
       form.getFieldsValue();
 
     const yearTypeId =
@@ -49,14 +62,19 @@ const WorkForceCreate = () => {
       ? selectYear.label.split("-")
       : [selectYear?.value, null]; // If it's a single year, set toDate as null
 
-    if (!yearTypeId || !fromDate || !workplace?.value || !planningType?.intId) {
+    if (
+      !yearTypeId ||
+      !fromDate ||
+      !workplace?.value ||
+      !ComparisonType?.intId
+    ) {
       toast.error("Please fill all required fields before viewing data");
       return;
     }
 
     setShowData(false);
     setTableData([]);
-    setLoading(true); // <-- start loading
+    setLoading(true);
 
     try {
       const result = await fetchWorkforceTypeWiseData({
@@ -64,32 +82,24 @@ const WorkForceCreate = () => {
         fromDate,
         toDate,
         workplaceId: workplace?.value,
-        planningTypeId: planningType?.intId,
+        planningTypeId: ComparisonType?.intId,
+        pageNo: page,
+        pageSize: pageSize,
+        setTableData,
+        setPagination,
+        setShowData,
       });
 
-      if (result.statusCode === 200 && Array.isArray(result.data)) {
-        setTableData(
-          result.data.map((item, idx) => ({
-            id: item.id,
-            sl: idx + 1,
-            department: item.type === "Department" ? item.name : "",
-            section: item.type === "Section" ? item.name : "",
-            hrPosition: item.type === "HrPosition" ? item.name : "",
-            designation: item.type === "Designation" ? item.name : "",
-            currentManpower: item.value,
-            budgetedManpower: item.value,
-            comments: "",
-          }))
-        );
-        setShowData(true);
-        toast.success("Workforce data loaded successfully!");
-      } else {
-        toast.error("Failed to load workforce data");
-      }
+      setShowData(true);
+      toast.success("Workforce data loaded successfully!");
     } catch {
-      toast.error("Error fetching workforce data");
+      setPagination({
+        current: page,
+        pageSize: pageSize,
+        total: 0,
+      });
     } finally {
-      setLoading(false); // <-- stop loading
+      setLoading(false);
     }
   };
 
@@ -99,33 +109,45 @@ const WorkForceCreate = () => {
         title: "SL",
         dataIndex: "sl",
         key: "sl",
-        width: 50,
+        width: 60,
         align: "center",
+      },
+      {
+        title: "Workplace Group",
+        dataIndex: "workplaceGroup",
+        key: "workplaceGroup",
+        width: 180,
+      },
+      {
+        title: "Workplace",
+        dataIndex: "workplace",
+        key: "workplace",
+        width: 220,
       },
     ];
 
-    if (selectedPlanningType === "department") {
+    if (selectedComparisonType === "department") {
       baseColumns.push({
         title: "Department",
         dataIndex: "department",
         key: "department",
         width: 200,
       });
-    } else if (selectedPlanningType === "section") {
+    } else if (selectedComparisonType === "section") {
       baseColumns.push({
         title: "Section",
         dataIndex: "section",
         key: "section",
         width: 200,
       });
-    } else if (selectedPlanningType === "hrPosition") {
+    } else if (selectedComparisonType === "hrPosition") {
       baseColumns.push({
         title: "HR Position",
         dataIndex: "hrPosition",
         key: "hrPosition",
         width: 200,
       });
-    } else if (selectedPlanningType === "designation") {
+    } else if (selectedComparisonType === "designation") {
       baseColumns.push({
         title: "Designation",
         dataIndex: "designation",
@@ -165,6 +187,11 @@ const WorkForceCreate = () => {
     // Add common columns
     baseColumns.push(
       {
+        title: "Budgeted Manpower",
+        dataIndex: "budgetedManpower",
+        key: "budgetedManpower",
+      },
+      {
         title: "Current Manpower",
         dataIndex: "currentManpower",
         key: "currentManpower",
@@ -174,43 +201,24 @@ const WorkForceCreate = () => {
           <span style={{ color: "#1890ff", fontWeight: "bold" }}>{value}</span>
         ),
       },
+
       {
-        title: "Budgeted Manpower",
-        dataIndex: "budgetedManpower",
-        key: "budgetedManpower",
-        width: 150,
-        align: "center",
-        render: (value, record, index) => (
-          <InputNumber
-            min={0}
-            max={999}
-            value={value}
-            onChange={(newValue) => {
-              const newData = [...tableData];
-              newData[index].budgetedManpower = newValue;
-              setTableData(newData);
-            }}
-            style={{ width: "100%" }}
-          />
+        title: "Difference",
+        dataIndex: "difference",
+        render: (value) => (
+          <span
+            style={{ color: value > 0 ? "green" : value < 0 ? "red" : "black" }}
+          >
+            {value > 0 ? `+${value}` : value}
+          </span>
         ),
+        width: 120,
       },
       {
         title: "Comments",
         dataIndex: "comments",
         key: "comments",
-        width: 250,
-        render: (value, record, index) => (
-          <Input.TextArea
-            value={value}
-            onChange={(e) => {
-              const newData = [...tableData];
-              newData[index].comments = e.target.value;
-              setTableData(newData);
-            }}
-            rows={1}
-            placeholder="Enter comments..."
-          />
-        ),
+        width: 100,
       }
     );
 
@@ -219,7 +227,7 @@ const WorkForceCreate = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Workforce Planning Create/Edit | PeopleDesk";
+    document.title = "Workforce Comparison Create/Edit | PeopleDesk";
 
     // Cleanup function to reset the title when the component unmounts
     return () => {
@@ -229,13 +237,12 @@ const WorkForceCreate = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30623) {
+    if (item?.menuReferenceId === 30624) {
       permission = item;
     }
   }); // API requests for dropdowns
   const workplaceDDL = useApiRequest([]);
   const getFiscalDDL = useApiRequest([]);
-  const saveWorkforceData = useApiRequest({});
 
   const getWorkplace = () => {
     workplaceDDL?.action({
@@ -251,78 +258,6 @@ const WorkForceCreate = () => {
           res[i].label = item?.strWorkplace;
           res[i].value = item?.intWorkplaceId;
         });
-      },
-    });
-  };
-
-  // Handle save functionality
-  const handleSave = () => {
-    const formValues = form.getFieldsValue();
-
-    // Validate required fields
-    if (
-      !formValues.workplace ||
-      !formValues.yearType ||
-      !formValues.selectYear ||
-      !formValues.planningType
-    ) {
-      toast.error("Please fill all required fields before saving");
-      return;
-    }
-
-    if (!tableData || tableData.length === 0) {
-      toast.error("No data to save. Please view data first.");
-      return;
-    }
-
-    const [fromDate, toDate] = formValues?.selectYear?.label?.includes("-")
-      ? formValues.selectYear.label.split("-")
-      : [formValues.selectYear?.value, null];
-
-    // Prepare payload according to the specified structure
-    const payload = {
-      workplaceId: formValues.workplace?.value || formValues.workplace,
-      yearTypeId:
-        formValues.yearType?.intId ||
-        (formValues.yearType?.value === "calendar" ? 1 : 2),
-      fromDate: fromDate,
-      toDate: toDate,
-      planningTypeId: formValues.planningType?.intId,
-      rowData: tableData.map((item) => ({
-        headerId: item.headerId || 0,
-        typeId: item.id,
-        currentValue: item.currentManpower,
-        targetValue: item.budgetedManpower,
-        remark: item.comments || "",
-      })),
-    };
-
-    setLoading(true);
-
-    // Make API call to save data
-    saveWorkforceData.action({
-      urlKey: `${
-        location.state ? "WorkforcePlanningUpdate" : "WorkforcePlanningCreate"
-      }`,
-      method: location.state ? "PUT" : "POST",
-      payload: payload,
-      onSuccess: () => {
-        toast.success("Workforce planning data saved successfully!");
-        setLoading(false); // <-- stop loading
-      },
-      onError: (error) => {
-        // Show API error message if present
-        if (
-          error?.response?.data?.message &&
-          Array.isArray(error.response.data.message)
-        ) {
-          error.response.data.message.forEach((msg) => toast.error(msg));
-        } else if (error?.message) {
-          toast.error(error.message);
-        } else {
-          toast.error("Failed to save workforce planning data");
-        }
-        setLoading(false);
       },
     });
   };
@@ -381,121 +316,53 @@ const WorkForceCreate = () => {
     getWorkplace();
   }, [orgId, buId, wgId, wId]);
 
-
-  useEffect(() => {
-    // If coming from edit, set initial values from location.state and fetch data
-    const fetchEditData = async (workplaceId, yearTypeId, fromYear, toYear) => {
-      try {
-        setLoading(true);
-        let url = `/WorkforcePlanning/GetById?WorkplaceId=${workplaceId}&YearTypeId=${yearTypeId}&FromDate=${fromYear}`;
-        if (toYear) {
-          url += `&ToDate=${toYear}`;
-        }
-        const res = await axios.get(url);
-        if (res.data?.statusCode === 200 && res.data?.data) {
-          const d = res.data.data;
-
-          // --- Fiscal year merge logic ---
-          let mergedRowData = d.rowData;
-          if (d.yearTypeId === 2 && d.fromDate === d.toDate) {
-            // Merge by typeId
-            const map = {};
-            d.rowData.forEach(item => {
-              if (!map[item.typeId]) {
-                map[item.typeId] = { ...item };
-              } else {
-                map[item.typeId].currentValue += item.currentValue;
-                map[item.typeId].targetValue += item.targetValue;
-                map[item.typeId].remark = [map[item.typeId].remark, item.remark].filter(Boolean).join(" | ");
-              }
-            });
-            mergedRowData = Object.values(map);
-          }
-
-          form.setFieldsValue({
-            workplace: { value: d.workplaceId, label: d.workplaceName },
-            yearType: {
-              value: d.yearTypeId === 1 ? "calendar" : "fiscal",
-              intId: d.yearTypeId,
-              label: d.yearTypeName,
-            },
-            selectYear:
-              d.yearTypeId === 2
-                ? { value: d.calenderYearId, label: `${d.fromDate}-${d.toDate}` }
-                : { value: d.fromDate, label: d.fromDate?.toString() },
-            planningType: {
-              value: getPlanningTypeValue(d.planningTypeId),
-              intId: d.planningTypeId,
-            },
-          });
-          setSelectedYearType(d.yearTypeId === 1 ? "calendar" : "fiscal");
-          setSelectedPlanningType(getPlanningTypeValue(d.planningTypeId));
-          setTableData(
-            (mergedRowData || []).map((item, idx) => ({
-              id: item.typeId,
-              headerId: item.headerId,
-              sl: idx + 1,
-              department: d.planningTypeId === 1 ? item.name : "",
-              section: d.planningTypeId === 2 ? item.name : "",
-              hrPosition: d.planningTypeId === 3 ? item.name : "",
-              designation: d.planningTypeId === 4 ? item.name : "",
-              currentManpower: item.currentValue,
-              budgetedManpower: item.targetValue,
-              comments: item.remark || "",
-            }))
-          );
-          setShowData(true);
-        }
-      } catch {
-        toast.error("Failed to load workforce planning data for edit.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Helper to map planningTypeId to value
-    function getPlanningTypeValue(id) {
-      if (id === 1) return "department";
-      if (id === 2) return "section";
-      if (id === 3) return "hrPosition";
-      if (id === 4) return "designation";
-      return undefined;
-    }
-
-    if (location.state) {
-      const { workplaceId, yearTypeId, fromYear, toYear } = location.state;
-      if (workplaceId && yearTypeId && fromYear) {
-        fetchEditData(workplaceId, yearTypeId, fromYear, toYear);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, form, location.state]);
+  console.log("tableData", tableData);
 
   return permission?.isView ? (
     <PForm
       form={form}
       initialValues={{}}
       onFinish={() => {
-        fetchWorkforceData();
+        fetchWorkforceData(1, pagination.pageSize);
       }}
     >
-      {loading && <Loading />} {/* <-- loading effect */}
+      {loading && <Loading />}
       <PCard>
-        {" "}
         <PCardHeader
-          backButton={true}
-          title={`Workforce Planning`}
-          buttonList={[
-            ...(showData
-              ? [
-                  {
-                    type: "primary",
-                    content: `${location.state ? "Update" : "Save"}`,
-                    onClick: handleSave,
-                  },
-                ]
-              : []),
-          ]}
+          title={`Workforce Comparison`}
+          exportIcon
+          onExport={() => {
+            const excelLanding = async () => {
+              if (tableData?.length === 0) return null;
+              try {
+                const { yearType, selectYear, workplace, ComparisonType } =
+                  form.getFieldsValue();
+                const yearTypeId =
+                  yearType?.intId || (yearType?.value === "calendar" ? 1 : 2);
+                const [fromDate, toDate] = selectYear?.label?.includes("-")
+                  ? selectYear.label.split("-")
+                  : [selectYear?.value, null];
+                const workplaceId = workplace?.value;
+                const planningTypeId = ComparisonType?.intId;
+                // Use current pagination or export all (set pageSize to a large number if needed)
+                const pageNo = 1;
+                const pageSize = pagination.total || 1000;
+
+                let url = `/WorkforcePlanning/ExportWorkforceComparisonToExcel?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
+                if (toDate) url += `&ToDate=${toDate}`;
+
+                downloadFile(
+                  url,
+                  "Workforce Comparison",
+                  "xlsx",
+                  setLoading
+                );
+              } catch (error) {
+                console.log("error", error);
+              }
+            };
+            excelLanding();
+          }}
         />
         <PCardBody className="mb-3">
           <Row gutter={[10, 2]}>
@@ -566,18 +433,18 @@ const WorkForceCreate = () => {
                   { label: "HR Position", value: "hrPosition", intId: 3 },
                   { label: "Designation", value: "designation", intId: 4 },
                 ]}
-                name="planningType"
-                label="Planning Type"
-                placeholder="Select Planning Type"
+                name="ComparisonType"
+                label="Comparison Type"
+                placeholder="Select Comparison Type"
                 disabled={location.state}
                 onChange={(value, option) => {
-                  form.setFieldsValue({ planningType: option });
-                  setSelectedPlanningType(value);
+                  form.setFieldsValue({ ComparisonType: option });
+                  setSelectedComparisonType(value);
                   form.setFieldsValue({ departmentSection: null });
                   setTableData([]);
                 }}
                 rules={[
-                  { required: true, message: "Planning Type is required" },
+                  { required: true, message: "Comparison Type is required" },
                 ]}
               />
             </Col>
@@ -600,6 +467,20 @@ const WorkForceCreate = () => {
             bordered
             data={tableData || []}
             loading={loading}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              showSizeChanger: true,
+              onChange: (page, pageSize) => {
+                setPagination((prev) => ({
+                  ...prev,
+                  current: page,
+                  pageSize: pageSize,
+                }));
+                fetchWorkforceData(page, pageSize);
+              },
+            }}
           />
         )}
       </PCard>
@@ -608,4 +489,4 @@ const WorkForceCreate = () => {
     <NotPermittedPage />
   );
 };
-export default WorkForceCreate;
+export default WorkForceComparison;
