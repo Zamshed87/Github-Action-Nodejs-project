@@ -76,11 +76,13 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
     },
   });
 
-  const getData = (srcTxt = values?.search, pages, isPaginated = true) => {
+  const getData = (srcTxt = values?.search, page, isPaginated = true) => {
     const url = `/PfLoan/GetAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
       values?.fDate
-    }&ToDate=${values?.tDate}&PageNo=${pages?.current}&PageSize=${
-      pages?.pageSize
+    }&ToDate=${values?.tDate}&PageNo=${
+      page?.current || pages?.current
+    }&PageSize=${
+      page?.pageSize || pages?.pageSize
     }&SearchText=${srcTxt}&IsPaginated=${isPaginated}&status=${
       values?.status?.value || 0
     }`;
@@ -240,7 +242,7 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
                 bordered
                 data={rowDto?.length > 0 ? rowDto : []}
                 loading={loanLandingLoading}
-                header={pfLandingColData(history, setLoading)}
+                header={pfLandingColData(history, setLoading, getData)}
                 scroll={{ x: 1500 }}
                 pagination={{
                   pageSize: pages?.pageSize,
