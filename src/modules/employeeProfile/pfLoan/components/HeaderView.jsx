@@ -30,7 +30,7 @@ const HeaderView = ({ loanByIdDto }) => {
         />
         <SingleInfo
           label={"Loan Amount With Interest"}
-          value={loanByIdDto?.objHeader?.numTotalInterest} // need
+          value={loanByIdDto?.objHeader?.numTotalInstallment} // need
         />
       </div>
       <div>
