@@ -84,7 +84,7 @@ export const pfLandingColData = (history, setLoading) => {
       title: "SL",
       render: (text, record, index) => index + 1,
       className: "text-center",
-      width: 20,
+      width: 40,
       fixed: "left",
     },
     {
@@ -93,6 +93,7 @@ export const pfLandingColData = (history, setLoading) => {
       sort: true,
       fieldType: "string",
       fixed: "left",
+      width: 100,
     },
     {
       title: "Employee Name",
@@ -133,6 +134,7 @@ export const pfLandingColData = (history, setLoading) => {
       dataIndex: "numLoanAmount",
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
       title: "Interest(%)",
@@ -140,6 +142,7 @@ export const pfLandingColData = (history, setLoading) => {
       render: (text) => <>{text}%</>,
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
       title: "Loan Amount with Interest",
@@ -174,6 +177,7 @@ export const pfLandingColData = (history, setLoading) => {
       dataIndex: "unSettledAmount",
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
       title: "Effective Date",
@@ -181,6 +185,7 @@ export const pfLandingColData = (history, setLoading) => {
       render: (text) => <>{dateFormatter(text)}</>,
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
       title: "Description",
@@ -192,76 +197,109 @@ export const pfLandingColData = (history, setLoading) => {
     },
     {
       title: "Status",
-      dataIndex: "strStatus",
-      render: (data) => (
+      render: (data, record) => (
         <div>
-          {data === "Approved" && <Chips label={data} classess="success" />}
-          {data === "Pending" && <Chips label={data} classess="warning" />}
-          {data === "InActive" && <Chips label={data} classess="danger" />}
-
-          {data === "Rejected" && <Chips label={data} classess="danger" />}
-          {data === "Process" && <Chips label={data} classess="primary" />}
+          {/* Show status chips based on isApproved, isReject, isActive, and strStatus */}
+          {record.isApproved && <Chips label="Approved" classess="success" />}
+          {record.isReject && <Chips label="Rejected" classess="danger" />}
+          {!record.isApproved &&
+            !record.isReject &&
+            record?.strStatus?.toLowerCase() === "pending" && (
+              <Chips label="Pending" classess="warning" />
+            )}
         </div>
       ),
       sort: true,
       fieldType: "string",
       width: 80,
-      fixed: "right",
+      // fixed: "right",
     },
     {
       title: "Action",
       dataIndex: "strStatus",
       width: 160,
-      render: (text, record) => (
-        <Flex justify="center" align="center" gap="5px">
-          {text?.toLowerCase() === "pending" && (
-            <button
-              style={{
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px",
-                merginRight: "5px",
-              }}
-              className="btn btn-default"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                history.push({
-                  pathname: `/loanManagement/PfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
-                });
-              }}
-            >
-              Edit
-            </button>
-          )}
-          {record?.isActive && (
-            <Tooltip
-              placement="bottom"
-              title={record?.isActive ? "Inactive" : "Active"}
-            >
-              <button
-                style={{
-                  height: "24px",
-                  fontSize: "12px",
-                  padding: "0px 12px",
-                }}
-                className="btn btn-info"
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  console.log(setLoading);
-                  handleInActive(record, setLoading);
-                }}
+      render: (text, record) => {
+        const isPending = text?.toLowerCase() === "pending";
+        const isApproved = record.isApproved === true;
+        return (
+          <Flex justify="center" align="center" gap="5px">
+            {/* Show Edit and InActive if pending, only InActive if approved */}
+            {isPending && (
+              <>
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "12px",
+                    padding: "0px 12px",
+                    merginRight: "5px",
+                  }}
+                  className="btn btn-default"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    history.push({
+                      pathname: `/loanManagement/PfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
+                    });
+                  }}
+                >
+                  Edit
+                </button>
+                {record.isActive && (
+                  <Tooltip
+                    placement="bottom"
+                    title={record?.isActive ? "Inactive" : "Active"}
+                  >
+                    <button
+                      style={{
+                        height: "24px",
+                        fontSize: "12px",
+                        padding: "0px 12px",
+                      }}
+                      className="btn btn-info"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleInActive(record, setLoading);
+                      }}
+                    >
+                      InActive
+                    </button>
+                  </Tooltip>
+                )}
+              </>
+            )}
+            {!record.isActive && (
+              <Chips label="InActivated" classess="danger" />
+            )}
+            {!isPending && isApproved && record.isActive && (
+              <Tooltip
+                placement="bottom"
+                title={record?.isActive ? "Inactive" : "Active"}
               >
-                InActive
-              </button>
-            </Tooltip>
-          )}
-        </Flex>
-      ),
-      fixed: "right",
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "12px",
+                    padding: "0px 12px",
+                  }}
+                  className="btn btn-info"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleInActive(record, setLoading);
+                  }}
+                >
+                  InActive
+                </button>
+              </Tooltip>
+            )}
+          </Flex>
+        );
+      },
+      // fixed: "right",
     },
   ];
 };
