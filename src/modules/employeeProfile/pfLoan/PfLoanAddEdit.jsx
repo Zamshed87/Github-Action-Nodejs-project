@@ -135,13 +135,11 @@ const PfLoanAddEdit = () => {
       },
       onSuccess: (res) => {
         if (orgId === 14) {
-          console.log("first", res?.data);
           setFieldValue("loanAmount", res?.data?.employeeContribution * 0.7);
           return;
         }
         if (
           orgId === 15 &&
-          res?.data?.serviceLength > 3 &&
           ((!id && valueOption?.employmentType === "Permanent") ||
             (id && valueOption?.strEmploymentType === "Permanent"))
         ) {
