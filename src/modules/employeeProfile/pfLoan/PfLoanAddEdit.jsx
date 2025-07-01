@@ -86,7 +86,7 @@ const PfLoanAddEdit = () => {
       `,
         (data) => {
           setFileId(data?.objHeader?.intFileUrlId);
-          getEmployeePfAmount(data?.objHeader);
+          // getEmployeePfAmount(data?.objHeader);
         }
       );
     }
@@ -135,13 +135,11 @@ const PfLoanAddEdit = () => {
       },
       onSuccess: (res) => {
         if (orgId === 14) {
-          console.log("first", res?.data);
           setFieldValue("loanAmount", res?.data?.employeeContribution * 0.7);
           return;
         }
         if (
           orgId === 15 &&
-          res?.data?.serviceLength > 3 &&
           ((!id && valueOption?.employmentType === "Permanent") ||
             (id && valueOption?.strEmploymentType === "Permanent"))
         ) {
@@ -318,9 +316,14 @@ const PfLoanAddEdit = () => {
                   {[14, 15].includes(orgId) ? (
                     <span>
                       <b>Pf Own:</b>
-                      {pfInfoApi?.data?.data?.employeeContribution || 0}{" "}
+                      {(loanByIdDto?.objHeader
+                        ? loanByIdDto?.objHeader?.ownPFAmount
+                        : pfInfoApi?.data?.data?.employeeContribution) ||
+                        0}{" "}
                       <b>Pf Total:</b>
-                      {pfInfoApi?.data?.data?.totalPfAmount || 0}
+                      {(loanByIdDto?.objHeader
+                        ? loanByIdDto?.objHeader?.totalPFAmount
+                        : pfInfoApi?.data?.data?.totalPfAmount) || 0}
                     </span>
                   ) : (
                     ""
@@ -335,20 +338,19 @@ const PfLoanAddEdit = () => {
                   min={0}
                   className="form-control"
                   onChange={(e) => {
-                    if (
-                      orgId === 14 &&
-                      e.target.value >
-                        pfInfoApi?.data?.data?.employeeContribution * 0.7
-                    ) {
+                    const ownPFAmount = loanByIdDto?.objHeader
+                      ? loanByIdDto?.objHeader?.ownPFAmount
+                      : pfInfoApi?.data?.data?.employeeContribution;
+                    const totalPfAmount = loanByIdDto?.objHeader
+                      ? loanByIdDto?.objHeader?.totalPFAmount
+                      : pfInfoApi?.data?.data?.totalPfAmount;
+
+                    if (orgId === 14 && e.target.value > ownPFAmount * 0.7) {
                       return toast.warning(
                         "Loan amount should be less than 70% of Own PF amount"
                       );
                     }
-                    if (
-                      orgId === 15 &&
-                      e.target.value >
-                        pfInfoApi?.data?.data?.totalPfAmount * 0.85
-                    ) {
+                    if (orgId === 15 && e.target.value > totalPfAmount * 0.85) {
                       return toast.warning(
                         "Loan amount should be less than 85% of total PF amount"
                       );

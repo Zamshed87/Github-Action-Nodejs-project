@@ -78,7 +78,7 @@ export const viewHandler = (values, setGeneratedData) => {
   setGeneratedData(() => modifiedArr);
 };
 
-export const pfLandingColData = (history, setLoading) => {
+export const pfLandingColData = (history, setLoading, getData) => {
   return [
     {
       title: "SL",
@@ -261,7 +261,7 @@ export const pfLandingColData = (history, setLoading) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        handleInActive(record, setLoading);
+                        handleInActive(record, setLoading, getData);
                       }}
                     >
                       InActive
@@ -289,7 +289,7 @@ export const pfLandingColData = (history, setLoading) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    handleInActive(record, setLoading);
+                    handleInActive(record, setLoading, getData);
                   }}
                 >
                   InActive
@@ -304,7 +304,7 @@ export const pfLandingColData = (history, setLoading) => {
   ];
 };
 
-export const handleInActive = async (data, setLoading) => {
+export const handleInActive = async (data, setLoading, getData) => {
   console.log("data", data);
 
   setLoading(true);
@@ -313,6 +313,7 @@ export const handleInActive = async (data, setLoading) => {
       `/PfLoan/DeleteById?HeaderId=${data?.intEmployeeLoanHeaderId}`
     );
     toast.success("InActive Successfully", { toastId: 1222 });
+    getData();
     setLoading(false);
   } catch (error) {
     toast.warn(error.response.data.message || "An unexpected error occurred", {
