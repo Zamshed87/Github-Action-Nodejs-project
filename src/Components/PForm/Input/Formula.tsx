@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PInput } from "./PInput";
 
-const allowedSymbolsRegex = /^[0-9a-zA-Z@'()+\-*/.%\s]*$/;
+const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*/.%\s]*$/;
 
 const FormulaInputWrapper = ({
   label,
@@ -9,6 +9,7 @@ const FormulaInputWrapper = ({
   onChange,
   disabled,
   formulaOptions,
+  width = "100%",
 }: any) => {
   const [inputVal, setInputVal] = useState(value || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -17,7 +18,7 @@ const FormulaInputWrapper = ({
   const allLabels = formulaOptions.map((o: any) => o.label);
 
   const handleChange = (e: any) => {
-    const val = e.target.value;
+    let val = e.target.value;
 
     // ✅ Allow clearing the input completely
     if (val === "") {
@@ -30,9 +31,16 @@ const FormulaInputWrapper = ({
     // ❌ Reject input with disallowed characters
     if (!allowedSymbolsRegex.test(val)) return;
 
-    // ✅ Update input and propagate change
+    // ✅ Wrap known labels without #
+    formulaOptions.forEach((opt: any) => {
+      const label = opt.label;
+      const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
+      val = val.replace(labelRegex, `#${label}#`);
+    });
+
+    // ✅ Update state and propagate
     setInputVal(val);
-    onChange?.(e);
+    onChange?.({ target: { value: val } });
 
     // 🔍 Handle @-based suggestions
     const atIndex = val.lastIndexOf("@");
@@ -51,7 +59,7 @@ const FormulaInputWrapper = ({
   const applySuggestion = (label: string) => {
     const atIndex = inputVal.lastIndexOf("@");
     const beforeAt = inputVal.slice(0, atIndex);
-    const newVal = `${beforeAt}'${label}' `;
+    const newVal = `${beforeAt}#${label}# `;
 
     setInputVal(newVal);
     onChange?.({ target: { value: newVal } });
@@ -67,6 +75,7 @@ const FormulaInputWrapper = ({
         onChange={handleChange}
         disabled={disabled}
         // allowClear
+        style={{ width: width ? width : "100%" }}
       />
       {showSuggestions && filtered.length > 0 && (
         <ul className="suggestion-box">

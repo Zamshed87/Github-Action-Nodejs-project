@@ -53,7 +53,7 @@ export const defaultCalculation = (
   // modifyPayrollElementList
   const modifyPayrollElementList = dynamicForm
     ?.filter((itm) => itm?.strBasedOn === "Percentage")
-    ?.map((itm) => {
+    ?.map((itm, idx) => {
       const name = itm?.levelVariable;
       return {
         intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId || 0,
@@ -62,6 +62,7 @@ export const defaultCalculation = (
         strDependOn: itm?.strDependOn,
         isBasic: itm?.isBasic,
         strBasedOn: itm?.strBasedOn,
+        intSl: idx,
         intPayrollElementTypeId: itm?.intPayrollElementTypeId,
         strPayrollElementName: itm?.strPayrollElementName,
         numNumberOfPercent:
@@ -90,6 +91,30 @@ export const defaultCalculation = (
         intPayrollElementTypeId: itm?.intPayrollElementTypeId,
         strPayrollElementName: itm?.strPayrollElementName,
         numNumberOfPercent: 0,
+        intSl: itm?.intSl || 0,
+        numAmount:
+          +itm[name] || +itm[name] === 0 ? +itm[name] : +itm?.numAmount,
+        isActive: true,
+        dteCreatedAt: todayDate(),
+        intCreatedBy: employeeId,
+        dteUpdatedAt: todayDate(),
+        intUpdatedBy: employeeId,
+      };
+    });
+  const modifyCalcPayrollElementList = dynamicForm
+    ?.filter((itm) => itm?.strBasedOn === "Calculative")
+    ?.map((itm) => {
+      const name = itm?.levelVariable;
+      return {
+        intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId || 0,
+        intSalaryBreakdownHeaderId: itm?.intSalaryBreakdownHeaderId || 0,
+        strDependOn: itm?.strDependOn,
+        strBasedOn: itm?.strBasedOn,
+        intPayrollElementTypeId: itm?.intPayrollElementTypeId,
+        strPayrollElementName: itm?.strPayrollElementName,
+        numNumberOfPercent: 0,
+        intSl: itm?.intSl || 0,
+        strFormula: itm?.strFormula || "",
         numAmount:
           +itm[name] || +itm[name] === 0 ? +itm[name] : +itm?.numAmount,
         isActive: true,
@@ -160,6 +185,7 @@ export const defaultCalculation = (
       strPayrollElementName: itm?.strPayrollElementName,
       numNumberOfPercent: itm?.numNumberOfPercent,
       numAmount: 0,
+      intSl: itm?.intSl,
       isActive: true,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
@@ -200,6 +226,7 @@ export const defaultCalculation = (
     pyrSalaryBreakdowRowList: [
       ...finalModifyPayrollElement,
       ...modifyAmountPayrollElementList,
+      ...modifyCalcPayrollElementList,
     ],
   };
   if (

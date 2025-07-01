@@ -213,15 +213,24 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       if (dynamicForm?.length <= 0) {
         return toast.warn("Payroll Element List is empty!!!");
       }
+      const updatedDynamicForm = dynamicForm?.map((itm: any, idx: any) => {
+        return {
+          ...itm,
+          intSl: idx,
+          intCreatedBy: employeeId,
+          intUpdatedBy: employeeId,
+        };
+      });
       let temp: any = [];
       if (values?.dependsOn?.value === 2) {
-        temp = [...dynamicForm];
+        temp = updatedDynamicForm;
         temp.push({
           intSalaryBreakdownRowId: 0,
           intSalaryBreakdownHeaderId: 0,
           intDependsOn: 1,
           strDependOn: "Basic",
           strBasedOn: "Amount",
+          intSl: updatedDynamicForm?.length,
           intPayrollElementTypeId: (
             payrollElementDDL?.filter((i: any) => i?.isBasic)?.[0] as any
           )?.value,
@@ -241,7 +250,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         payload,
         singleData,
         state,
-        values?.dependsOn?.value === 2 ? temp : dynamicForm,
+        values?.dependsOn?.value === 2 ? temp : updatedDynamicForm,
         values,
         setLoading,
         callback
@@ -405,7 +414,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                   options={workplace || []}
                   mode="multiple"
                   maxTagCount={"responsive"}
-                  onSelect={(value, option) => {
+                  onSelect={(value) => {
                     // form.setFieldsValue({
                     //   workplace: option,
                     // });
@@ -697,6 +706,11 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                             />
                                           ) : (
                                             <FormulaInputWrapper
+                                              width={
+                                                state?.intSalaryBreakdownHeaderId
+                                                  ? "350px"
+                                                  : "100%"
+                                              }
                                               formulaOptions={
                                                 dependsOn?.value === 2
                                                   ? payrollElementDDL?.filter(
@@ -741,18 +755,17 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                                   )}
                                                 </>
                                               }
-                                              value={itm?.[itm?.levelVariable]}
+                                              value={itm?.strFormula || ""}
                                               onChange={(e: any) => {
-                                                console.log(
-                                                  { e },
-                                                  e.target?.value,
-                                                  { dynamicForm }
-                                                );
-
                                                 rowDtoHandler(
-                                                  itm?.levelVariable,
+                                                  "strFormula",
                                                   index,
                                                   e.target?.value
+                                                );
+                                                rowDtoHandler(
+                                                  `${itm?.levelVariable}`,
+                                                  index,
+                                                  0
                                                 );
                                               }}
                                               disabled={
