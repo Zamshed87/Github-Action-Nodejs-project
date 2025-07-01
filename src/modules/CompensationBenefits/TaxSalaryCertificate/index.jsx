@@ -143,7 +143,7 @@ const TaxSalaryCertificate = () => {
             loading={previewLoading}
           />
         }
-        width={1000}
+        width={1200}
       />
     </PForm>
   ) : (
