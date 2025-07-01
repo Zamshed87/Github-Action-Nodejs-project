@@ -679,7 +679,9 @@ const TdsChallan = lazy(() =>
   import("../modules/CompensationBenefits/TdsChallan/index.jsx")
 );
 const TdsChallanCreate = lazy(() =>
-  import("../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx")
+  import(
+    "../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx"
+  )
 );
 const TaxSalaryCertificate = lazy(() =>
   import("../modules/CompensationBenefits/TaxSalaryCertificate/index.jsx")
@@ -1838,6 +1840,7 @@ import NOCManagementLanding from "modules/NOC/nocManagment";
 import NOCForm from "modules/NOC/components/NOCForm";
 import NocSelfLanding from "modules/NOC/nocSelf";
 import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
+import EmployeeSalaryReport from "modules/CompensationBenefits/employeeSalaryReport";
 
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -3044,6 +3047,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign",
     component: SalaryAssign,
+  },
+  {
+    path: "/compensationAndBenefits/reports/employeeSalary",
+    component: EmployeeSalaryReport,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign/bulk",
