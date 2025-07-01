@@ -23,6 +23,7 @@ import { Alert } from "@mui/material";
 import { EmployeeInfo } from "./EmployeeInfo";
 import { BankInfo } from "./BankInfo";
 import { DigitalMFS } from "./DigitalMFS";
+import { ca } from "date-fns/locale";
 
 type TAttendenceAdjust = unknown;
 const SalaryV2: React.FC<TAttendenceAdjust> = () => {
@@ -517,7 +518,72 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       new_gross_calculation();
     }
   };
+  const resolveCalculativeFormulas = (
+    data: any[],
+    grossAmount = 0,
+    maxTries = 10
+  ) => {
+    let result = [...data];
+    let labelToAmountMap: Record<string, number> = {};
 
+    // Step 1: Add non-calculative to map
+    result.forEach((item) => {
+      if (item.strBasedOn !== "Calculative") {
+        labelToAmountMap[item.strPayrollElementName.trim()] =
+          item.numAmount || 0;
+      }
+    });
+
+    labelToAmountMap["Gross"] = grossAmount;
+
+    let pass = 0;
+
+    while (pass < maxTries) {
+      let updated = false;
+
+      result = result.map((item) => {
+        if (item.strBasedOn === "Calculative") {
+          let formula = item.strFormula || item.formula || "";
+
+          // Replace all #Label# with actual values
+          for (const label in labelToAmountMap) {
+            const regex = new RegExp(`#${label.trim()}#`, "g");
+            formula = formula.replace(regex, `(${labelToAmountMap[label]})`);
+          }
+
+          // Replace % N → * (N / 100)
+          formula = formula.replace(/% *(\d+(\.\d+)?)/g, "* ($1 / 100)");
+
+          try {
+            if (formula.match(/#\w+#/)) throw new Error("Unresolved label");
+
+            const evaluated = eval(formula);
+            const amount = roundToDecimals(
+              Number.isFinite(evaluated) ? evaluated : 0
+            );
+
+            labelToAmountMap[item.strPayrollElementName.trim()] = amount;
+
+            updated = true;
+            return {
+              ...item,
+              numAmount: amount,
+              amount: amount,
+            };
+          } catch {
+            return item; // Retry next pass
+          }
+        }
+
+        return item;
+      });
+
+      if (!updated) break;
+      pass++;
+    }
+
+    return result;
+  };
   const new_gross_calculation = () => {
     const { grossAmount } = form.getFieldsValue(true);
 
@@ -532,7 +598,8 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       }
       return item; // Leave as-is if based on "Amount"
     });
-    setRowDto(modify);
+    const final_data = resolveCalculativeFormulas(modify, grossAmount);
+    setRowDto(final_data);
   };
   const basic_or_grade_calculation = () => {
     let basicAmount = 0;
@@ -574,13 +641,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
       });
     }
 
-    const total_gross_amount = modified_data.reduce(
-      (total, item) => total + item.amount,
-      0
-    );
-    form.setFieldsValue({
-      grossAmount: total_gross_amount,
-    });
+    let total_gross_amount = calculateGross(modified_data);
 
     // const accounts = `Cash Pay (${100}%)`;
     // const temp = [...accountsDto];
@@ -589,13 +650,29 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
     // temp[0].numAmount = 0;
     // temp[1].numAmount = 0;
     // setAccountsDto([...temp]);
+
+    const final_data = resolveCalculativeFormulas(
+      modified_data,
+      total_gross_amount
+    );
+    total_gross_amount = calculateGross(final_data);
+
+    setRowDto(final_data);
     if (orgId === 12) {
       accountDetailsSetup("bank", total_gross_amount);
     } else {
       accountDetailsSetup("cash", total_gross_amount);
     }
-
-    setRowDto(modified_data);
+  };
+  const calculateGross = (data: any[]) => {
+    const total_gross_amount = data.reduce(
+      (total, item) => total + item.amount,
+      0
+    );
+    form.setFieldsValue({
+      grossAmount: total_gross_amount,
+    });
+    return total_gross_amount;
   };
 
   const accountDetailsSetup = (account: any, gross: any) => {
