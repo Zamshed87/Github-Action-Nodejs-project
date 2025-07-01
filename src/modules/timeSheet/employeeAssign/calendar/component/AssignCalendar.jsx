@@ -13,6 +13,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { isUniq } from "utility/uniqChecker";
 import { rosterGenerateAction } from "../helper";
+import Loading from "common/loading/Loading";
 const ifPrevousDateSelected = (date) => {
   const selectedDate = new Date(date);
   const currentDate = new Date();
@@ -43,7 +44,7 @@ export const AssignModal = ({
     shallowEqual
   );
   const [tableData, setTableData] = useState([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [isPrevousDate, setIsPrevousDate] = useState(false);
   const setter = (payload) => {
@@ -197,6 +198,7 @@ Are you sure ? You want to assign Calendar again?
 
   return (
     <>
+      {loading && <Loading/>}
       <PForm
         form={form}
         onFinish={() => {
@@ -560,7 +562,7 @@ Are you sure ? You want to assign Calendar again?
             setSingleData([]);
           }}
           submitAction="submit"
-          //loading={loading}
+          loading={loading}
         />
       </PForm>
     </>
