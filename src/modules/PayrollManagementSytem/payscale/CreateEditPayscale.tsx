@@ -326,7 +326,11 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             <div style={{ height: "50px" }}>
               <FormulaInputWrapper
                 formulaOptions={
-                  elementDDL?.data?.length > 0 ? elementDDL?.data : []
+                  elementDDL?.data?.length > 0
+                    ? elementDDL?.data?.filter(
+                        (i: any) => !i?.label?.includes("Gross")
+                      )
+                    : []
                 }
                 value={row?.formula || ""}
                 onChange={(e: any) => {

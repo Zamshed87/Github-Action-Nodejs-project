@@ -714,7 +714,11 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                               formulaOptions={
                                                 dependsOn?.value === 2
                                                   ? payrollElementDDL?.filter(
-                                                      (i: any) => !i?.isBasic
+                                                      (i: any) =>
+                                                        !i?.isBasic &&
+                                                        !i?.label?.includes(
+                                                          "Gross"
+                                                        )
                                                     )
                                                   : payrollElementDDL || []
                                               }

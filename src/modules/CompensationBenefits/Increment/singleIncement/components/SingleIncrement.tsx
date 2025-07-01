@@ -496,6 +496,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         <>
           {row?.strBasedOn === "Amount"
             ? row?.numAmount
+            : row?.strBasedOn === "Calculative"
+            ? row?.formula || row?.strFormula
             : row?.numNumberOfPercent}
         </>
       ),
