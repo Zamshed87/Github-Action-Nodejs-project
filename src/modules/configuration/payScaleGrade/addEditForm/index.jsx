@@ -95,7 +95,7 @@ export default function AddEditFormComponent({
   }, [singleData]);
 
   const saveHandler = (values, cb) => {
-    if (values?.maxSalary < values?.minSalary) {
+    if (Number(values?.maxSalary ?? 0) < Number(values?.minSalary ?? 0)) {
       return toast.warning("Max. Salary must be greater than min salary!!!");
     }
 
