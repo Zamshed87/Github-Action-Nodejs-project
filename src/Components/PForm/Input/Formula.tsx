@@ -14,35 +14,121 @@ const FormulaInputWrapper = ({
   const [inputVal, setInputVal] = useState(value || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtered, setFiltered] = useState<string[]>([]);
+  const [prevVal, setPrevVal] = useState("");
 
   const allLabels = formulaOptions.map((o: any) => o.label);
+  const findFirstDiffIndex = (a: string, b: string): number => {
+    const len = Math.min(a.length, b.length);
+    for (let i = 0; i < len; i++) {
+      if (a[i] !== b[i]) return i;
+    }
+    return a.length !== b.length ? len : -1;
+  };
 
+  const getLabelTokenAt = (str: string, index: number) => {
+    const regex = /#([^#]+)#/g;
+    let match;
+    while ((match = regex.exec(str))) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (index >= start && index <= end) {
+        return { fullMatch: match[0], start, end };
+      }
+    }
+    return null;
+  };
+
+  // const handleChange = (e: any) => {
+  //   let val = e.target.value;
+
+  //   // ✅ Allow clearing the input completely
+  //   if (val === "") {
+  //     setInputVal("");
+  //     onChange?.(e);
+  //     setShowSuggestions(false);
+  //     return;
+  //   }
+
+  //   // ❌ Reject input with disallowed characters
+  //   if (!allowedSymbolsRegex.test(val)) return;
+
+  //   // ✅ Wrap known labels without #
+  //   formulaOptions.forEach((opt: any) => {
+  //     const label = opt.label;
+  //     const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
+  //     val = val.replace(labelRegex, `#${label}#`);
+  //   });
+
+  //   // ✅ Update state and propagate
+  //   setInputVal(val);
+  //   onChange?.({ target: { value: val } });
+
+  //   // 🔍 Handle @-based suggestions
+  //   const atIndex = val.lastIndexOf("@");
+  //   if (atIndex >= 0) {
+  //     const keyword = val.slice(atIndex + 1).toLowerCase();
+  //     const suggestions = allLabels.filter((label: string) =>
+  //       label.toLowerCase().startsWith(keyword)
+  //     );
+  //     setFiltered(suggestions);
+  //     setShowSuggestions(true);
+  //   } else {
+  //     setShowSuggestions(false);
+  //   }
+  // };
   const handleChange = (e: any) => {
     let val = e.target.value;
 
-    // ✅ Allow clearing the input completely
+    // ✅ If user partially deletes a #Label#, auto-remove full block
+    const diffIndex = findFirstDiffIndex(prevVal, val);
+    if (diffIndex !== -1) {
+      const fullMatch = getLabelTokenAt(prevVal, diffIndex);
+      if (fullMatch) {
+        const cleaned = prevVal.replace(fullMatch.fullMatch, "");
+        setPrevVal(cleaned);
+        setInputVal(cleaned);
+        onChange?.({ target: { value: cleaned } });
+        return;
+      }
+    }
+
+    // ✅ Your original logic (unchanged)
+    // Allow clearing input
     if (val === "") {
+      setPrevVal("");
       setInputVal("");
       onChange?.(e);
       setShowSuggestions(false);
       return;
     }
 
-    // ❌ Reject input with disallowed characters
+    // Reject disallowed characters
     if (!allowedSymbolsRegex.test(val)) return;
 
-    // ✅ Wrap known labels without #
+    // Tokenize
+    const tokens = val.split(/[^a-zA-Z]+/).filter(Boolean);
+    const validLabels = formulaOptions.map((opt: any) =>
+      opt.label.toLowerCase()
+    );
+
+    for (const word of tokens) {
+      if (!validLabels.includes(word.toLowerCase())) {
+        return;
+      }
+    }
+
+    // Wrap plain labels with #...#
     formulaOptions.forEach((opt: any) => {
       const label = opt.label;
       const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
       val = val.replace(labelRegex, `#${label}#`);
     });
 
-    // ✅ Update state and propagate
+    // Final update
+    setPrevVal(val);
     setInputVal(val);
     onChange?.({ target: { value: val } });
 
-    // 🔍 Handle @-based suggestions
     const atIndex = val.lastIndexOf("@");
     if (atIndex >= 0) {
       const keyword = val.slice(atIndex + 1).toLowerCase();
