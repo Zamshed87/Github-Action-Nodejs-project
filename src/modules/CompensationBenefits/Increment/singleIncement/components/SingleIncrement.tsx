@@ -102,7 +102,9 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
             intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
             intPayrollElementTypeId: i?.intSalaryElementId,
-            basedOn: i?.strBasedOn,
+            basedOn: i?.strFormula?.length > 1 ? "Calculative" : i?.strBasedOn,
+            strBasedOn:
+              i?.strFormula?.length > 1 ? "Calculative" : i?.strBasedOn,
           };
         });
         // form.setFieldsValue({

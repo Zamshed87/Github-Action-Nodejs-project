@@ -129,7 +129,9 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             intSalaryBreakdownHeaderId: i?.intSalaryBreakdownHeaderId,
             intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
             intPayrollElementTypeId: i?.intSalaryElementId,
-            basedOn: i?.strBasedOn,
+            basedOn: i?.strFormula?.length > 1 ? "Calculative" : i?.strBasedOn,
+            strBasedOn:
+              i?.strFormula?.length > 1 ? "Calculative" : i?.strBasedOn,
           };
         });
         if (employeeInfo?.data[0]?.isGradeBasedSalary) {
@@ -1420,7 +1422,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              Math.round(elementSum) !== grossAmount && (
+              Math.round(elementSum) !== Math.round(grossAmount) && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"
