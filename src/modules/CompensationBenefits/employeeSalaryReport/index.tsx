@@ -266,7 +266,7 @@ const EmployeeSalaryReport = () => {
               }&intSectionId=${values?.section?.value || 0}&intDesignationId=${
                 values?.designation?.value || 0
               }&strFormat=pdf`;
-              getPDFAction(url, setLoading);
+              getPDFAction(url, setLoading, "Employee Salary");
             }}
           />
           <PCardBody className="">
