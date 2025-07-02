@@ -226,6 +226,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
         payrollElementId: i?.intPayrollElementTypeId,
         amount: roundToDecimals(i?.numAmount || 0),
         numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
+        formula: i?.formula || i?.strFormula || "",
       };
     });
     console.log({ values });

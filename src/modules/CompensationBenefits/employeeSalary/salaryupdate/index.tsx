@@ -357,6 +357,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         intSalaryBreakdownRowId: i?.intSalaryBreakdownRowId,
         numAmount: i?.numAmount,
         numberOfPercent: i?.strBasedOn === "Amount" ? 0 : i?.numNumberOfPercent,
+        strFormula: i?.formula || i?.strFormula || "",
       };
     });
     const salaryAssignPayload = {
