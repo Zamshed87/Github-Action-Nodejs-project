@@ -194,8 +194,8 @@ export const columns = (rowDto, setRowDto, setFieldValue, rowDtoHandler) => {
       filter: true,
     },
     {
-      title: "Department Section",
-      dataIndex: "strDepartment",
+      title: "Section",
+      dataIndex: "strDepartmentSection",
       sorter: true,
       filter: true,
     },
