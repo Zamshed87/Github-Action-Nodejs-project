@@ -21,7 +21,16 @@ const EmployeeSalaryReport = () => {
   // redux states data
   const {
     permissionList,
-    profileData: { buId, wId, wgId, orgId, intAccountId, employeeId },
+    profileData: {
+      buId,
+      wId,
+      wgId,
+      orgId,
+      intAccountId,
+      employeeId,
+      wgName,
+      wName,
+    },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const featurePermission = useMemo(
@@ -204,7 +213,10 @@ const EmployeeSalaryReport = () => {
   return featurePermission?.isView ? (
     <>
       <PForm
-        initialValues={{}}
+        initialValues={{
+          workplaceGroup: { value: wgId, label: wgName },
+          workplace: { value: wId, label: wName },
+        }}
         form={form}
         onFinish={() => {
           landingApiCall();
