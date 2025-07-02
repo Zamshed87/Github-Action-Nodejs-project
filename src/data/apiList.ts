@@ -372,4 +372,6 @@ export const apiList = {
   GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
   SalaryGradeBasedBulkUpload: "/Employee/SalaryGradeBasedBulkUpload",
   GetEmployeeSalaryReport: "/SalaryReport/GetEmployeeSalaryReport",
+   WorkforcePlanningCreate: "/WorkforcePlanning/Create",
+  WorkforcePlanningUpdate: "/WorkforcePlanning/Update",
 };

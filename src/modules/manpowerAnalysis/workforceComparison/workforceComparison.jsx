@@ -41,7 +41,7 @@ const WorkForceComparison = () => {
   // Pagination state
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 25,
     total: 0,
   });
 
@@ -52,7 +52,7 @@ const WorkForceComparison = () => {
     console.log("Component initialized - no data loaded yet");
   }, []);
 
-  const fetchWorkforceData = async (page = 1, pageSize = 10) => {
+  const fetchWorkforceData = async (page = 1, pageSize = 25) => {
     const { yearType, selectYear, workplace, ComparisonType } =
       form.getFieldsValue();
 
