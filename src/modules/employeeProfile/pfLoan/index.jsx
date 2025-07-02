@@ -27,7 +27,6 @@ import EarlySettled from "./components/EarlySettled";
 import LoanDetailsView from "./common/loanDetailsView";
 
 const PfLoanLanding = ({ onlyViewDetails = null }) => {
-  console.log("PfLoanLanding Rendered", onlyViewDetails);
   const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual

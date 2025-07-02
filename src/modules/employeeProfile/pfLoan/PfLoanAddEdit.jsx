@@ -29,7 +29,6 @@ import PfLoanTable from "./components/pfLoanTable";
 import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { useApiRequest } from "Hooks";
-import { isDevServer } from "App";
 
 const PfLoanAddEdit = () => {
   const dispatch = useDispatch();
@@ -52,7 +51,7 @@ const PfLoanAddEdit = () => {
   const history = useHistory();
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30574) {
+    if (item?.menuReferenceId === 30620) {
       permission = item;
     }
   });
@@ -125,7 +124,6 @@ const PfLoanAddEdit = () => {
     });
 
   const getEmployeePfAmount = (valueOption) => {
-    console.log(valueOption, "valueOptionvalueOption");
     pfInfoApi.action({
       urlKey: "GetEmployeePfAmount",
       method: "GET",
