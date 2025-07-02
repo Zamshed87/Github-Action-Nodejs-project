@@ -1,36 +1,14 @@
 import { useEffect } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
-import { orgIdsForBn } from "utility/orgForBanglaField";
 
-const usePfPolicyAssignFilters = () => {
+const usePfPolicyAssignFilters = ({form}) => {
   const {
     profileData: { orgId, buId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
-  const departmentDDL = useApiRequest([]);
   const employeeDDL = useApiRequest([]);
-
-  const getDepartmentDDL = () => {
-    departmentDDL.action({
-      urlKey: "DepartmentIdAll",
-      method: "GET",
-      params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-        accountId: orgId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item) => {
-          item.label = orgIdsForBn.includes(orgId)
-            ? item.strDepartmentBn
-            : item.strDepartment;
-          item.value = item.intDepartmentId;
-        });
-      },
-    });
-  };
+  const employmentTypeDDL = useApiRequest([]);
 
   const getEmployeeDDL = (value='') => {
     employeeDDL?.action({
@@ -50,16 +28,35 @@ const usePfPolicyAssignFilters = () => {
       },
     });
   };
+    const getEmploymentTypeDDL = () => {
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
 
   useEffect(() => {
-    getDepartmentDDL();
-    // getEmployeeDDL();
+    getEmploymentTypeDDL();
   }, [orgId, buId, wgId, wId]);
 
   return {
-    departmentDDL,
     employeeDDL,
     getEmployeeDDL,
+    employmentTypeDDL,
+    getEmploymentTypeDDL,
   };
 };
 

@@ -7,7 +7,7 @@ import { getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import usePfPolicyAssign from "./hooks/usePfPolicyAssign";
-import TaxSalaryCertificateFilters from "./components/PfPolicyAssignFilters";
+import PfPolicyAssignFilters from "./components/PfPolicyAssignFilters";
 
 const PfPolicyAssign = () => {
   const dispatch = useDispatch();
@@ -15,8 +15,7 @@ const PfPolicyAssign = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
-  const { data, fetchPfPolicyAssign, loading, pages } =
-    usePfPolicyAssign(form);
+  const { data, fetchPfPolicyAssign, loading, pages } = usePfPolicyAssign(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -26,7 +25,7 @@ const PfPolicyAssign = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30628) {
+    if (item?.menuReferenceId === 30597) {
       permission = item;
     }
   });
@@ -42,7 +41,7 @@ const PfPolicyAssign = () => {
       {(loading) && <Loading />}
       <PCard>
         <PCardHeader
-          title={`Tax Salary Certificate`}
+          title={`Pf Policy Assign`}
           buttonList={[
             {
               disabled: !selectedRows.length,
@@ -53,10 +52,10 @@ const PfPolicyAssign = () => {
           ]}
         />
         <PCardBody className="mb-3">
-          <TaxSalaryCertificateFilters form={form} />
+          <PfPolicyAssignFilters form={form} />
         </PCardBody>
         <DataTable
-          scroll={{ x: 2000 }}
+          scroll={{ x: 1200 }}
           header={getHeader(pages)}
           bordered
           data={data?.data || []}

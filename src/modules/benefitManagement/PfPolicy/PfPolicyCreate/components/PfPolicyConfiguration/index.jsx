@@ -25,6 +25,7 @@ const PfPolicyConfiguration = ({ form, saveData, setSaveData }) => {
       "intWorkPlaceId",
       "intEmploymentTypeIds",
       "intPfEligibilityDependOn",
+      "StrPfAssignType",
     ];
   
     const employeeFields = [

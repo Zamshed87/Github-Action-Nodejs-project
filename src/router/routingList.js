@@ -1850,6 +1850,9 @@ const PFPolicy = lazy(() =>
 const PFPolicyCreate = lazy(() =>
   import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
 );
+const PFPolicyAssign = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/PfPolicyAssign")
+);
 const PFInvestment = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/index.jsx")
 );
@@ -4533,6 +4536,10 @@ export const routingList = [
   {
     path: "/BenefitsManagement/providentFund/pfPolicy/create",
     component: PFPolicyCreate,
+  },
+  {
+    path: "/BenefitsManagement/providentFund/pfPolicy/assign",
+    component: PFPolicyAssign,
   },
   {
     path: "/BenefitsManagement/providentFund/pfInvestment",
