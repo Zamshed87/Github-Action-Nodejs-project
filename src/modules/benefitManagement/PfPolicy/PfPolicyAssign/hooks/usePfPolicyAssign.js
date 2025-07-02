@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const usePfPolicyAssign = (form) => {
+  const { state } = useLocation();
+  console.log("state", state);
   const { wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -16,12 +19,13 @@ const usePfPolicyAssign = (form) => {
 
   const fetchPfPolicyAssign = () => {
     const formValues = form?.getFieldsValue(true);
-
     const formattedParams = {
-      StrListOfFiscalYear: formValues.ListOfFiscalYear,
-      StrListOfWorkplace: formValues.ListOfWorkplace,
-      StrListOfDepartment: formValues.ListOfDepartment,
-      StrListOfEmployee: formValues.ListOfEmployee,
+      IntPolicyId: 0, // Required
+      StrEmploymentTypeList: formValues?.employmentType,
+      IntServiceFrom: formValues?.serviceFrom,
+      IntServiceTo: formValues?.serviceTo,
+      PageSize: pages.pageSize,
+      PageNo: pages.current,
     };
 
     const filteredParams = Object.entries(formattedParams)
@@ -29,7 +33,7 @@ const usePfPolicyAssign = (form) => {
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
 
-    const url = `/TaxReport/GetTaxInfo?${filteredParams}`;
+    const url = `/PfPolicy/GetPolicyWiseEmployee?${filteredParams}`;
 
     getData(url, (res) => {
       setData(res);

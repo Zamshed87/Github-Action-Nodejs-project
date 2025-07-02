@@ -26,7 +26,13 @@ const togglePfPolicyStatus = async (id) => {
   return response?.data;
 };
 
-export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
+export const getHeader = (
+  pages,
+  setData,
+  setOpenView,
+  setOpenExtend,
+  history
+) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -55,8 +61,10 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
   {
     title: "Employment Type",
     dataIndex: "strEmploymentTypeName",
-    render: (_,rec) => {
-      return rec?.isForAllEmploymentType ? "All" : rec?.employmentTypes?.map((item) => item.label).join(", ");
+    render: (_, rec) => {
+      return rec?.isForAllEmploymentType
+        ? "All"
+        : rec?.employmentTypes?.map((item) => item.label).join(", ");
     },
     sorter: true,
     width: 120,
@@ -94,10 +102,14 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
 
                 // API request and rollback on error
                 try {
-                  const result = await togglePfPolicyStatus(rec.intPfConfigHeaderId);
-                  toast.success(result?.message || "Status updated successfully");
+                  const result = await togglePfPolicyStatus(
+                    rec.intPfConfigHeaderId
+                  );
+                  toast.success(
+                    result?.message || "Status updated successfully"
+                  );
                 } catch (error) {
-                  console.log("pf policy failed")
+                  console.log("pf policy failed");
                   setData((prev) => ({
                     ...prev,
                     data: updatePolicyStatusLocally(
@@ -137,6 +149,17 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
             setOpenExtend?.({ extend: true, data: record });
           }}
         />
+        {record?.intPFAssignType === 2 && (
+          <PButton
+            content="Assign"
+            type="primary"
+            onClick={() => {
+              history.push(`/BenefitsManagement/providentFund/pfPolicy/assign`, {
+                state: { ...record },
+              });
+            }}
+          />
+        )}
       </div>
     ),
     width: 140,

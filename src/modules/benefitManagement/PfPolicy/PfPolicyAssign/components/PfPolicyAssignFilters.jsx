@@ -42,7 +42,7 @@ const PfPolicyAssignFilters = ({ form }) => {
         <PInput
           type="number"
           min={0}
-          name="month"
+          name="serviceFrom"
           placeholder="Select Month"
           label="Service Length Start (Month)"
           onChange={(value) => {}}
@@ -53,7 +53,7 @@ const PfPolicyAssignFilters = ({ form }) => {
         <PInput
           type="number"
           min={0}
-          name="month"
+          name="serviceTo"
           placeholder="Select Month"
           label="Service Length End (Month)"
           onChange={(value) => {}}

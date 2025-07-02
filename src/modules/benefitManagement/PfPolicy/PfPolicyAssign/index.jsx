@@ -38,9 +38,10 @@ const PfPolicyAssign = () => {
         fetchPfPolicyAssign();
       }}
     >
-      {(loading) && <Loading />}
+      {loading && <Loading />}
       <PCard>
         <PCardHeader
+          backButton
           title={`Pf Policy Assign`}
           buttonList={[
             {
