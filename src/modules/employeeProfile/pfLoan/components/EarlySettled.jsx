@@ -88,8 +88,14 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
     settlementDate
   ) => {
     const lastSalaryDate = new Date(loanByIdDto?.objHeader?.lastSalaryDate);
-    const timeDiff = Math.abs(new Date(settlementDate) - lastSalaryDate);
-    return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    const settlement = new Date(settlementDate);
+    // Normalize both to midnight (local time)
+    lastSalaryDate.setHours(0, 0, 0, 0);
+    settlement.setHours(0, 0, 0, 0);
+    
+    const timeDiff = Math.abs(settlement - lastSalaryDate);
+    console.log(lastSalaryDate,"last salary date",settlementDate,"settlement Date", Math.ceil(timeDiff / (1000 * 60 * 60 * 24)))
+    return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   };
   return (
     <div className="mx-3">

@@ -167,7 +167,7 @@ const PfLoanLifeCycle = () => {
     getLandingApi(
       `/PfLoan/GetAllPfLifecycleLoan?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanTypeId=${
         values?.loanType?.value
-      }&EffectiveDate=${formatDate(values?.effectiveDate)}&UnSettledAmount=${
+      }&EffectiveDate=${formatDate(values?.effectiveDate)}&LoanAmount=${values?.loanAmount ?? 0}&InterestAmount=${values?.interest ?? 0}&UnSettledAmount=${
         values?.unsettledAmount || 0
       }&Status=${values?.status?.value || 0}`
     );
@@ -252,12 +252,12 @@ const PfLoanLifeCycle = () => {
                         loanAmount: value,
                       });
                     }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Loan Amount is required",
-                      },
-                    ]}
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Loan Amount is required",
+                    //   },
+                    // ]}
                   />
                 </Col>
                 <Col md={3} sm={24}>
@@ -271,12 +271,12 @@ const PfLoanLifeCycle = () => {
                         interest: value,
                       });
                     }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Interest is required",
-                      },
-                    ]}
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Interest is required",
+                    //   },
+                    // ]}
                   />
                 </Col>
                 <Col md={3} sm={24}>
@@ -290,12 +290,12 @@ const PfLoanLifeCycle = () => {
                         unsettledAmount: value,
                       });
                     }}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Un-Settled Amount is required",
-                      },
-                    ]}
+                    // rules={[
+                    //   {
+                    //     required: true,
+                    //     message: "Un-Settled Amount is required",
+                    //   },
+                    // ]}
                   />
                 </Col>
                 <Col md={3} sm={12} xs={24}>
