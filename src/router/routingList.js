@@ -3984,21 +3984,21 @@ export const routingList = [
     component: ExternalTrainingLanding,
   },
   //external training end
-   // manpower analysis
+  // manpower analysis
 
   {
     path: "/profile/ManpowerAnalysis/WorkforcePlanning",
     component: WorkforcePlanningLanding,
   },
-   {
+  {
     path: "/profile/ManpowerAnalysis/WorkforceComparison",
     component: WorkForceComparison,
   },
-   {
+  {
     path: "/profile/ManpowerAnalysis/WorkforcePlanning/create",
     component: WorkForceCreate,
   },
-     {
+  {
     path: "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
     component: WorkForceCreate,
   },
@@ -4620,12 +4620,13 @@ export const routingList = [
   },
 
   // PF report end
+
   {
-    path: "/bm/gratuityPolicy",
+    path: "/BenefitsManagement/gratuity/gratuityPolicy",
     component: GratuityPolicy,
   },
   {
-    path: "/bm/gratuityPolicy/:type/:id",
+    path: "/BenefitsManagement/gratuity/gratuityPolicy/:type/:id",
     component: GPCreateViewEdit,
   },
   {
