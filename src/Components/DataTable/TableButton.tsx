@@ -15,6 +15,7 @@ import React from "react";
 import { TableButtonType, buttonList, buttonType } from "./types";
 import { Popconfirm, Tooltip } from "antd";
 import { DisabledByDefaultOutlined } from "@mui/icons-material";
+import { MdAssignmentAdd } from "react-icons/md";
 
 export const TableButton: React.FC<TableButtonType> = (property) => {
   const { parentStyle, buttonsList } = property;
@@ -31,6 +32,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     disbursement: <DollarOutlined />,
     print: <PrinterFilled />,
     extend: <CopyOutlined />,
+    assign: <MdAssignmentAdd />,
     disabled: <DisabledByDefaultOutlined />,
   };
 

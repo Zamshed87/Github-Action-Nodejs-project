@@ -1,7 +1,9 @@
+import { Visibility } from "@mui/icons-material";
 import { Switch, Tooltip } from "antd";
 import axios from "axios";
-import { Flex, PButton } from "Components";
+import { Flex, PButton, TableButton } from "Components";
 import { toast } from "react-toastify";
+import { gray700 } from "utility/customColor";
 
 const updatePolicyStatusLocally = (list, policyId, newStatus) => {
   const updatedList = [...list];
@@ -135,6 +137,34 @@ export const getHeader = (
     align: "center",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+        <TableButton
+          buttonsList={[
+            {
+              type: "view",
+              onClick: () => {},
+            },
+            {
+              type: "extend",
+              onClick: () => {},
+            },
+            {
+              type: "assign",
+              onClick: () => {},
+            },
+          ]}
+        />
+        <Tooltip title="View">
+          <Visibility
+            style={{
+              color: gray700,
+              cursor: "pointer",
+              fontSize: 20,
+            }}
+            onClick={() => {
+              setOpenView?.({ open: true, data: record });
+            }}
+          />
+        </Tooltip>
         <PButton
           content="View"
           type="primary-outline"
