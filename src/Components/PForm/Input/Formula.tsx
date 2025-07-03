@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PInput } from "./PInput";
 
-const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*/.%\s]*$/;
+const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*/.%xX\s]*$/;
 
 const FormulaInputWrapper = ({
   label,
@@ -40,46 +40,16 @@ const FormulaInputWrapper = ({
     return null;
   };
 
-  // const handleChange = (e: any) => {
-  //   let val = e.target.value;
-
-  //   // ✅ Allow clearing the input completely
-  //   if (val === "") {
-  //     setInputVal("");
-  //     onChange?.(e);
-  //     setShowSuggestions(false);
-  //     return;
-  //   }
-
-  //   // ❌ Reject input with disallowed characters
-  //   if (!allowedSymbolsRegex.test(val)) return;
-
-  //   // ✅ Wrap known labels without #
-  //   formulaOptions.forEach((opt: any) => {
-  //     const label = opt.label;
-  //     const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
-  //     val = val.replace(labelRegex, `#${label}#`);
-  //   });
-
-  //   // ✅ Update state and propagate
-  //   setInputVal(val);
-  //   onChange?.({ target: { value: val } });
-
-  //   // 🔍 Handle @-based suggestions
-  //   const atIndex = val.lastIndexOf("@");
-  //   if (atIndex >= 0) {
-  //     const keyword = val.slice(atIndex + 1).toLowerCase();
-  //     const suggestions = allLabels.filter((label: string) =>
-  //       label.toLowerCase().startsWith(keyword)
-  //     );
-  //     setFiltered(suggestions);
-  //     setShowSuggestions(true);
-  //   } else {
-  //     setShowSuggestions(false);
-  //   }
-  // };
   const handleChange = (e: any) => {
     let val = e.target.value;
+
+    // ✅ Convert last typed 'x' or 'X' to '*'
+    if (val[val.length - 1]?.toLowerCase() === "x") {
+      const lastCharIndex = val.length - 1;
+      const before = val.slice(0, lastCharIndex);
+      const after = val.slice(lastCharIndex + 1);
+      val = before + "*" + after;
+    }
 
     // ✅ If user partially deletes a #Label#, auto-remove full block
     const diffIndex = findFirstDiffIndex(prevVal, val);
@@ -94,8 +64,7 @@ const FormulaInputWrapper = ({
       }
     }
 
-    // ✅ Your original logic (unchanged)
-    // Allow clearing input
+    // ✅ Allow clearing input
     if (val === "") {
       setPrevVal("");
       setInputVal("");
@@ -104,10 +73,10 @@ const FormulaInputWrapper = ({
       return;
     }
 
-    // Reject disallowed characters
+    // ❌ Reject disallowed characters
     if (!allowedSymbolsRegex.test(val)) return;
 
-    // Tokenize
+    // ✅ Tokenize and check if words are valid labels
     const tokens = val.split(/[^a-zA-Z]+/).filter(Boolean);
     const validLabels = formulaOptions.map((opt: any) =>
       opt.label.toLowerCase()
@@ -119,18 +88,19 @@ const FormulaInputWrapper = ({
       }
     }
 
-    // Wrap plain labels with #...#
+    // ✅ Wrap plain labels with #...#
     formulaOptions.forEach((opt: any) => {
       const label = opt.label;
       const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
       val = val.replace(labelRegex, `#${label}#`);
     });
 
-    // Final update
+    // ✅ Final update
     setPrevVal(val);
     setInputVal(val);
     onChange?.({ target: { value: val } });
 
+    // 🔍 Suggestion logic
     const atIndex = val.lastIndexOf("@");
     if (atIndex >= 0) {
       const keyword = val.slice(atIndex + 1).toLowerCase();
