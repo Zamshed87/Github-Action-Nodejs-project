@@ -9,9 +9,8 @@ const usePfPolicyAssignFilters = ({ form }) => {
     profileData: { orgId, buId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
 
-  const employeeDDL = useApiRequest([]);
-  const employmentTypeDDL = useApiRequest([]);
-
+  const employeeDDL = useApiRequest({});
+  const employmentTypeDDL = useApiRequest({});
   const getEmployeeDDL = (value = "") => {
     employeeDDL?.action({
       urlKey: "GetPolicyWiseEmployeeDDL",
@@ -19,14 +18,7 @@ const usePfPolicyAssignFilters = ({ form }) => {
       params: {
         intPolicyId: state?.intPfConfigHeaderId ?? 0,
         strSearchTxt: value,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
-          res[i].employeeCode = item?.employeeCode;
-        });
-      },
+      }
     });
   };
   const getEmploymentTypeDDL = () => {
@@ -34,13 +26,7 @@ const usePfPolicyAssignFilters = ({ form }) => {
       url: `PeopleDeskDdl/GetPfPolicyWiseEmploymentType/${
         state?.intPfConfigHeaderId ?? 0
       }`,
-      method: "GET",
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.EmploymentType;
-          res[i].value = item?.Id;
-        });
-      },
+      method: "GET"
     });
   };
 

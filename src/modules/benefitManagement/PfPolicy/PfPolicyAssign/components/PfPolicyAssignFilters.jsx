@@ -17,7 +17,7 @@ const PfPolicyAssignFilters = ({ form }) => {
           onSearch={(value) => {
             getEmployeeDDL(value);
           }}
-          options={employeeDDL?.data || []}
+          options={employeeDDL?.data?.data || []}
           name="employee"
           label="Employee"
           placeholder="Search Employee"
@@ -27,7 +27,7 @@ const PfPolicyAssignFilters = ({ form }) => {
       </Col>
       <Col md={4} sm={12} xs={24}>
         <PSelect
-          options={employmentTypeDDL?.data || []}
+          options={employmentTypeDDL?.data?.data || []}
           name="employmentType"
           loading={employmentTypeDDL.loading}
           label="Employment Type"
