@@ -47,6 +47,12 @@ export const getHeader = (
     width: 100,
   },
   {
+    title: "Policy Code",
+    dataIndex: "strPolicyCode",
+    sorter: true,
+    width: 80,
+  },
+  {
     title: "Workplace Group",
     dataIndex: "strWorkPlaceGroup",
     sorter: true,
@@ -76,6 +82,8 @@ export const getHeader = (
     width: 150,
   },
   {
+    width:50,
+    align:'center',
     title: "Status",
     dataIndex: "isActive",
     render: (_, rec) => {

@@ -1,11 +1,11 @@
 import { Col, Row } from "antd";
 import { PButton, PInput, PSelect } from "Components";
 import usePfPolicyAssignFilters from "./usePfPolicyAssignFilters";
+import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
 const PfPolicyAssignFilters = ({ form }) => {
   const {
     employmentTypeDDL,
-    getEmploymentTypeDDL,
     employeeDDL,
     getEmployeeDDL,
   } = usePfPolicyAssignFilters({ form });
@@ -26,14 +26,15 @@ const PfPolicyAssignFilters = ({ form }) => {
         />
       </Col>
       <Col md={4} sm={12} xs={24}>
-        <PSelect
+        <PSelectWithAll
+          form={form}
           options={employmentTypeDDL?.data?.data || []}
           name="employmentType"
           loading={employmentTypeDDL.loading}
           label="Employment Type"
           placeholder="Select Employment Type"
-          onChange={(_, op) => {
-            form.setFieldsValue({ employmentType: op });
+          onChange={(value) => {
+            form.setFieldsValue({ employmentType: value });
           }}
           // rules={[{ required: true, message: "Employment Type is required" }]}
         />
