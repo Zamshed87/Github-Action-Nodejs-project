@@ -196,12 +196,16 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       if (row.basedOn === "Calculative" && row.formula) {
         let formula = row.formula;
 
+        // Replace #Label# with actual values
         updated.forEach((el) => {
           const label = el.payrollElementName;
           const value = el.netAmount ?? 0;
           const regex = new RegExp(`#${label}#`, "g");
-          formula = formula.replace(regex, value);
+          formula = formula.replace(regex, value.toString());
         });
+
+        // Convert % N → * (N / 100)
+        formula = formula.replace(/% *(\d+(\.\d+)?)/g, "* ($1 / 100)");
 
         try {
           const result = eval(formula);
