@@ -3,11 +3,11 @@ export interface GratuityPolicyDetail {
   intPolicyDetailsId: number;
   intPolicyId: number;
   intServiceLengthInMonth: number;
-  serviceLengthStart: number;
-  serviceLengthEnd: number;
+  intServiceLengthStartInMonth: number;
+  intServiceLengthEndInMonth: number;
   intDisbursementDependOnId: number;
   disbursementDependOnName: string;
-  numPercentage: number;
+  numPercentageOrFixedAmount: number;
 }
 
 export interface GratuityPolicy {
