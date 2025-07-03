@@ -270,7 +270,6 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       title: "Amount/Percentage/Calculative",
       render: (value: any, row: any, index: number) => (
         <>
-          {console.log({ row })}
           {row?.id && row?.basedOn !== "Calculative" ? (
             <PInput
               type="number"
@@ -325,6 +324,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           ) : (
             <div style={{ height: "50px" }}>
               <FormulaInputWrapper
+                disabled={rowData}
                 formulaOptions={
                   elementDDL?.data?.length > 0
                     ? elementDDL?.data?.filter(
