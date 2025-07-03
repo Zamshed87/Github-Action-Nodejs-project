@@ -55,5 +55,6 @@ export const success600 = "#34a44f";
 export const success700 = "#299647";
 export const success800 = "#1f843c";
 export const success900 = "#096529";
-
+export const lightGreen100 = "#e6f4d7";
+export const navyGray = "#707991";
 export const colorLess = "transparent";
