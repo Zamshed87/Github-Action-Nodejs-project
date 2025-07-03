@@ -359,7 +359,7 @@ export default function AddEditForm({
                 form.setFieldsValue({
                   workplaceGroup: op,
                 });
-                form.resetFields(["workplace"])
+                form.resetFields(["workplace"]);
                 getWDDL.action({
                   urlKey: "WorkplaceIdAll",
                   method: "GET",
@@ -468,6 +468,10 @@ export default function AddEditForm({
                 {
                   value: "PRIME",
                   label: "PRIME",
+                },
+                {
+                  value: "SONALI",
+                  label: "SONALI",
                 },
               ]}
               onChange={(value, op) => {
