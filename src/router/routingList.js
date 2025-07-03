@@ -679,7 +679,9 @@ const TdsChallan = lazy(() =>
   import("../modules/CompensationBenefits/TdsChallan/index.jsx")
 );
 const TdsChallanCreate = lazy(() =>
-  import("../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx")
+  import(
+    "../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx"
+  )
 );
 const TaxSalaryCertificate = lazy(() =>
   import("../modules/CompensationBenefits/TaxSalaryCertificate/index.jsx")
@@ -1838,6 +1840,10 @@ import NOCManagementLanding from "modules/NOC/nocManagment";
 import NOCForm from "modules/NOC/components/NOCForm";
 import NocSelfLanding from "modules/NOC/nocSelf";
 import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
+import EmployeeSalaryReport from "modules/CompensationBenefits/employeeSalaryReport";
+import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
+import WorkForceComparison from "modules/manpowerAnalysis/workforceComparison/workforceComparison";
+import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
 
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -3046,6 +3052,10 @@ export const routingList = [
     component: SalaryAssign,
   },
   {
+    path: "/compensationAndBenefits/reports/employeeSalary",
+    component: EmployeeSalaryReport,
+  },
+  {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign/bulk",
     component: BulkUpload,
   },
@@ -3974,6 +3984,24 @@ export const routingList = [
     component: ExternalTrainingLanding,
   },
   //external training end
+   // manpower analysis
+
+  {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning",
+    component: WorkforcePlanningLanding,
+  },
+   {
+    path: "/profile/ManpowerAnalysis/WorkforceComparison",
+    component: WorkForceComparison,
+  },
+   {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/create",
+    component: WorkForceCreate,
+  },
+     {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
+    component: WorkForceCreate,
+  },
 
   {
     path: "/trainingAndDevelopment/assessment/assessmentForm",

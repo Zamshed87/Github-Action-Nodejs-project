@@ -35,6 +35,7 @@ import {
   columnsMarketVisit,
   columnsMasterLocation,
   columnsMovement,
+  columnsPfLoan,
   columnsRemoteAttendance,
   columnsSalaryCertificate,
   columnsSalaryIncrement,
@@ -440,6 +441,8 @@ const CommonApprovalComponent = () => {
               ? columnsAboutMe(handleViewClick)
               : id == 34
               ? columnNoc
+              : id == 31
+              ? columnsPfLoan
               : columnsDefault
           }
           bordered
