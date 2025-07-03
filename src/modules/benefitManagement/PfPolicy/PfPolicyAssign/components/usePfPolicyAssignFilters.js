@@ -13,7 +13,7 @@ const usePfPolicyAssignFilters = ({ form }) => {
   const employmentTypeDDL = useApiRequest({});
   const getEmployeeDDL = (value = "") => {
     employeeDDL?.action({
-      urlKey: "GetPolicyWiseEmployeeDDL",
+      url: "/PeopleDeskDdl/GetPolicyWiseEmployeeDDL",
       method: "GET",
       params: {
         intPolicyId: state?.intPfConfigHeaderId ?? 0,

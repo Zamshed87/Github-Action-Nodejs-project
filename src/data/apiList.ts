@@ -371,5 +371,4 @@ export const apiList = {
   EmployeeLeaveBalanceHistory: "/LeaveBalance/EmployeeLeaveBalanceHistory",
   GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
   SalaryGradeBasedBulkUpload: "/Employee/SalaryGradeBasedBulkUpload",
-  GetPolicyWiseEmployeeDDL: "/PeopleDeskDdl/GetPolicyWiseEmployeeDDL",
 };
