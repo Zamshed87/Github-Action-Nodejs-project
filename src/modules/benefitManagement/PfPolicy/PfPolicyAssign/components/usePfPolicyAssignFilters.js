@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useApiRequest } from "Hooks";
 import { shallowEqual, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
-const usePfPolicyAssignFilters = ({form}) => {
+const usePfPolicyAssignFilters = ({ form }) => {
+  const { state } = useLocation();
   const {
     profileData: { orgId, buId, wgId, wId },
   } = useSelector((store) => store?.auth, shallowEqual);
@@ -10,14 +12,13 @@ const usePfPolicyAssignFilters = ({form}) => {
   const employeeDDL = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
 
-  const getEmployeeDDL = (value='') => {
+  const getEmployeeDDL = (value = "") => {
     employeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
+      urlKey: "GetPolicyWiseEmployeeDDL",
       method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        searchText: value,
+        intPolicyId: state?.intPfConfigHeaderId ?? 0,
+        strSearchTxt: value,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
@@ -28,17 +29,12 @@ const usePfPolicyAssignFilters = ({form}) => {
       },
     });
   };
-    const getEmploymentTypeDDL = () => {
+  const getEmploymentTypeDDL = () => {
     employmentTypeDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
+      url: `PeopleDeskDdl/GetPfPolicyWiseEmploymentType/${
+        state?.intPfConfigHeaderId ?? 0
+      }`,
       method: "GET",
-      params: {
-        DDLType: "EmploymentType",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        intId: 0,
-      },
       onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.EmploymentType;

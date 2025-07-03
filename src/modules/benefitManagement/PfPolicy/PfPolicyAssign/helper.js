@@ -77,20 +77,20 @@ export const getHeader = (pages, handlePreview) => [
     ),
   },
 ];
-export const assignPFPolicy = async (
-  payload,
-  setLoading,
-  resetData,
-) => {
+export const assignPFPolicy = async (payload, setLoading, resetData) => {
   setLoading?.(true);
   try {
-    const res = await axios.post(`/PfPolicy/Save
-`, payload);
+    const res = await axios.post(
+      `/PfPolicy/AssignEmployeeToPfPolicy`,
+      payload
+    );
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading?.(false);
     resetData?.();
   } catch (error) {
-    toast.error(error?.response?.data?.data?.[0]?.errorMessage || "Something went wrong");
+    toast.error(
+      error?.response?.data?.data?.[0]?.errorMessage || "Something went wrong"
+    );
     setLoading?.(false);
   }
 };

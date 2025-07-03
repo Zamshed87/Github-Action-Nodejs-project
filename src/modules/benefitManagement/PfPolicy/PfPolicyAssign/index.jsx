@@ -3,19 +3,26 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "common/loading/Loading";
 import { DataTable, PCard, PCardBody, PCardHeader, PForm } from "Components";
 import { Form } from "antd";
-import { getHeader } from "./helper";
+import { assignPFPolicy, getHeader } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import usePfPolicyAssign from "./hooks/usePfPolicyAssign";
 import PfPolicyAssignFilters from "./components/PfPolicyAssignFilters";
+import { toast } from "react-toastify";
 
 const PfPolicyAssign = () => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
-  const { data, fetchPfPolicyAssign, loading, pages } = usePfPolicyAssign(form);
+  const {
+    data,
+    fetchPfPolicyAssign,
+    loading: LandingDataLoading,
+    pages,
+  } = usePfPolicyAssign(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -38,7 +45,7 @@ const PfPolicyAssign = () => {
         fetchPfPolicyAssign();
       }}
     >
-      {loading && <Loading />}
+      {(LandingDataLoading || loading) && <Loading />}
       <PCard>
         <PCardHeader
           backButton
@@ -48,7 +55,17 @@ const PfPolicyAssign = () => {
               disabled: !selectedRows.length,
               type: "primary",
               content: "Save",
-              onClick: () => {},
+              onClick: () => {
+                if (selectedRows.length < 1) {
+                  toast.error("Please Select at least one Row.");
+                  return;
+                }
+                assignPFPolicy(selectedRows, setLoading, () => {
+                  selectedRows([]);
+                  form.resetFields();
+                  history.push(`/BenefitsManagement/providentFund/pfPolicy`);
+                });
+              },
             },
           ]}
         />
@@ -60,7 +77,7 @@ const PfPolicyAssign = () => {
           header={getHeader(pages)}
           bordered
           data={data?.data || []}
-          loading={loading}
+          loading={LandingDataLoading}
           checkBoxColWidth={40}
           rowSelection={{
             selectedRowKeys,

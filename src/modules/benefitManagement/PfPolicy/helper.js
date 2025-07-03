@@ -154,9 +154,12 @@ export const getHeader = (
             content="Assign"
             type="primary"
             onClick={() => {
-              history.push(`/BenefitsManagement/providentFund/pfPolicy/assign`, {
-                state: { ...record },
-              });
+              history.push(
+                `/BenefitsManagement/providentFund/pfPolicy/assign`,
+                {
+                  ...record,
+                }
+              );
             }}
           />
         )}
