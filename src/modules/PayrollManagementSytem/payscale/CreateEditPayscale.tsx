@@ -150,7 +150,18 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     if (designationDto?.length === 0) {
       return toast.warn("Designations are not selected");
     }
+    const isFormulaExist = elementDto?.filter(
+      (i: any) => i?.basedOn === "Calculative"
+    );
 
+    if (isFormulaExist && isFormulaExist.length > 0) {
+      for (const item of isFormulaExist) {
+        if (!item?.formula) {
+          // Checks for null, undefined, or empty string
+          return toast.warn("Calculative Element can not be empty!!!");
+        }
+      }
+    }
     if (!values?.jobLevel?.value) {
       form.setFieldsValue({
         jobLevelCreate: undefined,

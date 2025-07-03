@@ -189,8 +189,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       intUpdatedBy: employeeId,
     };
 
-    console.log(values);
-
     if (values?.isPerdaySalary) {
       payload = {
         ...payload,
@@ -213,6 +211,18 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       if (dynamicForm?.length <= 0) {
         return toast.warn("Payroll Element List is empty!!!");
       }
+      const isFormulaExist = dynamicForm?.filter(
+        (i: any) => i?.strBasedOn === "Calculative"
+      );
+      if (isFormulaExist && isFormulaExist.length > 0) {
+        for (const item of isFormulaExist) {
+          if (!item?.strFormula) {
+            // Checks for null, undefined, or empty string
+            return toast.warn("Calculative Element can not be empty!!!");
+          }
+        }
+      }
+
       const updatedDynamicForm = dynamicForm?.map((itm: any, idx: any) => {
         return {
           ...itm,
