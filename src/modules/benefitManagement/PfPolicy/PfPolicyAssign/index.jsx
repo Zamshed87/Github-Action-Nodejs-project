@@ -67,8 +67,9 @@ const PfPolicyAssign = () => {
     }
     assignPFPolicy(latestSelectedRows, setLoading, () => {
       setSelectedRowKeys([]);
-      setTableData(data.data.map((row) => ({ ...row, StrPfCode: state?.strPolicyCode })));
+      // setTableData(data.data.map((row) => ({ ...row, StrPfCode: state?.strPolicyCode })));
       setSelectedRows([]);
+      fetchPfPolicyAssign();
     });
   };
 

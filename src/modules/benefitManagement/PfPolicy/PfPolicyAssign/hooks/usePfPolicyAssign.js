@@ -20,6 +20,7 @@ const usePfPolicyAssign = (form) => {
     const formValues = form?.getFieldsValue(true);
     const formattedParams = {
       IntPolicyId: state?.intPfConfigHeaderId ?? 0,
+      IntEmployeeId: formValues?.employee || 0,
       StrEmploymentTypeList: formValues?.employmentType?.join(",") || "",
       IntServiceFrom: formValues?.serviceFrom,
       IntServiceTo: formValues?.serviceTo,
