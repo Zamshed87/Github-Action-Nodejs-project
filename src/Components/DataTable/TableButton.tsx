@@ -32,7 +32,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     disbursement: <DollarOutlined />,
     print: <PrinterFilled />,
     extend: <CopyOutlined />,
-    assign: <MdAssignmentAdd />,
+    assign: <span className="anticon anticon-eye"><MdAssignmentAdd/></span>,
     disabled: <DisabledByDefaultOutlined />,
   };
 

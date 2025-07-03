@@ -1,9 +1,7 @@
-import { Visibility } from "@mui/icons-material";
 import { Switch, Tooltip } from "antd";
 import axios from "axios";
-import { Flex, PButton, TableButton } from "Components";
+import { Flex, TableButton } from "Components";
 import { toast } from "react-toastify";
-import { gray700 } from "utility/customColor";
 
 const updatePolicyStatusLocally = (list, policyId, newStatus) => {
   const updatedList = [...list];
@@ -141,58 +139,29 @@ export const getHeader = (
           buttonsList={[
             {
               type: "view",
-              onClick: () => {},
+              onClick: () => {
+                setOpenView?.({ open: true, data: record });
+              },
             },
             {
               type: "extend",
-              onClick: () => {},
+              onClick: () => {
+                setOpenExtend?.({ extend: true, data: record });
+              },
             },
-            {
+            record?.intPFAssignType === 2 && {
               type: "assign",
-              onClick: () => {},
+              onClick: () => {
+                history.push(
+                  `/BenefitsManagement/providentFund/pfPolicy/assign`,
+                  {
+                    ...record,
+                  }
+                );
+              },
             },
           ]}
         />
-        <Tooltip title="View">
-          <Visibility
-            style={{
-              color: gray700,
-              cursor: "pointer",
-              fontSize: 20,
-            }}
-            onClick={() => {
-              setOpenView?.({ open: true, data: record });
-            }}
-          />
-        </Tooltip>
-        <PButton
-          content="View"
-          type="primary-outline"
-          onClick={() => {
-            setOpenView?.({ open: true, data: record });
-          }}
-        />
-        <PButton
-          content="Extend"
-          type="primary"
-          onClick={() => {
-            setOpenExtend?.({ extend: true, data: record });
-          }}
-        />
-        {record?.intPFAssignType === 2 && (
-          <PButton
-            content="Assign"
-            type="primary"
-            onClick={() => {
-              history.push(
-                `/BenefitsManagement/providentFund/pfPolicy/assign`,
-                {
-                  ...record,
-                }
-              );
-            }}
-          />
-        )}
       </div>
     ),
     width: 140,
