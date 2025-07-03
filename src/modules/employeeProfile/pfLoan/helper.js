@@ -1,5 +1,5 @@
-import { Avatar, Flex, TableButton } from "Components";
-import { Tooltip } from "antd";
+import { Avatar, Flex } from "Components";
+import { Tooltip, Modal } from "antd";
 import axios from "axios";
 import Chips from "common/Chips";
 import moment from "moment";
@@ -79,6 +79,15 @@ export const viewHandler = (values, setGeneratedData) => {
 };
 
 export const pfLandingColData = (history, setLoading, getData) => {
+  const showInActiveConfirm = (record) => {
+    Modal.confirm({
+      title: "Are you sure you want to inactivate this loan?",
+      content: "This action cannot be undone.",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: () => handleInActive(record, setLoading, getData),
+    });
+  };
   return [
     {
       title: "SL",
@@ -261,7 +270,7 @@ export const pfLandingColData = (history, setLoading, getData) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        handleInActive(record, setLoading, getData);
+                        showInActiveConfirm(record);
                       }}
                     >
                       InActive
@@ -289,7 +298,7 @@ export const pfLandingColData = (history, setLoading, getData) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    handleInActive(record, setLoading, getData);
+                    showInActiveConfirm(record);
                   }}
                 >
                   InActive
