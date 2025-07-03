@@ -629,6 +629,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                 {() => {
                   const { isPerdaySalary, dependsOn } =
                     form.getFieldsValue(true);
+                  console.log({ dependsOn, payrollElementDDL });
                   return (
                     <>
                       {!isPerdaySalary && (
@@ -725,12 +726,14 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                                 dependsOn?.value === 2
                                                   ? payrollElementDDL?.filter(
                                                       (i: any) =>
-                                                        !i?.isBasic &&
-                                                        !i?.label?.includes(
-                                                          "Gross"
-                                                        )
+                                                        !i?.label
+                                                          .toLowerCase()
+                                                          .includes("gross")
                                                     )
-                                                  : payrollElementDDL || []
+                                                  : [
+                                                      ...payrollElementDDL,
+                                                      { label: "Gross" },
+                                                    ]
                                               }
                                               label={
                                                 <>

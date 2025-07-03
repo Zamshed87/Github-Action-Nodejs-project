@@ -343,7 +343,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                 formulaOptions={
                   elementDDL?.data?.length > 0
                     ? elementDDL?.data?.filter(
-                        (i: any) => !i?.label?.includes("Gross")
+                        (i: any) => !i?.label?.toLowerCase().includes("gross")
                       )
                     : []
                 }
