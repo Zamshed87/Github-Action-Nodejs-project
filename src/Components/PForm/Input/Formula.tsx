@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PInput } from "./PInput";
 
 const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*/.%\s]*$/;
@@ -14,7 +14,9 @@ const FormulaInputWrapper = ({
   const [inputVal, setInputVal] = useState(value || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtered, setFiltered] = useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<any>(0);
   const [prevVal, setPrevVal] = useState("");
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const allLabels = formulaOptions.map((o: any) => o.label);
   const findFirstDiffIndex = (a: string, b: string): number => {
@@ -151,9 +153,39 @@ const FormulaInputWrapper = ({
     onChange?.({ target: { value: newVal } });
     setShowSuggestions(false);
   };
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const input = wrapper.querySelector("input.ant-input");
+    if (!input) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((prev: any) =>
+          Math.min(prev + 1, filtered.length - 1)
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((prev: any) => Math.max(prev - 1, 0));
+      } else if (
+        e.key === "Enter" &&
+        showSuggestions &&
+        filtered[selectedIndex]
+      ) {
+        e.preventDefault();
+        applySuggestion(filtered[selectedIndex]);
+      }
+    };
+    // @ts-ignore or eslint-disable-next-line
+    input.addEventListener("keydown", handleKeyDown);
+    // @ts-ignore or eslint-disable-next-line
+    return () => input.removeEventListener("keydown", handleKeyDown);
+  }, [filtered, selectedIndex, showSuggestions]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative" }} ref={wrapperRef}>
       <PInput
         type="text"
         label={label}
@@ -165,8 +197,12 @@ const FormulaInputWrapper = ({
       />
       {showSuggestions && filtered.length > 0 && (
         <ul className="suggestion-box">
-          {filtered.map((label) => (
-            <li key={label} onMouseDown={() => applySuggestion(label)}>
+          {filtered.map((label, idx) => (
+            <li
+              key={label}
+              className={idx === selectedIndex ? "active" : ""}
+              onMouseDown={() => applySuggestion(label)}
+            >
               {label}
             </li>
           ))}
