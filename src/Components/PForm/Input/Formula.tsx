@@ -14,11 +14,13 @@ const FormulaInputWrapper = ({
   const [inputVal, setInputVal] = useState(value || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filtered, setFiltered] = useState<string[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState<any>(0);
-  const [prevVal, setPrevVal] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [prevVal, setPrevVal] = useState(value || "");
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const allLabels = formulaOptions.map((o: any) => o.label);
+  const validLabelsSet = new Set(allLabels.map((l: string) => l.toLowerCase()));
+
   const findFirstDiffIndex = (a: string, b: string): number => {
     const len = Math.min(a.length, b.length);
     for (let i = 0; i < len; i++) {
@@ -42,73 +44,75 @@ const FormulaInputWrapper = ({
 
   const handleChange = (e: any) => {
     let val = e.target.value;
-
-    // ✅ Convert last typed 'x' or 'X' to '*'
-    if (val[val.length - 1]?.toLowerCase() === "x") {
-      const lastCharIndex = val.length - 1;
-      const before = val.slice(0, lastCharIndex);
-      const after = val.slice(lastCharIndex + 1);
-      val = before + "*" + after;
-    }
-
-    // ✅ If user partially deletes a #Label#, auto-remove full block
     const diffIndex = findFirstDiffIndex(prevVal, val);
+
+    // Convert 'x' or 'X' to '*'
+    // eslint-disable-next-line no-useless-escape
+    val = val.replace(/(?<=\d|\#\w+\#)\s*[xX]\s*(?=\d|\#\w+\#)/g, " * ");
+
+    // Prevent partial deletion of a label
     if (diffIndex !== -1) {
-      const fullMatch = getLabelTokenAt(prevVal, diffIndex);
-      if (fullMatch) {
-        const cleaned = prevVal.replace(fullMatch.fullMatch, "");
-        setPrevVal(cleaned);
-        setInputVal(cleaned);
-        onChange?.({ target: { value: cleaned } });
-        return;
+      const deleted = prevVal.length > val.length;
+      if (deleted) {
+        const token = getLabelTokenAt(prevVal, diffIndex);
+        if (token) {
+          const cleaned = prevVal.replace(token.fullMatch, "");
+          setPrevVal(cleaned);
+          setInputVal(cleaned);
+          onChange?.({ target: { value: cleaned } });
+          return;
+        }
       }
     }
 
-    // ✅ Allow clearing input
+    // Allow clearing
     if (val === "") {
       setPrevVal("");
       setInputVal("");
-      onChange?.(e);
+      onChange?.({ target: { value: "" } });
       setShowSuggestions(false);
       return;
     }
 
-    // ❌ Reject disallowed characters
+    // Reject invalid characters
     if (!allowedSymbolsRegex.test(val)) return;
 
-    // ✅ Tokenize and check if words are valid labels
-    const tokens = val.split(/[^a-zA-Z]+/).filter(Boolean);
-    const validLabels = formulaOptions.map((opt: any) =>
-      opt.label.toLowerCase()
-    );
-
-    for (const word of tokens) {
-      if (!validLabels.includes(word.toLowerCase())) {
-        return;
-      }
+    // Validate words
+    const words = val.split(/[^a-zA-Z]+/).filter(Boolean);
+    for (const word of words) {
+      if (!validLabelsSet.has(word.toLowerCase())) return;
     }
 
-    // ✅ Wrap plain labels with #...#
+    // Auto-wrap valid plain labels
     formulaOptions.forEach((opt: any) => {
       const label = opt.label;
       const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
       val = val.replace(labelRegex, `#${label}#`);
     });
 
-    // ✅ Final update
     setPrevVal(val);
     setInputVal(val);
     onChange?.({ target: { value: val } });
 
-    // 🔍 Suggestion logic
+    // Trigger suggestions if @ is present
     const atIndex = val.lastIndexOf("@");
     if (atIndex >= 0) {
-      const keyword = val.slice(atIndex + 1).toLowerCase();
-      const suggestions = allLabels.filter((label: string) =>
-        label.toLowerCase().startsWith(keyword)
-      );
-      setFiltered(suggestions);
-      setShowSuggestions(true);
+      // Extract only word characters (letters) after the last @
+      const afterAt = val.slice(atIndex + 1);
+      const match = afterAt.match(/^[a-zA-Z]*/); // stops at symbol/space
+      const keyword = match ? match[0].toLowerCase() : "";
+
+      if (keyword) {
+        const suggestions = allLabels.filter((label: string) =>
+          label.toLowerCase().startsWith(keyword)
+        );
+        setFiltered(suggestions);
+        setShowSuggestions(true);
+      } else {
+        // @ is typed, but no valid characters yet
+        setFiltered(allLabels);
+        setShowSuggestions(true);
+      }
     } else {
       setShowSuggestions(false);
     }
@@ -116,29 +120,29 @@ const FormulaInputWrapper = ({
 
   const applySuggestion = (label: string) => {
     const atIndex = inputVal.lastIndexOf("@");
-    const beforeAt = inputVal.slice(0, atIndex);
-    const newVal = `${beforeAt}#${label}# `;
+    const before = inputVal.slice(0, atIndex);
+    const after = inputVal.slice(atIndex + 1);
+    const newVal = `${before}#${label}# `;
 
     setInputVal(newVal);
+    setPrevVal(newVal);
     onChange?.({ target: { value: newVal } });
     setShowSuggestions(false);
   };
+
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
-
     const input = wrapper.querySelector("input.ant-input");
     if (!input) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex((prev: any) =>
-          Math.min(prev + 1, filtered.length - 1)
-        );
+        setSelectedIndex((prev) => Math.min(prev + 1, filtered.length - 1));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setSelectedIndex((prev: any) => Math.max(prev - 1, 0));
+        setSelectedIndex((prev) => Math.max(prev - 1, 0));
       } else if (
         e.key === "Enter" &&
         showSuggestions &&
@@ -148,10 +152,9 @@ const FormulaInputWrapper = ({
         applySuggestion(filtered[selectedIndex]);
       }
     };
-    // @ts-ignore or eslint-disable-next-line
-    input.addEventListener("keydown", handleKeyDown);
-    // @ts-ignore or eslint-disable-next-line
-    return () => input.removeEventListener("keydown", handleKeyDown);
+
+    input.addEventListener("keydown", handleKeyDown as any);
+    return () => input.removeEventListener("keydown", handleKeyDown as any);
   }, [filtered, selectedIndex, showSuggestions]);
 
   return (
@@ -162,8 +165,7 @@ const FormulaInputWrapper = ({
         value={inputVal}
         onChange={handleChange}
         disabled={disabled}
-        // allowClear
-        style={{ width: width ? width : "100%" }}
+        style={{ width }}
       />
       {showSuggestions && filtered.length > 0 && (
         <ul className="suggestion-box">
