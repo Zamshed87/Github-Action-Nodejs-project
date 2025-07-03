@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PInput } from "./PInput";
 
-const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*/.%xX\s]*$/;
+// const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*/.%xX\s]*$/;
+// const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*\/.%xX\s]*$/;
+// eslint-disable-next-line no-useless-escape
+const allowedSymbolsRegex = /^[0-9a-zA-Z@#'()+\-*\/.%xX\s]*$/;
 
 const FormulaInputWrapper = ({
   label,
@@ -42,82 +45,277 @@ const FormulaInputWrapper = ({
     return null;
   };
 
-  const handleChange = (e: any) => {
+  // const handleChange = (e: any) => {
+  //   let val = e.target.value;
+  //   const diffIndex = findFirstDiffIndex(prevVal, val);
+
+  //   // Convert 'x' or 'X' to '*'
+  //   // eslint-disable-next-line no-useless-escape
+  //   // val = val.replace(/(?<=\d|\#\w+\#)\s*[xX]\s*(?=\d|\#\w+\#)/g, " * ");
+  //   // Handle x/X to * conversion only when it's between numbers or labels
+  //   if (prevVal.length + 1 === val.length) {
+  //     const lastChar = val[val.length - 1].toLowerCase();
+  //     if (lastChar === "x") {
+  //       // Check if the x is between two valid operands (numbers or labels)
+  //       const prevChar = val[val.length - 2];
+  //       const isBetweenOperands =
+  //         /\d|#/.test(prevChar) ||
+  //         (val.length > 2 && /\d|#/.test(val[val.length - 3]));
+  //       if (isBetweenOperands) {
+  //         val = val.slice(0, -1) + "*";
+  //       }
+  //     }
+  //   }
+  //   // Prevent partial deletion of a label
+  //   if (diffIndex !== -1) {
+  //     const deleted = prevVal.length > val.length;
+  //     if (deleted) {
+  //       const token = getLabelTokenAt(prevVal, diffIndex);
+  //       if (token) {
+  //         const cleaned = prevVal.replace(token.fullMatch, "");
+  //         setPrevVal(cleaned);
+  //         setInputVal(cleaned);
+  //         onChange?.({ target: { value: cleaned } });
+  //         return;
+  //       }
+  //     }
+  //   }
+
+  //   // Allow clearing
+  //   if (val === "") {
+  //     setPrevVal("");
+  //     setInputVal("");
+  //     onChange?.({ target: { value: "" } });
+  //     setShowSuggestions(false);
+  //     return;
+  //   }
+
+  //   // Reject invalid characters
+  //   if (!allowedSymbolsRegex.test(val)) return;
+
+  //   // Validate words
+  //   const words = val.split(/[^a-zA-Z]+/).filter(Boolean);
+  //   for (const word of words) {
+  //     if (!validLabelsSet.has(word.toLowerCase())) return;
+  //   }
+
+  //   // Auto-wrap valid plain labels
+  //   formulaOptions.forEach((opt: any) => {
+  //     const label = opt.label;
+  //     const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
+  //     val = val.replace(labelRegex, `#${label}#`);
+  //   });
+
+  //   setPrevVal(val);
+  //   setInputVal(val);
+  //   onChange?.({ target: { value: val } });
+
+  //   // Trigger suggestions if @ is present
+  //   const atIndex = val.lastIndexOf("@");
+  //   if (atIndex >= 0) {
+  //     // Extract only word characters (letters) after the last @
+  //     const afterAt = val.slice(atIndex + 1);
+  //     const match = afterAt.match(/^[a-zA-Z]*/); // stops at symbol/space
+  //     const keyword = match ? match[0].toLowerCase() : "";
+
+  //     if (keyword) {
+  //       const suggestions = allLabels.filter((label: string) =>
+  //         label.toLowerCase().startsWith(keyword)
+  //       );
+  //       setFiltered(suggestions);
+  //       setShowSuggestions(true);
+  //     } else {
+  //       // @ is typed, but no valid characters yet
+  //       setFiltered(allLabels);
+  //       setShowSuggestions(true);
+  //     }
+  //   } else {
+  //     setShowSuggestions(false);
+  //   }
+  // };
+  // ------------------------------------------
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let val = e.target.value;
+  //   const diffIndex = findFirstDiffIndex(prevVal, val);
+
+  //   // Handle x/X to * conversion in multiplication contexts
+  //   if (prevVal.length + 1 === val.length) {
+  //     // Only on new character insertion
+  //     const lastChar = val[val.length - 1].toLowerCase();
+  //     if (lastChar === "x") {
+  //       // Check if we're between operands (numbers or labels)
+  //       const isMultiplicationContext = () => {
+  //         // Look backward for operand
+  //         let i = val.length - 2;
+  //         while (i >= 0) {
+  //           if (/\d/.test(val[i])) return true; // Number
+  //           if (val[i] === "#") {
+  //             // Found label end, now look for label start
+  //             let j = i - 1;
+  //             while (j >= 0 && val[j] !== "#") j--;
+  //             if (j >= 0) return true; // Complete label found
+  //           }
+  //           if (!/\s/.test(val[i])) break; // Not whitespace
+  //           i--;
+  //         }
+
+  //         // Look forward for operand
+  //         i = val.length;
+  //         while (i < val.length) {
+  //           if (/\d/.test(val[i])) return true; // Number
+  //           if (val[i] === "#") {
+  //             // Found label start, now look for label end
+  //             let j = i + 1;
+  //             while (j < val.length && val[j] !== "#") j++;
+  //             if (j < val.length) return true; // Complete label found
+  //           }
+  //           if (!/\s/.test(val[i])) break; // Not whitespace
+  //           i++;
+  //         }
+
+  //         return false;
+  //       };
+
+  //       if (isMultiplicationContext()) {
+  //         val = val.slice(0, -1) + "*";
+  //       }
+  //     }
+  //   }
+
+  //   // Prevent partial deletion of a label
+  //   if (diffIndex !== -1 && prevVal.length > val.length) {
+  //     const token = getLabelTokenAt(prevVal, diffIndex);
+  //     if (token) {
+  //       const cleaned = prevVal.replace(token.fullMatch, "");
+  //       setPrevVal(cleaned);
+  //       setInputVal(cleaned);
+  //       onChange?.({ target: { value: cleaned } });
+  //       return;
+  //     }
+  //   }
+
+  //   // Allow clearing the input
+  //   if (val === "") {
+  //     setPrevVal("");
+  //     setInputVal("");
+  //     onChange?.({ target: { value: "" } });
+  //     setShowSuggestions(false);
+  //     return;
+  //   }
+
+  //   // Reject invalid characters
+  //   if (!allowedSymbolsRegex.test(val)) return;
+
+  //   // Auto-wrap valid plain labels
+  //   formulaOptions.forEach((opt: any) => {
+  //     const label = opt.label;
+  //     const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
+  //     val = val.replace(labelRegex, `#${label}#`);
+  //   });
+
+  //   setPrevVal(val);
+  //   setInputVal(val);
+  //   onChange?.({ target: { value: val } });
+
+  //   // Handle suggestions
+  //   const atIndex = val.lastIndexOf("@");
+  //   if (atIndex >= 0) {
+  //     const afterAt = val.slice(atIndex + 1);
+  //     const match = afterAt.match(/^[a-zA-Z]*/);
+  //     const keyword = match ? match[0].toLowerCase() : "";
+
+  //     setFiltered(
+  //       keyword
+  //         ? allLabels.filter((label: string) =>
+  //             label.toLowerCase().startsWith(keyword)
+  //           )
+  //         : allLabels
+  //     );
+  //     setShowSuggestions(true);
+  //     setSelectedIndex(0);
+  //   } else {
+  //     setShowSuggestions(false);
+  //   }
+  // };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value;
     const diffIndex = findFirstDiffIndex(prevVal, val);
 
-    // Convert 'x' or 'X' to '*'
-    // eslint-disable-next-line no-useless-escape
-    val = val.replace(/(?<=\d|\#\w+\#)\s*[xX]\s*(?=\d|\#\w+\#)/g, " * ");
+    // 1. Character validation
+    if (val && !allowedSymbolsRegex.test(val)) return;
 
-    // Prevent partial deletion of a label
-    if (diffIndex !== -1) {
-      const deleted = prevVal.length > val.length;
-      if (deleted) {
-        const token = getLabelTokenAt(prevVal, diffIndex);
-        if (token) {
-          const cleaned = prevVal.replace(token.fullMatch, "");
-          setPrevVal(cleaned);
-          setInputVal(cleaned);
-          onChange?.({ target: { value: cleaned } });
-          return;
-        }
+    // 2. Handle conversion triggers (space or @)
+    if (val.length > prevVal.length) {
+      const lastChar = val[val.length - 1];
+      if (lastChar === " " || lastChar === "@") {
+        // Convert x to * when followed by space or @
+        val = val.replace(/(#[^#]+#|\d+|\))\s*x\s*(?=[^#]|$)/gi, "$1 * ");
       }
     }
 
-    // Allow clearing
-    if (val === "") {
-      setPrevVal("");
-      setInputVal("");
-      onChange?.({ target: { value: "" } });
-      setShowSuggestions(false);
-      return;
+    // 3. Handle parenthesized expressions followed by x and number
+    val = val.replace(/\)\s*[xX]\s*(\d+|#\w+#)/gi, ") * $1");
+
+    // 4. Standard multiplication conversion between numbers/labels
+    val = val.replace(
+      /(#[^#]+#|\d+|\))\s*[xX]\s*(#[^#]+#|\d+|\(|\s|$)/g,
+      "$1 * $2"
+    );
+
+    // 5. Special case: x immediately after label or at start
+    val = val.replace(/(^|\s)x(#\w+#)/gi, "$1*$2");
+
+    // 6. Handle cases like "2x" at end of input
+    val = val.replace(/(\d+)\s*[xX]\s*$/g, "$1 * ");
+
+    // 7. Prevent partial deletion of labels
+    if (diffIndex !== -1 && prevVal.length > val.length) {
+      const token = getLabelTokenAt(prevVal, diffIndex);
+      if (token) {
+        const cleaned = prevVal.replace(token.fullMatch, "");
+        setPrevVal(cleaned);
+        setInputVal(cleaned);
+        onChange?.({
+          target: { value: cleaned },
+        } as React.ChangeEvent<HTMLInputElement>);
+        return;
+      }
     }
 
-    // Reject invalid characters
-    if (!allowedSymbolsRegex.test(val)) return;
-
-    // Validate words
-    const words = val.split(/[^a-zA-Z]+/).filter(Boolean);
-    for (const word of words) {
-      if (!validLabelsSet.has(word.toLowerCase())) return;
-    }
-
-    // Auto-wrap valid plain labels
+    // 8. Auto-wrap labels
     formulaOptions.forEach((opt: any) => {
       const label = opt.label;
       const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
       val = val.replace(labelRegex, `#${label}#`);
     });
 
+    // Update state
     setPrevVal(val);
     setInputVal(val);
-    onChange?.({ target: { value: val } });
+    onChange?.({
+      target: { value: val },
+    } as React.ChangeEvent<HTMLInputElement>);
 
-    // Trigger suggestions if @ is present
+    // Handle suggestions
     const atIndex = val.lastIndexOf("@");
     if (atIndex >= 0) {
-      // Extract only word characters (letters) after the last @
       const afterAt = val.slice(atIndex + 1);
-      const match = afterAt.match(/^[a-zA-Z]*/); // stops at symbol/space
+      const match = afterAt.match(/^[a-zA-Z]*/);
       const keyword = match ? match[0].toLowerCase() : "";
 
-      if (keyword) {
-        const suggestions = allLabels.filter((label: string) =>
-          label.toLowerCase().startsWith(keyword)
-        );
-        setFiltered(suggestions);
-        setShowSuggestions(true);
-      } else {
-        // @ is typed, but no valid characters yet
-        setFiltered(allLabels);
-        setShowSuggestions(true);
-      }
+      setFiltered(
+        keyword
+          ? allLabels.filter((label: string) =>
+              label.toLowerCase().startsWith(keyword)
+            )
+          : allLabels
+      );
+      setShowSuggestions(true);
+      setSelectedIndex(0);
     } else {
       setShowSuggestions(false);
     }
   };
-
   const applySuggestion = (label: string) => {
     const atIndex = inputVal.lastIndexOf("@");
     const before = inputVal.slice(0, atIndex);
