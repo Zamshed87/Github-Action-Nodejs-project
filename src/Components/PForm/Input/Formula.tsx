@@ -241,34 +241,10 @@ const FormulaInputWrapper = ({
     let val = e.target.value;
     const diffIndex = findFirstDiffIndex(prevVal, val);
 
-    // 1. Character validation
-    if (val && !allowedSymbolsRegex.test(val)) return;
+    // 1. Reject invalid characters
+    if (!allowedSymbolsRegex.test(val)) return;
 
-    // 2. Handle conversion triggers (space or @)
-    if (val.length > prevVal.length) {
-      const lastChar = val[val.length - 1];
-      if (lastChar === " " || lastChar === "@") {
-        // Convert x to * when followed by space or @
-        val = val.replace(/(#[^#]+#|\d+|\))\s*x\s*(?=[^#]|$)/gi, "$1 * ");
-      }
-    }
-
-    // 3. Handle parenthesized expressions followed by x and number
-    val = val.replace(/\)\s*[xX]\s*(\d+|#\w+#)/gi, ") * $1");
-
-    // 4. Standard multiplication conversion between numbers/labels
-    val = val.replace(
-      /(#[^#]+#|\d+|\))\s*[xX]\s*(#[^#]+#|\d+|\(|\s|$)/g,
-      "$1 * $2"
-    );
-
-    // 5. Special case: x immediately after label or at start
-    val = val.replace(/(^|\s)x(#\w+#)/gi, "$1*$2");
-
-    // 6. Handle cases like "2x" at end of input
-    val = val.replace(/(\d+)\s*[xX]\s*$/g, "$1 * ");
-
-    // 7. Prevent partial deletion of labels
+    // 2. Prevent partial deletion of a #Label#
     if (diffIndex !== -1 && prevVal.length > val.length) {
       const token = getLabelTokenAt(prevVal, diffIndex);
       if (token) {
@@ -282,22 +258,39 @@ const FormulaInputWrapper = ({
       }
     }
 
-    // 8. Auto-wrap labels
+    // 3. Convert X to * in valid math contexts
+    // Examples: 10x5 → 10 * 5, #Basic# x 2 → #Basic# * 2
+    val = val.replace(
+      /(#[^#]+#|\d+|\))\s*[xX]\s*(#[^#]+#|\d+|\(|\s|$)/g,
+      "$1 * $2"
+    );
+    val = val.replace(/\)\s*[xX]\s*(\d+|#\w+#)/gi, ") * $1");
+    val = val.replace(/(^|\s)[xX](?=#\w+#|\d+)/g, "$1*");
+
+    // 4. Token validation: ensure all raw words are known labels (outside of @typing)
+    const atIndex = val.lastIndexOf("@");
+    const beforeAt = atIndex !== -1 ? val.slice(0, atIndex) : val;
+    const words = beforeAt.split(/[^a-zA-Z#]+/).filter(Boolean);
+    for (const word of words) {
+      if (word.includes("#")) continue; // skip already wrapped labels
+      if (!validLabelsSet.has(word.toLowerCase())) return;
+    }
+
+    // 5. Auto-wrap labels with #...#
     formulaOptions.forEach((opt: any) => {
       const label = opt.label;
       const labelRegex = new RegExp(`(?<!#)\\b${label}\\b(?!#)`, "g");
       val = val.replace(labelRegex, `#${label}#`);
     });
 
-    // Update state
+    // 6. Final state updates
     setPrevVal(val);
     setInputVal(val);
     onChange?.({
       target: { value: val },
     } as React.ChangeEvent<HTMLInputElement>);
 
-    // Handle suggestions
-    const atIndex = val.lastIndexOf("@");
+    // 7. Suggestions logic (@...)
     if (atIndex >= 0) {
       const afterAt = val.slice(atIndex + 1);
       const match = afterAt.match(/^[a-zA-Z]*/);
@@ -316,6 +309,7 @@ const FormulaInputWrapper = ({
       setShowSuggestions(false);
     }
   };
+
   const applySuggestion = (label: string) => {
     const atIndex = inputVal.lastIndexOf("@");
     const before = inputVal.slice(0, atIndex);
