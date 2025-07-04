@@ -310,15 +310,36 @@ const FormulaInputWrapper = ({
     }
   };
 
+  // const applySuggestion = (label: string) => {
+  //   const atIndex = inputVal.lastIndexOf("@");
+  //   const before = inputVal.slice(0, atIndex);
+  //   const after = inputVal.slice(atIndex + 1);
+  //   const newVal = `${before}#${label}# `;
+
+  //   setInputVal(newVal);
+  //   setPrevVal(newVal);
+  //   onChange?.({ target: { value: newVal } });
+  //   setShowSuggestions(false);
+  // };
   const applySuggestion = (label: string) => {
     const atIndex = inputVal.lastIndexOf("@");
+    const afterAt = inputVal.slice(atIndex + 1);
+    const match = afterAt.match(/^[a-zA-Z]*/);
+    const keyword = match ? match[0] : "";
+    const endOfKeywordIndex = atIndex + 1 + keyword.length;
+
     const before = inputVal.slice(0, atIndex);
-    const after = inputVal.slice(atIndex + 1);
-    const newVal = `${before}#${label}# `;
+    const after = inputVal.slice(endOfKeywordIndex);
+
+    const newVal = `${before}#${label}#${
+      after.startsWith(" ") ? "" : " "
+    }${after}`;
 
     setInputVal(newVal);
     setPrevVal(newVal);
-    onChange?.({ target: { value: newVal } });
+    onChange?.({
+      target: { value: newVal },
+    } as React.ChangeEvent<HTMLInputElement>);
     setShowSuggestions(false);
   };
 
