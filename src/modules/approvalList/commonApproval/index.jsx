@@ -442,7 +442,7 @@ const CommonApprovalComponent = () => {
               : id == 34
               ? columnNoc
               : id == 31
-              ? columnsPfLoan
+              ? columnsPfLoan(dispatch)
               : columnsDefault
           }
           bordered

@@ -241,7 +241,7 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
                 bordered
                 data={rowDto?.length > 0 ? rowDto : []}
                 loading={loanLandingLoading}
-                header={pfLandingColData(history, setLoading, getData)}
+                header={pfLandingColData(history, setLoading, getData, dispatch)}
                 scroll={{ x: 1500 }}
                 pagination={{
                   pageSize: pages?.pageSize,
