@@ -11,11 +11,17 @@ import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const { workplaceDDL, employmentTypeDDL, getEmploymentTypeDDL } =
-    useConfigSelectionHook(form, {
-      fetchWorkplace: true,
-      fetchEmploymentType: true,
-    });
+  const {
+    workplaceDDL,
+    employmentTypeDDL,
+    getEmploymentTypeDDL,
+    pfAssignTypeOpts,
+    loadingPfAssignType,
+  } = useConfigSelectionHook(form, {
+    fetchWorkplace: true,
+    fetchEmploymentType: true,
+    fetchPfAssignTypeEnum: true,
+  });
 
   const onCancel = () => {
     setOpenExtend({ extend: false, data: {} });
@@ -30,6 +36,8 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
           intWorkPlaceGroupId: data.intWorkPlaceGroupId,
           intWorkPlaceId: values?.intWorkPlaceId,
           intEmploymentTypeIds: values?.intEmploymentTypeIds,
+          intPFAssignType: values?.StrPfAssignType?.value,
+          strPFAssignType: values?.StrPfAssignType?.label,
           strPolicyName: data.strPolicyName,
           strPolicyCode: data.strPolicyCode,
           intPfEligibilityDependOn: data.intPfEligibilityDependOn,
@@ -55,6 +63,7 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
   useEffect(() => {
     if (data?.intWorkPlaceId) {
       form.setFieldsValue({ intWorkPlaceId: data.intWorkPlaceId });
+      form.setFieldsValue({ StrPfAssignType: {value:data.intPFAssignType, label: data?.strPFAssignType} });
       form.setFieldsValue({
         intEmploymentTypeIds: data?.isForAllEmploymentType
           ? [0]
@@ -93,6 +102,24 @@ const PolicyExtend = ({ data, setOpenExtend, fetchPfPolicy }) => {
               AllValueZero={true}
               rules={[
                 { required: true, message: "Employment Type is required" },
+              ]}
+            />
+          </Col>
+          <Col md={24} sm={24} xs={24}>
+            <PSelect
+              options={pfAssignTypeOpts}
+              name="StrPfAssignType"
+              label="PF Assignment Type"
+              placeholder="Select PF Assignment Type"
+              onChange={(_, op) => {
+                form.setFieldsValue({ StrPfAssignType: op });
+              }}
+              loading={loadingPfAssignType}
+              rules={[
+                {
+                  required: true,
+                  message: "PF Assignment Type Is Required",
+                },
               ]}
             />
           </Col>

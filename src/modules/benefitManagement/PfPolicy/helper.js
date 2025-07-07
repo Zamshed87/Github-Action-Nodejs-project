@@ -82,6 +82,12 @@ export const getHeader = (
     width: 150,
   },
   {
+    title: "PF Assign Type",
+    dataIndex: "strPFAssignType",
+    sorter: true,
+    width: 100,
+  },
+  {
     width:50,
     align:'center',
     title: "Status",
