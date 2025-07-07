@@ -158,8 +158,8 @@ const EmployeeSalaryReport = () => {
       params: {
         accountId: intAccountId,
         businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -178,8 +178,9 @@ const EmployeeSalaryReport = () => {
         accountId: intAccountId,
         businessUnitId: buId,
         departmentId: department?.value || 0,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
+
       },
 
       onSuccess: (res) => {
@@ -221,7 +222,9 @@ const EmployeeSalaryReport = () => {
     landingApiCall();
     workplaaceGroup();
     getWorkplace();
-    getEmployeDepartment()
+    getEmployeDepartment();
+    getEmployeDesignation()
+    getEmployeeSection()
   }, [wId]);
 
   return featurePermission?.isView ? (
@@ -385,7 +388,7 @@ const EmployeeSalaryReport = () => {
                   />
                 </Col>
               )}
-                {grade === 2 && (
+              {grade === 2 && (
                 <Col md={6} sm={24}>
                   <PSelect
                     options={payrollGroupDDL?.data || []}
