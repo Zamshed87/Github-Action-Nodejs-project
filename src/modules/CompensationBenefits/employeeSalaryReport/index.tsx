@@ -135,8 +135,8 @@ const EmployeeSalaryReport = () => {
       method: "GET",
       params: {
         businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
-        workplaceId: workplace?.value,
+        workplaceGroupId: workplaceGroup?.value || wgId,
+        workplaceId: workplace?.value || wId,
 
         accountId: orgId,
       },
@@ -221,6 +221,7 @@ const EmployeeSalaryReport = () => {
     landingApiCall();
     workplaaceGroup();
     getWorkplace();
+    getEmployeDepartment()
   }, [wId]);
 
   return featurePermission?.isView ? (
@@ -416,6 +417,8 @@ const EmployeeSalaryReport = () => {
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       department: op,
+                      section: undefined,
+                      designation: undefined,
                     });
                     value && getEmployeeSection();
                   }}
