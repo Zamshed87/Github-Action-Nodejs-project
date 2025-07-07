@@ -287,9 +287,9 @@ const WorkForceCreate = () => {
         (formValues.yearType?.value === "calendar" ? 1 : 2),
       fromDate: fromDate,
       toDate: toDate,
+        headerId: 0,
       planningTypeId: formValues.planningType?.intId,
       rowData: tableData.map((item) => ({
-        headerId: item.headerId || 0,
         typeId: item.id,
         currentValue: item.currentManpower,
         targetValue: item.budgetedManpower,

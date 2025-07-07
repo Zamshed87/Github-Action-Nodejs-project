@@ -36,7 +36,7 @@ const WorkforcePlanningLanding = () => {
   });
 
   // Pagination state
-  const [pageNo, setPageNo] = useState(1);
+  const [currentPage, setcurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [excelLoading, setExcelLoading] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
@@ -54,27 +54,29 @@ const WorkforcePlanningLanding = () => {
 
   // Sync data state with criteriaList?.data
   useEffect(() => {
-    setData(criteriaList?.data || []);
+    setData(criteriaList?.data?.data || []);
   }, [criteriaList]);
 
   const landingApi = (
-    page: number = pageNo,
+    page: number = currentPage,
     size: number = pageSize,
     filters: {
       yearTypeId?: number;
       fromYear?: number;
+      toYear?: number;
       workplaceGroupId?: number;
       workplaceId?: number;
     } = filterValues
   ) => {
     const yearTypeId = filters.yearTypeId ?? 0;
     const fromYear = filters.fromYear ?? 0;
+    const toYear = filters.toYear ?? 0;
     getCriteriaList(
-      `/WorkforcePlanning/WorkforcePlanning?WorkplaceGroupId=${
+      `/WorkforcePlanning/GetAll?WorkplaceGroupId=${
         filters.workplaceGroupId || wgId
       }&WorkplaceId=${
         filters.workplaceId || wId
-      }&yearTypeId=${yearTypeId}&fromYear=${fromYear}&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
+      }&yearTypeId=${yearTypeId || 2}&fromYear=${fromYear || 2022}&toDate=${toYear || 2023}&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
     );
   };
 
@@ -85,7 +87,7 @@ const WorkforcePlanningLanding = () => {
   ) => {
     const updatedList = [...list];
     const index = updatedList.findIndex(
-      (item) => item.intPfConfigHeaderId === policyId
+      (item) => item.headerId === policyId
     );
     if (index !== -1) {
       updatedList[index] = {
@@ -99,9 +101,11 @@ const WorkforcePlanningLanding = () => {
 
   // Update: Accept record and newStatus
   const togglePfPolicyStatus = async (record: any, isActive: boolean) => {
-    const response = await axios.put(
-      `/WorkforcePlanning/ActiveNInactive?WorkplaceId=${record.workplaceId}&YearTypeId=${record.yearTypeId}&FromDate=${record.fromYear}&ToDate=${record.toYear}&IsActive=${isActive}`
-    );
+    let url = `/WorkforcePlanning/ActiveNInactive?HeaderId=${record.headerId}&IsActive=${isActive}`;
+    if (isActive) {
+      url += `&WorkplaceId=${record.workplaceId}&FromDate=${record.fromYear}&ToDate=${record.toYear}`;
+    }
+    const response = await axios.put(url);
     return response?.data;
   };
 
@@ -113,8 +117,8 @@ const WorkforcePlanningLanding = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: criteriaList?.pageNo,
-          pageSize: criteriaList?.pageSize,
+          currentPage: criteriaList?.data?.currentPage,
+          pageSize: criteriaList?.data?.pageSize,
           index,
         }),
       fixed: "left",
@@ -164,101 +168,99 @@ const WorkforcePlanningLanding = () => {
         </span>
       ),
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "isActive",
-    //   render: (_: any, rec: any) => {
-    //     const isActive = rec?.isActive === true;
-    //     return (
-    //       <Flex justify="center">
-    //         <Tooltip title={isActive ? "Active" : "Inactive"}>
-    //           <Switch
-    //             size="small"
-    //             checked={isActive}
-    //             onChange={async (checked) => {
-    //               const prevStatus = rec.isActive;
-    //               // Optimistically update UI
-    //               setData((prev) =>
-    //                 updatePolicyStatusLocally(
-    //                   prev,
-    //                   rec.intPfConfigHeaderId,
-    //                   checked
-    //                 )
-    //               );
-    //               // API request and rollback on error
-    //               try {
-    //                 const result = await togglePfPolicyStatus(rec, checked);
-    //                 const getSuccessMsg = (msg: any, checked: boolean) => {
-    //                   if (Array.isArray(msg) && msg.length > 0) return msg[0];
-    //                   if (typeof msg === "string") return msg;
-    //                   return checked
-    //                     ? "Activated successfully"
-    //                     : "Deactivated successfully";
-    //                 };
-    //                 setTimeout(() => {
-    //                   if (checked) {
-    //                     toast.success(getSuccessMsg(result?.message, checked), {
-    //                       autoClose: 3000,
-    //                     });
-    //                   } else {
-    //                     toast.warn(getSuccessMsg(result?.message, checked), {
-    //                       autoClose: 3000,
-    //                     });
-    //                   }
-    //                 }, 100); // slight delay to ensure UI update
-    //               } catch (error) {
-    //                 setData((prev) =>
-    //                   updatePolicyStatusLocally(
-    //                     prev,
-    //                     rec.intPfConfigHeaderId,
-    //                     prevStatus
-    //                   )
-    //                 );
-    //                 let errorMsg = "Failed to update status";
-    //                 let isWarn = false;
-    //                 if (
-    //                   error &&
-    //                   typeof error === "object" &&
-    //                   error !== null &&
-    //                   "response" in error &&
-    //                   error.response &&
-    //                   typeof error.response === "object" &&
-    //                   error.response !== null &&
-    //                   "data" in error.response &&
-    //                   error.response.data &&
-    //                   typeof error.response.data === "object" &&
-    //                   error.response.data !== null
-    //                 ) {
-    //                   const resp = error.response;
-    //                   const respData = resp.data as any;
-    //                   if (
-    //                     "statusCode" in respData &&
-    //                     respData.statusCode === 500 &&
-    //                     Array.isArray(respData.message) &&
-    //                     respData.message.length > 0
-    //                   ) {
-    //                     errorMsg = respData.message[0];
-    //                     isWarn = true;
-    //                   } else if (
-    //                     "message" in respData &&
-    //                     typeof respData.message === "string"
-    //                   ) {
-    //                     errorMsg = respData.message;
-    //                   }
-    //                 }
-    //                 if (isWarn) {
-    //                   toast.warn(errorMsg);
-    //                 } else {
-    //                   toast.error(errorMsg);
-    //                 }
-    //               }
-    //             }}
-    //           />
-    //         </Tooltip>
-    //       </Flex>
-    //     );
-    //   },
-    // },
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      render: (_: any, rec: any) => {
+        const isActive = rec?.isActive === true;
+        return (
+          <Flex justify="center">
+            <Tooltip title={isActive ? "Active" : "Inactive"}>
+              <Switch
+                size="small"
+                checked={isActive}
+                onChange={async (checked) => {
+                  const prevStatus = rec.isActive;
+                  setData((prev) =>
+                    updatePolicyStatusLocally(
+                      prev,
+                      rec.headerId,
+                      checked
+                    )
+                  );
+                  try {
+                    const result = await togglePfPolicyStatus(rec, checked);
+                    const getSuccessMsg = (msg: any, checked: boolean) => {
+                      if (Array.isArray(msg) && msg.length > 0) return msg[0];
+                      if (typeof msg === "string") return msg;
+                      return checked
+                        ? "Activated successfully"
+                        : "Deactivated successfully";
+                    };
+                    setTimeout(() => {
+                      if (checked) {
+                        toast.success(getSuccessMsg(result?.message, checked), {
+                          autoClose: 3000,
+                        });
+                      } else {
+                        toast.warn(getSuccessMsg(result?.message, checked), {
+                          autoClose: 3000,
+                        });
+                      }
+                    }, 100); // slight delay to ensure UI update
+                  } catch (error) {
+                    setData((prev) =>
+                      updatePolicyStatusLocally(
+                        prev,
+                        rec.headerId,
+                        prevStatus
+                      )
+                    );
+                    let errorMsg = "Failed to update status";
+                    let isWarn = false;
+                    if (
+                      error &&
+                      typeof error === "object" &&
+                      error !== null &&
+                      "response" in error &&
+                      error.response &&
+                      typeof error.response === "object" &&
+                      error.response !== null &&
+                      "data" in error.response &&
+                      error.response.data &&
+                      typeof error.response.data === "object" &&
+                      error.response.data !== null
+                    ) {
+                      const resp = error.response;
+                      const respData = resp.data as any;
+                      if (
+                        "statusCode" in respData &&
+                        respData.statusCode === 500 &&
+                        Array.isArray(respData.message) &&
+                        respData.message.length > 0
+                      ) {
+                        errorMsg = respData.message[0];
+                        isWarn = true;
+                      } else if (
+                        "message" in respData &&
+                        typeof respData.message === "string"
+                      ) {
+                        errorMsg = respData.message;
+                      }
+                    }
+                    if (isWarn) {
+                      toast.warn(errorMsg);
+                    } else {
+                      toast.error(errorMsg);
+                    }
+                  }
+                }}
+              />
+            </Tooltip>
+          </Flex>
+        );
+      },
+    },
     {
       title: "Action",
       dataIndex: "id",
@@ -296,9 +298,9 @@ const WorkforcePlanningLanding = () => {
   ];
 
   useEffect(() => {
-    landingApi(pageNo, pageSize, filterValues);
+    landingApi(currentPage, pageSize, filterValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wgId, wId, orgId, pageNo, pageSize, filterValues]);
+  }, [wgId, wId, orgId, currentPage, pageSize, filterValues]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -347,7 +349,7 @@ const WorkforcePlanningLanding = () => {
                 if (criteriaList?.data?.length === 0) return null;
                 try {
                   downloadFile(
-                    `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${pageNo}&pageSize=${pageSize}`,
+                    `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${currentPage}&pageSize=${pageSize}`,
                     "Workforce Planning",
                     "xlsx"
                   );
@@ -378,13 +380,13 @@ const WorkforcePlanningLanding = () => {
               loading={criteriaListLoader}
               header={header}
               pagination={{
-                current: criteriaList?.pageNo || pageNo,
+                current: criteriaList?.currentPage || currentPage,
                 pageSize: criteriaList?.pageSize || pageSize,
                 total: criteriaList?.totalCount || 0,
                 showSizeChanger: true,
               }}
               onChange={(pagination) => {
-                setPageNo(pagination.current || 1);
+                setcurrentPage(pagination.current || 1);
                 setPageSize(pagination.pageSize || 25);
               }}
             />
