@@ -50,11 +50,23 @@ const EmployeeSalaryReport = () => {
   const landingApi = useApiRequest({});
   const workplaceGroup = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
+  const payscaleApi = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
   const empSectionDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
   const payrollGroupDDL = useApiRequest([]);
 
+  const [grade, setGrade] = useState();
+
+  const getPayscale = () => {
+    payscaleApi?.action({
+      urlKey: "GetPayScaleSetupDDLbyEmployee",
+      method: "GET",
+      params: {
+        employeeId: employeeId,
+      },
+    });
+  };
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplaceDDL?.action({
@@ -63,7 +75,7 @@ const EmployeeSalaryReport = () => {
       params: {
         accountId: orgId,
         businessUnitId: buId,
-        workplaceGroupId: workplaceGroup?.value,
+        workplaceGroupId: workplaceGroup?.value || wgId,
       },
       onSuccess: (res) => {
         res.forEach((item: any, i: any) => {
@@ -208,6 +220,7 @@ const EmployeeSalaryReport = () => {
   useEffect(() => {
     landingApiCall();
     workplaaceGroup();
+    getWorkplace();
   }, [wId]);
 
   return featurePermission?.isView ? (
@@ -319,7 +332,6 @@ const EmployeeSalaryReport = () => {
                       getEmployeDepartment();
                       getEmployeDesignation();
                       getEmployeeSection();
-                      getPayrollGroupDDL();
                     }
                   }}
                   rules={[{ required: true, message: "Workplace is required" }]}
@@ -338,29 +350,60 @@ const EmployeeSalaryReport = () => {
                   showSearch
                   allowClear
                   onChange={(value, op) => {
+                    if (value === 1) {
+                      getPayscale();
+                    } else {
+                      getPayrollGroupDDL();
+                    }
+
                     form.setFieldsValue({
                       payrollType: op,
+                      payrollGroup: undefined,
+                      payScale: undefined,
                     });
+                    setGrade(value);
                   }}
                 />
               </Col>
-              <Col md={6} sm={24}>
-                <PSelect
-                  options={payrollGroupDDL?.data || []}
-                  name="payrollGroup"
-                  label="Payroll Group"
-                  showSearch
-                  allowClear
-                  mode="multiple"
-                  filterOption={true}
-                  placeholder="Payroll Group"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      payrollGroup: op,
-                    });
-                  }}
-                />
-              </Col>
+              {grade === 1 && (
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={payscaleApi?.data || []}
+                    name="payrollGroup"
+                    label="Pay Scale"
+                    showSearch
+                    allowClear
+                    mode="multiple"
+                    filterOption={true}
+                    placeholder="Pay Scale"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        payrollGroup: op,
+                      });
+                    }}
+                  />
+                </Col>
+              )}
+                {grade === 2 && (
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={payrollGroupDDL?.data || []}
+                    name="payrollGroup"
+                    label="Payroll Group"
+                    showSearch
+                    allowClear
+                    mode="multiple"
+                    filterOption={true}
+                    placeholder="Payroll Group"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        payrollGroup: op,
+                      });
+                    }}
+                  />
+                </Col>
+              )}
+
               <Col md={6} sm={24}>
                 <PSelect
                   options={empDepartmentDDL?.data || []}

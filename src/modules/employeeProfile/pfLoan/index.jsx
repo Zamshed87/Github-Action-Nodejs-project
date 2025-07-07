@@ -2,7 +2,7 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { DataTable, PButton } from "Components";
+import { DataTable } from "Components";
 import { paginationSize } from "common/AntTable";
 import DefaultInput from "common/DefaultInput";
 import MasterFilter from "common/MasterFilter";
