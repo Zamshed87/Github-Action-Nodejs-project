@@ -59,11 +59,13 @@ const EmployeeSalaryReport = () => {
   const [grade, setGrade] = useState();
 
   const getPayscale = () => {
+    const { workplace } = form.getFieldsValue(true);
+
     payscaleApi?.action({
-      urlKey: "GetPayScaleSetupDDLbyEmployee",
+      urlKey: "GetPayScaleSetupDDLbyWorkplace",
       method: "GET",
       params: {
-        employeeId: employeeId,
+        workplaceId: workplace?.value,
       },
     });
   };
@@ -87,25 +89,12 @@ const EmployeeSalaryReport = () => {
   };
 
   const getPayrollGroupDDL = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    const { workplace } = form.getFieldsValue(true);
     payrollGroupDDL?.action({
-      urlKey: "BreakdownNPolicyForSalaryAssign",
+      urlKey: "GetPayrollGroupDDLbyWorkplace",
       method: "GET",
       params: {
-        StrReportType: "BREAKDOWN DDL",
-        IntEmployeeId: employeeId,
-        IntAccountId: orgId,
-        IntSalaryBreakdownHeaderId: 0,
-        IntBusinessUnitId: buId,
-        IntWorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strSalaryBreakdownTitle;
-          res[i].value = item?.intSalaryBreakdownHeaderId;
-        });
+        workplaceId: workplace?.value,
       },
     });
   };
@@ -180,7 +169,6 @@ const EmployeeSalaryReport = () => {
         departmentId: department?.value || 0,
         workplaceGroupId: workplaceGroup?.value || wgId,
         workplaceId: workplace?.value || wId,
-
       },
 
       onSuccess: (res) => {
@@ -223,8 +211,8 @@ const EmployeeSalaryReport = () => {
     workplaaceGroup();
     getWorkplace();
     getEmployeDepartment();
-    getEmployeDesignation()
-    getEmployeeSection()
+    getEmployeDesignation();
+    getEmployeeSection();
   }, [wId]);
 
   return featurePermission?.isView ? (
