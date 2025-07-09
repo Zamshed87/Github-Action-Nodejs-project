@@ -1,7 +1,11 @@
-import { Avatar, Flex, TableButton } from "Components";
-import { Tooltip } from "antd";
+import { Avatar, Flex } from "Components";
+import { Tooltip, Modal } from "antd";
 import axios from "axios";
+import AttachmentTooltip from "common/AttachmentTooltip";
 import Chips from "common/Chips";
+import {
+  getDownlloadFileView_Action,
+} from "commonRedux/auth/actions";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
@@ -78,7 +82,16 @@ export const viewHandler = (values, setGeneratedData) => {
   setGeneratedData(() => modifiedArr);
 };
 
-export const pfLandingColData = (history, setLoading, getData) => {
+export const pfLandingColData = (history, setLoading, getData, dispatch) => {
+  const showInActiveConfirm = (record) => {
+    Modal.confirm({
+      title: "Are you sure you want to inactivate this loan?",
+      content: "This action cannot be undone.",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: () => handleInActive(record, setLoading, getData),
+    });
+  };
   return [
     {
       title: "SL",
@@ -187,6 +200,20 @@ export const pfLandingColData = (history, setLoading, getData) => {
       fieldType: "string",
       width: 100,
     },
+    // attachement column
+    {
+      title: "Attachment",
+      dataIndex: "intFileUrlId",
+      render: (_, record) => (
+        <AttachmentTooltip
+          strDocumentList={record?.intFileUrlId ? String(record.intFileUrlId) : ""}
+          onClickAttachment={() => dispatch(getDownlloadFileView_Action(record?.intFileUrlId))}
+        />
+      ),
+      sort: true,
+      fieldType: "string",
+      width: 100,
+    },
     {
       title: "Description",
       dataIndex: "strDescription",
@@ -261,7 +288,7 @@ export const pfLandingColData = (history, setLoading, getData) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        handleInActive(record, setLoading, getData);
+                        showInActiveConfirm(record);
                       }}
                     >
                       InActive
@@ -289,7 +316,7 @@ export const pfLandingColData = (history, setLoading, getData) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    handleInActive(record, setLoading, getData);
+                    showInActiveConfirm(record);
                   }}
                 >
                   InActive

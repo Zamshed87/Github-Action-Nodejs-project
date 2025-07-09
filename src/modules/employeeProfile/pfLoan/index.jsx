@@ -2,7 +2,7 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { DataTable, PButton } from "Components";
+import { DataTable } from "Components";
 import { paginationSize } from "common/AntTable";
 import DefaultInput from "common/DefaultInput";
 import MasterFilter from "common/MasterFilter";
@@ -27,7 +27,6 @@ import EarlySettled from "./components/EarlySettled";
 import LoanDetailsView from "./common/loanDetailsView";
 
 const PfLoanLanding = ({ onlyViewDetails = null }) => {
-  console.log("PfLoanLanding Rendered", onlyViewDetails);
   const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -242,7 +241,7 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
                 bordered
                 data={rowDto?.length > 0 ? rowDto : []}
                 loading={loanLandingLoading}
-                header={pfLandingColData(history, setLoading, getData)}
+                header={pfLandingColData(history, setLoading, getData, dispatch)}
                 scroll={{ x: 1500 }}
                 pagination={{
                   pageSize: pages?.pageSize,

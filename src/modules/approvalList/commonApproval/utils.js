@@ -56,6 +56,79 @@ export const columnsDefault = [
     ),
   },
 ];
+export const columnsPfLoan = (dispatch) => [
+  {
+    title: "SL",
+    align: "center",
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Employee Code",
+    dataIndex: ["applicationInformation", "employeeCode"],
+  },
+  {
+    title: "Employee Name",
+    dataIndex: ["applicationInformation", "employeeName"],
+  },
+  {
+    title: "Workplace Group",
+    dataIndex: ["applicationInformation", "workplaceGroupName"],
+  },
+  {
+    title: "Workplace",
+    dataIndex: ["applicationInformation", "workplaceName"],
+  },
+  {
+    title: "Department",
+    dataIndex: ["applicationInformation", "department"],
+  },
+  // totalAmount
+  {
+    title: "Total Amount",
+    dataIndex: ["applicationInformation", "totalAmount"],
+    render: (amount) => <div>{amount ? `${amount.toFixed(2)}` : "N/A"}</div>,
+  },
+  //numInterest
+  {
+    title: "Interest",
+    dataIndex: ["applicationInformation", "numInterest"],
+    render: (interest) => (
+      <div>{interest ? `${interest.toFixed(2)}` : "N/A"}</div>
+    ),
+  },
+  //numTotalInterest
+  {
+    title: "Total Interest",
+    dataIndex: ["applicationInformation", "numTotalInterest"],
+    render: (totalInterest) => (
+      <div>{totalInterest ? `${totalInterest.toFixed(2)}` : "N/A"}</div>
+    ),
+  },
+    {
+    title: "Attachment",
+    width: 70,
+
+    dataIndex: "attachmentId",
+    render: (_, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    filter: false,
+    sorter: false,
+  },
+
+  {
+    title: "Status",
+    dataIndex: ["applicationInformation", "status"],
+    render: (status) => (
+      <div style={{ color: "orange", fontWeight: "bold" }}>{status}</div>
+    ),
+  },
+];
 
 export const columnNoc = [
   {
