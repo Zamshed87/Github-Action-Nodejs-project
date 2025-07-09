@@ -123,7 +123,6 @@ export const getHeader = (
                     result?.message || "Status updated successfully"
                   );
                 } catch (error) {
-                  console.log("pf policy failed");
                   setData((prev) => ({
                     ...prev,
                     data: updatePolicyStatusLocally(
@@ -133,7 +132,7 @@ export const getHeader = (
                     ),
                   }));
                   toast.error(
-                    error?.response?.data?.message || "Failed to update status"
+                    error?.response?.data?.data?.[0]?.errorMessage || "Failed to update status"
                   );
                 }
               }}
