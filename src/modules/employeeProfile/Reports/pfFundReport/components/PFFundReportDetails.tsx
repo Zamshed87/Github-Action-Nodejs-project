@@ -133,7 +133,7 @@ const PFFundReportDetails: React.FC<TPFFundReport> = ({ form, data }) => {
           total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
         }}
         loading={pfFundReportApi?.loading}
-        scroll={{ x: 1500 }}
+        scroll={{ x: 2000 }}
         onChange={(pagination, filters, sorter, extra) => {
           if (extra.action === "sort") return;
           landingApi({
