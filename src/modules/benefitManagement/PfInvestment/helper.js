@@ -91,8 +91,11 @@ export const getHeader = (pages, history, setVisible) => [
       const status = record?.status;
 
       const showEdit = status === "Not Started";
-      const showCollection = ["Running", "Matured"].includes(status) && status !== "Collection Completed";
-      const showInactive = status == "Not Started" || status !== "InActive" && !showCollection;
+      const showCollection =
+        ["Running", "Matured"].includes(status) &&
+        status !== "Collection Completed";
+      const showInactive =
+        status == "Not Started" || (status !== "InActive" && !showCollection);
 
       const iconBtnStyle = {
         backgroundColor: "var(--primary-color)",
@@ -181,9 +184,7 @@ export const getHeader = (pages, history, setVisible) => [
               <button
                 style={iconBtnStyle}
                 onClick={() => {
-                  setVisible(
-                    {open: true, data: record},
-                  );
+                  setVisible({ open: true, data: record });
                 }}
               >
                 <RxCrossCircled size={16} />

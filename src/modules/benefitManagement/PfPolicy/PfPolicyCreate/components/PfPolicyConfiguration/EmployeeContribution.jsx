@@ -1,6 +1,6 @@
 import { DataTable, PButton, PCardBody, PInput, PSelect } from "Components";
 import useConfigSelectionHook from "./useConfigSelectionHook";
-import { Checkbox, Col, Form, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import { detailsHeader } from "./helper";
 
 const EmployeeContribution = ({
@@ -120,7 +120,7 @@ const EmployeeContribution = ({
                     ]}
                   />
                 </Col>
-                <Col md={4} sm={12} xs={24}>
+                <Col md={5} sm={12} xs={24}>
                   <PInput
                     type="number"
                     min={1}
@@ -171,7 +171,7 @@ const EmployeeContribution = ({
               ]}
             />
           </Col>
-          <Col md={6} sm={12} xs={24}>
+          <Col md={5} sm={12} xs={24}>
             <PInput
               type="number"
               min={1}
@@ -212,6 +212,7 @@ const EmployeeContribution = ({
             header={detailsHeader({
               removeData,
               intPfEligibilityDependOn,
+              company
             })}
           />
         </PCardBody>

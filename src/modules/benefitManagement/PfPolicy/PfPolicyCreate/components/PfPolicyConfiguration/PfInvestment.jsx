@@ -7,7 +7,6 @@ const PfInvestment = ({ form }) => {
     fetchInvestmentEnum: true,
   });
   const isPFInvestment = Form.useWatch(`isPFInvestment`, form);
-  console.log("isPFInvestment", isPFInvestment);
   return (
     <>
       <h3 className="mb-3">PF Investment</h3>

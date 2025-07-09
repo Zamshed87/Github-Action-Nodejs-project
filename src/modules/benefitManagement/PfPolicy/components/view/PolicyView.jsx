@@ -66,6 +66,7 @@ const PolicyView = ({ data }) => {
                 removeData: () => {},
                 intPfEligibilityDependOn,
                 action: false,
+                company: true,
               })}
             />
           )}
