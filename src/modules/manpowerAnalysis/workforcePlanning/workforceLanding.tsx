@@ -37,7 +37,7 @@ const WorkforcePlanningLanding = () => {
 
   // Pagination state
   const [currentPage, setcurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
   const [excelLoading, setExcelLoading] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
 
@@ -74,9 +74,11 @@ const WorkforcePlanningLanding = () => {
     getCriteriaList(
       `/WorkforcePlanning/GetAll?WorkplaceGroupId=${
         filters.workplaceGroupId || wgId
-      }&WorkplaceId=${
-        filters.workplaceId || wId
-      }&yearTypeId=${yearTypeId || 2}&fromYear=${fromYear || 2022}&toDate=${toYear || 2023}&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
+      }&WorkplaceId=${filters.workplaceId || wId}&yearTypeId=${
+        yearTypeId || 0
+      }&fromYear=${fromYear || 0}&toYear=${
+        toYear || 0
+      }&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
     );
   };
 
@@ -86,9 +88,7 @@ const WorkforcePlanningLanding = () => {
     isActive: boolean
   ) => {
     const updatedList = [...list];
-    const index = updatedList.findIndex(
-      (item) => item.headerId === policyId
-    );
+    const index = updatedList.findIndex((item) => item.headerId === policyId);
     if (index !== -1) {
       updatedList[index] = {
         ...updatedList[index],
@@ -182,11 +182,7 @@ const WorkforcePlanningLanding = () => {
                 onChange={async (checked) => {
                   const prevStatus = rec.isActive;
                   setData((prev) =>
-                    updatePolicyStatusLocally(
-                      prev,
-                      rec.headerId,
-                      checked
-                    )
+                    updatePolicyStatusLocally(prev, rec.headerId, checked)
                   );
                   try {
                     const result = await togglePfPolicyStatus(rec, checked);
@@ -210,11 +206,7 @@ const WorkforcePlanningLanding = () => {
                     }, 100); // slight delay to ensure UI update
                   } catch (error) {
                     setData((prev) =>
-                      updatePolicyStatusLocally(
-                        prev,
-                        rec.headerId,
-                        prevStatus
-                      )
+                      updatePolicyStatusLocally(prev, rec.headerId, prevStatus)
                     );
                     let errorMsg = "Failed to update status";
                     let isWarn = false;
@@ -266,31 +258,34 @@ const WorkforcePlanningLanding = () => {
       dataIndex: "id",
       render: (id: number, record: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"Edit"}>
-            <EditOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                if (!permission?.isEdit) {
-                  toast.warning("You don't have permission to edit");
-                  return;
-                }
-                history.push(
-                  "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
-                  {
-                    workplaceId: record.workplaceId,
-                    yearTypeId: record.yearTypeId,
-                    fromYear: record.fromYear,
-                    toYear: record.toYear,
+          {record?.isActive && (
+            <Tooltip placement="bottom" title={"Edit"}>
+              <EditOutlined
+                style={{
+                  color: "green",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  margin: "0 5px",
+                }}
+                onClick={() => {
+                  if (!permission?.isEdit) {
+                    toast.warning("You don't have permission to edit");
+                    return;
                   }
-                );
-              }}
-            />
-          </Tooltip>
+                  history.push(
+                    "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
+                    {
+                      workplaceId: record.workplaceId,
+                      yearTypeId: record.yearTypeId,
+                      fromYear: record.fromYear,
+                      toYear: record.toYear,
+                      headerId: record.headerId,
+                    }
+                  );
+                }}
+              />
+            </Tooltip>
+          )}
         </Flex>
       ),
       align: "center",
@@ -327,7 +322,7 @@ const WorkforcePlanningLanding = () => {
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${criteriaList?.totalCount || 0} Workforce Planning`}
+            title={`Total ${criteriaList?.data?.totalCount || 0} Workforce Planning`}
             buttonList={[
               {
                 type: "primary",
@@ -349,7 +344,7 @@ const WorkforcePlanningLanding = () => {
                 if (criteriaList?.data?.length === 0) return null;
                 try {
                   downloadFile(
-                    `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${currentPage}&pageSize=${pageSize}`,
+                    `/WorkforcePlanning/WorkforcePlanningExcelReport?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&YearTypeId=${yearTypeId}&FromYear=${fromYear}&ToYear=${fromYear}&PageNumber=${currentPage}&PageSize=${pageSize}`,
                     "Workforce Planning",
                     "xlsx"
                   );

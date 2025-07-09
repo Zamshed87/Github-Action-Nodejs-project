@@ -316,7 +316,6 @@ const WorkForceComparison = () => {
     getWorkplace();
   }, [orgId, buId, wgId, wId]);
 
-  console.log("tableData", tableData);
 
   return permission?.isView ? (
     <PForm
@@ -348,7 +347,7 @@ const WorkForceComparison = () => {
                 const pageNo = 1;
                 const pageSize = pagination.total || 1000;
 
-                let url = `/WorkforcePlanning/ExportWorkforceComparisonToExcel?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
+                let url = `/WorkforcePlanning/WorkforceComparisonExcelReport?PageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&PageNumber=${pageNo}`;
                 if (toDate) url += `&ToDate=${toDate}`;
 
                 downloadFile(
