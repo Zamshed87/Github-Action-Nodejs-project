@@ -59,6 +59,7 @@ const PfPolicyCreate = () => {
                     "intWorkPlaceId",
                     "intEmploymentTypeIds",
                     "intPfEligibilityDependOn",
+                    "StrPfAssignType",
                     "intEmployeeContributionPaidAfter",
                     "isPFInvestment",
                     "intMonthlyInvestmentWith",
@@ -82,6 +83,8 @@ const PfPolicyCreate = () => {
                         intEmploymentTypeIds: values?.intEmploymentTypeIds,
                         intPfEligibilityDependOn:
                           values?.intPfEligibilityDependOn?.value,
+                        StrPfAssignType: values?.StrPfAssignType?.label,
+                        IntPFAssignType: values?.StrPfAssignType?.value,
                         employeeContributions: saveData?.employeeContributions,
                         ...saveData,
                         intEmployeeContributionPaidAfter:
