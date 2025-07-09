@@ -58,23 +58,10 @@ export const getHeader = (
     //   width: 60,
     // },
     {
-      title: "Employee Profit",
-      dataIndex: "employeeProfitAmount",
-      align: "center",
-      width: 100,
-      render: (data: any, record: any) => formatMoney(record?.employeeProfitAmount),
-    },
-    {
-      title: "Company Profit",
-      dataIndex: "companyProfitAmount",
-      align: "center",
-      width: 100,
-      render: (data: any, record: any) => formatMoney(record?.companyProfitAmount),
-    },
-    {
       title: "Salary Code",
       dataIndex: "salaryCode",
       align: "center",
+      isHidden: isHidden,
       width: 100,
       render: (data: any, record: any) => record?.salaryCode || "N/A",
     },
@@ -93,19 +80,19 @@ export const getHeader = (
       width: 50,
     },
     {
-      title: "Employee Amount",
+      title: "Employee Contribution",
       dataIndex: "employeeContributionAmount",
       align: "center",
-      width: 100,
+      width: 120,
 
       render: (data: any, record: any) =>
         formatMoney(record?.employeeContributionAmount),
     },
     {
-      title: "Company Amount",
+      title: "Company Contribution",
       dataIndex: "companyContributionAmount",
       align: "center",
-      width: 100,
+      width: 120,
       render: (data: any, record: any) =>
         formatMoney(record?.companyContributionAmount),
     },
@@ -137,6 +124,7 @@ export const getHeader = (
       title: "Status",
       dataIndex: "status",
       align: "center",
+      isHidden: !isHidden,
       render: (data: any, record: any) =>
         // Write condition to check status
         record?.status ? (
