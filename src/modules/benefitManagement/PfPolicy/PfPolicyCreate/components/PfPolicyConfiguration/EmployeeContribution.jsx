@@ -100,7 +100,7 @@ const EmployeeContribution = ({
           {intPfEligibilityDependOn?.value &&
             intPfEligibilityDependOn?.value != "0" && (
               <>
-                <Col md={5} sm={12} xs={24}>
+                <Col md={6} sm={12} xs={24}>
                   <PInput
                     type="number"
                     min={1}
