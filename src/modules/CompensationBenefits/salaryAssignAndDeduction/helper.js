@@ -2,13 +2,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
-import { todayDate } from "utility/todayDate";
 import { monthFirstDate } from "utility/dateFormatter";
-
-const date = new Date();
-const initYear = date.getFullYear(); // 2022
-const initMonth = date.getMonth() + 1; // 6
-const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
 export const allowanceAndDeductionColumn = (page, paginationSize) => {
   return [
@@ -65,35 +59,24 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
       filter: false,
       fieldType: "string",
     },
-    // instruction from maruf bhai
-    // {
-    //   title: "Workplace Group",
-    //   dataIndex: "strWorkplaceGroup",
-    //   sort: true,
-    //   filter: false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Business Unit",
-    //   dataIndex: "businessUnit",
-    //   sort: true,
-    //   filter: false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Total Allowance",
-    //   dataIndex: "totalAllowance",
-    //   sort: true,
-    //   filter: false,
-    //   fieldType: "string",
-    // },
-    // {
-    //   title: "Total Deduction",
-    //   dataIndex: "totalDeduction",
-    //   sort: true,
-    //   filter: false,
-    //   fieldType: "string",
-    // },
+    // totalAllowanceAmount
+    {
+      title: "Total Allowance",
+      dataIndex: "totalAllowanceAmount",
+      render: (record) => `${record?.totalAllowanceAmount || 0}`,
+      sort: true,
+      filter: false,
+      fieldType: "number",
+    },
+    //totalDeductionAmount
+    {
+      title: "Total Deduction",
+      dataIndex: "totalDeductionAmount",
+      render: (record) => `${record?.totalDeductionAmount || 0}`,
+      sort: true,
+      filter: false,
+      fieldType: "number",
+    },
   ];
 };
 
@@ -110,9 +93,6 @@ export const getSalaryAdditionAndDeductionLanding = async (
   orgId
 ) => {
   setLoading && setLoading(true);
-  // let searchTxt = search ? `&searchTxt=${search}` : "";
-  // const intMonth = fromMonth ? +fromMonth.split("-")[1] : +modifyMonthResult;
-  // const intYear = fromMonth ? +fromMonth?.split("-")[0] : initYear;
   const fromDate = fromMonth ? `${fromMonth}-01` : monthFirstDate();
   try {
     const res = await axios.get(
@@ -471,6 +451,6 @@ export const column = {
   employeeName: "Employee Name",
   designationName: "Designation",
   departmentName: "Department",
-  // totalAllowance: "Total Allowance",
-  // totalDeduction: "Total Deduction",
+  totalAllowanceAmount: "Total Allowance",
+  totalDeductionAmount: "Total Deduction",
 };

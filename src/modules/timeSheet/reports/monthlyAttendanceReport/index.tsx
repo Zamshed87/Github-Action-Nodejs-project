@@ -195,7 +195,9 @@ const MonthlyAttendanceReport = () => {
         reportType: "monthly_attendance_report_for_all_employee",
         accountId: orgId,
         businessUnitId: buId,
+        // error handling from backend
         workplaceGroupId: values?.workplaceGroup?.value || wgId,
+        WorkplaceGroupList: values?.workplaceGroup?.value || wgId,
         // WorkplaceId: values?.workplace?.value,
         workplaceList: values?.workplace?.value || wId,
         pageNo: pagination.current || pages?.current,

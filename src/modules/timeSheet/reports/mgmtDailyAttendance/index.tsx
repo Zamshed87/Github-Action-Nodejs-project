@@ -12,7 +12,7 @@ import {
 
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-import { Col, Form, Row, Tooltip, Typography } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import { paginationSize } from "common/peopleDeskTable";
 import { MdLocalPrintshop } from "react-icons/md";
@@ -44,7 +44,7 @@ const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, wgName },
+    profileData: { buId, wgId, employeeId, orgId, buName, wgName, isOfficeAdmin },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
