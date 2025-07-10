@@ -47,10 +47,6 @@ const WorkForceComparison = () => {
 
   // State for form data and loading
   const hideSubmitBtn = false;
-  useEffect(() => {
-    // Data will be loaded when user clicks "View" button
-    console.log("Component initialized - no data loaded yet");
-  }, []);
 
   const fetchWorkforceData = async (page = 1, pageSize = 25) => {
     const { yearType, selectYear, workplace, ComparisonType } =
@@ -91,7 +87,12 @@ const WorkForceComparison = () => {
       });
 
       setShowData(true);
-      toast.success("Workforce data loaded successfully!");
+      console.log("result", result);
+     if(result?.length > 0) {
+       toast.success("Workforce data loaded successfully!");
+      } else {
+        toast.info("No workforce data found for the selected criteria.");
+      }
     } catch {
       setPagination({
         current: page,
