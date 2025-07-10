@@ -24,8 +24,6 @@ const WorkForceComparison = () => {
   const [form] = Form.useForm();
   const location = useLocation();
 
-  
-
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -87,12 +85,6 @@ const WorkForceComparison = () => {
       });
 
       setShowData(true);
-      console.log("result", result);
-     if(result?.length > 0) {
-       toast.success("Workforce data loaded successfully!");
-      } else {
-        toast.info("No workforce data found for the selected criteria.");
-      }
     } catch {
       setPagination({
         current: page,
@@ -106,13 +98,12 @@ const WorkForceComparison = () => {
 
   const getHeader = () => {
     const baseColumns = [
-      {
-        title: "SL",
-        dataIndex: "sl",
-        key: "sl",
-        width: 60,
-        align: "center",
-      },
+     {
+      title: "SL",
+      render: (_value, _row, index) => index + 1,
+      align: "center",
+      width: 30,
+    },
       {
         title: "Workplace Group",
         dataIndex: "workplaceGroup",
@@ -317,7 +308,6 @@ const WorkForceComparison = () => {
     getWorkplace();
   }, [orgId, buId, wgId, wId]);
 
-
   return permission?.isView ? (
     <PForm
       form={form}
@@ -351,12 +341,7 @@ const WorkForceComparison = () => {
                 let url = `/WorkforcePlanning/WorkforceComparisonExcelReport?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
                 if (toDate) url += `&ToDate=${toDate}`;
 
-                downloadFile(
-                  url,
-                  "Workforce Comparison",
-                  "xlsx",
-                  setLoading
-                );
+                downloadFile(url, "Workforce Comparison", "xlsx", setLoading);
               } catch (error) {
                 console.log("error", error);
               }
