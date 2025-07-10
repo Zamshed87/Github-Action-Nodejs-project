@@ -618,7 +618,8 @@ const SingleIncrement: React.FC<TIncrement> = () => {
               salaryType: { value: "Grade", label: "Grade" },
               payscale: {
                 value: employeeInfo?.data[0]?.intSalaryBreakdownHeaderId,
-                label: employeeInfo?.data[0]?.PayrollGroupName,
+                // instead of PayrollGroupName use strSalaryBreakdownTitle confirm by Himadri vai
+                label: employeeInfo?.data[0]?.strSalaryBreakdownTitle,
               },
               payscaleJobLevel: {
                 value: res?.jobLevelId,
