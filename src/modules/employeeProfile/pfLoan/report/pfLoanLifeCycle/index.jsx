@@ -3,46 +3,35 @@ import {
   PButton,
   PCard,
   PCardBody,
-  PCardHeader,
   PForm,
   PInput,
   PSelect,
 } from "Components";
-import { Button, Col, Form, Row, Space, Tooltip } from "antd";
-import Loading from "common/loading/Loading";
+import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-
-import { getEnumData } from "common/api/commonApi";
-import { shallowEqual, useSelector } from "react-redux";
-import Filter from "modules/TrainingAndDevelopment/filter";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   formatDate,
-  setCustomFieldsValue,
 } from "modules/TrainingAndDevelopment/requisition/helper";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import {
-  formatFilterValue,
-  typeDataSetForTitle,
-} from "modules/TrainingAndDevelopment/helpers";
 import { getSerial } from "Utils";
-import moment from "moment";
 import { PeopleDeskSaasDDL } from "common/api";
 import { statusDDL } from "../../helper";
 import PfLoanLanding from "../..";
 import PrintTypeButton from "common/PrintTypeButton";
+import AttachmentTooltip from "common/AttachmentTooltip";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 
 const PfLoanLifeCycle = () => {
-  const defaultFromDate = moment().subtract(3, "months").startOf("month"); // 1st day of 3 months ago
-  const defaultToDate = moment().endOf("month"); // Last day of the current month
   // router states
-  const history = useHistory();
 
   const { permissionList, profileData } = useSelector(
     (state) => state?.auth,
     shallowEqual
   );
+
+  const dispatch = useDispatch();
 
   let permission = {};
   permissionList.forEach((item) => {
@@ -50,14 +39,12 @@ const PfLoanLifeCycle = () => {
       permission = item;
     }
   });
-  const { wId, buId, wgId, employeeId, orgId } = profileData;
+  const { wId, buId, wgId } = profileData;
   // hooks
-  const [landingApi, getLandingApi, landingLoading, , landingError] =
+  const [landingApi, getLandingApi, landingLoading] =
     useAxiosGet();
 
   // state
-  const [loading, setLoading] = useState(false);
-  const [singleData, setSingleData] = useState({});
   const [viewDetails, setViewDetails] = useState(null);
 
   const [loanTypeDDL, setLoanTypeDDL] = useState([]);
@@ -125,6 +112,20 @@ const PfLoanLifeCycle = () => {
     {
       title: "Un-Settled Amount",
       dataIndex: "unSettledAmount",
+    },
+     // attachement column
+    {
+      title: "Attachment",
+      dataIndex: "intFileUrlId",
+      render: (_, record) => (
+        <AttachmentTooltip
+          strDocumentList={record?.intFileUrlId ? String(record.intFileUrlId) : ""}
+          onClickAttachment={() => dispatch(getDownlloadFileView_Action(record?.intFileUrlId))}
+        />
+      ),
+      sort: true,
+      fieldType: "string",
+      width: 100,
     },
     {
       title: "Description",
@@ -252,12 +253,6 @@ const PfLoanLifeCycle = () => {
                         loanAmount: value,
                       });
                     }}
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message: "Loan Amount is required",
-                    //   },
-                    // ]}
                   />
                 </Col>
                 <Col md={3} sm={24}>
@@ -271,12 +266,6 @@ const PfLoanLifeCycle = () => {
                         interest: value,
                       });
                     }}
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message: "Interest is required",
-                    //   },
-                    // ]}
                   />
                 </Col>
                 <Col md={3} sm={24}>
@@ -290,12 +279,6 @@ const PfLoanLifeCycle = () => {
                         unsettledAmount: value,
                       });
                     }}
-                    // rules={[
-                    //   {
-                    //     required: true,
-                    //     message: "Un-Settled Amount is required",
-                    //   },
-                    // ]}
                   />
                 </Col>
                 <Col md={3} sm={12} xs={24}>
@@ -344,7 +327,7 @@ const PfLoanLifeCycle = () => {
                 total: landingApi?.totalCount,
               }}
               filterData={landingApi?.data?.filters}
-              onChange={(pagination, filters) => {
+              onChange={(pagination) => {
                 landingApiCall(pagination);
               }}
             />
