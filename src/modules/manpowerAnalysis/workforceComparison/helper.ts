@@ -48,7 +48,7 @@ export const fetchWorkforceTypeWiseData = async ({
       setShowData(true);
     }
   }
-   setTableData(res?.data?.data);
+   setTableData(res?.data);
           setPagination({
             current: res?.data.pageNo,
             pageSize: res?.data.pageSize || pageSize,

@@ -18,6 +18,7 @@ import { useApiRequest } from "Hooks";
 import { fetchWorkforceTypeWiseData } from "./helper";
 import { useLocation } from "react-router-dom";
 import { downloadFile } from "utility/downloadFile";
+import { getSerial } from "Utils";
 
 const WorkForceComparison = () => {
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ const WorkForceComparison = () => {
     setLoading(true);
 
     try {
-      const result = await fetchWorkforceTypeWiseData({
+      fetchWorkforceTypeWiseData({
         yearType: yearTypeId,
         fromDate,
         toDate,
@@ -96,14 +97,21 @@ const WorkForceComparison = () => {
     }
   };
 
+
   const getHeader = () => {
     const baseColumns = [
-     {
-      title: "SL",
-      render: (_value, _row, index) => index + 1,
-      align: "center",
-      width: 30,
-    },
+      {
+        title: "SL",
+        render: (_, rec, index) =>
+          getSerial({
+            currentPage: tableData?.pageNo,
+            pageSize: tableData?.pageSize,
+            index,
+          }),
+        fixed: "left",
+        align: "center",
+        width: 50,
+      },
       {
         title: "Workplace Group",
         dataIndex: "workplaceGroup",
@@ -450,7 +458,7 @@ const WorkForceComparison = () => {
           <DataTable
             header={getHeader()}
             bordered
-            data={tableData || []}
+            data={tableData?.data || []}
             loading={loading}
             pagination={{
               current: pagination.current,
