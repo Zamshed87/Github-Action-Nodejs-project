@@ -340,13 +340,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             <div style={{ height: "50px" }}>
               <FormulaInputWrapper
                 disabled={rowData}
-                formulaOptions={
-                  elementDDL?.data?.length > 0
-                    ? elementDDL?.data?.filter(
-                        (i: any) => !i?.label?.toLowerCase().includes("gross")
-                      )
-                    : []
-                }
+                formulaOptions={elementDto?.length > 0 ? elementDto : []}
                 value={row?.formula || ""}
                 onChange={(e: any) => {
                   rowDtoHandler("formula", index, e.target.value);
@@ -817,6 +811,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   {
                     ...values?.element,
                     payrollElementName: values?.element?.label,
+                    label: values?.element?.label,
                     isBasic: values?.element?.isBasic,
                     element: values?.element?.label,
                     elementId: values?.element?.value,
