@@ -363,8 +363,8 @@ const MonthlyAttendanceReport = () => {
                     ).format("YYYY-MM-DD")}&dteToDate=${moment(
                       values?.toDate
                     ).format("YYYY-MM-DD")}&employeeId=0&workplaceGroupId=${
-                      values?.workplaceGroup?.value
-                    }&WorkplaceList=${
+                      values?.workplaceGroup?.value || wgId
+                    }&WorkplaceGroupList=${values?.workplaceGroup?.value || wgId}&WorkplaceList=${
                       values?.workplace?.value || wId
                     }&accountId=${orgId}&pageNo=1&pageSize=1000&isPaginated=false&businessUnitId=${buId}&departments=${
                       values?.department?.length > 0 ? deptList : ""
