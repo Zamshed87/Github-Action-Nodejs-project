@@ -235,7 +235,7 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
 
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 8) {
+    if (item?.menuReferenceId === 76) {
       employeeFeature = item;
     }
   });
