@@ -1,12 +1,10 @@
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { DataTable, Flex, PCard, PCardHeader, PForm } from "Components";
 import { getSerial } from "Utils";
-import { Form, Tooltip } from "antd";
+import { Form, Switch, Tooltip } from "antd";
 import Loading from "common/loading/Loading";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-
-import { dateFormatter } from "utility/dateFormatter";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -14,6 +12,7 @@ import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { downloadFile } from "utility/downloadFile";
 import CommonFilter from "common/CommonFilter";
+import axios from "axios";
 const WorkforcePlanningLanding = () => {
   const [criteriaList, getCriteriaList, criteriaListLoader] = useAxiosGet();
   const dispatch = useDispatch();
@@ -21,7 +20,7 @@ const WorkforcePlanningLanding = () => {
     (state: any) => state?.auth,
     shallowEqual
   );
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { orgId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -37,11 +36,10 @@ const WorkforcePlanningLanding = () => {
   });
 
   // Pagination state
-  const [pageNo, setPageNo] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setcurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
   const [excelLoading, setExcelLoading] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   // Add filter state
   const [filterValues, setFilterValues] = useState<{
@@ -51,25 +49,64 @@ const WorkforcePlanningLanding = () => {
     workplaceId?: number;
   }>({});
 
+  // Table data state
+  const [data, setData] = useState<any[]>([]);
+
+  // Sync data state with criteriaList?.data
+  useEffect(() => {
+    setData(criteriaList?.data?.data || []);
+  }, [criteriaList]);
+
   const landingApi = (
-    page: number = pageNo,
+    page: number = currentPage,
     size: number = pageSize,
     filters: {
       yearTypeId?: number;
       fromYear?: number;
+      toYear?: number;
       workplaceGroupId?: number;
       workplaceId?: number;
     } = filterValues
   ) => {
     const yearTypeId = filters.yearTypeId ?? 0;
     const fromYear = filters.fromYear ?? 0;
+    const toYear = filters.toYear ?? 0;
     getCriteriaList(
-      `/WorkforcePlanning/WorkforcePlanning?WorkplaceGroupId=${
+      `/WorkforcePlanning/GetAll?WorkplaceGroupId=${
         filters.workplaceGroupId || wgId
-      }&WorkplaceId=${
-        filters.workplaceId || wId
-      }&yearTypeId=${yearTypeId}&fromYear=${fromYear}&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
+      }&WorkplaceId=${filters.workplaceId || wId}&yearTypeId=${
+        yearTypeId || 0
+      }&fromYear=${fromYear || 0}&toYear=${
+        toYear || 0
+      }&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
     );
+  };
+
+  const updateStatusLocally = (
+    list: any[],
+    policyId: number,
+    isActive: boolean
+  ) => {
+    const updatedList = [...list];
+    const index = updatedList.findIndex((item) => item.headerId === policyId);
+    if (index !== -1) {
+      updatedList[index] = {
+        ...updatedList[index],
+        isActive: isActive,
+        strStatus: isActive ? "Active" : "Inactive",
+      };
+    }
+    return updatedList;
+  };
+
+  // Update: Accept record and newStatus
+  const toggleActiveInactiveStatus = async (record: any, isActive: boolean) => {
+    let url = `/WorkforcePlanning/ActiveNInactive?HeaderId=${record.headerId}&IsActive=${isActive}`;
+    if (isActive) {
+      url += `&WorkplaceId=${record.workplaceId}&FromDate=${record.fromYear || 0}&ToDate=${record.toYear || 0}`;
+    }
+    const response = await axios.put(url);
+    return response?.data;
   };
 
   // Form Instance
@@ -80,8 +117,8 @@ const WorkforcePlanningLanding = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: criteriaList?.pageNo,
-          pageSize: criteriaList?.pageSize,
+          currentPage: criteriaList?.data?.currentPage,
+          pageSize: criteriaList?.data?.pageSize,
           index,
         }),
       fixed: "left",
@@ -132,35 +169,100 @@ const WorkforcePlanningLanding = () => {
       ),
     },
     {
+      title: "Status",
+      dataIndex: "isActive",
+      render: (_: any, rec: any) => {
+        const isActive = rec?.isActive === true;
+        return (
+          <Flex justify="center">
+            <Tooltip title={isActive ? "Active" : "Inactive"}>
+              <Switch
+                size="small"
+                checked={isActive}
+                onChange={async (checked) => {
+                  const prevStatus = rec.isActive;
+                  setData((prev) =>
+                    updateStatusLocally(prev, rec.headerId, checked)
+                  );
+
+                  const getMsg = (msg: any, def: string) =>
+                    Array.isArray(msg)
+                      ? msg[0]
+                      : typeof msg === "string"
+                      ? msg
+                      : def;
+
+                  try {
+                    const res = await toggleActiveInactiveStatus(rec, checked);
+                    const msg = getMsg(
+                      res?.message,
+                      checked
+                        ? "Activated successfully"
+                        : "Deactivated successfully"
+                    );
+                    setTimeout(
+                      () =>
+                        (checked ? toast.success : toast.warn)(msg, {
+                          autoClose: 3000,
+                        }),
+                      100
+                    );
+                  } catch (err: any) {
+                    setData((prev) =>
+                      updateStatusLocally(prev, rec.headerId, prevStatus)
+                    );
+
+                    const resp = err?.response?.data;
+                    const msg = getMsg(
+                      resp?.message,
+                      "Failed to update status"
+                    );
+                    const isWarn = [400, 500].includes(resp?.statusCode);
+
+                    (isWarn ? toast.warn : toast.error)(msg, {
+                      autoClose: 3000,
+                    });
+                  }
+                }}
+              />
+            </Tooltip>
+          </Flex>
+        );
+      },
+    },
+    {
       title: "Action",
       dataIndex: "id",
       render: (id: number, record: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"Edit"}>
-            <EditOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                if (!permission?.isEdit) {
-                  toast.warning("You don't have permission to edit");
-                  return;
-                }
-                history.push(
-                  "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
-                  {
-                    workplaceId: record.workplaceId,
-                    yearTypeId: record.yearTypeId,
-                    fromYear: record.fromYear,
-                    toYear: record.toYear,
+          {record?.isActive && (
+            <Tooltip placement="bottom" title={"Edit"}>
+              <EditOutlined
+                style={{
+                  color: "green",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  margin: "0 5px",
+                }}
+                onClick={() => {
+                  if (!permission?.isEdit) {
+                    toast.warning("You don't have permission to edit");
+                    return;
                   }
-                );
-              }}
-            />
-          </Tooltip>
+                  history.push(
+                    "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
+                    {
+                      workplaceId: record.workplaceId,
+                      yearTypeId: record.yearTypeId,
+                      fromYear: record.fromYear,
+                      toYear: record.toYear,
+                      headerId: record.headerId,
+                    }
+                  );
+                }}
+              />
+            </Tooltip>
+          )}
         </Flex>
       ),
       align: "center",
@@ -168,9 +270,9 @@ const WorkforcePlanningLanding = () => {
   ];
 
   useEffect(() => {
-    landingApi(pageNo, pageSize, filterValues);
+    landingApi(currentPage, pageSize, filterValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wgId, wId, orgId, pageNo, pageSize, filterValues]);
+  }, [wgId, wId, orgId, currentPage, pageSize, filterValues]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -197,7 +299,9 @@ const WorkforcePlanningLanding = () => {
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${criteriaList?.totalCount || 0} Workforce Planning`}
+            title={`Total ${
+              criteriaList?.data?.totalCount || 0
+            } Workforce Planning`}
             buttonList={[
               {
                 type: "primary",
@@ -219,10 +323,9 @@ const WorkforcePlanningLanding = () => {
                 if (criteriaList?.data?.length === 0) return null;
                 try {
                   downloadFile(
-                    `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${pageNo}&pageSize=${pageSize}`,
+                    `/WorkforcePlanning/WorkforcePlanningExcelReport?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&YearTypeId=${yearTypeId}&FromYear=${fromYear}&ToYear=${fromYear}&PageNumber=${currentPage}&PageSize=${pageSize}`,
                     "Workforce Planning",
-                    "xlsx",
-                    setLoading
+                    "xlsx"
                   );
                   setExcelLoading(false);
                 } catch (error: any) {
@@ -247,18 +350,18 @@ const WorkforcePlanningLanding = () => {
           <div className="mb-3">
             <DataTable
               bordered
-              data={criteriaList?.data || []}
+              data={data}
               loading={criteriaListLoader}
               header={header}
               pagination={{
-                current: criteriaList?.pageNo || pageNo,
+                current: criteriaList?.currentPage || currentPage,
                 pageSize: criteriaList?.pageSize || pageSize,
                 total: criteriaList?.totalCount || 0,
                 showSizeChanger: true,
               }}
               onChange={(pagination) => {
-                setPageNo(pagination.current || 1);
-                setPageSize(pagination.pageSize || 10);
+                setcurrentPage(pagination.current || 1);
+                setPageSize(pagination.pageSize || 25);
               }}
             />
           </div>

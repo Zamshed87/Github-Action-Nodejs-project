@@ -4,11 +4,12 @@ import useConfigSelectionHook from "./useConfigSelectionHook";
 import PSelectWithAll from "Components/PForm/Select/PSelectWithAll";
 
 const PfPolicyConfig = ({ form }) => {
-  const { workplaceDDL, employmentTypeDDL, eligibilityOpts, loadingEligibility, getEmploymentTypeDDL } =
+  const { workplaceDDL, employmentTypeDDL, eligibilityOpts, loadingEligibility, getEmploymentTypeDDL, pfAssignTypeOpts, loadingPfAssignType } =
     useConfigSelectionHook(form, {
       fetchWorkplace: true,
       fetchEmploymentType: true,
       fetchEligibilityEnum: true,
+      fetchPfAssignTypeEnum: true,
     });
   return (
     <PCardBody className="mb-4">
@@ -81,6 +82,24 @@ const PfPolicyConfig = ({ form }) => {
               {
                 required: true,
                 message: "PF Eligibility Depend on Is Required",
+              },
+            ]}
+          />
+        </Col>
+        <Col md={5} sm={12} xs={24}>
+          <PSelect
+            options={pfAssignTypeOpts}
+            name="StrPfAssignType"
+            label="PF Assignment Type"
+            placeholder="Select PF Assignment Type"
+            onChange={(_,op) => {
+              form.setFieldsValue({ StrPfAssignType: op });
+            }}
+            loading={loadingPfAssignType}
+            rules={[
+              {
+                required: true,
+                message: "PF Assignment Type Is Required",
               },
             ]}
           />

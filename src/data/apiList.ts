@@ -336,7 +336,7 @@ export const apiList = {
   UpdateLeave: "/LeaveApplication/Update",
   BalanceGenerate: "/LeaveBalance/BalanceGenerate",
   LeavePolicyDeleteById: "/LeavePolicy/DeleteById",
-  LeaveBalanceReport: "PdfAndExcelReport/LeaveBalanceReport",
+  LeaveBalanceReport: "/PdfAndExcelReport/LeaveBalanceReport",
   GetAllSalaryPolicy: "/Payroll/GetAllSalaryPolicy",
   OffdayLandingFilter: "/Employee/OffdayLandingFilter",
   LeaveAdjustmentCreate: "/LeaveAdjustment/Create",
@@ -372,6 +372,8 @@ export const apiList = {
   GetEmployeePfAmount: "/PfLoan/GetEmployeePfAmount",
   SalaryGradeBasedBulkUpload: "/Employee/SalaryGradeBasedBulkUpload",
   GetEmployeeSalaryReport: "/SalaryReport/GetEmployeeSalaryReport",
-   WorkforcePlanningCreate: "/WorkforcePlanning/Create",
+  WorkforcePlanningCreate: "/WorkforcePlanning/Create",
   WorkforcePlanningUpdate: "/WorkforcePlanning/Update",
+  GetPayrollGroupDDLbyWorkplace: "/Payroll/GetPayrollGroupDDLbyWorkplace",
+  GetPayScaleSetupDDLbyWorkplace: "/Payroll/GetPayScaleSetupDDLbyWorkplace",
 };

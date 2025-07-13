@@ -2,7 +2,8 @@ import { Method } from "axios";
 import { apiList } from "data/apiList";
 
 export interface IApiInfoBase {
-  urlKey: keyof typeof apiList;
+  urlKey?: keyof typeof apiList;
+  url?: string;
   method: Method;
   params?: any;
   toast?: boolean;

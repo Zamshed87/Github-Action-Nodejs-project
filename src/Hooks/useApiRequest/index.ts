@@ -22,6 +22,7 @@ export const useApiRequest = (initialState: any) => {
     const {
       method,
       urlKey,
+      url="",
       params,
       payload,
       toast: isToast,
@@ -32,7 +33,7 @@ export const useApiRequest = (initialState: any) => {
     try {
       const response = await axios({
         method: method,
-        url: apiList[urlKey],
+        url:  `${urlKey ? apiList[urlKey] : ""}${url}`,
         data: payload,
         params: params,
       });

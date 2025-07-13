@@ -1,6 +1,6 @@
 import { Switch, Tooltip } from "antd";
 import axios from "axios";
-import { Flex, PButton } from "Components";
+import { Flex, TableButton } from "Components";
 import { toast } from "react-toastify";
 
 const updatePolicyStatusLocally = (list, policyId, newStatus) => {
@@ -26,7 +26,13 @@ const togglePfPolicyStatus = async (id) => {
   return response?.data;
 };
 
-export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
+export const getHeader = (
+  pages,
+  setData,
+  setOpenView,
+  setOpenExtend,
+  history
+) => [
   {
     title: "SL",
     render: (_, __, index) =>
@@ -39,6 +45,12 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
     dataIndex: "strPolicyName",
     sorter: true,
     width: 100,
+  },
+  {
+    title: "Policy Code",
+    dataIndex: "strPolicyCode",
+    sorter: true,
+    width: 80,
   },
   {
     title: "Workplace Group",
@@ -55,8 +67,10 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
   {
     title: "Employment Type",
     dataIndex: "strEmploymentTypeName",
-    render: (_,rec) => {
-      return rec?.isForAllEmploymentType ? "All" : rec?.employmentTypes?.map((item) => item.label).join(", ");
+    render: (_, rec) => {
+      return rec?.isForAllEmploymentType
+        ? "All"
+        : rec?.employmentTypes?.map((item) => item.label).join(", ");
     },
     sorter: true,
     width: 120,
@@ -68,6 +82,14 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
     width: 150,
   },
   {
+    title: "PF Assign Type",
+    dataIndex: "strPFAssignType",
+    sorter: true,
+    width: 100,
+  },
+  {
+    width:50,
+    align:'center',
     title: "Status",
     dataIndex: "isActive",
     render: (_, rec) => {
@@ -94,10 +116,13 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
 
                 // API request and rollback on error
                 try {
-                  const result = await togglePfPolicyStatus(rec.intPfConfigHeaderId);
-                  toast.success(result?.message || "Status updated successfully");
+                  const result = await togglePfPolicyStatus(
+                    rec.intPfConfigHeaderId
+                  );
+                  toast.success(
+                    result?.message || "Status updated successfully"
+                  );
                 } catch (error) {
-                  console.log("pf policy failed")
                   setData((prev) => ({
                     ...prev,
                     data: updatePolicyStatusLocally(
@@ -107,7 +132,7 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
                     ),
                   }));
                   toast.error(
-                    error?.response?.data?.message || "Failed to update status"
+                    error?.response?.data?.data?.[0]?.errorMessage || "Failed to update status"
                   );
                 }
               }}
@@ -123,19 +148,32 @@ export const getHeader = (pages,setData, setOpenView, setOpenExtend) => [
     align: "center",
     render: (_, record) => (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <PButton
-          content="View"
-          type="primary-outline"
-          onClick={() => {
-            setOpenView?.({ open: true, data: record });
-          }}
-        />
-        <PButton
-          content="Extend"
-          type="primary"
-          onClick={() => {
-            setOpenExtend?.({ extend: true, data: record });
-          }}
+        <TableButton
+          buttonsList={[
+            {
+              type: "view",
+              onClick: () => {
+                setOpenView?.({ open: true, data: record });
+              },
+            },
+            {
+              type: "extend",
+              onClick: () => {
+                setOpenExtend?.({ extend: true, data: record });
+              },
+            },
+            record?.intPFAssignType === 2 && {
+              type: "assign",
+              onClick: () => {
+                history.push(
+                  `/BenefitsManagement/providentFund/pfPolicy/assign`,
+                  {
+                    ...record,
+                  }
+                );
+              },
+            },
+          ]}
         />
       </div>
     ),
