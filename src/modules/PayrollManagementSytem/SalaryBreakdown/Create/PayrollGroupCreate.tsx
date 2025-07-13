@@ -302,6 +302,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
+      label: values?.payrollElement?.label,
     };
     switch (orgId) {
       case 10026:
@@ -629,7 +630,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                 {() => {
                   const { isPerdaySalary, dependsOn } =
                     form.getFieldsValue(true);
-                  console.log({ dependsOn, payrollElementDDL });
+                  console.log({ dependsOn, dynamicForm });
                   return (
                     <>
                       {!isPerdaySalary && (
@@ -724,14 +725,15 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                               }
                                               formulaOptions={
                                                 dependsOn?.value === 2
-                                                  ? payrollElementDDL?.filter(
-                                                      (i: any) =>
-                                                        !i?.label
-                                                          .toLowerCase()
-                                                          .includes("gross")
-                                                    )
+                                                  ? // payrollElementDDL?.filter(
+                                                    //     (i: any) =>
+                                                    //       !i?.label
+                                                    //         .toLowerCase()
+                                                    //         .includes("gross")
+                                                    //   )
+                                                    dynamicForm
                                                   : [
-                                                      ...payrollElementDDL,
+                                                      ...dynamicForm,
                                                       { label: "Gross" },
                                                     ]
                                               }
