@@ -104,7 +104,7 @@ export const CommonView = ({
               <LeaveBalanceTable
                 leaveBalanceData={historyBalanceData}
                 isHistory={true}
-                values=""
+                values={form.getFieldsValue(true)}
               />
             </>
           }
