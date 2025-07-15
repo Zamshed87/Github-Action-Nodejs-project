@@ -35,6 +35,8 @@ const initData = {
   policyCategory: "",
   businessUnit: "",
   department: "",
+  workGroup: "",
+  workPlace: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -57,6 +59,8 @@ export default function PolicyUpload() {
   // DDL
   const [policyCategoryDDL, setPolicyCategoryDDL] = useState([]);
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [departmentDDL, setDepartmentDDL] = useState([]);
 
   const [page, setPage] = useState(1);
@@ -89,9 +93,17 @@ export default function PolicyUpload() {
       "strDepartment",
       setDepartmentDDL
     );
+    getPeopleDeskAllDDL(
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${buId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     getPolicyCategoryDDL(orgId, setPolicyCategoryDDL);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
+  // all ddl load
 
   const getGridData = () => {
     getPolicyLanding(orgId, buId, 0, setRowDto);
@@ -306,6 +318,7 @@ export default function PolicyUpload() {
           errors,
           touched,
           setFieldValue,
+          setValues,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -367,6 +380,7 @@ export default function PolicyUpload() {
                         errors,
                         touched,
                         resetForm,
+                        setValues,
                       }}
                       setSingleData={setSingleData}
                       singleData={singleData}
@@ -376,9 +390,12 @@ export default function PolicyUpload() {
                       policyCategoryDDL={policyCategoryDDL}
                       setPolicyCategoryDDL={setPolicyCategoryDDL}
                       businessUnitDDL={businessUnitDDL}
+                      workplaceGroupDDL={workplaceGroupDDL}
+                      workplaceDDL={workplaceDDL}
                       departmentDDL={departmentDDL}
                       orgId={orgId}
                       buId={buId}
+                      setWorkplaceDDL={setWorkplaceDDL}
                       employeeId={employeeId}
                     ></FormCard>
                   </div>
