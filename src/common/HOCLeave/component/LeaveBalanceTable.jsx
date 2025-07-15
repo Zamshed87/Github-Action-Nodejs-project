@@ -6,9 +6,9 @@ import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
-import { Divider, Popover, Tag } from "antd";
-import { shallowEqual, useSelector } from "react-redux";
+import { Popover, Tag } from "antd";
 import Loading from "common/loading/Loading";
+import moment from "moment";
 
 const LeaveBalanceTable = ({
   leaveBalanceData = [],
@@ -25,78 +25,35 @@ const LeaveBalanceTable = ({
     );
   }
 
-  // console.log("values", values);
-  const {
-    profileData: { buId },
-    permissionList,
-  } = useSelector((state) => state?.auth, shallowEqual);
-
   const [isView, setIsView] = useState(false);
   const [details, setDetails] = useState([]);
-  const [leaveData, setLeaveData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [punishData, setPunish] = useState([]);
+  const [loading] = useState(false);
   const [selectedRowKey, setSelectedRowKey] = useState(null);
 
-  const toggleRowDetails = (key, details) => {
+  const toggleRowDetails = (key, details, isPunish = false) => {
     if (selectedRowKey === key) {
       setSelectedRowKey(null); // Close if the same row is clicked
       setDetails([]);
+      setPunish([]);
     } else {
       setSelectedRowKey(key);
-      setDetails([details]);
+      if (isPunish) {
+        setPunish(details);
+        setDetails([]);
+      } else {
+        setPunish([]);
+        setDetails([details]);
+      }
     }
   };
   const [singleObjList, getSingleObjDataAPI, , setSingleObjList] = useAxiosGet(
     {}
   );
+  const [, getPunishmentData, loader] = useAxiosGet({});
   useEffect(() => {
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
-
-  // 🔥🔥 leave balance table is also used in supervisor dashboard  and employee booklet. for any kind of change please consider that.
-
-  const punishmentPopupContent = (leaveData) => {
-    return (
-      <div>
-        <div>
-          <Divider style={{ margin: "5px 0 0 0" }} />
-          <div className="mt-2">
-            <p className="fontWeight600">Leave Consumed</p>
-            {/* Filter and map through the leaveData for Casual Leave */}
-            {leaveData
-              ?.filter((item) => item?.MonthNameFull === "Casual Leave")
-              .map((item, index) => (
-                <>
-                  {item?.LeaveDay > 0 && (
-                    <p key={index} className="pl-3">
-                      {item?.MonthNameFull}:{" "}
-                      <span className="fontWeight600">{item?.LeaveDay}</span>
-                    </p>
-                  )}
-                </>
-              ))}
-          </div>
-
-          <div className="mt-2">
-            <p className="fontWeight600">Leave Punishment</p>
-            {/* Filter and map through the leaveData for months other than Casual Leave */}
-            {leaveData
-              ?.filter((item) => item?.MonthNameFull !== "Casual Leave")
-              .map((item, index) => (
-                <>
-                  {item?.LeaveDay > 0 && (
-                    <p key={index} className="pl-3">
-                      {item?.MonthNameFull}:{" "}
-                      <span className="fontWeight600">{item?.LeaveDay}</span>
-                    </p>
-                  )}
-                </>
-              ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   const header = [
     {
@@ -240,7 +197,7 @@ const LeaveBalanceTable = ({
       width: isHistory ? 85 : 35,
     },
     {
-      width: 20,
+      width: 30,
       align: "center",
       render: (_, rec, idx) => (
         <>
@@ -249,12 +206,36 @@ const LeaveBalanceTable = ({
               {
                 type: "view",
                 onClick: () => {
-                  toggleRowDetails(idx, rec?.details);
+                  toggleRowDetails(idx, rec?.details, false);
+                },
+              },
+              {
+                type: "punishment",
+                parentStyle: { fontSize: "25px!important" },
+                onClick: () => {
+                  getPunishmentData(
+                    `/LeaveBalance/EmployeeLeavePunishmentHistory?employeeId=${
+                      values?.employee?.value
+                    }&leaveTypeId=${rec?.leaveTypeId}&fromDate=${
+                      isHistory
+                        ? moment(rec?.startDate)?.format("YYYY-MM-DD")
+                        : rec?.startDate
+                    }&toDate=${
+                      isHistory
+                        ? moment(rec?.endDate)?.format("YYYY-MM-DD")
+                        : rec?.endDate
+                    }`,
+                    (data) => {
+                      if (data?.length > 0) {
+                        toggleRowDetails(idx, data, true);
+                      }
+                    }
+                  );
                 },
               },
             ]}
           />
-          {selectedRowKey === idx && (
+          {selectedRowKey === idx && details?.length > 0 && (
             <Popover
               placement="bottom"
               content={
@@ -271,26 +252,26 @@ const LeaveBalanceTable = ({
               }}
             />
           )}
+          {selectedRowKey === idx && punishData?.length > 0 && (
+            <Popover
+              placement="bottom"
+              content={
+                <div style={{ width: "570px" }}>
+                  <DataTable header={punishHeader} data={punishData} />
+                </div>
+              }
+              open={selectedRowKey === idx}
+              trigger="click"
+              onOpenChange={(newOpen) => {
+                if (!newOpen) {
+                  setSelectedRowKey(null); // Close popover when clicking outside
+                }
+              }}
+            />
+          )}
         </>
       ),
     },
-    // {
-    //   title: "Carry Balance",
-    //   dataIndex: "intCarryBalanceLveInDay",
-    // },
-    // {
-    //   title: "Carry Taken",
-    //   dataIndex: "inyCarryTakenLveInDay",
-    // },
-    // {
-    //   title: "Carry Allocated",
-    //   dataIndex: "intCarryAllocatedLveInDay",
-    // },
-    // {
-    //   title: "Carry Expire",
-    //   render: (data) =>
-    //     data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
-    // },
   ];
   // --
   const detailsHeader = [
@@ -337,9 +318,37 @@ const LeaveBalanceTable = ({
       render: (data) => (data?.expireDate ? data?.expireDate : "N/A"),
     },
   ];
+  const punishHeader = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      width: 47,
+    },
+    {
+      title: "Leave Days",
+      dataIndex: "leaveDays",
+      width: 60,
+    },
+    {
+      title: "Carry Days",
+      dataIndex: "carryDays",
+      width: 60,
+    },
+
+    {
+      title: "Application Date",
+      dataIndex: "createdAt",
+      width: 45,
+    },
+
+    {
+      title: "Reference",
+      dataIndex: "reference",
+    },
+  ];
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loader) && <Loading />}
       <div>
         <PCardBody styles={{ minHeight: "240px" }}>
           <DataTable
@@ -347,6 +356,7 @@ const LeaveBalanceTable = ({
             nodataStyle={{ marginTop: "-35px", height: "175px" }}
             // bordered
             data={leaves?.length > 0 ? leaves : []}
+            // scroll={{ x: 1500 }}
           />
         </PCardBody>
 

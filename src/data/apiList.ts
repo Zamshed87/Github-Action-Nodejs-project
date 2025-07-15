@@ -145,7 +145,7 @@ export const apiList = {
   GetEmpAttendanceReport: "/TimeSheetReport/GetEmpAttendanceReport",
   EmployeeSeparationListFilter: "/Employee/EmployeeSeparationListFilter",
   OvertimeReport: "/Employee/OvertimeReportLanding",
-  MonthlyleaveReport: "/LeaveMovement/MonthlyleaveReport",
+  MonthlyleaveReport: "/LeaveBalance/MonthlyleaveReport",
   EmployeeMovementReportAll: "/Employee/EmployeeMovementReportAll",
   GetAbsentReport: "/TimeSheetReport/GetAbsentReport",
   GetDailyOvertimeEmployeeList: "/Payroll/GetDailyOvertimeEmployeeList",
