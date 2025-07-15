@@ -521,7 +521,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 <div className="my-3">
                   <LeaveBalanceTable
                     leaveBalanceData={balanceApi?.data}
-                    values=""
+                    values={{ employee: { value: empData?.employeeId } }}
                   />
                 </div>
               </div>
