@@ -89,6 +89,7 @@ export const payrollGroupElementList = async (accId, autoId, setter) => {
           modifyData = res?.data?.map((itm) => {
             return {
               ...itm,
+              label: itm?.strPayrollElementName,
               intDependsOn: itm?.strDependOn === "Gross" ? 1 : 2,
               [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
                 itm?.strBasedOn === "Amount"

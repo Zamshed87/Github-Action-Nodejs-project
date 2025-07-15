@@ -548,22 +548,24 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
         if (item.strBasedOn === "Calculative") {
           let formula = item.strFormula || item.formula || "";
 
-          // Replace all #Label# with actual values
+          // Replace all #Label# with actual values (wrapped in parentheses)
           for (const label in labelToAmountMap) {
             const regex = new RegExp(`#${label.trim()}#`, "g");
             formula = formula.replace(regex, `(${labelToAmountMap[label]})`);
           }
 
-          // Replace % N → * (N / 100)
-          formula = formula.replace(/% *(\d+(\.\d+)?)/g, "* ($1 / 100)");
+          // Convert all %N to (N/100)
+          formula = formula.replace(/%\s*(\d+(\.\d+)?)/g, "($1 / 100)");
+
+          // Convert standalone % (without numbers) to /100
+          formula = formula.replace(/([)\d])\s*%/g, "$1/100");
+          formula = formula.replace(/%/g, "/100");
 
           try {
             if (formula.match(/#\w+#/)) throw new Error("Unresolved label");
 
             const evaluated = eval(formula);
-            const amount = roundToDecimals(
-              Number.isFinite(evaluated) ? evaluated : 0
-            );
+            const amount = Number.isFinite(evaluated) ? evaluated : 0;
 
             labelToAmountMap[item.strPayrollElementName.trim()] = amount;
 
@@ -577,7 +579,6 @@ const SalaryV2: React.FC<TAttendenceAdjust> = () => {
             return item; // Retry next pass
           }
         }
-
         return item;
       });
 

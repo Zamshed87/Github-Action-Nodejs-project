@@ -202,26 +202,41 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   };
   const calculateFormulaNetAmounts = (data: any[]) => {
     const updated = [...data];
+    const valueMap = new Map<string, number>();
+
+    // Create a map of all element names to their net amounts
+    updated.forEach((el) => {
+      valueMap.set(el.payrollElementName, el.netAmount ?? 0);
+    });
 
     updated.forEach((row) => {
       if (row.basedOn === "Calculative" && row.formula) {
         let formula = row.formula;
 
-        // Replace #Label# with actual values
-        updated.forEach((el) => {
-          const label = el.payrollElementName;
-          const value = el.netAmount ?? 0;
-          const regex = new RegExp(`#${label}#`, "g");
-          formula = formula.replace(regex, value.toString());
+        // First replace percentage of variables (like 2%#Basic#)
+        valueMap.forEach((value, label) => {
+          // Handle cases like 2%#Basic# → (2/100)*BasicValue
+          const percentageRegex = new RegExp(`(\\d+)%\\s*#${label}#`, "g");
+          formula = formula.replace(percentageRegex, `($1/100)*${value}`);
         });
 
-        // Convert % N → * (N / 100)
-        formula = formula.replace(/% *(\d+(\.\d+)?)/g, "* ($1 / 100)");
+        // Then replace simple #Label# references
+        valueMap.forEach((value, label) => {
+          const simpleReferenceRegex = new RegExp(`#${label}#`, "g");
+          formula = formula.replace(simpleReferenceRegex, value.toString());
+        });
+
+        // Convert standalone percentages to their decimal form (5% → 0.05)
+        formula = formula.replace(/(\d+)\s*%/g, "($1 / 100)");
 
         try {
-          const result = eval(formula);
-          row.netAmount = Number.isFinite(result) ? result : 0;
+          // Use Function constructor for evaluation
+          const result = new Function("return " + formula)();
+          row.netAmount = Number.isFinite(result)
+            ? parseFloat(result.toFixed(6))
+            : 0;
         } catch (err) {
+          console.error(`Error evaluating formula "${row.formula}":`, err);
           row.netAmount = 0;
         }
       }
