@@ -88,7 +88,7 @@ export default function PolicyUpload() {
     );
     getPeopleDeskAllDDL(
       // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${0}&workplaceId=${0}`,
       "intDepartmentId",
       "strDepartment",
       setDepartmentDDL
