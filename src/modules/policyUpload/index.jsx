@@ -113,40 +113,43 @@ export default function PolicyUpload() {
   }, []);
 
   const saveHandler = (values, cb) => {
-    const { businessUnit, department } = values;
-    if (!businessUnit) {
-      return toast.warn("Business Unit is required");
+    const { department, workGroup, workPlace } = values;
+    if (workGroup?.length === 0) {
+      return toast.warn("WorkPlace Group is required");
     }
-    if (!department) {
+    if (workPlace?.length === 0) {
+      return toast.warn("WorkPlace is required");
+    }
+    if (department?.length === 0) {
       return toast.warn("Department is required");
     }
     if (!imageFile) {
       return toast.warn("Upload File is required");
     }
 
-    const busisnessUnitList = businessUnit.map((itm) => {
-      return {
-        rowId: 0,
-        policyId: 0,
-        areaType: "BusinessUnit",
-        areaAutoId: itm?.value || 0,
-        areaName: itm?.label || "",
-        isActive: true,
-        intCreatedBy: employeeId,
-      };
-    });
+    // const busisnessUnitList = businessUnit.map((itm) => {
+    //   return {
+    //     rowId: 0,
+    //     policyId: 0,
+    //     areaType: "BusinessUnit",
+    //     areaAutoId: itm?.value || 0,
+    //     areaName: itm?.label || "",
+    //     isActive: true,
+    //     intCreatedBy: employeeId,
+    //   };
+    // });
 
-    const departmentList = department.map((itm) => {
-      return {
-        rowId: 0,
-        policyId: 0,
-        areaType: "Department",
-        areaAutoId: itm?.value || 0,
-        areaName: itm?.label || "",
-        isActive: true,
-        intCreatedBy: employeeId,
-      };
-    });
+    // const departmentList = department.map((itm) => {
+    //   return {
+    //     rowId: 0,
+    //     policyId: 0,
+    //     areaType: "Department",
+    //     areaAutoId: itm?.value || 0,
+    //     areaName: itm?.label || "",
+    //     isActive: true,
+    //     intCreatedBy: employeeId,
+    //   };
+    // });
 
     const payload = {
       objHeader: {
@@ -163,7 +166,17 @@ export default function PolicyUpload() {
         intCreatedBy: employeeId,
         isActive: true,
       },
-      objRow: [...busisnessUnitList, ...departmentList],
+      objRow: [
+        {
+          rowId: 0,
+          policyId: 0,
+          workplaceGroupId: values?.workGroup?.map((i) => i?.value).join(","),
+          workplaceId: values?.workPlace?.map((i) => i?.value).join(","),
+          intDepartmentId: values?.department?.map((i) => i?.value).join(","),
+          isActive: true,
+          intCreatedBy: employeeId,
+        },
+      ],
     };
 
     const callback = () => {
@@ -221,8 +234,14 @@ export default function PolicyUpload() {
         filter: false,
       },
       {
-        title: "Business Unit",
-        dataIndex: "businessUnitList",
+        title: "WorkplaceGroup",
+        dataIndex: "workplaceGroupList",
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "Workplace",
+        dataIndex: "workplaceList",
         sorter: false,
         filter: false,
       },

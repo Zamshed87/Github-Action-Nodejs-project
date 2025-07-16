@@ -180,6 +180,7 @@ const FormCard = ({
                   newValue = [{ value: 0, label: "All" }];
                 } else if (
                   hasOtherSelections &&
+                  values?.workGroup?.length > 0 &&
                   values?.workGroup?.some((opt) => opt.value === 0)
                 ) {
                   // "All" is already selected, remove it if user selects something else
@@ -244,7 +245,6 @@ const FormCard = ({
                 const hasOtherSelections = newValue.some(
                   (opt) => opt.value !== 0
                 );
-                console.log({ values }, "22");
                 if (isAllSelected && hasOtherSelections) {
                   // Only keep "All"
                   newValue = [{ value: 0, label: "All" }];
@@ -320,8 +320,30 @@ const FormCard = ({
               ] || []
             }
             value={values?.department}
-            onChange={(valueOption) => {
-              setFieldValue("department", valueOption);
+            onChange={(selectedOptions) => {
+              let newValue = selectedOptions || [];
+
+              // Check if "All" was selected
+              const isAllSelected = newValue.some((opt) => opt.value === 0);
+              const hasOtherSelections = newValue.some(
+                (opt) => opt.value !== 0
+              );
+              if (isAllSelected && hasOtherSelections) {
+                // Only keep "All"
+                newValue = [{ value: 0, label: "All" }];
+              } else if (isAllSelected && newValue.length > 1) {
+                // User selected "All" when others were selected
+                newValue = [{ value: 0, label: "All" }];
+              } else if (
+                hasOtherSelections &&
+                values?.department?.length > 0 &&
+                values?.department?.some((opt) => opt.value === 0)
+              ) {
+                // "All" is already selected, remove it if user selects something else
+                newValue = newValue.filter((opt) => opt.value !== 0);
+              }
+
+              setFieldValue("department", newValue);
             }}
             isMulti
             errors={errors}
