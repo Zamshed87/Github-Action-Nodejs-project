@@ -161,33 +161,38 @@ const FormCard = ({
                 }),
               }}
               name="workGroup"
-              options={[{ value: 0, label: "All" }, ...workplaceGroupDDL] || []}
+              options={
+                [
+                  // { value: 0, label: "All" },
+                  ...workplaceGroupDDL,
+                ] || []
+              }
               value={values?.workGroup}
               onChange={(selectedOptions) => {
-                let newValue = selectedOptions || [];
+                // let newValue = selectedOptions || [];
 
-                // Check if "All" was selected
-                const isAllSelected = newValue.some((opt) => opt.value === 0);
-                const hasOtherSelections = newValue.some(
-                  (opt) => opt.value !== 0
-                );
+                // // Check if "All" was selected
+                // const isAllSelected = newValue.some((opt) => opt.value === 0);
+                // const hasOtherSelections = newValue.some(
+                //   (opt) => opt.value !== 0
+                // );
 
-                if (isAllSelected && hasOtherSelections) {
-                  // Only keep "All"
-                  newValue = [{ value: 0, label: "All" }];
-                } else if (isAllSelected && newValue.length > 1) {
-                  // User selected "All" when others were selected
-                  newValue = [{ value: 0, label: "All" }];
-                } else if (
-                  hasOtherSelections &&
-                  values?.workGroup?.length > 0 &&
-                  values?.workGroup?.some((opt) => opt.value === 0)
-                ) {
-                  // "All" is already selected, remove it if user selects something else
-                  newValue = newValue.filter((opt) => opt.value !== 0);
-                }
+                // if (isAllSelected && hasOtherSelections) {
+                //   // Only keep "All"
+                //   newValue = [{ value: 0, label: "All" }];
+                // } else if (isAllSelected && newValue.length > 1) {
+                //   // User selected "All" when others were selected
+                //   newValue = [{ value: 0, label: "All" }];
+                // } else if (
+                //   hasOtherSelections &&
+                //   values?.workGroup?.length > 0 &&
+                //   values?.workGroup?.some((opt) => opt.value === 0)
+                // ) {
+                //   // "All" is already selected, remove it if user selects something else
+                //   newValue = newValue.filter((opt) => opt.value !== 0);
+                // }
 
-                setFieldValue("workGroup", newValue);
+                setFieldValue("workGroup", selectedOptions);
               }}
               isMulti
               errors={errors}
@@ -235,32 +240,37 @@ const FormCard = ({
                 }),
               }}
               name="workPlace"
-              options={[{ value: 0, label: "All" }, ...workplaceDDL] || []}
+              options={
+                [
+                  // { value: 0, label: "All" },
+                  ...workplaceDDL,
+                ] || []
+              }
               value={values?.workPlace}
               onChange={(selectedOptions) => {
-                let newValue = selectedOptions || [];
+                // let newValue = selectedOptions || [];
 
-                // Check if "All" was selected
-                const isAllSelected = newValue.some((opt) => opt.value === 0);
-                const hasOtherSelections = newValue.some(
-                  (opt) => opt.value !== 0
-                );
-                if (isAllSelected && hasOtherSelections) {
-                  // Only keep "All"
-                  newValue = [{ value: 0, label: "All" }];
-                } else if (isAllSelected && newValue.length > 1) {
-                  // User selected "All" when others were selected
-                  newValue = [{ value: 0, label: "All" }];
-                } else if (
-                  hasOtherSelections &&
-                  values?.workPlace?.length > 0 &&
-                  values?.workPlace?.some((opt) => opt.value === 0)
-                ) {
-                  // "All" is already selected, remove it if user selects something else
-                  newValue = newValue.filter((opt) => opt.value !== 0);
-                }
+                // // Check if "All" was selected
+                // const isAllSelected = newValue.some((opt) => opt.value === 0);
+                // const hasOtherSelections = newValue.some(
+                //   (opt) => opt.value !== 0
+                // );
+                // if (isAllSelected && hasOtherSelections) {
+                //   // Only keep "All"
+                //   newValue = [{ value: 0, label: "All" }];
+                // } else if (isAllSelected && newValue.length > 1) {
+                //   // User selected "All" when others were selected
+                //   newValue = [{ value: 0, label: "All" }];
+                // } else if (
+                //   hasOtherSelections &&
+                //   values?.workPlace?.length > 0 &&
+                //   values?.workPlace?.some((opt) => opt.value === 0)
+                // ) {
+                //   // "All" is already selected, remove it if user selects something else
+                //   newValue = newValue.filter((opt) => opt.value !== 0);
+                // }
 
-                setFieldValue("workPlace", newValue);
+                setFieldValue("workPlace", selectedOptions);
               }}
               isMulti
               errors={errors}

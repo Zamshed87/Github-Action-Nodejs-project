@@ -237,19 +237,29 @@ export default function PolicyUpload() {
         title: "WorkplaceGroup",
         dataIndex: "workplaceGroupList",
         sorter: false,
+        render: (_, rec) => (
+          <span style={{ wordBreak: "break-word" }}>
+            {rec?.workplaceGroupList}
+          </span>
+        ),
+
         filter: false,
       },
       {
         title: "Workplace",
         dataIndex: "workplaceList",
-        sorter: false,
-        filter: false,
+        render: (_, rec) => (
+          <span style={{ wordBreak: "break-word" }}>{rec?.workplaceList}</span>
+        ),
       },
       {
         title: "Department",
         dataIndex: "departmentList",
         sorter: false,
         filter: false,
+        render: (_, rec) => (
+          <span style={{ wordBreak: "break-word" }}>{rec?.departmentList}</span>
+        ),
       },
       {
         title: "Acknowledged",
