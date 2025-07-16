@@ -150,7 +150,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
           <PCardHeader title="PF Fund Report" exportIcon onExport={() => {
             // download excel after the api call
             downloadFile(
-              "/EmployeeIncrement/DownloadRefundOrEarningReportLanding",
+              "/PdfAndExcelReport/DownloadRefundOrEarningReportLanding",
               "PF_Fund_Report",
               "xlsx",
               setLoading,
