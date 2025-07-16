@@ -30,6 +30,7 @@ const FlipComponent = ({
   landingApiReward,
   landingApiPunishment,
   balanceApi,
+  promotionInfo,
 }) => {
   const book = useRef();
 
@@ -105,7 +106,7 @@ const FlipComponent = ({
                 <IncrementHistory incrementHistory={incrementHistory} />
               </div>
               <div className="page">
-                <PromotionInfo data={[]} />
+                <PromotionInfo data={promotionInfo} />
               </div>
               <div className="page">
                 <TransferHistory historyData={historyData} />
