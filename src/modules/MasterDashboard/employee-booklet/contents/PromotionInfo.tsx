@@ -22,7 +22,7 @@ const PromotionInfo = forwardRef((props: any, ref: any) => {
       dataIndex: "",
       width: 80,
       render: (_: any, record: any) =>
-        record?.PromotionType !== "Grade" && (
+        record?.PromotionType !== "Grade" ? (
           <>
             <p>
               <b>HR Position:</b> {record?.FromHRPositionName}
@@ -38,6 +38,11 @@ const PromotionInfo = forwardRef((props: any, ref: any) => {
               <b>Department:</b> {record?.FromDepartmentName}
             </p>
           </>
+        ) : (
+          <p>
+            <b>Grade:</b> {record?.OldPayscaleName}
+            {record?.OldSlabCount ? `( ${record?.OldSlabCount})` : ""}
+          </p>
         ),
     },
     {
