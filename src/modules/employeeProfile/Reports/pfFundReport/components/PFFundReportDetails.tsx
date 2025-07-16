@@ -90,7 +90,7 @@ const PFFundReportDetails: React.FC<TPFFundReport> = ({ form, data }) => {
             const values = form.getFieldsValue();
 
             downloadFile(
-              "/EmployeeIncrement/DownloadEmployeeWisePfFundDetails",
+              "/PdfAndExcelReport/DownloadEmployeeWisePfFundDetails",
               "EmployeeWisePfFundDetails",
               "xlsx",
               setLoading,
