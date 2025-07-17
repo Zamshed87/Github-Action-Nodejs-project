@@ -31,7 +31,7 @@ const PfInvestmentByTypeReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30510),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30604),
     []
   );
   // menu permission
