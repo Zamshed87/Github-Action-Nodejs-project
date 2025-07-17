@@ -25,9 +25,6 @@ const PromotionInfo = forwardRef((props: any, ref: any) => {
         record?.PromotionType !== "Grade" ? (
           <>
             <p>
-              <b>HR Position:</b> {record?.FromHRPositionName}
-            </p>
-            <p>
               <b>Designation:</b> {record?.FromDesignationName}
             </p>
             <p>
@@ -52,9 +49,6 @@ const PromotionInfo = forwardRef((props: any, ref: any) => {
       render: (_: any, record: any) =>
         record?.PromotionType !== "Grade" ? (
           <>
-            <p>
-              <b>HR Position:</b> {record?.ToHRPositionName}
-            </p>
             <p>
               <b>Designation:</b> {record?.ToDesignationName}
             </p>
