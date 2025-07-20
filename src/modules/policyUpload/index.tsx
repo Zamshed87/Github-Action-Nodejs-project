@@ -364,7 +364,7 @@ export const PolicyCRUD = () => {
                   showSearch
                   name="policyCategory"
                   label="Policy Category"
-                  placeholder="Select Policy Type"
+                  placeholder=""
                   options={policyDDL?.length > 0 ? policyDDL : []}
                   onChange={(value, op) => {
                     form.setFieldsValue({
@@ -489,7 +489,7 @@ export const PolicyCRUD = () => {
                   ]}
                 />
               </Col>
-              <Col md={10} sm={12} className="mt-4">
+              <Col md={11} sm={12} className="mt-4">
                 <FileUploadComponents
                   propsObj={{
                     title: "Upload",
@@ -503,7 +503,7 @@ export const PolicyCRUD = () => {
                     maxCount: 1,
                     accept: "image/png, image/jpeg, image/jpg",
                     subText:
-                      "Recommended file formats are:  JPG and PNG. Maximum file size is 1 MB",
+                      "Recommended file formats are:  PDF,JPG and PNG. Maximum file size is 1 MB",
                   }}
                 />
               </Col>
