@@ -205,7 +205,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
 
     const elementSum = rowDto?.reduce((acc, i) => acc + i?.numAmount, 0);
 
-    if (Math.round(elementSum) !== values?.grossAmount) {
+    if (Math.round(elementSum) !== Math.round(values?.grossAmount)) {
       return toast.warn(
         "Breakdonwn Elements Net Amount Must Be Equal To Gross Amount!!!"
       );
@@ -1000,7 +1000,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              Math.round(elementSum) !== grossAmount && (
+              Math.round(elementSum) !== Math.round(grossAmount) && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"
