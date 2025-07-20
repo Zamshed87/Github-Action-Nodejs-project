@@ -102,6 +102,7 @@ export type buttonType =
   | "disbursement"
   | "print"
   | "extend"
+  | "punishment"
   | "assign"
   | "disabled";
 export type buttonList = {

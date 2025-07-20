@@ -30,7 +30,7 @@ export const fetchWorkforceTypeWiseData = async ({
   setShowData?: (data: any) => void;
 }) => {
   const res = await axios.get(
-    `/WorkforcePlanning/GetWorkforceComparisonReport`,
+    `/WorkforcePlanning/GetAllManpowerComparison`,
     {
       params: {
         YearTypeId: yearType,
@@ -48,7 +48,7 @@ export const fetchWorkforceTypeWiseData = async ({
       setShowData(true);
     }
   }
-   setTableData(res?.data?.data);
+   setTableData(res?.data);
           setPagination({
             current: res?.data.pageNo,
             pageSize: res?.data.pageSize || pageSize,

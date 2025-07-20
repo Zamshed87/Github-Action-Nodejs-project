@@ -282,12 +282,13 @@ const WorkForceCreate = () => {
     // Prepare payload according to the specified structure
     const payload = {
       workplaceId: formValues.workplace?.value || formValues.workplace,
+      workplaceGroupId: wgId,
       yearTypeId:
         formValues.yearType?.intId ||
         (formValues.yearType?.value === "calendar" ? 1 : 2),
       fromDate: fromDate,
       toDate: toDate,
-        headerId: 0,
+      headerId: location?.state?.headerId || 0,
       planningTypeId: formValues.planningType?.intId,
       rowData: tableData.map((item) => ({
         typeId: item.id,
@@ -304,7 +305,7 @@ const WorkForceCreate = () => {
       urlKey: `${
         location.state ? "WorkforcePlanningUpdate" : "WorkforcePlanningCreate"
       }`,
-      method: location.state ? "PUT" : "POST",
+      method: location.state ? "PATCH" : "POST",
       payload: payload,
       onSuccess: () => {
         toast.success("Workforce planning data saved successfully!");
@@ -381,16 +382,12 @@ const WorkForceCreate = () => {
     getWorkplace();
   }, [orgId, buId, wgId, wId]);
 
-
   useEffect(() => {
     // If coming from edit, set initial values from location.state and fetch data
-    const fetchEditData = async (workplaceId, yearTypeId, fromYear, toYear) => {
+    const fetchEditData = async () => {
       try {
         setLoading(true);
-        let url = `/WorkforcePlanning/GetById?WorkplaceId=${workplaceId}&YearTypeId=${yearTypeId}&FromDate=${fromYear}`;
-        if (toYear) {
-          url += `&ToDate=${toYear}`;
-        }
+        let url = `/WorkforcePlanning/GetById?HeaderId=${location.state?.headerId}`;
         const res = await axios.get(url);
         if (res.data?.statusCode === 200 && res.data?.data) {
           const d = res.data.data;
@@ -400,13 +397,15 @@ const WorkForceCreate = () => {
           if (d.yearTypeId === 2 && d.fromDate === d.toDate) {
             // Merge by typeId
             const map = {};
-            d.rowData.forEach(item => {
+            d.rowData.forEach((item) => {
               if (!map[item.typeId]) {
                 map[item.typeId] = { ...item };
               } else {
                 map[item.typeId].currentValue += item.currentValue;
                 map[item.typeId].targetValue += item.targetValue;
-                map[item.typeId].remark = [map[item.typeId].remark, item.remark].filter(Boolean).join(" | ");
+                map[item.typeId].remark = [map[item.typeId].remark, item.remark]
+                  .filter(Boolean)
+                  .join(" | ");
               }
             });
             mergedRowData = Object.values(map);
@@ -421,7 +420,10 @@ const WorkForceCreate = () => {
             },
             selectYear:
               d.yearTypeId === 2
-                ? { value: d.calenderYearId, label: `${d.fromDate}-${d.toDate}` }
+                ? {
+                    value: d.calenderYearId,
+                    label: `${d.fromDate}-${d.toDate}`,
+                  }
                 : { value: d.fromDate, label: d.fromDate?.toString() },
             planningType: {
               value: getPlanningTypeValue(d.planningTypeId),

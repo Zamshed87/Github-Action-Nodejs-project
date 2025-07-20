@@ -19,6 +19,7 @@ import WorkExperienceHistory from "./contents/WorkExperienceHistory";
 import EducationalInfo from "./contents/EducationalInfo";
 import TrainingInfo from "./contents/TrainingInfo";
 import FamilyAndRelationship from "./contents/FamilyAndRelationship";
+import PromotionInfo from "./contents/PromotionInfo";
 
 const FlipComponent = ({
   singleData,
@@ -29,6 +30,7 @@ const FlipComponent = ({
   landingApiReward,
   landingApiPunishment,
   balanceApi,
+  promotionInfo,
 }) => {
   const book = useRef();
 
@@ -102,6 +104,9 @@ const FlipComponent = ({
               </div>
               <div className="page">
                 <IncrementHistory incrementHistory={incrementHistory} />
+              </div>
+              <div className="page">
+                <PromotionInfo data={promotionInfo} />
               </div>
               <div className="page">
                 <TransferHistory historyData={historyData} />

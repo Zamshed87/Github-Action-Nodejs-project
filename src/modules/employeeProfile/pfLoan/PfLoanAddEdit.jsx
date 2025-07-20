@@ -334,6 +334,7 @@ const PfLoanAddEdit = () => {
                   name="loanAmount"
                   type="number"
                   min={0}
+                  step="any"
                   className="form-control"
                   onChange={(e) => {
                     const ownPFAmount = loanByIdDto?.objHeader

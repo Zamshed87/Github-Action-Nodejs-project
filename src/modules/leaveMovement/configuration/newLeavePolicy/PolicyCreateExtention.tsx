@@ -855,7 +855,9 @@ export const PolicyCreateExtention = () => {
           //   label: "Anytime",
           // },
 
-          isProRata: { value: 1, label: "Yes" },
+          isProRata: +policyId
+            ? form?.getFieldValue("isProRata")
+            : { value: 1, label: "Yes" },
           payDependsOn: {
             value: 2,
             label: "Gross Salary",

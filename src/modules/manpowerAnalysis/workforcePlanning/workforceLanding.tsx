@@ -37,7 +37,7 @@ const WorkforcePlanningLanding = () => {
 
   // Pagination state
   const [currentPage, setcurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
   const [excelLoading, setExcelLoading] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
 
@@ -74,21 +74,21 @@ const WorkforcePlanningLanding = () => {
     getCriteriaList(
       `/WorkforcePlanning/GetAll?WorkplaceGroupId=${
         filters.workplaceGroupId || wgId
-      }&WorkplaceId=${
-        filters.workplaceId || wId
-      }&yearTypeId=${yearTypeId || 2}&fromYear=${fromYear || 2022}&toDate=${toYear || 2023}&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
+      }&WorkplaceId=${filters.workplaceId || wId}&yearTypeId=${
+        yearTypeId || 0
+      }&fromYear=${fromYear || 0}&toYear=${
+        toYear || 0
+      }&AccountId=${orgId}&pageNumber=${page}&pageSize=${size}`
     );
   };
 
-  const updatePolicyStatusLocally = (
+  const updateStatusLocally = (
     list: any[],
     policyId: number,
     isActive: boolean
   ) => {
     const updatedList = [...list];
-    const index = updatedList.findIndex(
-      (item) => item.headerId === policyId
-    );
+    const index = updatedList.findIndex((item) => item.headerId === policyId);
     if (index !== -1) {
       updatedList[index] = {
         ...updatedList[index],
@@ -100,10 +100,10 @@ const WorkforcePlanningLanding = () => {
   };
 
   // Update: Accept record and newStatus
-  const togglePfPolicyStatus = async (record: any, isActive: boolean) => {
+  const toggleActiveInactiveStatus = async (record: any, isActive: boolean) => {
     let url = `/WorkforcePlanning/ActiveNInactive?HeaderId=${record.headerId}&IsActive=${isActive}`;
     if (isActive) {
-      url += `&WorkplaceId=${record.workplaceId}&FromDate=${record.fromYear}&ToDate=${record.toYear}`;
+      url += `&WorkplaceId=${record.workplaceId}&FromDate=${record.fromYear || 0}&ToDate=${record.toYear || 0}`;
     }
     const response = await axios.put(url);
     return response?.data;
@@ -182,77 +182,46 @@ const WorkforcePlanningLanding = () => {
                 onChange={async (checked) => {
                   const prevStatus = rec.isActive;
                   setData((prev) =>
-                    updatePolicyStatusLocally(
-                      prev,
-                      rec.headerId,
-                      checked
-                    )
+                    updateStatusLocally(prev, rec.headerId, checked)
                   );
+
+                  const getMsg = (msg: any, def: string) =>
+                    Array.isArray(msg)
+                      ? msg[0]
+                      : typeof msg === "string"
+                      ? msg
+                      : def;
+
                   try {
-                    const result = await togglePfPolicyStatus(rec, checked);
-                    const getSuccessMsg = (msg: any, checked: boolean) => {
-                      if (Array.isArray(msg) && msg.length > 0) return msg[0];
-                      if (typeof msg === "string") return msg;
-                      return checked
+                    const res = await toggleActiveInactiveStatus(rec, checked);
+                    const msg = getMsg(
+                      res?.message,
+                      checked
                         ? "Activated successfully"
-                        : "Deactivated successfully";
-                    };
-                    setTimeout(() => {
-                      if (checked) {
-                        toast.success(getSuccessMsg(result?.message, checked), {
-                          autoClose: 3000,
-                        });
-                      } else {
-                        toast.warn(getSuccessMsg(result?.message, checked), {
-                          autoClose: 3000,
-                        });
-                      }
-                    }, 100); // slight delay to ensure UI update
-                  } catch (error) {
-                    setData((prev) =>
-                      updatePolicyStatusLocally(
-                        prev,
-                        rec.headerId,
-                        prevStatus
-                      )
+                        : "Deactivated successfully"
                     );
-                    let errorMsg = "Failed to update status";
-                    let isWarn = false;
-                    if (
-                      error &&
-                      typeof error === "object" &&
-                      error !== null &&
-                      "response" in error &&
-                      error.response &&
-                      typeof error.response === "object" &&
-                      error.response !== null &&
-                      "data" in error.response &&
-                      error.response.data &&
-                      typeof error.response.data === "object" &&
-                      error.response.data !== null
-                    ) {
-                      const resp = error.response;
-                      const respData = resp.data as any;
-                      if (
-                        "statusCode" in respData &&
-                        respData.statusCode === 500 &&
-                        Array.isArray(respData.message) &&
-                        respData.message.length > 0
-                      ) {
-                        errorMsg = respData.message[0];
-                        isWarn = true;
-                      } else if (
-                        "message" in respData &&
-                        typeof respData.message === "string"
-                      ) {
-                        errorMsg = respData.message;
-                      }
-                    }
-                    if (isWarn) {
-                      toast.warn(errorMsg);
-                    } else {
-                      toast.error(errorMsg);
-                    }
+                    setTimeout(
+                      () =>
+                        (checked ? toast.success : toast.warn)(msg, {
+                          autoClose: 3000,
+                        }),
+                      100
+                    );
+                  } catch (err: any) {
+                    setData((prev) =>
+                      updateStatusLocally(prev, rec.headerId, prevStatus)
+                    );
+
+                    const resp = err?.response?.data;
+                    const msg = getMsg(
+                      resp?.message,
+                      "Failed to update status"
+                    );
+                    const isWarn = [400, 500].includes(resp?.statusCode);
+
+                    (isWarn ? toast.warn : toast.error)(msg, {
+                      autoClose: 3000,
+                    });
                   }
                 }}
               />
@@ -266,31 +235,34 @@ const WorkforcePlanningLanding = () => {
       dataIndex: "id",
       render: (id: number, record: any) => (
         <Flex justify="center">
-          <Tooltip placement="bottom" title={"Edit"}>
-            <EditOutlined
-              style={{
-                color: "green",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "0 5px",
-              }}
-              onClick={() => {
-                if (!permission?.isEdit) {
-                  toast.warning("You don't have permission to edit");
-                  return;
-                }
-                history.push(
-                  "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
-                  {
-                    workplaceId: record.workplaceId,
-                    yearTypeId: record.yearTypeId,
-                    fromYear: record.fromYear,
-                    toYear: record.toYear,
+          {record?.isActive && (
+            <Tooltip placement="bottom" title={"Edit"}>
+              <EditOutlined
+                style={{
+                  color: "green",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  margin: "0 5px",
+                }}
+                onClick={() => {
+                  if (!permission?.isEdit) {
+                    toast.warning("You don't have permission to edit");
+                    return;
                   }
-                );
-              }}
-            />
-          </Tooltip>
+                  history.push(
+                    "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
+                    {
+                      workplaceId: record.workplaceId,
+                      yearTypeId: record.yearTypeId,
+                      fromYear: record.fromYear,
+                      toYear: record.toYear,
+                      headerId: record.headerId,
+                    }
+                  );
+                }}
+              />
+            </Tooltip>
+          )}
         </Flex>
       ),
       align: "center",
@@ -327,7 +299,9 @@ const WorkforcePlanningLanding = () => {
       <PForm form={form} initialValues={{}}>
         <PCard>
           <PCardHeader
-            title={`Total ${criteriaList?.totalCount || 0} Workforce Planning`}
+            title={`Total ${
+              criteriaList?.data?.totalCount || 0
+            } Workforce Planning`}
             buttonList={[
               {
                 type: "primary",
@@ -349,7 +323,7 @@ const WorkforcePlanningLanding = () => {
                 if (criteriaList?.data?.length === 0) return null;
                 try {
                   downloadFile(
-                    `/WorkforcePlanning/WorkforcePlanningLandingExcel?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&yearTypeId=${yearTypeId}&fromYear=${fromYear}&toYear=${fromYear}&AccountId=${orgId}&pageNumber=${currentPage}&pageSize=${pageSize}`,
+                    `/WorkforcePlanning/WorkforcePlanningExcelReport?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&YearTypeId=${yearTypeId}&FromYear=${fromYear}&ToYear=${fromYear}&PageNumber=${currentPage}&PageSize=${pageSize}`,
                     "Workforce Planning",
                     "xlsx"
                   );
