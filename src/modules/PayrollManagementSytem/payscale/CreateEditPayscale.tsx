@@ -500,7 +500,13 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           }
 
           setIncrementDto(tempIncrement);
-          setElementDto(res?.payScaleElements);
+          const modify = res?.payScaleElements?.map((i: any) => {
+            return {
+              ...i,
+              label: i?.payrollElementName,
+            };
+          });
+          setElementDto(modify);
         },
       });
     }
