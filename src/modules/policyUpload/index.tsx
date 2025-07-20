@@ -263,6 +263,7 @@ export const PolicyCRUD = () => {
     const cb = () => {
       form.resetFields();
       getPolicies();
+      landingApiCall();
     };
 
     await form
