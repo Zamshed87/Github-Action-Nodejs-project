@@ -1000,7 +1000,7 @@ const SingleIncrement: React.FC<TIncrement> = () => {
             return (
               grossAmount > 0 &&
               salaryType?.label !== "Grade" &&
-              Math.round(elementSum) !== Math.round(grossAmount) && (
+              Math.round(elementSum) !== grossAmount && (
                 <Alert
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   severity="warning"
