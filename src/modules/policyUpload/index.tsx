@@ -38,7 +38,11 @@ import { getWorkplaceGroupDDL } from "common/api/commonApi";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { AttachmentOutlined } from "@mui/icons-material";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { deletePolicy } from "./helper";
+import {
+  deletePolicy,
+  getMultipleDepartment,
+  getMultipleWorkplace,
+} from "./helper";
 // import ViewModal from "common/ViewModal";
 // import ViewForm from "./ViewForm";
 
@@ -73,6 +77,8 @@ export const PolicyCRUD = () => {
   const landingApi = useApiRequest({});
   const workGroupApi = useApiRequest({});
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [departmentDDL, setDepartmentDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [images, setImages] = useState<any[]>([]);
   //   const [isAddEditForm, setIsAddEditForm] = useState(false);
@@ -300,23 +306,19 @@ export const PolicyCRUD = () => {
             intCreatedBy: employeeId,
             isActive: true,
           },
-          objRow: [
-            {
-              rowId: 0,
-              policyId: 0,
-              workplaceGroupId: values?.workGroup
-                ?.map((i: any) => i?.value)
-                .join(","),
-              workplaceId: values?.workPlace
-                ?.map((i: any) => i?.value)
-                .join(","),
-              intDepartmentId: values?.department
-                ?.map((i: any) => i?.value)
-                .join(","),
-              isActive: true,
-              intCreatedBy: employeeId,
-            },
-          ],
+          objRow: {
+            rowId: 0,
+            policyId: 0,
+            workplaceGroupId: values?.workGroup
+              ?.map((i: any) => i?.value)
+              .join(","),
+            workplaceId: values?.workplace?.map((i: any) => i?.value).join(","),
+            intDepartmentId: values?.department
+              ?.map((i: any) => i?.value)
+              .join(","),
+            isActive: true,
+            intCreatedBy: employeeId,
+          },
         };
 
         postPolicy(`/SaasMasterData/CreatePolicy`, payload, cb, true);
@@ -409,7 +411,7 @@ export const PolicyCRUD = () => {
                   ]}
                 />
               </Col>
-              <Col md={5} sm={12} xs={24}>
+              <Col md={6} sm={12} xs={24}>
                 <PSelect
                   showSearch
                   allowClear
@@ -421,20 +423,12 @@ export const PolicyCRUD = () => {
                     workGroupApi?.data?.length > 0 ? workGroupApi?.data : []
                   }
                   onChange={(value, op) => {
-                    console.log({ value, op });
                     setWorkplaceDDL([]);
 
                     form.setFieldsValue({
                       workGroup: op,
                     });
-                    value?.forEach((option: any) => {
-                      getAllWorkPlace(
-                        `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${option}&intId=${employeeId}`,
-                        "intWorkplaceId",
-                        "strWorkplace",
-                        setWorkplaceDDL
-                      );
-                    });
+                    getMultipleWorkplace(setLoading, op, setWorkplaceDDL);
                   }}
                   filterOption={false}
                   rules={[
@@ -445,7 +439,7 @@ export const PolicyCRUD = () => {
                   ]}
                 />
               </Col>
-              <Col md={5} sm={12} xs={24}>
+              <Col md={6} sm={12} xs={24}>
                 <PSelect
                   allowClear
                   mode="multiple"
@@ -457,6 +451,7 @@ export const PolicyCRUD = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
+                    getMultipleDepartment(setLoading, op, setDepartmentDDL);
                   }}
                   filterOption={false}
                   rules={[
@@ -474,7 +469,7 @@ export const PolicyCRUD = () => {
                   name="department"
                   label="Department"
                   placeholder=""
-                  options={[]}
+                  options={departmentDDL || []}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       department: op,
