@@ -1,14 +1,11 @@
-import { Col, Form, Popover, Row, Tag, Tooltip } from "antd";
+import { Col, Form, Row } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import type { RangePickerProps } from "antd/es/date-picker";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -19,21 +16,13 @@ import {
   PSelect,
   TableButton,
 } from "Components";
-import {
-  dateFormatter,
-  monthFirstDate,
-  monthLastDate,
-} from "utility/dateFormatter";
+import {} from "utility/dateFormatter";
 import Loading from "common/loading/Loading";
-import { toast } from "react-toastify";
 
-import { getPDFAction } from "utility/downloadFile";
-import { MdPrint } from "react-icons/md";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { getAllWorkPlace } from "modules/announcement/helper";
 import { getWorkplaceGroupDDL } from "common/api/commonApi";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { AttachmentOutlined } from "@mui/icons-material";
@@ -43,8 +32,6 @@ import {
   getMultipleDepartment,
   getMultipleWorkplace,
 } from "./helper";
-// import ViewModal from "common/ViewModal";
-// import ViewForm from "./ViewForm";
 
 export const PolicyCRUD = () => {
   // hook
@@ -52,7 +39,6 @@ export const PolicyCRUD = () => {
   const [policyDDL, getPolicyDDL, policyLoader] = useAxiosGet();
   const [, postPolicyType, typeCreateLoader] = useAxiosPost();
   const [, postPolicy, createLoader] = useAxiosPost();
-  //   const [policyDDL,getPolicyDDL,policyLoader]=useAxiosGet()
 
   // redux
   const { orgId, buId, wgId, wId, employeeId } = useSelector(
@@ -81,8 +67,6 @@ export const PolicyCRUD = () => {
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [images, setImages] = useState<any[]>([]);
-  //   const [isAddEditForm, setIsAddEditForm] = useState(false);
-  //   const [singleSalaryData, setSingleSalaryData] = useState([]);
 
   type TLandingApi = {
     pagination?: {
