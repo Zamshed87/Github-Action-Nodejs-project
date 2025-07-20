@@ -483,7 +483,7 @@ export const PolicyCRUD = () => {
                     maxCount: 1,
                     accept: "image/png, image/jpeg, image/jpg",
                     subText:
-                      "Recommended file formats are:  PDF,JPG and PNG. Maximum file size is 1 MB",
+                      "Recommended file formats are:  PDF,JPG and PNG. Maximum file size is 2 MB",
                   }}
                 />
               </Col>
