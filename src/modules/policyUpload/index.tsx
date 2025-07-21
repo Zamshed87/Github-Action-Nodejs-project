@@ -267,6 +267,7 @@ export const PolicyCRUD = () => {
       form.resetFields();
       getPolicies();
       landingApiCall();
+      setImages([]);
     };
 
     await form
