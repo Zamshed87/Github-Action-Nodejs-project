@@ -235,6 +235,7 @@ export const PolicyCRUD = () => {
     const cb = () => {
       form.resetFields();
       getPolicies();
+      setOpen(false);
     };
 
     await form
@@ -251,7 +252,9 @@ export const PolicyCRUD = () => {
         postPolicyType(
           `/SaasMasterData/CRUDPolicyCategory`,
           payload,
-          () => {},
+          () => {
+            cb();
+          },
           true
         );
       })
@@ -377,6 +380,9 @@ export const PolicyCRUD = () => {
                   }}
                   onClick={() => {
                     setOpen(true);
+                    form.setFieldsValue({
+                      policyType: undefined,
+                    });
                   }}
                 >
                   <PlusCircleOutlined style={{ fontSize: "16px" }} />
