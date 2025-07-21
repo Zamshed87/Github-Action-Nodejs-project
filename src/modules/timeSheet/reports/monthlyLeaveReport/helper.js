@@ -13,9 +13,9 @@ export const column = {
   StrLeaveTypeName: "Leave Type",
   StrAddressDuetoLeave: "Location",
   StartDate: "From Date",
-  StartEndTime: "Duration",
+  Duration: "Duration",
   EndDate: "To Date",
-  HalfDayHours: "Half Day Hours",
-  TotalDays: "Days",
+  // HalfDayHours: "Half Day Hours",
+  // TotalDays: "Days",
   ApplicationDate: "Application Date",
 };

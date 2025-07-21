@@ -30,6 +30,7 @@ const EmployeeBooklet = () => {
   const [historyData, setHistoryData] = useState([]);
   const [incrementHistoryList, setIncrementHistoryList] = useState([]);
   const [loanDto, getLoanDto, loadingData, setResLoanData] = useAxiosGet();
+  const [promotionInfo, getPromotionInfo, load] = useAxiosGet();
   const [leaveBalanceDto, setLeaveBalanceDto] = useState([]);
 
   const landingApiReward = useApiRequest({});
@@ -247,7 +248,7 @@ const EmployeeBooklet = () => {
 
   return (
     <div style={{ marginTop: "-40px" }}>
-      {(loading || loadingData) && <Loading />}
+      {(loading || loadingData || load) && <Loading />}
       <PForm
         form={form}
         onFinish={() => {
@@ -298,7 +299,9 @@ const EmployeeBooklet = () => {
                 getLoanDto(url, (res: any) => {
                   setResLoanData(res);
                 });
-
+                getPromotionInfo(
+                  `/Employee/PeopleDeskAllLanding?TableName=EmployeeTransferNPromotionAndIncrementHistory&empId=${rec.intEmployeeBasicInfoId}&AccountId=${orgId}&BusinessUnitId=${buId}${filterDate}`
+                );
                 // basic info data
                 getEmpData(rec.intEmployeeBasicInfoId);
                 getTransferAndPromotionHistoryById(
@@ -377,6 +380,7 @@ const EmployeeBooklet = () => {
             landingApiReward={landingApiReward}
             landingApiPunishment={landingApiPunishment}
             balanceApi={balanceApi}
+            promotionInfo={promotionInfo}
           />
         }
       />

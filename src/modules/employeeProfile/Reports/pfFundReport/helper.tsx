@@ -98,19 +98,17 @@ export const getHeader = (
     },
     {
       title: "Employee Profit",
-      dataIndex: "employeeProfit",
+      dataIndex: "employeeProfitAmount",
       align: "center",
       width: 100,
-
-      render: (data: any, record: any) => formatMoney(record?.employeeProfit),
+      render: (data: any, record: any) => formatMoney(record?.employeeProfitAmount),
     },
     {
       title: "Company Profit",
-      dataIndex: "companyProfit",
+      dataIndex: "companyProfitAmount",
       align: "center",
       width: 100,
-
-      render: (data: any, record: any) => formatMoney(record?.companyProfit),
+      render: (data: any, record: any) => formatMoney(record?.companyProfitAmount),
     },
     {
       title: "Total Amount",
