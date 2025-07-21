@@ -334,6 +334,7 @@ const PfLoanAddEdit = () => {
                   name="loanAmount"
                   type="number"
                   min={0}
+                  step="any"
                   className="form-control"
                   onChange={(e) => {
                     const ownPFAmount = loanByIdDto?.objHeader
@@ -348,12 +349,12 @@ const PfLoanAddEdit = () => {
                         "Loan amount should be less than 70% of Own PF amount"
                       );
                     }
-                    // off by sabbir bhai 
-                    // if (orgId === 15 && e.target.value > totalPfAmount * 0.85) {
-                    //   return toast.warning(
-                    //     "Loan amount should be less than 85% of total PF amount"
-                    //   );
-                    // }
+                    // on by sabbir bhai 
+                    if (orgId === 15 && e.target.value > totalPfAmount * 0.85) {
+                      return toast.warning(
+                        "Loan amount should be less than 85% of total PF amount"
+                      );
+                    }
                     setFieldValue("loanAmount", e.target.value);
                     setGeneratedData([]);
                   }}
