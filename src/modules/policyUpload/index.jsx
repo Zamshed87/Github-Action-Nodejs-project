@@ -35,6 +35,8 @@ const initData = {
   policyCategory: "",
   businessUnit: "",
   department: "",
+  workGroup: "",
+  workPlace: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -57,6 +59,8 @@ export default function PolicyUpload() {
   // DDL
   const [policyCategoryDDL, setPolicyCategoryDDL] = useState([]);
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [departmentDDL, setDepartmentDDL] = useState([]);
 
   const [page, setPage] = useState(1);
@@ -84,14 +88,22 @@ export default function PolicyUpload() {
     );
     getPeopleDeskAllDDL(
       // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}`,
+      `PeopleDeskDdl/DepartmentIdAll?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${0}&workplaceId=${0}`,
       "intDepartmentId",
       "strDepartment",
       setDepartmentDDL
     );
+    getPeopleDeskAllDDL(
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      `/PeopleDeskDdl/WorkplaceGroupIdAll?accountId=${orgId}&businessUnitId=${buId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     getPolicyCategoryDDL(orgId, setPolicyCategoryDDL);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
+  // all ddl load
 
   const getGridData = () => {
     getPolicyLanding(orgId, buId, 0, setRowDto);
@@ -101,40 +113,43 @@ export default function PolicyUpload() {
   }, []);
 
   const saveHandler = (values, cb) => {
-    const { businessUnit, department } = values;
-    if (!businessUnit) {
-      return toast.warn("Business Unit is required");
+    const { department, workGroup, workPlace } = values;
+    if (workGroup?.length === 0) {
+      return toast.warn("WorkPlace Group is required");
     }
-    if (!department) {
+    if (workPlace?.length === 0) {
+      return toast.warn("WorkPlace is required");
+    }
+    if (department?.length === 0) {
       return toast.warn("Department is required");
     }
     if (!imageFile) {
       return toast.warn("Upload File is required");
     }
 
-    const busisnessUnitList = businessUnit.map((itm) => {
-      return {
-        rowId: 0,
-        policyId: 0,
-        areaType: "BusinessUnit",
-        areaAutoId: itm?.value || 0,
-        areaName: itm?.label || "",
-        isActive: true,
-        intCreatedBy: employeeId,
-      };
-    });
+    // const busisnessUnitList = businessUnit.map((itm) => {
+    //   return {
+    //     rowId: 0,
+    //     policyId: 0,
+    //     areaType: "BusinessUnit",
+    //     areaAutoId: itm?.value || 0,
+    //     areaName: itm?.label || "",
+    //     isActive: true,
+    //     intCreatedBy: employeeId,
+    //   };
+    // });
 
-    const departmentList = department.map((itm) => {
-      return {
-        rowId: 0,
-        policyId: 0,
-        areaType: "Department",
-        areaAutoId: itm?.value || 0,
-        areaName: itm?.label || "",
-        isActive: true,
-        intCreatedBy: employeeId,
-      };
-    });
+    // const departmentList = department.map((itm) => {
+    //   return {
+    //     rowId: 0,
+    //     policyId: 0,
+    //     areaType: "Department",
+    //     areaAutoId: itm?.value || 0,
+    //     areaName: itm?.label || "",
+    //     isActive: true,
+    //     intCreatedBy: employeeId,
+    //   };
+    // });
 
     const payload = {
       objHeader: {
@@ -151,7 +166,17 @@ export default function PolicyUpload() {
         intCreatedBy: employeeId,
         isActive: true,
       },
-      objRow: [...busisnessUnitList, ...departmentList],
+      objRow: [
+        {
+          rowId: 0,
+          policyId: 0,
+          workplaceGroupId: values?.workGroup?.map((i) => i?.value).join(","),
+          workplaceId: values?.workPlace?.map((i) => i?.value).join(","),
+          intDepartmentId: values?.department?.map((i) => i?.value).join(","),
+          isActive: true,
+          intCreatedBy: employeeId,
+        },
+      ],
     };
 
     const callback = () => {
@@ -209,16 +234,32 @@ export default function PolicyUpload() {
         filter: false,
       },
       {
-        title: "Business Unit",
-        dataIndex: "businessUnitList",
+        title: "WorkplaceGroup",
+        dataIndex: "workplaceGroupList",
         sorter: false,
+        render: (_, rec) => (
+          <span style={{ wordBreak: "break-word" }}>
+            {rec?.workplaceGroupList}
+          </span>
+        ),
+
         filter: false,
+      },
+      {
+        title: "Workplace",
+        dataIndex: "workplaceList",
+        render: (_, rec) => (
+          <span style={{ wordBreak: "break-word" }}>{rec?.workplaceList}</span>
+        ),
       },
       {
         title: "Department",
         dataIndex: "departmentList",
         sorter: false,
         filter: false,
+        render: (_, rec) => (
+          <span style={{ wordBreak: "break-word" }}>{rec?.departmentList}</span>
+        ),
       },
       {
         title: "Acknowledged",
@@ -306,6 +347,7 @@ export default function PolicyUpload() {
           errors,
           touched,
           setFieldValue,
+          setValues,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -367,6 +409,7 @@ export default function PolicyUpload() {
                         errors,
                         touched,
                         resetForm,
+                        setValues,
                       }}
                       setSingleData={setSingleData}
                       singleData={singleData}
@@ -376,9 +419,12 @@ export default function PolicyUpload() {
                       policyCategoryDDL={policyCategoryDDL}
                       setPolicyCategoryDDL={setPolicyCategoryDDL}
                       businessUnitDDL={businessUnitDDL}
+                      workplaceGroupDDL={workplaceGroupDDL}
+                      workplaceDDL={workplaceDDL}
                       departmentDDL={departmentDDL}
                       orgId={orgId}
                       buId={buId}
+                      setWorkplaceDDL={setWorkplaceDDL}
                       employeeId={employeeId}
                     ></FormCard>
                   </div>

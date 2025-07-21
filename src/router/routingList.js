@@ -1844,6 +1844,7 @@ import EmployeeSalaryReport from "modules/CompensationBenefits/employeeSalaryRep
 import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
 import WorkForceComparison from "modules/manpowerAnalysis/workforceComparison/workforceComparison";
 import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
+import { PolicyCRUD } from "../modules/policyUpload/index.tsx";
 
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -2679,6 +2680,10 @@ export const routingList = [
   },
   {
     path: "/administration/policyUpload",
+    component: PolicyCRUD,
+  },
+  {
+    path: "/administration/policyUploado",
     component: PolicyUpload,
   },
   {
