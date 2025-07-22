@@ -44,7 +44,16 @@ const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName, wgName, isOfficeAdmin },
+    profileData: {
+      buId,
+      wId,
+      wgId,
+      employeeId,
+      orgId,
+      buName,
+      wgName,
+      isOfficeAdmin,
+    },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -140,13 +149,12 @@ const MgmtDailyAttendance = () => {
     const workplaceList = values?.workplace?.length
       ? values.workplace.map((item: any) => item.intWorkplaceId).join(",")
       : "";
-      console.log("pagination", pagination);
 
     const payload = {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
       // intWorkplaceId: values?.workplace?.value || 0,
-      workplaceList: workplaceList || "",
+      workplaceList: workplaceList || `${wId}`,
       pageNo: pagination?.current || 0,
       pageSize: pagination?.pageSize || 0,
       isPaginated: true,
@@ -169,7 +177,6 @@ const MgmtDailyAttendance = () => {
       payload: payload,
     });
   };
-
 
   useEffect(() => {
     getWorkplaceGroup();
@@ -524,7 +531,7 @@ const MgmtDailyAttendance = () => {
                                               landingApi?.data?.workplace
                                                 ? `Workplace-${landingApi?.data?.data[0]?.workplace}`
                                                 : "",
-                                            ],
+                                            ] as any,
                                             subHeaderColumn,
                                             tableFooter: [],
                                             extraInfo: {},
@@ -618,7 +625,7 @@ const MgmtDailyAttendance = () => {
               </ul>
             </div>
           </div>
-         {EmployeeStats({landingApi})}
+          {EmployeeStats({ landingApi })}
           <DataTable
             bordered
             data={landingApi?.data?.data || []}
