@@ -281,7 +281,6 @@ export const PolicyCRUD = () => {
       .then(() => {
         const values = form.getFieldsValue(true);
 
-        console.log({ images });
         const payload = {
           objHeader: {
             policyId: 0,
@@ -434,6 +433,7 @@ export const PolicyCRUD = () => {
               <Col md={6} sm={12} xs={24}>
                 <PSelect
                   allowClear
+                  showSearch
                   mode="multiple"
                   name="workplace"
                   label="Workplace"
@@ -457,6 +457,7 @@ export const PolicyCRUD = () => {
               <Col md={6} sm={12} xs={24}>
                 <PSelect
                   allowClear
+                  showSearch
                   mode="multiple"
                   name="department"
                   label="Department"

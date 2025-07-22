@@ -51,42 +51,6 @@ export const getMultipleDepartment = async (setLoading, wg, cb) => {
     toast.warn(error?.response?.data?.message || "Something went wrong");
   }
 };
-// policy category DDL
-export const createPolicyCategory = async (payload, cb) => {
-  try {
-    const res = await axios.post(`/SaasMasterData/CRUDPolicyCategory`, payload);
-    cb && cb();
-    toast.success(res.data?.message || "Successfully");
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-  }
-};
-
-export const getPolicyCategoryDDL = async (accId, setter) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetPolicyCategoryDDL?AccountId=${accId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-    }
-  } catch (error) {
-    setter([]);
-  }
-};
-
-export const createPolicy = async (payload, setLoading, cb) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.post(`/SaasMasterData/CreatePolicy`, payload);
-    cb && cb();
-    toast.success(res.data?.message || "Successfully");
-    setLoading && setLoading(false);
-  } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");
-    setLoading && setLoading(false);
-  }
-};
 
 export const attachment_action = async (
   accountId,
@@ -116,26 +80,6 @@ export const attachment_action = async (
   } catch (error) {
     setLoading && setLoading(false);
     toast.error("File Size is too Large minimum of 1MB or inValid File!");
-  }
-};
-
-export const getPolicyLanding = async (
-  accountId,
-  buId,
-  categoryId,
-  setter,
-  searchValue
-) => {
-  let serach = searchValue ? `&Search=${searchValue}` : "";
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetPolicyLanding?BusinessUnitId=${buId}&CategoryId=${categoryId}&accountId=${accountId}${serach}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-    }
-  } catch (error) {
-    setter([]);
   }
 };
 

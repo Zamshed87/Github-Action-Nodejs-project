@@ -1491,7 +1491,6 @@ const PayrollGrossWiseBasicForm = lazy(() =>
 // const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
 // const Kpis = lazy(() => import("../modules/pms/kpis/index.jsx"));
 // const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
-const PolicyUpload = lazy(() => import("../modules/policyUpload/index.jsx"));
 const RemoteAttendanceApproval = lazy(() =>
   import("../modules/remoteAttendanceLocation/approval/index.jsx")
 );
@@ -2682,10 +2681,7 @@ export const routingList = [
     path: "/administration/policyUpload",
     component: PolicyCRUD,
   },
-  {
-    path: "/administration/policyUploado",
-    component: PolicyUpload,
-  },
+
   {
     path: "/administration/announcement/:id",
     component: AnnouncementViewPage,
