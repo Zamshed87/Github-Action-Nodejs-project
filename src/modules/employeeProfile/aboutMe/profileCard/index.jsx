@@ -36,6 +36,7 @@ const iconStyle = {
 };
 
 const ProfileCard = ({
+  progress,
   empBasic,
   isEditBtn,
   editBtnHandler,
@@ -47,6 +48,7 @@ const ProfileCard = ({
   viewBtnHandler,
   getEmpPendingData,
 }) => {
+  console.log({ progress });
   // this component is used from about me and employee landing page
   // accordion
   const [isAccordion, setIsAccordion] = useState(false);
@@ -121,18 +123,6 @@ const ProfileCard = ({
     pointerEvents: "none", // Ensure it doesn't interfere with image clicks
   };
 
-  // Add this style for the container that will handle hover
-  const hoverContainerStyle = {
-    "&:hover $progressTooltip": {
-      opacity: 1,
-    },
-    "&:hover $progressFill": {
-      borderImage: "linear-gradient(to right, #3d8b40 100%, #f0f0f0 100%) 1",
-    },
-  };
-
-  // Create a styled component for the hover container
-  const HoverContainer = styled("div")(hoverContainerStyle);
   return (
     <div className="card-about-info-main about-info-card">
       {loading && <Loading />}
@@ -154,12 +144,12 @@ const ProfileCard = ({
               {/* ✅ Add class for CSS selector */}
               <div
                 className="progress-fill"
-                style={progressFillStyle(75)}
+                style={progressFillStyle(progress?.[0]?.ProfilePercentage)}
               ></div>
 
               {/* ✅ Tooltip must be inside the same hover-container */}
               <div className="progress-tooltip" style={progressTooltipStyle}>
-                Profile {75}% complete
+                Profile {progress?.[0]?.ProfilePercentage}% complete
               </div>
 
               <label
