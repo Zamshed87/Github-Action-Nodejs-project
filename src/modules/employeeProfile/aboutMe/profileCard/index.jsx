@@ -140,36 +140,67 @@ const ProfileCard = ({
         >
           <div className="hover-container">
             <div style={progressContainer}>
-              <div style={progressBorderStyle}></div>
-              {/* ✅ Add class for CSS selector */}
-              <div
-                className="progress-fill"
-                style={progressFillStyle(progress?.[0]?.ProfilePercentage)}
-              ></div>
+              <div className=""></div>
+              <svg
+                className="progress-ring"
+                width="160"
+                height="160"
+                viewBox="0 0 100 100"
+              >
+                <rect
+                  x="2"
+                  y="2"
+                  width="94"
+                  height="94"
+                  rx="2"
+                  ry="2"
+                  fill="none"
+                  stroke="#f0f0f0"
+                  strokeWidth="3"
+                />
+                <rect
+                  x="2"
+                  y="2"
+                  width="94"
+                  height="94"
+                  rx="2"
+                  ry="2"
+                  fill="none"
+                  stroke="#4CAF50"
+                  strokeWidth="3"
+                  strokeDasharray="376" // Total perimeter of 94*4
+                  strokeDashoffset={
+                    376 -
+                    (Math.round(progress?.[0]?.ProfilePercentage) / 100) * 376
+                  }
+                  style={{ transition: " 1s ease-in-out" }}
+                />
+              </svg>
 
-              {/* ✅ Tooltip must be inside the same hover-container */}
-              <div className="progress-tooltip" style={progressTooltipStyle}>
-                Profile {progress?.[0]?.ProfilePercentage}% complete
+              {/* Tooltip in the center */}
+              <div className="progress-tooltip">
+                {Math.round(progress?.[0]?.ProfilePercentage)}%
               </div>
-
               <label
                 htmlFor="contained-button-file"
                 className="label-add-image"
                 style={{ position: "relative", zIndex: 1 }} // Ensure image stays below tooltip
               >
-                {strProfileImageUrl && strProfileImageUrl > 0 ? (
-                  <img
-                    src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
-                    alt=""
-                    style={{ maxHeight: "150px", minWidth: "140px" }}
-                  />
-                ) : (
-                  <img
-                    src={profileImg}
-                    alt="iBOS"
-                    style={{ height: "inherit" }}
-                  />
-                )}
+                <div style={{ padding: "6px", backgroundColor: "white" }}>
+                  {strProfileImageUrl && strProfileImageUrl > 0 ? (
+                    <img
+                      src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
+                      alt=""
+                      style={{ maxHeight: "150px", minWidth: "140px" }}
+                    />
+                  ) : (
+                    <img
+                      src={profileImg}
+                      alt="iBOS"
+                      style={{ height: "inherit" }}
+                    />
+                  )}
+                </div>
 
                 <>
                   <Input
