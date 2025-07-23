@@ -279,6 +279,15 @@ label.label-add-image.sm-size > img {
   align-items: center;
   justify-content: space-between;
 }
+.hover-container {
+  position: relative;
+}
+
+.hover-container:hover .progress-tooltip {
+  opacity: 1 !important;
+}
+
+
 
 @media (max-width: 575.98px) {
   .accordion-item .accordion-body {
@@ -308,3 +317,4 @@ label.label-add-image.sm-size > img {
     padding-top: 10px;
   }
 }
+

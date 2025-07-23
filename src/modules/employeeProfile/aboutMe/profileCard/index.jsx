@@ -45,7 +45,7 @@ const ProfileCard = ({
   isOfficeAdmin = false,
   isSelfService,
   viewBtnHandler,
-  getEmpPendingData
+  getEmpPendingData,
 }) => {
   // this component is used from about me and employee landing page
   // accordion
@@ -73,7 +73,66 @@ const ProfileCard = ({
         return { label: "", class: "" };
     }
   };
+  const progressContainer = {
+    position: "relative",
+    width: "150px",
+    height: "150px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "8px",
+  };
 
+  const progressBorderStyle = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    borderRadius: "4px",
+    border: "4px solid #f0f0f0",
+    boxSizing: "border-box",
+  };
+
+  const progressFillStyle = (progress) => ({
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    borderRadius: "4px",
+    border: "4px solid transparent",
+    borderImage: `linear-gradient(to right, #4CAF50 ${progress}%, #f0f0f0 ${progress}%) 1`,
+    boxSizing: "border-box",
+    clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0)`,
+    transition: "border-image 0.3s ease",
+  });
+
+  const progressTooltipStyle = {
+    position: "absolute",
+    bottom: "-30px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "#333",
+    color: "#fff",
+    padding: "4px 8px",
+    borderRadius: "4px",
+    fontSize: "12px",
+    opacity: 0,
+    transition: "opacity 0.3s ease",
+    zIndex: 99999999999, // Increased z-index to ensure it's above everything
+    whiteSpace: "nowrap",
+    pointerEvents: "none", // Ensure it doesn't interfere with image clicks
+  };
+
+  // Add this style for the container that will handle hover
+  const hoverContainerStyle = {
+    "&:hover $progressTooltip": {
+      opacity: 1,
+    },
+    "&:hover $progressFill": {
+      borderImage: "linear-gradient(to right, #3d8b40 100%, #f0f0f0 100%) 1",
+    },
+  };
+
+  // Create a styled component for the hover container
+  const HoverContainer = styled("div")(hoverContainerStyle);
   return (
     <div className="card-about-info-main about-info-card">
       {loading && <Loading />}
@@ -89,53 +148,79 @@ const ProfileCard = ({
               : "add-image-about-info-card"
           }
         >
-          <label htmlFor="contained-button-file" className="label-add-image">
-            {strProfileImageUrl && strProfileImageUrl > 0 ? (
-              <img
-                src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
-                alt=""
-                style={{ maxHeight: "150px", minWidth: "140px" }}
-              />
-            ) : (
-              <img src={profileImg} alt="iBOS" style={{ height: "inherit" }} />
-            )}
+          <div className="hover-container">
+            <div style={progressContainer}>
+              <div style={progressBorderStyle}></div>
+              {/* ✅ Add class for CSS selector */}
+              <div
+                className="progress-fill"
+                style={progressFillStyle(75)}
+              ></div>
 
-            <>
-              <Input
-                accept="image/*"
-                id="contained-button-file"
-                multiple
-                disabled={loading}
-                type="file"
-                onChange={(e) => {
-                  empProfilePicUpload(
-                    orgId,
-                    empId,
-                    "EmployeePhotoIdentity",
-                    1,
-                    buId,
-                    employeeId,
-                    setLoading,
-                    e.target.files,
-                    (data) => {
-                      // if response is successful and we have data , also updated profile picture emp id === login emp id , then update login info
-                      if (data?.length > 0 && empId === employeeId) {
-                        dispatch(
-                          updateEmpProfilePicString(data?.[0]?.globalFileUrlId)
-                        );
-                      }
-                      // get emp data again
-                      getEmpData();
-                    }
-                  );
-                }}
-              />
-
-              <div className="cart-img-btn">
-                <img src={editProPic} alt="pro pic" />
+              {/* ✅ Tooltip must be inside the same hover-container */}
+              <div className="progress-tooltip" style={progressTooltipStyle}>
+                Profile {75}% complete
               </div>
-            </>
-          </label>
+
+              <label
+                htmlFor="contained-button-file"
+                className="label-add-image"
+                style={{ position: "relative", zIndex: 1 }} // Ensure image stays below tooltip
+              >
+                {strProfileImageUrl && strProfileImageUrl > 0 ? (
+                  <img
+                    src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
+                    alt=""
+                    style={{ maxHeight: "150px", minWidth: "140px" }}
+                  />
+                ) : (
+                  <img
+                    src={profileImg}
+                    alt="iBOS"
+                    style={{ height: "inherit" }}
+                  />
+                )}
+
+                <>
+                  <Input
+                    accept="image/*"
+                    id="contained-button-file"
+                    multiple
+                    disabled={loading}
+                    type="file"
+                    onChange={(e) => {
+                      empProfilePicUpload(
+                        orgId,
+                        empId,
+                        "EmployeePhotoIdentity",
+                        1,
+                        buId,
+                        employeeId,
+                        setLoading,
+                        e.target.files,
+                        (data) => {
+                          // if response is successful and we have data , also updated profile picture emp id === login emp id , then update login info
+                          if (data?.length > 0 && empId === employeeId) {
+                            dispatch(
+                              updateEmpProfilePicString(
+                                data?.[0]?.globalFileUrlId
+                              )
+                            );
+                          }
+                          // get emp data again
+                          getEmpData();
+                        }
+                      );
+                    }}
+                  />
+
+                  <div className="cart-img-btn">
+                    <img src={editProPic} alt="pro pic" />
+                  </div>
+                </>
+              </label>
+            </div>
+          </div>
         </div>
         <div className="content-about-info-card">
           <div className="d-flex justify-content-between">
