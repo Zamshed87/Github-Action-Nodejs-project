@@ -133,7 +133,9 @@ const MgmtInOutReport = () => {
         accountId: orgId,
         businessUnitId: buId,
         isHeaderNeed: true,
+        // error handling from backend
         workplaceGroupId: values?.workplaceGroup?.value || wgId,
+        WorkplaceGroupList: values?.workplaceGroup?.value || wgId,
         WorkplaceList: values?.workplace?.value || wId,
         pageNo: pagination.current || pages?.current,
         pageSize: pagination.pageSize || pages?.pageSize,

@@ -13,9 +13,11 @@ import { toast } from "react-toastify";
 export const updateEmployeeProfile = async (payload, setLoading, cb, selfServiceParam) => {
   setLoading && setLoading(true);
   const firstSegment = window.location.pathname.split("/")[1];
-  const selfService = selfServiceParam ?? (firstSegment === "SelfService");
+  // selfService is true only if selfServiceParam is true, or the URL path starts with 'SelfService'
+  const selfService = typeof selfServiceParam === 'boolean' ? selfServiceParam : (firstSegment === "SelfService");
 
-  const endpoint = selfService
+  // Always use the correct endpoint based on selfService value
+  const endpoint = selfService === true
     ? "/Employee/UpdateEmployeeProfileSelfService"
     : "/Employee/UpdateEmployeeProfile";
 

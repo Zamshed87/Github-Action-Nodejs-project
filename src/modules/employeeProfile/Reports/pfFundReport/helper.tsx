@@ -19,81 +19,110 @@ export const getHeader = (
         }),
 
       align: "center",
-      width: 20,
+      width: 40,
     },
     {
       title: "Enroll ID",
       dataIndex: "employeeId",
-      sorter: true,
+      width: 80,
+      align: "center",
     },
     {
       title: "Employee Name",
       dataIndex: "employeeName",
-      sorter: true,
+      width: 100,
+      align: "center",
     },
     {
       title: "Code",
       dataIndex: "employeeCode",
-      sorter: true,
+      width: 100,
+      align: "center",
     },
     {
       title: "Department",
       dataIndex: "departmentName",
-      sorter: true,
+      width: 100,
+      align: "center",
     },
     {
       title: "Designation",
       dataIndex: "designationName",
-      sorter: true,
+      width: 100,
+      align: "center",
     },
+    // {
+    //   title: "Type",
+    //   dataIndex: "types",
+    //   isHidden: isHidden,
+    //   width: 60,
+    // },
     {
-      title: "Type",
-      dataIndex: "types",
+      title: "Salary Code",
+      dataIndex: "salaryCode",
+      align: "center",
       isHidden: isHidden,
-      width: 60,
+      width: 100,
+      render: (data: any, record: any) => record?.salaryCode || "N/A",
     },
     {
       title: "Month",
       dataIndex: "month",
       isHidden: isHidden,
+      align: "center",
       width: 50,
     },
     {
       title: "Year",
       dataIndex: "year",
       isHidden: isHidden,
-      width: 30,
+      align: "center",
+      width: 50,
     },
     {
-      title: "Employee Amount",
+      title: "Employee Contribution",
       dataIndex: "employeeContributionAmount",
-      align: "right",
+      align: "center",
+      width: 120,
+
       render: (data: any, record: any) =>
         formatMoney(record?.employeeContributionAmount),
     },
     {
-      title: "Company Amount",
+      title: "Company Contribution",
       dataIndex: "companyContributionAmount",
-      align: "right",
+      align: "center",
+      width: 120,
       render: (data: any, record: any) =>
         formatMoney(record?.companyContributionAmount),
     },
     {
       title: "Employee Profit",
-      dataIndex: "employeeProfit",
-      align: "right",
-      render: (data: any, record: any) => formatMoney(record?.employeeProfit),
+      dataIndex: "employeeProfitAmount",
+      align: "center",
+      width: 100,
+      render: (data: any, record: any) => formatMoney(record?.employeeProfitAmount),
     },
     {
       title: "Company Profit",
-      dataIndex: "companyProfit",
-      align: "right",
-      render: (data: any, record: any) => formatMoney(record?.companyProfit),
+      dataIndex: "companyProfitAmount",
+      align: "center",
+      width: 100,
+      render: (data: any, record: any) => formatMoney(record?.companyProfitAmount),
+    },
+    {
+      title: "Total Amount",
+      dataIndex: "totalAmount",
+      isHidden: isHidden,
+      align: "center",
+      width: 80,
+      render: (data: any, record: any) => record?.totalAmount || "N/A",
     },
     {
       title: "Status",
       dataIndex: "status",
       align: "center",
+      isHidden: !isHidden,
       render: (data: any, record: any) =>
         // Write condition to check status
         record?.status ? (
@@ -103,14 +132,13 @@ export const getHeader = (
         ) : (
           "N/A"
         ),
-      width: "50px",
+      width: 60,
     },
     {
       title: "Action",
       dataIndex: "action",
-      sort: false,
-      filter: false,
-      width: 40,
+      align: "center",
+      width: 70,
       className: "text-center",
       render: (value: any, rec: any) => (
         <PrimaryButton

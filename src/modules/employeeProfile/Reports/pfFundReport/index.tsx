@@ -10,6 +10,11 @@ import { formatFilterValueList } from "utility/filter/helper";
 import { getHeader } from "./helper";
 import { PModal } from "Components/Modal";
 import PFFundReportDetails from "./components/PFFundReportDetails";
+import Loading from "common/loading/Loading";
+import { on } from "events";
+import { onSpaceOrEnter } from "@mui/x-date-pickers/internals";
+import { toast } from "react-toastify";
+import { downloadFile } from "utility/downloadFile";
 
 type TPFFundReport = {};
 const PFFundReport: React.FC<TPFFundReport> = () => {
@@ -38,6 +43,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
   });
 
   //State
+  const [loading, setLoading] = useState(false);
   const [fundReportView, setFundReportView] = useState<{
     open: boolean;
     data: Record<string, unknown>;
@@ -85,18 +91,18 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
             ],
             WorkplaceGroupList:
               values?.workplaceGroup?.value == 0 ||
-              values?.workplaceGroup?.value == undefined
+                values?.workplaceGroup?.value == undefined
                 ? decodedToken.workplaceGroupList
                 : values?.workplaceGroup?.value.toString(),
             WorkplaceList:
               values?.workplace?.value == 0 ||
-              values?.workplace?.value == undefined
+                values?.workplace?.value == undefined
                 ? decodedToken.workplaceList
                 : values?.workplace?.value.toString(),
           },
         });
       })
-      .catch((err) => {});
+      .catch((err) => { });
   };
 
   const employeeDDL = () => {
@@ -137,49 +143,82 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
   }, []);
 
   return pfFundReportFeature?.isView ? (
-    <PForm form={form}>
-      <PCard>
-        <PCardHeader title="PF Fund Report" />
-        <PFilter form={form} landingApiCall={landingApi}>
-          <Col md={12} sm={24}>
-            <PSelect
-              name="employeeName"
-              placeholder="Employee Name"
-              allowClear={true}
-              showSearch={true}
-              rules={[{ required: true, message: "Employee Name Is Required" }]}
-              onChange={(value: any, option: any) => {
-                form.setFieldsValue({
-                  employeeName: option,
-                });
-                pfFundReportApi.reset();
-              }}
-              options={employeeDDLApi?.data || []}
-              label="Employee Name"
-            />
-          </Col>
-          <Col md={12} sm={24}>
-            <PSelect
-              name="status"
-              placeholder="Status"
-              allowClear={true}
-              showSearch={true}
-              rules={[{ required: true, message: "Status Is Required" }]}
-              options={[
-                { label: "All", value: 0 },
-                { label: "Active", value: 1 },
-                { label: "Inactive", value: 2 },
-              ]}
-              onChange={(value: any, option: any) => {
-                form.setFieldsValue({
-                  status: option,
-                });
-                pfFundReportApi.reset();
-              }}
-              label="Status"
-            />
-          </Col>
-          {/* <Col className="mt-3 pt-1">
+    <>
+      {loading && (<Loading />)}
+      <PForm form={form}>
+        <PCard>
+          <PCardHeader title="PF Fund Report" exportIcon onExport={() => {
+            // download excel after the api call
+            downloadFile(
+              "/PdfAndExcelReport/DownloadRefundOrEarningReportLanding",
+              "PF_Fund_Report",
+              "xlsx",
+              setLoading,
+              "POST",
+              {
+                intAccountId: orgId,
+                intEmployeeId: form.getFieldValue("employeeName")?.value || 0,
+                isCurrentFund: true,
+                status: form.getFieldValue("status")?.value || 0,
+                pageNo: 1,
+                pageSize: 1000000,
+                departmentIdList:
+                  formatFilterValueList(form.getFieldValue("department")) || [0],
+                designationIdList:
+                  formatFilterValueList(form.getFieldValue("designation")) || [0],
+                WorkplaceGroupList:
+                  form.getFieldValue("workplaceGroup")?.value == 0 ||
+                    form.getFieldValue("workplaceGroup")?.value == undefined
+                    ? decodedToken.workplaceGroupList
+                    : form.getFieldValue("workplaceGroup")?.value.toString(),
+                WorkplaceList:
+                  form.getFieldValue("workplace")?.value == 0 ||
+                    form.getFieldValue("workplace")?.value == undefined
+                    ? decodedToken.workplaceList
+                    : form.getFieldValue("workplace")?.value.toString(),
+              }
+            )
+          }} />
+          <PFilter form={form} landingApiCall={landingApi}>
+            <Col md={12} sm={24}>
+              <PSelect
+                name="employeeName"
+                placeholder="Employee Name"
+                allowClear={true}
+                showSearch={true}
+                rules={[{ required: true, message: "Employee Name Is Required" }]}
+                onChange={(value: any, option: any) => {
+                  form.setFieldsValue({
+                    employeeName: option,
+                  });
+                  pfFundReportApi.reset();
+                }}
+                options={employeeDDLApi?.data || []}
+                label="Employee Name"
+              />
+            </Col>
+            <Col md={12} sm={24}>
+              <PSelect
+                name="status"
+                placeholder="Status"
+                allowClear={true}
+                showSearch={true}
+                rules={[{ required: true, message: "Status Is Required" }]}
+                options={[
+                  { label: "All", value: 0 },
+                  { label: "Active", value: 1 },
+                  { label: "Inactive", value: 2 },
+                ]}
+                onChange={(value: any, option: any) => {
+                  form.setFieldsValue({
+                    status: option,
+                  });
+                  pfFundReportApi.reset();
+                }}
+                label="Status"
+              />
+            </Col>
+            {/* <Col className="mt-3 pt-1">
             <PRadio
               name="elementType"
               type="group"
@@ -206,38 +245,39 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
               }}
             />
           </Col> */}
-        </PFilter>
-        <DataTable
-          header={getHeader(pfFundReportApi, true, setFundReportView)}
-          bordered
-          data={pfFundReportApi?.data?.data || []}
-          pagination={{
-            current: pfFundReportApi?.data?.currentPage, // Current Page From Api Response
-            pageSize: pfFundReportApi?.data?.pageSize, // Page Size From Api Response
-            total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
+          </PFilter>
+          <DataTable
+            header={getHeader(pfFundReportApi, true, setFundReportView)}
+            bordered
+            data={pfFundReportApi?.data?.data || []}
+            pagination={{
+              current: pfFundReportApi?.data?.currentPage, // Current Page From Api Response
+              pageSize: pfFundReportApi?.data?.pageSize, // Page Size From Api Response
+              total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
+            }}
+            loading={pfFundReportApi?.loading}
+            scroll={{ x: 1800 }}
+            onChange={(pagination, filters, sorter, extra) => {
+              if (extra.action === "sort") return;
+              landingApi({
+                pagination,
+                filerList: filters,
+              });
+            }}
+          />
+        </PCard>
+        <PModal
+          title="PF Fund Report"
+          open={fundReportView.open}
+          onCancel={() => {
+            setFundReportView({ open: false, data: {} });
           }}
-          loading={pfFundReportApi?.loading}
-          scroll={{ x: 1500 }}
-          onChange={(pagination, filters, sorter, extra) => {
-            if (extra.action === "sort") return;
-            landingApi({
-              pagination,
-              filerList: filters,
-            });
-          }}
+          components={<PFFundReportDetails form={form} data={fundReportView.data} />}
+          width={1400}
+          height={"600px"}
         />
-      </PCard>
-      <PModal
-        title="PF Fund Report"
-        open={fundReportView.open}
-        onCancel={() => {
-          setFundReportView({ open: false, data: {} });
-        }}
-        components={<PFFundReportDetails form={form} data={fundReportView.data}/>}
-        width={1400}
-        height={"600px"}
-      />
-    </PForm>
+      </PForm>
+    </>
   ) : (
     <NotPermittedPage />
   );

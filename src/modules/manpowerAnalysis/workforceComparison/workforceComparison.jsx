@@ -18,13 +18,12 @@ import { useApiRequest } from "Hooks";
 import { fetchWorkforceTypeWiseData } from "./helper";
 import { useLocation } from "react-router-dom";
 import { downloadFile } from "utility/downloadFile";
+import { getSerial } from "Utils";
 
 const WorkForceComparison = () => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const location = useLocation();
-
-  
 
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const { orgId, buId, wgId, wId } = useSelector(
@@ -47,10 +46,6 @@ const WorkForceComparison = () => {
 
   // State for form data and loading
   const hideSubmitBtn = false;
-  useEffect(() => {
-    // Data will be loaded when user clicks "View" button
-    console.log("Component initialized - no data loaded yet");
-  }, []);
 
   const fetchWorkforceData = async (page = 1, pageSize = 25) => {
     const { yearType, selectYear, workplace, ComparisonType } =
@@ -77,7 +72,7 @@ const WorkForceComparison = () => {
     setLoading(true);
 
     try {
-      const result = await fetchWorkforceTypeWiseData({
+      fetchWorkforceTypeWiseData({
         yearType: yearTypeId,
         fromDate,
         toDate,
@@ -91,7 +86,6 @@ const WorkForceComparison = () => {
       });
 
       setShowData(true);
-      toast.success("Workforce data loaded successfully!");
     } catch {
       setPagination({
         current: page,
@@ -103,14 +97,20 @@ const WorkForceComparison = () => {
     }
   };
 
+
   const getHeader = () => {
     const baseColumns = [
       {
         title: "SL",
-        dataIndex: "sl",
-        key: "sl",
-        width: 60,
+        render: (_, rec, index) =>
+          getSerial({
+            currentPage: tableData?.pageNo,
+            pageSize: tableData?.pageSize,
+            index,
+          }),
+        fixed: "left",
         align: "center",
+        width: 50,
       },
       {
         title: "Workplace Group",
@@ -316,8 +316,6 @@ const WorkForceComparison = () => {
     getWorkplace();
   }, [orgId, buId, wgId, wId]);
 
-  console.log("tableData", tableData);
-
   return permission?.isView ? (
     <PForm
       form={form}
@@ -348,15 +346,10 @@ const WorkForceComparison = () => {
                 const pageNo = 1;
                 const pageSize = pagination.total || 1000;
 
-                let url = `/WorkforcePlanning/ExportWorkforceComparisonToExcel?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
+                let url = `/WorkforcePlanning/WorkforceComparisonExcelReport?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
                 if (toDate) url += `&ToDate=${toDate}`;
 
-                downloadFile(
-                  url,
-                  "Workforce Comparison",
-                  "xlsx",
-                  setLoading
-                );
+                downloadFile(url, "Workforce Comparison", "xlsx", setLoading);
               } catch (error) {
                 console.log("error", error);
               }
@@ -465,7 +458,7 @@ const WorkForceComparison = () => {
           <DataTable
             header={getHeader()}
             bordered
-            data={tableData || []}
+            data={tableData?.data || []}
             loading={loading}
             pagination={{
               current: pagination.current,

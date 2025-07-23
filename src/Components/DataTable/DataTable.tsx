@@ -26,6 +26,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
     onChange,
     scroll,
     data,
+    rowKey,
     filterData,
     loading,
     bordered,
@@ -166,7 +167,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
             summary={summary}
             footer={footer}
             expandable={expandable}
-            rowKey={(record) => record?.key}
+            rowKey={rowKey || ((record) => record?.key)}
           />
         </ConfigProvider>
       </div>

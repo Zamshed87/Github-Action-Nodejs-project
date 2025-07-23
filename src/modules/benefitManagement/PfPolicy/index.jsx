@@ -22,8 +22,7 @@ const PFPolicy = () => {
   const { permissionList } = useSelector((store) => store?.auth, shallowEqual);
   const [openView, setOpenView] = useState({ open: false, data: {} });
   const [openExtend, setOpenExtend] = useState({ extend: false, data: {} });
-  const { data, setData, fetchPfPolicy, loading, pages, setPages } =
-    usePfPolicy(form);
+  const { data, setData, fetchPfPolicy, loading, pages, setPages } = usePfPolicy(form);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Benefits Management"));
@@ -76,7 +75,7 @@ const PFPolicy = () => {
             <PfPolicyFilters form={form} />
           </PCardBody>
           <DataTable
-            header={getHeader(pages, setData, setOpenView, setOpenExtend)}
+            header={getHeader(pages, setData, setOpenView, setOpenExtend, history)}
             bordered
             data={data?.data || []}
             loading={loading}

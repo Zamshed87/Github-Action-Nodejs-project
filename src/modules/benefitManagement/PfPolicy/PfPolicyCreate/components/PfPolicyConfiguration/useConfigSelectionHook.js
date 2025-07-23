@@ -12,6 +12,7 @@ const useConfigSelectionHook = (form, config = {}) => {
     fetchContributionEnum = false,
     fetchPaidAfterEnum = false,
     fetchInvestmentEnum = false,
+    fetchPfAssignTypeEnum = false,
   } = config;
 
   const {
@@ -25,6 +26,7 @@ const useConfigSelectionHook = (form, config = {}) => {
   const [contributionOpts, fetchContribution, loadingContribution, setContribution] = useAxiosGet([]);
   const [paidAfterOpts, fetchPaidAfter, loadingPaidAfter, setPaidAfter] = useAxiosGet([]);
   const [investmentOpts, fetchInvestment, loadingInvestment, setInvestment] = useAxiosGet([]);
+  const [pfAssignTypeOpts, fetchPfAssignType, loadingPfAssignType, setPfAssignType] = useAxiosGet([]);
 
   const getWorkplaceDDL = () => {
     workplaceDDL?.action({
@@ -79,6 +81,8 @@ const useConfigSelectionHook = (form, config = {}) => {
       );
     if (fetchInvestmentEnum)
       fetchInvestment(getEnumData("MonthlyInvestmentWith", setInvestment));
+    if (fetchPfAssignTypeEnum)
+      fetchPfAssignType(getEnumData("PfAssignType", setPfAssignType));
   }, [orgId, buId, wgId, wId]);
 
   return {
@@ -94,6 +98,8 @@ const useConfigSelectionHook = (form, config = {}) => {
     loadingPaidAfter,
     investmentOpts,
     loadingInvestment,
+    pfAssignTypeOpts,
+    loadingPfAssignType,
   };
 };
 

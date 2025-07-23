@@ -53,6 +53,7 @@ import {
   getEmployeeProfileViewPendingData,
 } from "modules/employeeProfile/employeeFeature/helper";
 import EmployeeViewModal from "modules/employeeProfile/aboutMe/ViewModal";
+import Loading from "common/loading/Loading";
 
 const CommonApprovalComponent = () => {
   // redux
@@ -298,196 +299,199 @@ const CommonApprovalComponent = () => {
   }, [location.state]);
   // render
   return (
-    <div className="approval-container mt-4">
-      <div className="d-flex align-items-center justify-content-between">
-        <div className="d-flex align-items-center">
-          <BackButton title={`${state?.state?.applicationType} Approval`} />
-          {selectedRow?.length > 0 && (
-            <ApproveRejectComp
-              props={{
-                className: "ml-3",
-                onApprove: () => showConfirmationModal("approve"),
-                onReject: () => showConfirmationModal("reject"),
+    <>
+    {loading && <Loading/>}
+      <div className="approval-container mt-4">
+        <div className="d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center">
+            <BackButton title={`${state?.state?.applicationType} Approval`} />
+            {selectedRow?.length > 0 && (
+              <ApproveRejectComp
+                props={{
+                  className: "ml-3",
+                  onApprove: () => showConfirmationModal("approve"),
+                  onReject: () => showConfirmationModal("reject"),
+                }}
+              />
+            )}
+          </div>
+
+          <div className="d-flex align-items-center gap-3">
+            <Input
+              placeholder="Search..."
+              prefix={<SearchOutlined />}
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(e.target.value);
+              }}
+              style={{
+                width: 300,
+                marginRight: 10,
+                borderRadius: 5,
+                marginBottom: 5,
               }}
             />
-          )}
+
+            <CommonFilter
+              visible={isFilterVisible}
+              onClose={(visible) => setIsFilterVisible(visible)}
+              onFilter={handleFilter}
+              isDate={false}
+              isWorkplaceGroup={true}
+              isWorkplace={true}
+              isDepartment={true}
+              isDesignation={true}
+              isEmployee={true}
+              isAllValue={true}
+            >
+              <Col md={12} sm={12}>
+                <PSelect
+                  allowClear
+                  options={waitingStageDDL || []}
+                  name="waitingStage"
+                  label="Waiting Stage"
+                  placeholder="Select Waiting Stage"
+                />
+              </Col>
+            </CommonFilter>
+          </div>
         </div>
 
-        <div className="d-flex align-items-center gap-3">
-          <Input
-            placeholder="Search..."
-            prefix={<SearchOutlined />}
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              handleSearch(e.target.value);
+        {loading ? (
+          <Spin size="large" />
+        ) : (
+          <DataTable
+            scroll={{ x: 1500 }}
+            rowSelection={{
+              type: "checkbox",
+              selectedRowKeys: selectedRow.map((item) => item.key),
+              preserveSelectedRowKeys: true,
+              onChange: (selectedRowKeys, selectedRows) => {
+                setSelectedRow(selectedRows);
+              },
             }}
-            style={{
-              width: 300,
-              marginRight: 10,
-              borderRadius: 5,
-              marginBottom: 5,
+            rowClassName={(record) => {
+              if (record.applicationId === highlightedRowId) {
+                return "blink-row";
+              }
+              return "";
+            }}
+            onRow={(record) => {
+              return {
+                ref: (node) => {
+                  // Store a ref for each row using its ID
+                  rowRefs.current[record.applicationId] = node;
+                },
+              };
+            }}
+            header={
+              id == 8
+                ? columnsLeave(dispatch)
+                : id == 15
+                ? columnOvertime
+                : id == 4
+                ? columnIncrement
+                : id == 11
+                ? columnsManual(page)
+                : id == 14
+                ? columnsMovement(page)
+                : id == 21
+                ? columnsSeparation(setViewData, setViewModal, dispatch)
+                : id == 26
+                ? columnsAdvancedSalary
+                : id == 3
+                ? columnsExpense(dispatch)
+                : id == 6
+                ? columnsIOU(dispatch)
+                : id == 9
+                ? columnsLoan(dispatch)
+                : id == 12
+                ? columnsMarketVisit
+                : id == 13
+                ? columnsMasterLocation
+                : id == 17
+                ? columnsRemoteAttendance
+                : id == 10
+                ? columnsLocationDevice
+                : id == 5
+                ? columnsSalaryIncrement
+                : id == 19
+                ? columnsSalaryCertificate
+                : id == 2
+                ? columnsBonusGenerate
+                : id == 7
+                ? columnsIOUAdjustment
+                : id == 25
+                ? columnsShiftChange
+                : id == 28
+                ? columnDisbursment
+                : id == 27
+                ? columnDeposit
+                : id == 18
+                ? columnAdditionDeduction
+                : id == 24
+                ? columnTransferPromotion(dispatch)
+                : id == 20
+                ? columnSalaryGenerate
+                : id == 30
+                ? columnFinalSettlement
+                : id == 29
+                ? columnsSeparation(setViewData, setViewModal, dispatch)
+                : id == 32
+                ? columnsAsset
+                : id == 33
+                ? columnsAboutMe(handleViewClick)
+                : id == 34
+                ? columnNoc
+                : id == 31
+                ? columnsPfLoan(dispatch)
+                : columnsDefault
+            }
+            bordered
+            data={data?.data?.map((item) => ({ ...item, key: item.id }))}
+            pagination={{
+              pageSize: page.pageSize,
+              current: page.pageNo,
+              total: totalRecords,
+              showSizeChanger: true,
+              onChange: (pageNo, pageSize) => {
+                setpage({ pageNo, pageSize });
+              },
+              showTotal: (total, range) =>
+                `Showing ${range[0]}-${range[1]} of ${total} items`,
             }}
           />
+        )}
 
-          <CommonFilter
-            visible={isFilterVisible}
-            onClose={(visible) => setIsFilterVisible(visible)}
-            onFilter={handleFilter}
-            isDate={false}
-            isWorkplaceGroup={true}
-            isWorkplace={true}
-            isDepartment={true}
-            isDesignation={true}
-            isEmployee={true}
-            isAllValue={true}
-          >
-            <Col md={12} sm={12}>
-              <PSelect
-                allowClear
-                options={waitingStageDDL || []}
-                name="waitingStage"
-                label="Waiting Stage"
-                placeholder="Select Waiting Stage"
-              />
-            </Col>
-          </CommonFilter>
-        </div>
-      </div>
-
-      {loading ? (
-        <Spin size="large" />
-      ) : (
-        <DataTable
-          scroll={{ x: 1500 }}
-          rowSelection={{
-            type: "checkbox",
-            selectedRowKeys: selectedRow.map((item) => item.key),
-            preserveSelectedRowKeys: true,
-            onChange: (selectedRowKeys, selectedRows) => {
-              setSelectedRow(selectedRows);
-            },
-          }}
-          rowClassName={(record) => {
-            if (record.applicationId === highlightedRowId) {
-              return "blink-row";
-            }
-            return "";
-          }}
-          onRow={(record) => {
-            return {
-              ref: (node) => {
-                // Store a ref for each row using its ID
-                rowRefs.current[record.applicationId] = node;
-              },
-            };
-          }}
-          header={
-            id == 8
-              ? columnsLeave(dispatch)
-              : id == 15
-              ? columnOvertime
-              : id == 4
-              ? columnIncrement
-              : id == 11
-              ? columnsManual(page)
-              : id == 14
-              ? columnsMovement(page)
-              : id == 21
-              ? columnsSeparation(setViewData, setViewModal, dispatch)
-              : id == 26
-              ? columnsAdvancedSalary
-              : id == 3
-              ? columnsExpense(dispatch)
-              : id == 6
-              ? columnsIOU(dispatch)
-              : id == 9
-              ? columnsLoan(dispatch)
-              : id == 12
-              ? columnsMarketVisit
-              : id == 13
-              ? columnsMasterLocation
-              : id == 17
-              ? columnsRemoteAttendance
-              : id == 10
-              ? columnsLocationDevice
-              : id == 5
-              ? columnsSalaryIncrement
-              : id == 19
-              ? columnsSalaryCertificate
-              : id == 2
-              ? columnsBonusGenerate
-              : id == 7
-              ? columnsIOUAdjustment
-              : id == 25
-              ? columnsShiftChange
-              : id == 28
-              ? columnDisbursment
-              : id == 27
-              ? columnDeposit
-              : id == 18
-              ? columnAdditionDeduction
-              : id == 24
-              ? columnTransferPromotion(dispatch)
-              : id == 20
-              ? columnSalaryGenerate
-              : id == 30
-              ? columnFinalSettlement
-              : id == 29
-              ? columnsSeparation(setViewData, setViewModal, dispatch)
-              : id == 32
-              ? columnsAsset
-              : id == 33
-              ? columnsAboutMe(handleViewClick)
-              : id == 34
-              ? columnNoc
-              : id == 31
-              ? columnsPfLoan
-              : columnsDefault
-          }
-          bordered
-          data={data?.data?.map((item) => ({ ...item, key: item.id }))}
-          pagination={{
-            pageSize: page.pageSize,
-            current: page.pageNo,
-            total: totalRecords,
-            showSizeChanger: true,
-            onChange: (pageNo, pageSize) => {
-              setpage({ pageNo, pageSize });
-            },
-            showTotal: (total, range) =>
-              `Showing ${range[0]}-${range[1]} of ${total} items`,
+        {/* approve or reject confirmation model  */}
+        <ApprovalModel
+          isModalVisible={isModalVisible}
+          handleModalOk={handleModalOk}
+          handleModalCancel={handleModalCancel}
+          modalAction={modalAction}
+        />
+        <ViewFormComponent
+          objProps={{
+            show: viewModal,
+            title: "Separation Details",
+            onHide: handleViewClose,
+            size: "lg",
+            backdrop: "static",
+            classes: "default-modal",
+            handleOpen,
+            viewData,
+            setViewData,
           }}
         />
-      )}
-
-      {/* approve or reject confirmation model  */}
-      <ApprovalModel
-        isModalVisible={isModalVisible}
-        handleModalOk={handleModalOk}
-        handleModalCancel={handleModalCancel}
-        modalAction={modalAction}
-      />
-      <ViewFormComponent
-        objProps={{
-          show: viewModal,
-          title: "Separation Details",
-          onHide: handleViewClose,
-          size: "lg",
-          backdrop: "static",
-          classes: "default-modal",
-          handleOpen,
-          viewData,
-          setViewData,
-        }}
-      />
-      <EmployeeViewModal
-        visible={isOpen}
-        onClose={handleViewModalClose}
-        empData={empBasicPending}
-        originalData={empBasic}
-      />
-    </div>
+        <EmployeeViewModal
+          visible={isOpen}
+          onClose={handleViewModalClose}
+          empData={empBasicPending}
+          originalData={empBasic}
+        />
+      </div>
+    </>
   );
 };
 

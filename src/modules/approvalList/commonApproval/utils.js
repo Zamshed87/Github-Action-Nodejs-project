@@ -56,7 +56,7 @@ export const columnsDefault = [
     ),
   },
 ];
-export const columnsPfLoan = [
+export const columnsPfLoan = (dispatch) => [
   {
     title: "SL",
     align: "center",
@@ -77,10 +77,6 @@ export const columnsPfLoan = [
   {
     title: "Workplace",
     dataIndex: ["applicationInformation", "workplaceName"],
-  },
-  {
-    title: "Designation",
-    dataIndex: ["applicationInformation", "designation"],
   },
   {
     title: "Department",
@@ -107,6 +103,22 @@ export const columnsPfLoan = [
     render: (totalInterest) => (
       <div>{totalInterest ? `${totalInterest.toFixed(2)}` : "N/A"}</div>
     ),
+  },
+    {
+    title: "Attachment",
+    width: 70,
+
+    dataIndex: "attachmentId",
+    render: (_, record) => (
+      <AttachmentTooltip
+        strDocumentList={record?.applicationInformation?.strDocumentList}
+        onClickAttachment={(id) =>
+          dispatch(getDownlloadFileView_ActionList(id))
+        }
+      />
+    ),
+    filter: false,
+    sorter: false,
   },
 
   {
