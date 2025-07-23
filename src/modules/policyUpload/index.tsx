@@ -172,11 +172,7 @@ export const PolicyCRUD = () => {
         <span style={{ wordBreak: "break-word" }}>{rec?.departmentList}</span>
       ),
     },
-    {
-      title: "Acknowledged",
-      dataIndex: "acknowledgeCount",
-      width: 50,
-    },
+
     {
       title: "Attachment File",
       dataIndex: "AllocatedLeave",
