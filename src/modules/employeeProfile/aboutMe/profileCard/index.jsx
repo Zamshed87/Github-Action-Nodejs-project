@@ -191,12 +191,14 @@ const ProfileCard = ({
                     <img
                       src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
                       alt=""
+                      className="profile-img"
                       style={{ maxHeight: "150px", minWidth: "140px" }}
                     />
                   ) : (
                     <img
                       src={profileImg}
                       alt="iBOS"
+                      className="profile-img"
                       style={{ height: "inherit" }}
                     />
                   )}

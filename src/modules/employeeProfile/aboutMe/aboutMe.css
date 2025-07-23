@@ -288,11 +288,11 @@ label.label-add-image.sm-size > img {
   height: 150px;
 }
 
-.hover-container img {
+.profile-img {
   transition: filter 0.3s ease;
 }
 
-.hover-container:hover img {
+.hover-container:hover .profile-img {
   filter: blur(2px);
 }
 
