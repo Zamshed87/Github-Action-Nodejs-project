@@ -97,7 +97,6 @@ const WorkForceComparison = () => {
     }
   };
 
-
   const getHeader = () => {
     const baseColumns = [
       {
@@ -346,7 +345,7 @@ const WorkForceComparison = () => {
                 const pageNo = 1;
                 const pageSize = pagination.total || 1000;
 
-                let url = `/WorkforcePlanning/WorkforceComparisonExcelReport?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
+                let url = `/PdfAndExcelReport/WorkforceComparisonExcelReport?pageSize=${pageSize}&YearTypeId=${yearTypeId}&FromDate=${fromDate}&WorkplaceId=${workplaceId}&PlanningTypeId=${planningTypeId}&pageNo=${pageNo}`;
                 if (toDate) url += `&ToDate=${toDate}`;
 
                 downloadFile(url, "Workforce Comparison", "xlsx", setLoading);
