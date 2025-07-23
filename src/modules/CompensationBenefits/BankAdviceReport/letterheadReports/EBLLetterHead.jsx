@@ -224,7 +224,7 @@ export default function EBLLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.EmpBankAccountNumber}
+                          {item?.CompAccountNumber}
                         </td>
                         <td
                           style={{
@@ -232,16 +232,15 @@ export default function EBLLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.NeyPayableSalary.toFixed(2)}
+                          {item?.PersonalEmail}
+                          {/* {item?.NeyPayableSalary.toFixed(2)} */}
                         </td>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
                             padding: "8px",
                           }}
-                        >
-                          {item?.Narration}
-                        </td>
+                        ></td>
                         <td
                           style={{
                             border: "1px solid #D3D3D3",
@@ -256,7 +255,7 @@ export default function EBLLetterHead({
                             padding: "4px",
                           }}
                         >
-                          {"CR"}
+                          {item?.EmpBankAccountNumber}
                         </td>
                         <td
                           style={{
@@ -264,7 +263,7 @@ export default function EBLLetterHead({
                             padding: "8px",
                           }}
                         >
-                          {item?.Today}
+                          EBLACT
                         </td>
                         <td
                           style={{
@@ -272,7 +271,7 @@ export default function EBLLetterHead({
                             padding: "4px",
                           }}
                         >
-                          {"BDT"}
+                          {item?.EmpBankName}
                         </td>
                         <td
                           style={{
@@ -280,7 +279,7 @@ export default function EBLLetterHead({
                             padding: "4px",
                           }}
                         >
-                          {item.Ref}
+                          {item.EmpRoutingNo}
                         </td>
                         <td
                           style={{
@@ -288,7 +287,7 @@ export default function EBLLetterHead({
                             padding: "4px",
                           }}
                         >
-                          {item.Ref}
+                          {item.NeyPayableSalary.toFixed(2)}
                         </td>
                         <td
                           style={{
@@ -303,7 +302,7 @@ export default function EBLLetterHead({
                     {landingViewPdf.length > 0 && (
                       <tr>
                         <th
-                          colSpan="2"
+                          colSpan="9"
                           style={{
                             border: "1px solid #D3D3D3",
                             padding: "8px",
@@ -322,7 +321,6 @@ export default function EBLLetterHead({
                           {landingViewPdf?.[0]?.TotalBankPay.toFixed(2)}
                         </th>
                         <th
-                          colSpan="6"
                           style={{
                             border: "1px solid #D3D3D3",
                             padding: "8px",
