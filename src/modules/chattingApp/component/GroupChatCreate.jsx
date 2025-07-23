@@ -25,7 +25,7 @@ const initialValues = {
 export const validationSchema = Yup.object({});
 
 export default function GroupChatCreate({ propsObj }) {
-  const { strLoginId, intAccountId, strDisplayName } = useSelector(
+  const { strLoginId, intAccountId, strDisplayName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -40,7 +40,9 @@ export default function GroupChatCreate({ propsObj }) {
   const loadUserList = (v) => {
     if (v?.length < 2) return [];
     return axios
-      .get(`/Auth/GetUserList?AccountId=${orgId}&Search=${v}`)
+      .get(
+        `/Auth/GetUserList?businessUnitId=${orgId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
+      )
       .then((res) => {
         return res?.data;
       })
