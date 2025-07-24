@@ -1,10 +1,10 @@
 import { DeleteOutline, EditOutlined, InfoOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import Chips from "common/Chips";
-import { LightTooltip } from "common/LightTooltip";
-import { gray600, gray900 } from "utility/customColor";
-import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
-import { todayDate } from "utility/todayDate";
+import Chips from "../../../common/Chips";
+import { LightTooltip } from "../../../common/LightTooltip";
+import { gray600, gray900 } from "../../../utility/customColor";
+import { dateFormatter } from "../../../utility/dateFormatter";
+import { todayDate } from "../../../utility/todayDate";
 
 export const onGetAssetRequisitionLanding = (
   getAssetRequisitionApplication,
@@ -13,17 +13,10 @@ export const onGetAssetRequisitionLanding = (
   employeeId,
   values,
   setRowDto,
-  wgId,
-  date
+  wgId
 ) => {
-  const fromDate = date?.fromDate
-    ? `&fromDate=${dateFormatterForInput(date?.fromDate)}`
-    : "";
-  const toDate = date?.toDate
-    ? `&toDate=${dateFormatterForInput(date?.toDate)}`
-    : "";
   getAssetRequisitionApplication(
-    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${0}${fromDate}${toDate}`,
+    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${employeeId}`,
     (data) => {
       setRowDto(data);
     }
@@ -60,18 +53,6 @@ export const assetRequisitionSelfTableColumn = (
       render: (value, item, index) => (page - 1) * paginationSize + index + 1,
       className: "text-center",
       width: "30px",
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Category Name",
-      dataIndex: "itemCategory",
-      sorter: true,
-      filter: true,
     },
     {
       title: "Item Name",
@@ -162,7 +143,6 @@ export const assetRequisitionSelfTableColumn = (
         );
       },
     },
-
     {
       title: "",
       render: (_, item) => (
@@ -174,7 +154,7 @@ export const assetRequisitionSelfTableColumn = (
                   onClick={(e) => {
                     e.stopPropagation();
                     history.push(
-                      `/assetManagement/assetControlPanel/assetRequisition/edit/${item?.assetRequisitionId}`
+                      `/SelfService/asset/assetRequisition/edit/${item?.assetRequisitionId}`
                     );
                   }}
                 />
@@ -192,10 +172,10 @@ export const assetRequisitionSelfTableColumn = (
                       reqisitionQuantity: item?.reqisitionQuantity,
                       updatedAt: item?.updatedAt || todayDate(),
                       updatedBy: item?.updatedBy || employeeId,
+                      employeeId: item?.employeeId,
                       itemId: item?.itemId,
                       isDenied: item?.isDenied,
                       remarks: item?.remarks,
-                      employeeId: item?.employeeId,
                       reqisitionDate: item?.reqisitionDate,
                       active: false,
                     };
