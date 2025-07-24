@@ -308,6 +308,7 @@ label.label-add-image.sm-size > img {
   border-radius: 4px;
   font-size: 14px;
   opacity: 0;
+  font-size: 20px;
   transition: opacity 0.3s ease;
   z-index: 10;
   white-space: nowrap;
@@ -315,7 +316,8 @@ label.label-add-image.sm-size > img {
 }
 
 .hover-container:hover .progress-tooltip {
-  opacity: 1 !important;
+  opacity: 0.5 !important;
+  
 }
 
 .progress-fill {

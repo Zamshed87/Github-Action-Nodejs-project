@@ -192,7 +192,7 @@ const ProfileCard = ({
                       src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
                       alt=""
                       className="profile-img"
-                      style={{ maxHeight: "150px", minWidth: "140px" }}
+                      style={{ maxHeight: "120px", minWidth: "120px" }}
                     />
                   ) : (
                     <img
