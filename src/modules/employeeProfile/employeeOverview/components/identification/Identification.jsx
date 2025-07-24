@@ -7,19 +7,54 @@ import CardNo from "./cardNo";
 import BirthCertificate from "./birthCertificate";
 import DrivingLicense from "./drivingLicense";
 import TinNo from "./tinNo";
-function Identification({ index, tabIndex, empId, wgId, buId }) {
+function Identification({ index, tabIndex, empId, wgId, buId, getProgress }) {
   return (
     index === tabIndex && (
       <>
         <div className="common-overview-part">
           <div className="common-overview-content">
-            <Nid empId={empId} wgId={wgId} buId={buId} />
-            <BirthCertificate empId={empId} wgId={wgId} buId={buId} />
-            <Nationality empId={empId} wgId={wgId} buId={buId} />
-            <Passport empId={empId} wgId={wgId} buId={buId} />
-            <DrivingLicense empId={empId} wgId={wgId} buId={buId} />
-            <TinNo empId={empId} wgId={wgId} buId={buId} />
-            <CardNo empId={empId} wgId={wgId} buId={buId} />
+            <Nid
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <BirthCertificate
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <Nationality
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <Passport
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <DrivingLicense
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <TinNo
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <CardNo
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
           </div>
         </div>
       </>

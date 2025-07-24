@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().email("Email is invalid").required("Email is required"),
 });
 
-function Emails({ empId, buId, wgId }) {
+function Emails({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -109,6 +109,9 @@ function Emails({ empId, buId, wgId }) {
         setSingleData("");
         setIsCreateForm(false);
         cb?.();
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
       };
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
@@ -174,6 +177,9 @@ function Emails({ empId, buId, wgId }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb?.();
       };
       updateEmployeeProfile(payload, setLoading, callback);
@@ -239,6 +245,9 @@ function Emails({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");

@@ -49,13 +49,13 @@ function AboutMeDetails() {
 
   const getEmpData = () => {
     getEmployeeProfileViewData(empId, setEmpBasic, setLoading, buId, wgId);
+    getProgress(
+      `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+    );
   };
 
   useEffect(() => {
     getEmpData();
-    getProgress(
-      `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
-    );
   }, []);
 
   useEffect(() => {
@@ -177,6 +177,7 @@ function AboutMeDetails() {
                     wgId={wgId}
                     buId={buId}
                     intAccountId={intAccountId}
+                    getProgress={getProgress}
                   />
                 </div>
               </div>

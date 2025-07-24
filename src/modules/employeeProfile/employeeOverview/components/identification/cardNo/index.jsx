@@ -26,14 +26,14 @@ const validationSchema = Yup.object().shape({
   cardNo: Yup.string().required("NID is required"),
 });
 
-function CardNo({ empId, buId, wgId }) {
+function CardNo({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId } = useSelector(
+  const { employeeId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -105,6 +105,9 @@ function CardNo({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -171,6 +174,9 @@ function CardNo({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -262,13 +268,7 @@ function CardNo({ empId, buId, wgId }) {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}

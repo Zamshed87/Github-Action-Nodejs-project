@@ -70,6 +70,7 @@ function Education({
   empId,
   buId: businessUnit,
   wgId: workplaceGroup,
+  getProgress,
 }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -112,6 +113,9 @@ function Education({
     console.log({ values });
     if (singleData) {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         getEmployeeProfileViewData(
           empId,
@@ -206,6 +210,9 @@ function Education({
       }
     } else {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         getEmployeeProfileViewData(
           empId,
@@ -353,6 +360,9 @@ function Education({
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(
         empId,
         setRowDto,

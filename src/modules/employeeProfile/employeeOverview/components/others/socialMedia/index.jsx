@@ -21,7 +21,7 @@ const initData = {
   autoId: 0,
 };
 
-export default function SocialMedia({ empId, buId, wgId }) {
+export default function SocialMedia({ empId, buId, wgId, getProgress }) {
   const [rowDto, setRowDto] = useState([]);
   const [isForm, setIsForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -69,6 +69,9 @@ export default function SocialMedia({ empId, buId, wgId }) {
           saveHandler(
             values,
             () => {
+              getProgress(
+                `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+              );
               resetForm(initData);
               setIsForm(false);
               getData();
@@ -147,8 +150,14 @@ export default function SocialMedia({ empId, buId, wgId }) {
                                   ),
                                   onClick: () => {
                                     setIsForm(true);
-                                    setFieldValue("socialMedia", item?.strSocialMedialLink);
-                                    setFieldValue("autoId", item?.intSocialMediaId);
+                                    setFieldValue(
+                                      "socialMedia",
+                                      item?.strSocialMedialLink
+                                    );
+                                    setFieldValue(
+                                      "autoId",
+                                      item?.intSocialMediaId
+                                    );
                                   },
                                 },
                                 {
@@ -191,8 +200,14 @@ export default function SocialMedia({ empId, buId, wgId }) {
                                 ),
                                 onClick: () => {
                                   setIsForm(true);
-                                  setFieldValue("socialMedia", item?.strSocialMedialLink);
-                                  setFieldValue("autoId", item?.intSocialMediaId);
+                                  setFieldValue(
+                                    "socialMedia",
+                                    item?.strSocialMedialLink
+                                  );
+                                  setFieldValue(
+                                    "autoId",
+                                    item?.intSocialMediaId
+                                  );
                                 },
                               },
                               {
@@ -221,7 +236,6 @@ export default function SocialMedia({ empId, buId, wgId }) {
                               },
                             ]),
                       ]}
-                      
                     />
                   </div>
                 ))}
