@@ -1159,6 +1159,32 @@ const BankAdviceReport = () => {
                             );
                           },
                         },
+                        {
+                          value: 3,
+                          label: "Bank Letter",
+                          icon: (
+                            <MdPrint
+                              style={{
+                                marginRight: "5px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            const IntSalaryGenerateRequestId =
+                              values?.bankAdviceFor?.value === 1
+                                ? values?.adviceName?.value
+                                : values?.bonusCode?.value;
+
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=TopSheet`;
+                            getPDFAction(
+                              url,
+                              setLoading,
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
+                            );
+                          },
+                        },
 
                         isDevServer && {
                           value: 4,
