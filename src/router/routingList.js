@@ -3724,6 +3724,10 @@ export const routingList = [
     path: "/SelfService/asset/assetRequisition/edit/:id",
     component: AssetRequisitionSelfCreate,
   },
+    {
+    path: "/assetManagement/assetControlPanel/assetRequisition/edit/:id",
+    component: AssetRequisitionCreate,
+  },
   {
     path: "/SelfService/asset/assetRequisition/create",
     component: AssetRequisitionSelfCreate,
