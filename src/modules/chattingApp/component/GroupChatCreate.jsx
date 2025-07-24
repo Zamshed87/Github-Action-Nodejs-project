@@ -41,7 +41,7 @@ export default function GroupChatCreate({ propsObj }) {
     if (v?.length < 2) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${orgId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
+        `/Auth/GetUserListForChatGroup?term=${v}`
       )
       .then((res) => {
         return res?.data;
