@@ -103,7 +103,9 @@ const WorkforcePlanningLanding = () => {
   const toggleActiveInactiveStatus = async (record: any, isActive: boolean) => {
     let url = `/WorkforcePlanning/ActiveNInactive?HeaderId=${record.headerId}&IsActive=${isActive}`;
     if (isActive) {
-      url += `&WorkplaceId=${record.workplaceId}&FromDate=${record.fromYear || 0}&ToDate=${record.toYear || 0}`;
+      url += `&WorkplaceId=${record.workplaceId}&FromDate=${
+        record.fromYear || 0
+      }&ToDate=${record.toYear || 0}`;
     }
     const response = await axios.put(url);
     return response?.data;
@@ -323,7 +325,7 @@ const WorkforcePlanningLanding = () => {
                 if (criteriaList?.data?.length === 0) return null;
                 try {
                   downloadFile(
-                    `/WorkforcePlanning/WorkforcePlanningExcelReport?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&YearTypeId=${yearTypeId}&FromYear=${fromYear}&ToYear=${fromYear}&PageNumber=${currentPage}&PageSize=${pageSize}`,
+                    `/PdfAndExcelReport/WorkforcePlanningExcelReport?WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&YearTypeId=${yearTypeId}&FromYear=${fromYear}&ToYear=${fromYear}&PageNumber=${currentPage}&PageSize=${pageSize}`,
                     "Workforce Planning",
                     "xlsx"
                   );

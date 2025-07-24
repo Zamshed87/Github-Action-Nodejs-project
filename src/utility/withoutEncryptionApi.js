@@ -90,4 +90,6 @@ export const withoutEncryptionList = [
   "/TaxReport/TaxSalaryCertificate",
   "/PdfAndExcelReport/DownloadRefundOrEarningReportLanding",
   "/PdfAndExcelReport/DownloadEmployeeWisePfFundDetails",
+  "/PdfAndExcelReport/WorkforcePlanningExcelReport",
+  "/PdfAndExcelReport/WorkforceComparisonExcelReport",
 ];

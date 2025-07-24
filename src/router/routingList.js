@@ -1491,7 +1491,6 @@ const PayrollGrossWiseBasicForm = lazy(() =>
 // const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
 // const Kpis = lazy(() => import("../modules/pms/kpis/index.jsx"));
 // const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
-const PolicyUpload = lazy(() => import("../modules/policyUpload/index.jsx"));
 const RemoteAttendanceApproval = lazy(() =>
   import("../modules/remoteAttendanceLocation/approval/index.jsx")
 );
@@ -1844,6 +1843,7 @@ import EmployeeSalaryReport from "modules/CompensationBenefits/employeeSalaryRep
 import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
 import WorkForceComparison from "modules/manpowerAnalysis/workforceComparison/workforceComparison";
 import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
+import { PolicyCRUD } from "../modules/policyUpload/index.tsx";
 
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -2679,8 +2679,9 @@ export const routingList = [
   },
   {
     path: "/administration/policyUpload",
-    component: PolicyUpload,
+    component: PolicyCRUD,
   },
+
   {
     path: "/administration/announcement/:id",
     component: AnnouncementViewPage,

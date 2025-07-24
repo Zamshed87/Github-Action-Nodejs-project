@@ -116,7 +116,7 @@ export const getHeader = (
       isHidden: isHidden,
       align: "center",
       width: 80,
-      render: (data: any, record: any) => record?.totalAmount || "N/A",
+      render: (data: any, record: any) => formatMoney(record?.totalAmount),
     },
     {
       title: "Status",
