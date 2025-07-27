@@ -405,17 +405,35 @@ export const PolicyCRUD = () => {
                   mode="multiple"
                   name="workGroup"
                   label="Workplace Group"
+                  maxTagCount={1}
                   placeholder=""
                   options={
-                    workGroupApi?.data?.length > 0 ? workGroupApi?.data : []
+                    form?.getFieldValue("workGroup")?.length ===
+                    workGroupApi?.data?.length
+                      ? workGroupApi?.data?.length > 0
+                        ? workGroupApi?.data
+                        : []
+                      : [
+                          { value: 0, label: "All" },
+                          ...(workGroupApi?.data?.length > 0
+                            ? workGroupApi?.data
+                            : []),
+                        ]
                   }
                   onChange={(value, op) => {
                     setWorkplaceDDL([]);
+                    setDepartmentDDL([]);
 
                     form.setFieldsValue({
-                      workGroup: op,
+                      workGroup: value?.includes(0) ? workGroupApi?.data : op,
+                      workPlace: undefined,
+                      department: undefined,
                     });
-                    getMultipleWorkplace(setLoading, op, setWorkplaceDDL);
+                    getMultipleWorkplace(
+                      setLoading,
+                      value?.includes(0) ? workGroupApi?.data : op,
+                      setWorkplaceDDL
+                    );
                   }}
                   filterOption={false}
                   rules={[
@@ -434,12 +452,26 @@ export const PolicyCRUD = () => {
                   name="workplace"
                   label="Workplace"
                   placeholder=""
-                  options={workplaceDDL}
+                  maxTagCount={1}
+                  options={
+                    form?.getFieldValue("workplace")?.length ===
+                    workplaceDDL?.length
+                      ? workplaceDDL || []
+                      : [{ value: 0, label: "All" }, ...(workplaceDDL || [])]
+                  }
                   onChange={(value, op) => {
+                    console.log({ value });
+
                     form.setFieldsValue({
-                      workplace: op,
+                      workplace: value?.includes(0) ? workplaceDDL : op,
+                      department: undefined,
                     });
-                    getMultipleDepartment(setLoading, op, setDepartmentDDL);
+
+                    getMultipleDepartment(
+                      setLoading,
+                      value?.includes(0) ? workplaceDDL : op,
+                      setDepartmentDDL
+                    );
                   }}
                   filterOption={false}
                   rules={[
@@ -451,27 +483,42 @@ export const PolicyCRUD = () => {
                 />
               </Col>
               <Col md={6} sm={12} xs={24}>
-                <PSelect
-                  allowClear
-                  showSearch
-                  mode="multiple"
-                  name="department"
-                  label="Department"
-                  placeholder=""
-                  options={departmentDDL || []}
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      department: op,
-                    });
+                <Form.Item noStyle shouldUpdate>
+                  {() => {
+                    const department = form.getFieldValue("department");
+                    return (
+                      <PSelect
+                        allowClear
+                        showSearch
+                        mode="multiple"
+                        name="department"
+                        label="Department"
+                        placeholder=""
+                        maxTagCount={1}
+                        options={
+                          department?.length === departmentDDL?.length
+                            ? departmentDDL || []
+                            : [
+                                { value: 0, label: "All" },
+                                ...(departmentDDL || []),
+                              ]
+                        }
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            department: value?.includes(0) ? departmentDDL : op,
+                          });
+                        }}
+                        filterOption={false}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Department is required",
+                          },
+                        ]}
+                      />
+                    );
                   }}
-                  filterOption={false}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Department is required",
-                    },
-                  ]}
-                />
+                </Form.Item>
               </Col>
               <Col md={11} sm={12} className="mt-4">
                 <FileUploadComponents
