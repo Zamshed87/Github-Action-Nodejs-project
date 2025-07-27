@@ -119,40 +119,62 @@ export default function TopNavigation({
             toggle();
           });
         })
-        .catch((error) => {});
-    }
-  }, [connection]);
-  useEffect(() => {
-    let isMounted = true;
 
-    if (connectionChat && isMounted) {
-      const handler = (message) => {
+        .catch((error) => {});
+      connection.on(`${chatting_KEY}`, (message) => {
         if (message) {
           if (!window.location.href.includes("/chat-app")) {
             setMessageState(message);
           }
           if (document.hidden || !window.location.href.includes("/chat-app")) {
             if (Notification.permission === "granted") {
-              new Notification(`New message from ${message?.senderName}`, {
+              new Notification(`"New message form ${message?.senderName}`, {
                 body: message?.message,
               });
             }
           }
         }
-        toggle();
-      };
-
-      connectionChat.on(chatting_KEY, handler);
-
-      // Cleanup function
-      return () => {
-        isMounted = false;
-        connectionChat.off(chatting_KEY, handler);
-        // DON'T call connectionChat.destroy() — it's not a valid method
-        // Use connectionChat.stop() if needed
-      };
+        // toggle();
+      });
     }
-  }, [connectionChat, chatting_KEY]);
+  }, [connection]);
+  useEffect(() => {
+    dispatch(setMsgNotifyCountAction(msgNotifyCount + 1));
+  }, [messageState]);
+  // useEffect(() => {
+  //   // let isMounted = true;
+
+  //   if (connectionChat) {
+  //     const handler = (message) => {
+  //       console.log({ message }, 130);
+  //       if (message) {
+  //         console.log({ message }, 132);
+  //         if (!window.location.href.includes("/chat-app")) {
+  //           console.log({ message }, 134);
+  //           setMessageState(message);
+  //         }
+  //         if (document.hidden || !window.location.href.includes("/chat-app")) {
+  //           if (Notification.permission === "granted") {
+  //             new Notification(`New message from ${message?.senderName}`, {
+  //               body: message?.message,
+  //             });
+  //           }
+  //         }
+  //       }
+  //       toggle();
+  //     };
+
+  //     connectionChat.on(chatting_KEY, handler);
+
+  //     // Cleanup function
+  //     return () => {
+  //       // isMounted = false;
+  //       // connectionChat.off(chatting_KEY, handler);
+  //       // DON'T call connectionChat.destroy() — it's not a valid method
+  //       // Use connectionChat.stop() if needed
+  //     };
+  //   }
+  // }, [connectionChat, chatting_KEY]);
   return (
     <>
       <div className="top-navigation">
