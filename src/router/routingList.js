@@ -599,7 +599,6 @@ const ApproverCommonLanding = lazy(() =>
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
-const Chat = lazy(() => import("../modules/chat/index.jsx"));
 const ArearSalaryGenerateForm = lazy(() =>
   import(
     "../modules/CompensationBenefits/arearSalaryGenerate/addEditForm/index.jsx"
@@ -1843,6 +1842,7 @@ import EmployeeSalaryReport from "modules/CompensationBenefits/employeeSalaryRep
 import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
 import WorkForceComparison from "modules/manpowerAnalysis/workforceComparison/workforceComparison";
 import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
+import ChattingIndex from "modules/chattingApp/ChattingIndex";
 import { PolicyCRUD } from "../modules/policyUpload/index.tsx";
 
 // Log Monitor Module
@@ -1898,7 +1898,7 @@ const PFInvestmentToOrganization = lazy(() =>
 );
 export const routingList = [
   { path: "/", component: Homepage },
-  { path: "/chat", component: Chat },
+  { path: "/chat-app", component: ChattingIndex },
   {
     path: "/SelfService/myrewardsandpunishment",
     component: RewardsAndPunishmentView,
@@ -3332,7 +3332,6 @@ export const routingList = [
     component: TMProjectSingleTask,
   },
   { path: "/tm/task-project/:id/task-board", component: TMProjectTaskBoard },
-  { path: "/chat", component: Chat },
   { path: "/taskmanagement/taskmgmt/dashboard", component: TMDashboard },
   { path: "/taskmanagement/taskmgmt/projects", component: TMProject },
   {
