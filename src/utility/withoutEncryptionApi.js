@@ -92,4 +92,5 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/DownloadEmployeeWisePfFundDetails",
   "/PdfAndExcelReport/WorkforcePlanningExcelReport",
   "/PdfAndExcelReport/WorkforceComparisonExcelReport",
+  "/PdfAndExcelReport/TopSheetNAdvice",
 ];
