@@ -88,7 +88,7 @@ export default function EBLLetterHead({
                 {landingViewPdf?.[0]?.YearId} to the all account holders as per
                 attached sheet from our Company Account
                 <b style={{ color: "black", fontSize: "14px" }}>
-                  {`(${landingViewPdf?.[0]?.CompAccountNumber})`}.
+                  {` ${landingViewPdf?.[0]?.CompAccountNumber}`}.
                 </b>
               </p>
               <br />
