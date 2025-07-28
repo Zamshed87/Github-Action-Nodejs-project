@@ -22,7 +22,7 @@ const AutoCompleteWithHint = () => {
         }
       });
     });
-    const idsToRemove = [30359, 30360, 30357];
+    const idsToRemove = [30359, 30360, 30357, 30314, 103];
     const filteredData = allMenu.filter(
       (item) => !idsToRemove.includes(item.id)
     );
@@ -49,7 +49,7 @@ const AutoCompleteWithHint = () => {
       showSearch
       value={inputValue}
       onChange={(value, options) => {
-        console.log({ options });
+        // console.log({ options });
         const op = options;
         if (options?.id == 98) {
           op.to = "/approval/8";
@@ -135,6 +135,10 @@ const AutoCompleteWithHint = () => {
           op.to = "/approval/17";
           op.applicationTypeId = 17;
           op.applicationType = "Remote Attendance ";
+        } else if (options?.id == 30318) {
+          op.to = "/approval/10";
+          op.applicationTypeId = 10;
+          op.applicationType = "Location & Device ";
         }
         value &&
           history.push({
