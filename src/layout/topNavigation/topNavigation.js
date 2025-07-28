@@ -65,10 +65,15 @@ export default function TopNavigation({
         .withAutomaticReconnect()
         .build();
       if (connect) {
-        connect.start().then(() => {
-          console.log({ connect });
-          dispatch(setSignalRConnectionAction(connect));
-        });
+        connect
+          .start()
+          .then(() => {
+            console.log({ connect });
+            dispatch(setSignalRConnectionAction(connect));
+          })
+          .catch((error) => {
+            console.log("connection error", { error });
+          });
       }
       setConnection(connect);
       // }
