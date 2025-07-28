@@ -55,17 +55,21 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
     };
     const cb = (res) => {
       if (res?.statusCode > 299) {
-        return toast.error(res?.message);
+        return toast.error(
+          res?.message || res?.message[0] || "Something went wrong!"
+        );
       } else {
         resetForm();
         setViewEarlySettled(false);
-        toast.success(res?.message || "Submitted Successfully");
+        toast.success(res?.message[0] || "Submitted Successfully");
       }
     };
     saveData(
       "/PfLoan/CreateEarlySettlement",
       payload,
-      cb,
+      (res) => {
+        cb(res);
+      },
       true,
       {},
       {},
@@ -147,6 +151,14 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                             // roundToDecimals(res?.data?.totalInterest / 30) *
                             //   numberOfDaysDifFromlastSalaryDateToSettlementDate(
                             //     e.target.value
+                          );
+                          const totalOutstanding =
+                            res?.data?.principalOutstandingAmount +
+                            res?.data?.totalInterest -
+                            (values?.concessionAmount || 0);
+                          setFieldValue(
+                            "totalOutstanding",
+                            roundToDecimals(totalOutstanding)
                           );
                         }
                       );
