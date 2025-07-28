@@ -26,6 +26,7 @@ import {
   columnsBonusGenerate,
   columnsDefault,
   columnsExpense,
+  columnsIncrementProposal,
   columnsIOU,
   columnsIOUAdjustment,
   columnsLeave,
@@ -38,7 +39,6 @@ import {
   columnsPfLoan,
   columnsRemoteAttendance,
   columnsSalaryCertificate,
-  columnsSalaryIncrement,
   columnsSeparation,
   columnsShiftChange,
   columnTransferPromotion,
@@ -300,7 +300,7 @@ const CommonApprovalComponent = () => {
   // render
   return (
     <>
-    {loading && <Loading/>}
+      {loading && <Loading />}
       <div className="approval-container mt-4">
         <div className="d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
@@ -415,7 +415,7 @@ const CommonApprovalComponent = () => {
                 : id == 10
                 ? columnsLocationDevice
                 : id == 5
-                ? columnsSalaryIncrement
+                ? columnsIncrementProposal
                 : id == 19
                 ? columnsSalaryCertificate
                 : id == 2
