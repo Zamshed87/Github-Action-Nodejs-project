@@ -19,9 +19,14 @@ import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
 import { updateEmployeeProfile } from "../../helper";
+import FormikInput from "common/FormikInput";
+import { FaPersonCirclePlus } from "react-icons/fa6";
+import { LuCalendarPlus } from "react-icons/lu";
 
 const initData = {
   bloodGroup: "",
+  donor: "",
+  donateDate: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -31,6 +36,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Blood Group is required"),
     })
     .typeError("Blood Group is required"),
+  donor: Yup.object()
+    .shape({
+      label: Yup.string().required("Donor is required"),
+      value: Yup.string().required("Donor is required"),
+    })
+    .typeError("Donor is required"),
 });
 
 function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
@@ -329,6 +340,41 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                           errors={errors}
                           touched={touched}
                         />
+                        <h5>Are You a Donor?</h5>
+
+                        <FormikSelect
+                          name="donor"
+                          options={[
+                            { value: 1, label: "Yes" },
+                            { value: 0, label: "No" },
+                          ]}
+                          value={values?.donor}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue("donor", valueOption);
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                        <div className="input-field-main">
+                          <label>Last Blood Donate Date</label>
+                          <FormikInput
+                            // label=""
+                            value={values?.donateDate}
+                            onChange={(e) =>
+                              setFieldValue("donateDate", e.target.value)
+                            }
+                            name="donateDate"
+                            placeholder={todayDate()}
+                            type="date"
+                            classes="input-sm"
+                            // className="input-field-main"
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
@@ -421,7 +467,8 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     fontSize={"18px"}
                                     options={[
                                       ...(intAccountId === 5
-                                        ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? !rowDto.isMarkCompleted ||
+                                          isOfficeAdmin
                                           ? [
                                               {
                                                 value: 1,
@@ -437,11 +484,18 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                 onClick: () => {
                                                   setSingleData({
                                                     value:
-                                                      rowDto?.employeeProfileLandingView?.strMaritalStatus ===
+                                                      rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strMaritalStatus ===
                                                       "Single"
                                                         ? 1
                                                         : 2,
-                                                    label: rowDto?.employeeProfileLandingView?.strMaritalStatus,
+                                                    label:
+                                                      rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strMaritalStatus,
+                                                    donor: "",
+                                                    donateDate: "",
                                                   });
                                                   setStatus("input");
                                                   setIsCreateForm(true);
@@ -479,11 +533,18 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                               onClick: () => {
                                                 setSingleData({
                                                   value:
-                                                    rowDto?.employeeProfileLandingView?.strMaritalStatus ===
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus ===
                                                     "Single"
                                                       ? 1
                                                       : 2,
-                                                  label: rowDto?.employeeProfileLandingView?.strMaritalStatus,
+                                                  label:
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus,
+                                                  donor: "",
+                                                  donateDate: "",
                                                 });
                                                 setStatus("input");
                                                 setIsCreateForm(true);
@@ -506,9 +567,45 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                             },
                                           ]),
                                     ]}
-                                    
-                                    
                                   />
+                                </div>
+                                <div className="col-lg-1 my-1">
+                                  <Avatar className="overviewAvatar">
+                                    <FaPersonCirclePlus
+                                      style={{
+                                        color: "rgb(51, 51, 51)",
+                                        fontSize: "18px",
+                                      }}
+                                    />
+                                  </Avatar>
+                                </div>
+                                <div className="col-lg-11 my-1">
+                                  <h4>
+                                    {
+                                      rowDto?.employeeProfileLandingView
+                                        ?.strBloodGroup
+                                    }
+                                  </h4>
+                                  <small>Donor</small>
+                                </div>
+                                <div className="col-lg-1 my-1">
+                                  <Avatar className="overviewAvatar">
+                                    <LuCalendarPlus
+                                      style={{
+                                        color: "rgb(51, 51, 51)",
+                                        fontSize: "18px",
+                                      }}
+                                    />
+                                  </Avatar>
+                                </div>
+                                <div className="col-lg-11 my-1">
+                                  <h4>
+                                    {
+                                      rowDto?.employeeProfileLandingView
+                                        ?.strBloodGroup
+                                    }
+                                  </h4>
+                                  <small>Last Blood Donate Date</small>
                                 </div>
                               </div>
                             </div>
