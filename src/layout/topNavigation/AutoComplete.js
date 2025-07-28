@@ -22,6 +22,12 @@ const AutoCompleteWithHint = () => {
         }
       });
     });
+    const idsToRemove = [30359, 30360, 30357];
+    const filteredData = allMenu.filter(
+      (item) => !idsToRemove.includes(item.id)
+    );
+
+    // console.log({ allMenu });
     // Add extra Approval menu item
     // allMenu.push({
     //   id: "approval",
@@ -30,7 +36,7 @@ const AutoCompleteWithHint = () => {
     //   to: "/approval",
     //   searchLabel: "approval", // for search compatibility
     // });
-    setMenu(allMenu);
+    setMenu(filteredData);
   }, [menuList]);
 
   return (
@@ -121,6 +127,14 @@ const AutoCompleteWithHint = () => {
           op.to = "/approval/5";
           op.applicationTypeId = 5;
           op.applicationType = "Increment Proposal ";
+        } else if (options?.id == 105) {
+          op.to = "/approval/11";
+          op.applicationTypeId = 11;
+          op.applicationType = "Manual Attendance ";
+        } else if (options?.id == 30319) {
+          op.to = "/approval/17";
+          op.applicationTypeId = 17;
+          op.applicationType = "Remote Attendance ";
         }
         value &&
           history.push({
