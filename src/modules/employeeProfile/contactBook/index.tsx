@@ -57,14 +57,14 @@ const ContactBook = () => {
   }: TLandingApi = {}) => {
     landingApi.action({
       urlKey: "EmployeeContactInfo",
-      method: "GET",
-      params: {
+      method: "post",
+      payload: {
         businessUnitId: buId,
         pageSize: pagination.pageSize || 25,
         pageNo: pagination.current || 1,
         isForEXL: false,
-        searchText: searchText,
-        strBloodGroupList: filerList?.strBloodGroup || [],
+        searchText: searchText || "",
+        strDesignationList: filerList?.strDesignation || [],
         strDepartmentList: filerList?.strDepartment || [],
       },
     });
@@ -201,7 +201,7 @@ const ContactBook = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.data || []}
+            data={landingApi?.data?.data?.items || []}
             loading={landingApi?.loading}
             header={header}
             pagination={{
