@@ -132,6 +132,8 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         nid: "",
         dateOfBirth: todayDate(),
         remarks: "",
+        isBloodBonor: values?.donor?.value || singleData?.donor?.value,
+        dteBloodDonateDate: values?.donateDate || singleData?.donateDate,
       };
 
       const callback = () => {
@@ -205,6 +207,8 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         nid: "",
         dateOfBirth: todayDate(),
         remarks: "",
+        isBloodBonor: values?.donor?.value || false,
+        dteBloodDonateDate: values?.donateDate || "",
       };
       const callback = () => {
         getEmployeeProfileViewData(
@@ -345,8 +349,8 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                         <FormikSelect
                           name="donor"
                           options={[
-                            { value: 1, label: "Yes" },
-                            { value: 0, label: "No" },
+                            { value: true, label: "Yes" },
+                            { value: false, label: "No" },
                           ]}
                           value={values?.donor}
                           label=""
@@ -367,7 +371,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                               setFieldValue("donateDate", e.target.value)
                             }
                             name="donateDate"
-                            placeholder={todayDate()}
+                            // placeholder={todayDate()}
                             type="date"
                             classes="input-sm"
                             // className="input-field-main"

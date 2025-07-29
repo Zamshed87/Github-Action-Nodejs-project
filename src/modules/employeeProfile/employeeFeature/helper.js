@@ -130,6 +130,10 @@ export const createEditEmpAction = async (
       tinNo: values?.tinNo || "",
       strOTbasedon: values?.strOTbasedon?.value || "",
       intOTFixedHour: +values?.intOTFixedHour || 0,
+      isBloodDonor: values?.donor?.value || false,
+      dteBloodDonateDate: values?.lastDonationDate
+        ? moment(values?.lastDonationDate).format("YYYY-MM-DD")
+        : null,
     };
     console.log({ payload });
     if (!isEdit) {
@@ -1062,7 +1066,6 @@ export const getEmployeeProfileViewPendingData = async (
     setLoading && setLoading(false);
   }
 };
-
 
 export const getPeopleDeskWithoutAllDDL = async (
   apiUrl,

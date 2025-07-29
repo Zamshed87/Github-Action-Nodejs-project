@@ -1049,7 +1049,7 @@ const BulkUploadHistory = lazy(() =>
 //   import("../modules/employeeProfile/confirmation/index.jsx")
 // );
 const ContactBook = lazy(() =>
-  import("../modules/employeeProfile/contactBook/index.jsx")
+  import("../modules/employeeProfile/contactBook/index.tsx")
 );
 const ContactClosingReport = lazy(() =>
   import("../modules/employeeProfile/contractClosing/index.tsx")
