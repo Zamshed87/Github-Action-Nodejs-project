@@ -14,7 +14,7 @@ import OAuth from "./OAuth/OAuth";
 import UserEndRewardPunishmentLanding from "modules/employeeProfile/rewardsAndPunishment/rewardPunishmentLetter";
 import TrainingDevelopment from "./Experience/TrainingDevelopment";
 
-function OverviewTab({ empId, wgId, buId, intAccountId }) {
+function OverviewTab({ empId, wgId, buId, intAccountId, getProgress }) {
   const [index, setIndex] = useState(0);
   const tabName = [
     { name: "General Info", id: 0 },
@@ -67,6 +67,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     tabIndex={0}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
                   <Contact
                     empId={empId}
@@ -74,6 +75,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     buId={buId}
                     index={index}
                     tabIndex={1}
+                    getProgress={getProgress}
                   />
                   <Identification
                     empId={empId}
@@ -81,6 +83,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     tabIndex={2}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
                   <Experience
                     empId={empId}
@@ -88,6 +91,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     tabIndex={3}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
                   <TrainingDevelopment
                     index={index}
@@ -95,6 +99,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     empId={empId}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
                   <Education
                     empId={empId}
@@ -102,6 +107,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     tabIndex={4}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
                   <TransferAndPromotionInfo
                     empId={empId}
@@ -130,6 +136,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     tabIndex={8}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
                   <Documents
                     empId={empId}
@@ -137,6 +144,7 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     wgId={wgId}
                     buId={buId}
                     tabIndex={9}
+                    getProgress={getProgress}
                   />
                   <Others
                     empId={empId}
@@ -144,8 +152,14 @@ function OverviewTab({ empId, wgId, buId, intAccountId }) {
                     tabIndex={10}
                     wgId={wgId}
                     buId={buId}
+                    getProgress={getProgress}
                   />
-                  <OAuth empId={empId} index={index} tabIndex={11} />
+                  <OAuth
+                    empId={empId}
+                    index={index}
+                    tabIndex={11}
+                    getProgress={getProgress}
+                  />
                 </div>
               </div>
             </div>

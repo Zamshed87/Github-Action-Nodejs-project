@@ -8,15 +8,18 @@ import ParmanentAddress from "./ParmanentAddress";
 import PresentAddress from "./PresentAddress";
 import Loading from "common/loading/Loading";
 
-function Address({ empId }) {
+function Address({ empId, getProgress }) {
   const [rowDto, setRowDto] = useState({});
   const [loading, setLoading] = useState(false);
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const getData = () => {
+    getProgress(
+      `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${orgId}&businessUnitId=${buId}&empId=${empId}`
+    );
     getEmployeeProfileViewDataForAddress(
       empId,
       buId,

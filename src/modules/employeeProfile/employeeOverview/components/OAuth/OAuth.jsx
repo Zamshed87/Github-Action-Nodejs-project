@@ -1,13 +1,13 @@
 import "../../employeeOverview.css";
 import Gmails from "./Gmail/index";
 
-function OAuth({ index, tabIndex, empId }) {
+function OAuth({ index, tabIndex, empId, getProgress }) {
   return (
     index === tabIndex && (
       <>
         <div className="common-overview-part">
           <div className="common-overview-content">
-            <Gmails empId={empId} />
+            <Gmails empId={empId} getProgress={getProgress} />
             {/* <FaceBook empId={empId} /> */}
           </div>
         </div>

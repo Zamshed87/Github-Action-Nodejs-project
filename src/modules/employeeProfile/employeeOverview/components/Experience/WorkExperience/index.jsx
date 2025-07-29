@@ -46,7 +46,12 @@ const validationSchema = Yup.object().shape({
   toDate: Yup.date().required("To Date is required"),
 });
 
-function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function WorkExperience({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
@@ -77,6 +82,9 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const saveHandler = (values, cb) => {
     if (singleData) {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         getEmployeeProfileViewData(
           empId,
@@ -162,6 +170,9 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       }
     } else {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         getEmployeeProfileViewData(
           empId,
@@ -305,6 +316,9 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       expirationDate: todayDate(),
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(
         empId,
         setRowDto,

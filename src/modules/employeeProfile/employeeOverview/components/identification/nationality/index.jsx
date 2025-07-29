@@ -33,7 +33,12 @@ const validationSchema = Yup.object().shape({
     .typeError("Nationality is required"),
 });
 
-function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function Nationality({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [nationalityDDL, setNationalityDDL] = useState([]);
@@ -126,6 +131,9 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(
           empId,
           setRowDto,
@@ -199,6 +207,9 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(
           empId,
           setRowDto,
@@ -274,6 +285,9 @@ function Nationality({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(
         empId,
         setRowDto,

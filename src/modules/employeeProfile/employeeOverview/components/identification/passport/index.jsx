@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
   passport: Yup.string().required("Passport is required"),
 });
 
-function Passport({ empId, buId, wgId }) {
+function Passport({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -104,6 +104,9 @@ function Passport({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -170,6 +173,9 @@ function Passport({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -238,6 +244,9 @@ function Passport({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
@@ -406,7 +415,11 @@ function Passport({ empId, buId, wgId }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                setSingleData(rowDto?.empEmployeePhotoIdentity?.strPassport);
+                                                setSingleData(
+                                                  rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.strPassport
+                                                );
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -441,7 +454,10 @@ function Passport({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(rowDto?.empEmployeePhotoIdentity?.strPassport);
+                                              setSingleData(
+                                                rowDto?.empEmployeePhotoIdentity
+                                                  ?.strPassport
+                                              );
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -463,7 +479,6 @@ function Passport({ empId, buId, wgId }) {
                                           },
                                         ]),
                                   ]}
-                                  
                                 />
                               </div>
                             </div>

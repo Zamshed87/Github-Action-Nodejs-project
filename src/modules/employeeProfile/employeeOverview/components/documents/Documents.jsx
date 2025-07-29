@@ -44,6 +44,7 @@ function Documents({
   empId,
   buId: businessUnitId,
   wgId: workplaceGroupId,
+  getProgress,
 }) {
   const dispatch = useDispatch();
   const params = useParams();
@@ -88,6 +89,9 @@ function Documents({
     if (singleData?.intDocumentManagementId) {
       const callback = () => {
         cb();
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         if (params?.empId) {
           getEmployeeDocumentManagement(
             orgId,
@@ -133,6 +137,9 @@ function Documents({
       }
     } else {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         if (params?.empId) {
           getEmployeeDocumentManagement(
@@ -182,6 +189,9 @@ function Documents({
 
   const deleteHandler = (id) => {
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       if (params?.empId) {
         getEmployeeDocumentManagement(
           orgId,
@@ -448,7 +458,8 @@ function Documents({
                                         fontSize={"18px"}
                                         options={[
                                           ...(intAccountId === 5
-                                            ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                            ? !rowDto.isMarkCompleted ||
+                                              isOfficeAdmin
                                               ? [
                                                   {
                                                     value: 1,
@@ -465,11 +476,14 @@ function Documents({
                                                       setStatus("input");
                                                       setIsCreateForm(true);
                                                       setSingleData({
-                                                        documentName: item?.strDocumentType,
-                                                        intDocumentManagementId: item?.intDocumentManagementId,
+                                                        documentName:
+                                                          item?.strDocumentType,
+                                                        intDocumentManagementId:
+                                                          item?.intDocumentManagementId,
                                                       });
                                                       setImageFile({
-                                                        globalFileUrlId: item?.intFileUrlId,
+                                                        globalFileUrlId:
+                                                          item?.intFileUrlId,
                                                       });
                                                     },
                                                   },
@@ -485,7 +499,9 @@ function Documents({
                                                       />
                                                     ),
                                                     onClick: () => {
-                                                      deleteHandler(item?.intDocumentManagementId);
+                                                      deleteHandler(
+                                                        item?.intDocumentManagementId
+                                                      );
                                                     },
                                                   },
                                                 ]
@@ -506,11 +522,14 @@ function Documents({
                                                     setStatus("input");
                                                     setIsCreateForm(true);
                                                     setSingleData({
-                                                      documentName: item?.strDocumentType,
-                                                      intDocumentManagementId: item?.intDocumentManagementId,
+                                                      documentName:
+                                                        item?.strDocumentType,
+                                                      intDocumentManagementId:
+                                                        item?.intDocumentManagementId,
                                                     });
                                                     setImageFile({
-                                                      globalFileUrlId: item?.intFileUrlId,
+                                                      globalFileUrlId:
+                                                        item?.intFileUrlId,
                                                     });
                                                   },
                                                 },
@@ -526,12 +545,13 @@ function Documents({
                                                     />
                                                   ),
                                                   onClick: () => {
-                                                    deleteHandler(item?.intDocumentManagementId);
+                                                    deleteHandler(
+                                                      item?.intDocumentManagementId
+                                                    );
                                                   },
                                                 },
                                               ]),
                                         ]}
-                                        
                                       />
                                     </div>
                                   </div>

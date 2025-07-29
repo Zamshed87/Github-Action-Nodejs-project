@@ -44,7 +44,12 @@ const validationSchema = Yup.object().shape({
     .typeError("Donor is required"),
 });
 
-function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function BloodGroup({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [bloodGroupDDL, setBloodGroupDDL] = useState([]);
@@ -147,6 +152,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+        );
       };
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
@@ -217,6 +225,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           setLoading,
           businessUnit,
           workplaceGroup
+        );
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
         );
         setStatus("empty");
         setSingleData("");
@@ -292,6 +303,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         setLoading,
         businessUnit,
         workplaceGroup
+      );
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
       );
       setStatus("empty");
       setSingleData("");

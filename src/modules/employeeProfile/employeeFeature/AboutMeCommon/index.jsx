@@ -21,6 +21,7 @@ import "./aboutMeCommon.css";
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import { Tag } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 function AboutMeDetails() {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ function AboutMeDetails() {
   const [confirmationMOdal, setConfirmationMOdal] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [isAddEditForm, setIsAddEditForm] = useState(false);
-
+  const [progress, getProgress, load] = useAxiosGet();
   const history = useHistory();
 
   const { empId } = useParams();
@@ -48,6 +49,9 @@ function AboutMeDetails() {
 
   const getEmpData = () => {
     getEmployeeProfileViewData(empId, setEmpBasic, setLoading, buId, wgId);
+    getProgress(
+      `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+    );
   };
 
   useEffect(() => {
@@ -83,7 +87,7 @@ function AboutMeDetails() {
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || load) && <Loading />}
       {employeeFeature?.isView ? (
         <div className="about-info-main" style={{ paddingTop: "46px" }}>
           <div className="container-about-info">
@@ -147,6 +151,7 @@ function AboutMeDetails() {
               </div>
             </div>
             <ProfileCard
+              progress={progress}
               isEditBtn={true}
               getEmpData={getEmpData}
               empBasic={empBasic?.employeeProfileLandingView}
@@ -172,6 +177,7 @@ function AboutMeDetails() {
                     wgId={wgId}
                     buId={buId}
                     intAccountId={intAccountId}
+                    getProgress={getProgress}
                   />
                 </div>
               </div>
