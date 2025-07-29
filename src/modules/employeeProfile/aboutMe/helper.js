@@ -27,7 +27,11 @@ export const empProfilePicUpload = async (
     toast.success("Successfully Updated Image", { toastId: "UPP" });
   } catch (error) {
     setLoading(false);
-    toast.error("File Size is too large or inValid File!", { toastId: "UPP" });
+    toast.error(
+      error?.response?.data?.message ||
+        error?.response?.data[0]?.message ||
+        "Maximum allowed file size is 1MB"
+    );
   }
 };
 

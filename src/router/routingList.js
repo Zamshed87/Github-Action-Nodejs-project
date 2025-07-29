@@ -2821,6 +2821,14 @@ export const routingList = [
     component: ApprovalListNew,
   },
   {
+    path: "/approval/arrearSalaryApproval",
+    component: ArrearSalaryGenerateApproval,
+  },
+  {
+    path: "/approval/leaveEncashmentApproval",
+    component: LeaveEncashmentApproval,
+  },
+  {
     path: "/approval/:id",
     component: ApproverCommonLanding,
   },
@@ -2828,63 +2836,7 @@ export const routingList = [
   //   path: "/approval",
   //   component: ApprovalList,
   // },
-  {
-    path: "/approval/leaveApproval",
-    component: LeaveApproval,
-  },
-  {
-    path: "/approval/leaveEncashmentApproval",
-    component: LeaveEncashmentApproval,
-  },
-  {
-    path: "/approval/movementApproval",
-    component: MovementApproval,
-  },
-  {
-    path: "/approval/attendanceApproval",
-    component: AttendanceApproval,
-  },
-  {
-    path: "/approval/overtimeApproval",
-    component: OvertimeApproval,
-  },
-  {
-    path: "/approval/salaryApproval",
-    component: SalaryGenerateApproval,
-    // component: EmployeeSalaryApproval,
-  },
-  {
-    path: "/approval/loanApproval",
-    component: LoanApproval,
-  },
-  {
-    path: "/approval/separationApproval",
-    component: SeparationApproval,
-  },
-  {
-    path: "/approval/bonusApproval",
-    component: EmployeeBonusApproval,
-  },
-  {
-    path: "/approval/allowanceNDeduction",
-    component: AllowanceNDeductionApproval,
-  },
-  {
-    path: "/approval/iouApplication",
-    component: IOUApproval,
-  },
-  {
-    path: "/approval/expenseApproval",
-    component: ExpenseApplicationApproval,
-  },
-  {
-    path: "/approval/transferandpromotion",
-    component: TransferNPromotionApproval,
-  },
-  {
-    path: "/approval/iouAdjustmentApproval",
-    component: AdjustmentIOUApproval,
-  },
+
   {
     path: "/approval/remoteAttendance",
     component: RemoteAttendanceApproval,
@@ -2921,10 +2873,7 @@ export const routingList = [
     path: "/approval/pfWithdraw",
     component: PfWithdrawApproval,
   },
-  {
-    path: "/approval/arrearSalaryApproval",
-    component: ArrearSalaryGenerateApproval,
-  },
+
   {
     path: "/approval/salaryCertificateApproval",
     component: SalaryCertificateApproval,
@@ -3723,7 +3672,7 @@ export const routingList = [
     path: "/SelfService/asset/assetRequisition/edit/:id",
     component: AssetRequisitionSelfCreate,
   },
-    {
+  {
     path: "/assetManagement/assetControlPanel/assetRequisition/edit/:id",
     component: AssetRequisitionCreate,
   },

@@ -104,7 +104,7 @@ export const columnsPfLoan = (dispatch) => [
       <div>{totalInterest ? `${totalInterest.toFixed(2)}` : "N/A"}</div>
     ),
   },
-    {
+  {
     title: "Attachment",
     width: 70,
 
@@ -1592,7 +1592,7 @@ export const columnsLocationDevice = [
   },
 ];
 
-export const columnsSalaryIncrement = [
+export const columnsIncrementProposal = [
   {
     title: "SL",
     align: "center",

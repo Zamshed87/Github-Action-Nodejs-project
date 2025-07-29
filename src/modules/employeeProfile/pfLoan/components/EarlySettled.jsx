@@ -9,9 +9,11 @@ import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
   const [, saveData] = useAxiosPost({});
+  const [, getCalculationData] = useAxiosGet();
 
   const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -53,17 +55,21 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
     };
     const cb = (res) => {
       if (res?.statusCode > 299) {
-        return toast.error(res?.message);
+        return toast.error(
+          res?.message || res?.message[0] || "Something went wrong!"
+        );
       } else {
         resetForm();
         setViewEarlySettled(false);
-        toast.success(res?.message || "Submitted Successfully");
+        toast.success(res?.message[0] || "Submitted Successfully");
       }
     };
     saveData(
       "/PfLoan/CreateEarlySettlement",
       payload,
-      cb,
+      (res) => {
+        cb(res);
+      },
       true,
       {},
       {},
@@ -92,9 +98,15 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
     // Normalize both to midnight (local time)
     lastSalaryDate.setHours(0, 0, 0, 0);
     settlement.setHours(0, 0, 0, 0);
-    
+
     const timeDiff = Math.abs(settlement - lastSalaryDate);
-    console.log(lastSalaryDate,"last salary date",settlementDate,"settlement Date", Math.ceil(timeDiff / (1000 * 60 * 60 * 24)))
+    console.log(
+      lastSalaryDate,
+      "last salary date",
+      settlementDate,
+      "settlement Date",
+      Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+    );
     return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
   };
   return (
@@ -126,18 +138,29 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                       .format("YYYY-MM-DD")}
                     onChange={(e) => {
                       setFieldValue("settlementDate", e.target.value);
-                      setFieldValue(
-                        "principalOutstanding",
-                        loanByIdDto?.objHeader?.principalOutstandingAmount || 0
-                      );
-                      setFieldValue(
-                        "interestOutstanding",
-                        roundToDecimals(
-                          loanByIdDto?.objHeader?.interestOutstandingAmount / 30
-                        ) *
-                          numberOfDaysDifFromlastSalaryDateToSettlementDate(
-                            e.target.value
-                          )
+                      getCalculationData(
+                        `/PfLoan/EarlySettledDataByDate?LoanId=${headerId}&SettleDate=${e.target.value}`,
+                        (res) => {
+                          setFieldValue(
+                            "principalOutstanding",
+                            res?.data?.principalOutstandingAmount || 0
+                          );
+                          setFieldValue(
+                            "interestOutstanding",
+                            roundToDecimals(res?.data?.totalInterest || 0)
+                            // roundToDecimals(res?.data?.totalInterest / 30) *
+                            //   numberOfDaysDifFromlastSalaryDateToSettlementDate(
+                            //     e.target.value
+                          );
+                          const totalOutstanding =
+                            res?.data?.principalOutstandingAmount +
+                            res?.data?.totalInterest -
+                            (values?.concessionAmount || 0);
+                          setFieldValue(
+                            "totalOutstanding",
+                            roundToDecimals(totalOutstanding)
+                          );
+                        }
                       );
                     }}
                   />
@@ -196,7 +219,10 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
                         values?.principalOutstanding +
                         values?.interestOutstanding -
                         e.target.value;
-                      setFieldValue("totalOutstanding", totalOutstanding);
+                      setFieldValue(
+                        "totalOutstanding",
+                        roundToDecimals(totalOutstanding)
+                      );
                     }}
                   />
                 </div>
