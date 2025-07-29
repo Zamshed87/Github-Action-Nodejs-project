@@ -9,7 +9,9 @@ export const processBulkUploadEmployeeAction = async (
   setLoading,
   intUrlId,
   orgId,
-  employeeId
+  employeeId,
+  setRowData,
+  setErrorRowOpen
 ) => {
   setLoading && setLoading(true);
   try {
@@ -83,8 +85,43 @@ export const processBulkUploadEmployeeAction = async (
       strJobTerritory: item["Job Territory"] || "",
       strPayScaleGrade: item["Pay Scale Grade"] || "",
     }));
+    const errorData = [];
+    const cleanData = [];
+    modifiedData.forEach((item) => {
+      if (
+        Boolean(item?.strBusinessUnit) ||
+        Boolean(item?.strWorkplace) ||
+        Boolean(item?.strWorkplaceGroup) ||
+        Boolean(item?.strWorkplaceGroup) ||
+        Boolean(item?.strDepartment) ||
+        Boolean(item?.strDesignation) ||
+        Boolean(item?.strHrPosition) ||
+        Boolean(item?.strEmployeeName) ||
+        Boolean(item?.strEmploymentType) ||
+        Boolean(item?.strEmployeeCode) ||
+        Boolean(item?.strReferenceId) ||
+        Boolean(item?.strGender) ||
+        Boolean(item?.strSalaryType) ||
+        Boolean(item?.strReligionName) ||
+        Boolean(item?.dteDateOfBirth) ||
+        Boolean(item?.dteJoiningDate) ||
+        Boolean(item?.dteConfirmationDate) ||
+        Boolean(item?.strSupervisorCode) ||
+        Boolean(item?.strDottedSupervisorCode) ||
+        Boolean(item?.strLineManagerCode) ||
+        Boolean(item?.strUserType)
+      ) {
+        errorData.push(item);
+      } else {
+        cleanData.push({
+          ...item,
+        });
+      }
+    });
 
-    setter(modifiedData);
+    setter(cleanData);
+    setRowData(errorData);
+    setErrorRowOpen(errorData?.length > 0 ? true : false);
     setLoading && setLoading(false);
   } catch (error) {
     setter([]);
