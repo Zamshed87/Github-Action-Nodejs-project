@@ -1058,7 +1058,7 @@ const BankAdviceReport = () => {
                             );
                           },
                         },
-                        {
+                        [3, 16].includes(orgId) && {
                           value: 3,
                           label: "Bank Letter",
                           icon: (
