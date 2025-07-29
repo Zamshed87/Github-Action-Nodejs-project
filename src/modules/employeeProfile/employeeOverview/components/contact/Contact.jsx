@@ -6,17 +6,42 @@ import WorkPhone from "./WorkPhone";
 import Address from "./Address";
 import "../../employeeOverview.css";
 
-function Contact({ index, tabIndex, empId, wgId, buId }) {
+function Contact({ index, tabIndex, empId, wgId, buId, getProgress }) {
   return (
     index === tabIndex && (
       <>
         <div className="common-overview-part">
           <div className="common-overview-content">
-            <Emails empId={empId} wgId={wgId} buId={buId} />
-            <WorkEmail empId={empId} wgId={wgId} buId={buId} />
-            <Phone empId={empId} wgId={wgId} buId={buId} />
-            <WorkPhone empId={empId} wgId={wgId} buId={buId} />
-            <Address empId={empId} wgId={wgId} buId={buId} />
+            <Emails
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <WorkEmail
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <Phone
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <WorkPhone
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <Address
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
           </div>
         </div>
       </>

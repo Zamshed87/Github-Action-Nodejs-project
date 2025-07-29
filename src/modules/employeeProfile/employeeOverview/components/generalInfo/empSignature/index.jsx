@@ -32,7 +32,12 @@ const initData = {
 //     .typeError("Blood Group is required"),
 // });
 
-function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function EmpSignature({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -148,6 +153,9 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           businessUnit,
           workplaceGroup
         );
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+        );
         setStatus("empty");
         setSingleData("");
         setAuthSignatureImage([]);
@@ -223,6 +231,9 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           businessUnit,
           workplaceGroup
         );
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+        );
         setStatus("empty");
         setSingleData("");
         setAuthSignatureImage([]);
@@ -292,6 +303,9 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+      );
       getEmployeeProfileViewData(
         empId,
         setRowDto,

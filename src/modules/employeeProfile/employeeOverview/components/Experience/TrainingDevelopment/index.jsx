@@ -62,6 +62,7 @@ function TrainingDevelopment({
   empId,
   wgId: workplaceGroup,
   buId: businessUnit,
+  getProgress,
 }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -104,6 +105,9 @@ function TrainingDevelopment({
   const saveHandler = (values, cb) => {
     if (singleData) {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         getEmployeeProfileViewData(
           empId,
@@ -187,6 +191,9 @@ function TrainingDevelopment({
       }
     } else {
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         cb();
         getEmployeeProfileViewData(
           empId,
@@ -329,6 +336,9 @@ function TrainingDevelopment({
       specialContactTypeName: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(
         empId,
         setRowDto,

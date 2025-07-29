@@ -33,7 +33,12 @@ const validationSchema = Yup.object().shape({
     .typeError("Blood Group is required"),
 });
 
-function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function BloodGroup({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [bloodGroupDDL, setBloodGroupDDL] = useState([]);
@@ -134,6 +139,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+        );
       };
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
@@ -202,6 +210,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           setLoading,
           businessUnit,
           workplaceGroup
+        );
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
         );
         setStatus("empty");
         setSingleData("");
@@ -277,6 +288,9 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         setLoading,
         businessUnit,
         workplaceGroup
+      );
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
       );
       setStatus("empty");
       setSingleData("");
@@ -421,7 +435,8 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     fontSize={"18px"}
                                     options={[
                                       ...(intAccountId === 5
-                                        ? !rowDto.isMarkCompleted || isOfficeAdmin
+                                        ? !rowDto.isMarkCompleted ||
+                                          isOfficeAdmin
                                           ? [
                                               {
                                                 value: 1,
@@ -437,11 +452,16 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                                 onClick: () => {
                                                   setSingleData({
                                                     value:
-                                                      rowDto?.employeeProfileLandingView?.strMaritalStatus ===
+                                                      rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strMaritalStatus ===
                                                       "Single"
                                                         ? 1
                                                         : 2,
-                                                    label: rowDto?.employeeProfileLandingView?.strMaritalStatus,
+                                                    label:
+                                                      rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strMaritalStatus,
                                                   });
                                                   setStatus("input");
                                                   setIsCreateForm(true);
@@ -479,11 +499,16 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                               onClick: () => {
                                                 setSingleData({
                                                   value:
-                                                    rowDto?.employeeProfileLandingView?.strMaritalStatus ===
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus ===
                                                     "Single"
                                                       ? 1
                                                       : 2,
-                                                  label: rowDto?.employeeProfileLandingView?.strMaritalStatus,
+                                                  label:
+                                                    rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strMaritalStatus,
                                                 });
                                                 setStatus("input");
                                                 setIsCreateForm(true);
@@ -506,8 +531,6 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                             },
                                           ]),
                                     ]}
-                                    
-                                    
                                   />
                                 </div>
                               </div>

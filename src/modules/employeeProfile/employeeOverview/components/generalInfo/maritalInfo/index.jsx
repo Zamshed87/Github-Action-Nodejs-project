@@ -32,7 +32,12 @@ const validationSchema = Yup.object().shape({
     .typeError("Marital Status is required"),
 });
 
-function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function MaritalStatus({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -139,6 +144,9 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
 
     updateEmployeeProfile(payload, setLoading, () => {
       refreshData();
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+      );
     });
   };
 
@@ -146,6 +154,9 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     const payload = createPayload("");
     updateEmployeeProfile(payload, setLoading, () => {
       refreshData();
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${businessUnit}&empId=${empId}`
+      );
       setFieldValue("materialStatus", "");
     });
   };
@@ -262,7 +273,12 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                               </Avatar>
                             </div>
                             <div className="col-lg-10">
-                              <h4>{rowDto.employeeProfileLandingView.strMaritalStatus}</h4>
+                              <h4>
+                                {
+                                  rowDto.employeeProfileLandingView
+                                    .strMaritalStatus
+                                }
+                              </h4>
                               <small>Marital Status</small>
                             </div>
                             <div className="col-lg-1">
@@ -278,19 +294,24 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                             label: "Edit",
                                             icon: (
                                               <ModeEditOutlined
-                                                sx={{ marginRight: "10px", fontSize: "16px" }}
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
                                               />
                                             ),
                                             onClick: () => {
                                               setSingleData({
                                                 value:
-                                                  rowDto.employeeProfileLandingView
+                                                  rowDto
+                                                    .employeeProfileLandingView
                                                     .strMaritalStatus ===
                                                   "Single"
                                                     ? 1
                                                     : 2,
                                                 label:
-                                                  rowDto.employeeProfileLandingView
+                                                  rowDto
+                                                    .employeeProfileLandingView
                                                     .strMaritalStatus,
                                               });
                                               setStatus("input");
@@ -302,10 +323,14 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                             label: "Delete",
                                             icon: (
                                               <DeleteOutline
-                                                sx={{ marginRight: "10px", fontSize: "16px" }}
+                                                sx={{
+                                                  marginRight: "10px",
+                                                  fontSize: "16px",
+                                                }}
                                               />
                                             ),
-                                            onClick: () => deleteHandler(setFieldValue),
+                                            onClick: () =>
+                                              deleteHandler(setFieldValue),
                                           },
                                         ]
                                       : []
@@ -315,18 +340,23 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                           label: "Edit",
                                           icon: (
                                             <ModeEditOutlined
-                                              sx={{ marginRight: "10px", fontSize: "16px" }}
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
                                             />
                                           ),
                                           onClick: () => {
                                             setSingleData({
                                               value:
-                                                rowDto.employeeProfileLandingView
+                                                rowDto
+                                                  .employeeProfileLandingView
                                                   .strMaritalStatus === "Single"
                                                   ? 1
                                                   : 2,
                                               label:
-                                                rowDto.employeeProfileLandingView
+                                                rowDto
+                                                  .employeeProfileLandingView
                                                   .strMaritalStatus,
                                             });
                                             setStatus("input");
@@ -338,10 +368,14 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                           label: "Delete",
                                           icon: (
                                             <DeleteOutline
-                                              sx={{ marginRight: "10px", fontSize: "16px" }}
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
                                             />
                                           ),
-                                          onClick: () => deleteHandler(setFieldValue),
+                                          onClick: () =>
+                                            deleteHandler(setFieldValue),
                                         },
                                       ]),
                                 ]}

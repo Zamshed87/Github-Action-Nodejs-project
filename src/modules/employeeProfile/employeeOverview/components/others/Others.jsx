@@ -9,7 +9,7 @@ import "./others.css";
 import Remarks from "./Remarks";
 import SalaryType from "./salaryType";
 
-function Others({ index, tabIndex, empId, buId, wgId }) {
+function Others({ index, tabIndex, empId, buId, wgId, getProgress }) {
   const { isOfficeAdmin, isSuperuser } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -20,14 +20,44 @@ function Others({ index, tabIndex, empId, buId, wgId }) {
       <>
         <div className="common-overview-part">
           <div className="common-overview-content">
-            <Biography empId={empId} wgId={wgId} buId={buId} />
-            <SocialMedia empId={empId} wgId={wgId} buId={buId} />
-            <Hobbies empId={empId} wgId={wgId} buId={buId} />
-            <VehicleInfo empId={empId} wgId={wgId} buId={buId} />
+            <Biography
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <SocialMedia
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <Hobbies
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
+            <VehicleInfo
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
             {(isOfficeAdmin || isSuperuser) && (
-              <Remarks empId={empId} wgId={wgId} buId={buId} />
+              <Remarks
+                empId={empId}
+                wgId={wgId}
+                buId={buId}
+                getProgress={getProgress}
+              />
             )}
-            <SalaryType empId={empId} wgId={wgId} buId={buId} />
+            <SalaryType
+              empId={empId}
+              wgId={wgId}
+              buId={buId}
+              getProgress={getProgress}
+            />
           </div>
         </div>
       </>

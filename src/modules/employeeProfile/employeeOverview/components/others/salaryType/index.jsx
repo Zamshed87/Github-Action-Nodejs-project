@@ -31,14 +31,19 @@ const validationSchema = Yup.object().shape({
     .typeError("Salary Type is required"),
 });
 
-function SalaryType({ empId, buId: businessUnit, wgId: workplaceGroup }) {
+function SalaryType({
+  empId,
+  buId: businessUnit,
+  wgId: workplaceGroup,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -67,6 +72,9 @@ function SalaryType({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         label: values?.salaryType?.value,
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(
           empId,
           setRowDto,
@@ -91,6 +99,9 @@ function SalaryType({ empId, buId: businessUnit, wgId: workplaceGroup }) {
         label: values?.salaryType?.value,
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(
           empId,
           setRowDto,

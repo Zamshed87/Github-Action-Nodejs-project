@@ -23,17 +23,15 @@ const validationSchema = Yup.object().shape({
   gemail: Yup.string().email("Gmail is invalid").required("Gmail is required"),
 });
 
-function Gmails({ empId }) {
+function Gmails({ empId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId, strLoginId, intAccountId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, strLoginId, buId, intAccountId, isOfficeAdmin } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
@@ -50,6 +48,9 @@ function Gmails({ empId }) {
         accountId: intAccountId || 0,
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
         setStatus("empty");
         setSingleData("");
@@ -65,6 +66,9 @@ function Gmails({ empId }) {
         accountId: intAccountId || 0,
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
         setStatus("empty");
         setSingleData("");
@@ -84,6 +88,9 @@ function Gmails({ empId }) {
     };
 
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
       setStatus("empty");
       setSingleData("");

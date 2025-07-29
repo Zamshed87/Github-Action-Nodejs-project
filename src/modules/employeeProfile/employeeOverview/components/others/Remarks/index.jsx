@@ -15,7 +15,7 @@ const initData = {
   autoId: 0,
 };
 
-export default function Remarks({ empId, buId, wgId }) {
+export default function Remarks({ empId, buId, wgId, getProgress }) {
   const [isForm, setIsForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState({});
@@ -54,6 +54,9 @@ export default function Remarks({ empId, buId, wgId }) {
           saveHandler(
             values,
             () => {
+              getProgress(
+                `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+              );
               resetForm(initData);
               setIsForm(false);
               getData();

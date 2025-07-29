@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
   // .matches(/^(?:\+?88)?01[15-9]\d{8}/, "Phone Number is invalid"),
 });
 
-function Phone({ empId, buId, wgId }) {
+function Phone({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -105,6 +105,9 @@ function Phone({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -170,6 +173,9 @@ function Phone({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -238,6 +244,9 @@ function Phone({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
@@ -386,7 +395,11 @@ function Phone({ empId, buId, wgId }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                setSingleData(rowDto?.employeeProfileLandingView?.strPersonalMobile);
+                                                setSingleData(
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.strPersonalMobile
+                                                );
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -421,7 +434,11 @@ function Phone({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(rowDto?.employeeProfileLandingView?.strPersonalMobile);
+                                              setSingleData(
+                                                rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.strPersonalMobile
+                                              );
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -443,8 +460,6 @@ function Phone({ empId, buId, wgId }) {
                                           },
                                         ]),
                                   ]}
-                                  
-                                  
                                 />
                               </div>
                             </div>

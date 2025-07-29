@@ -279,6 +279,114 @@ label.label-add-image.sm-size > img {
   align-items: center;
   justify-content: space-between;
 }
+.hover-container {
+  position: relative;
+}
+.hover-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.profile-img {
+  transition: filter 0.3s ease;
+}
+
+.hover-container:hover .profile-img {
+  filter: blur(2px);
+}
+
+/* Make the tooltip centered over the image */
+.progress-tooltip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(51, 51, 51, 0.85);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0;
+  font-size: 20px;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.hover-container:hover .progress-tooltip {
+  opacity: 0.5 !important;
+  
+}
+
+.progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  --progress: 0;
+  z-index: 2;
+
+  /* Progress ring that starts at top-left (45deg) */
+  background: conic-gradient(
+    from 45deg,
+    #4caf50 calc(var(--progress) * 1),
+    #f0f0f0 0%
+  );
+
+  /* Creates a hollow center so the image isn't blocked */
+  mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+
+  padding: 6px; /* thickness of the border */
+  border-radius: 8px;
+  transition: background 1s ease;
+}
+
+
+/* Optional progress base (gray background) */
+.progress-border {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  border: 6px solid #f0f0f0;
+  box-sizing: border-box;
+}
+.progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+
+/* Animate with dynamic progress using CSS variable */
+@keyframes animateBorder {
+  0% {
+    border-image: linear-gradient(135deg, #4CAF50 0%, #f0f0f0 0%) 1;
+  }
+  100% {
+    border-image: linear-gradient(
+      135deg,
+      #4CAF50 var(--progress),
+      #f0f0f0 var(--progress)
+    ) 1;
+  }
+}
+
+
 
 @media (max-width: 575.98px) {
   .accordion-item .accordion-body {
@@ -308,3 +416,4 @@ label.label-add-image.sm-size > img {
     padding-top: 10px;
   }
 }
+
