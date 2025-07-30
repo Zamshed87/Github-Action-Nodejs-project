@@ -363,21 +363,23 @@ export const LeaveApp_History = ({
               </Col>
             </Row>
           </PCardBody>
-          <Row gutter={[10, 2]}>
-            <Col lg={23} className="mx-2">
-              <DataTable
-                bordered
-                data={
-                  leaveHistoryData.employeeLeaveApplicationListDto?.length > 0
-                    ? leaveHistoryData?.employeeLeaveApplicationListDto
-                    : []
-                }
-                loading={landingApi?.loading}
-                header={header}
-                scroll={{ x: 1000 }}
-              />
-            </Col>
-          </Row>
+          {leaveHistoryData.employeeLeaveApplicationListDto?.length > 0 && (
+            <Row gutter={[10, 2]}>
+              <Col lg={23} className="mx-2">
+                <DataTable
+                  bordered
+                  data={
+                    leaveHistoryData.employeeLeaveApplicationListDto?.length > 0
+                      ? leaveHistoryData?.employeeLeaveApplicationListDto
+                      : []
+                  }
+                  loading={landingApi?.loading}
+                  header={header}
+                  scroll={{ x: 1000 }}
+                />
+              </Col>
+            </Row>
+          )}
         </PCard>
         <PModal
           open={open}
