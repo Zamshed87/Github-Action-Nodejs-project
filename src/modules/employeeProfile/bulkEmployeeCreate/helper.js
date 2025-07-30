@@ -119,9 +119,9 @@ export const processBulkUploadEmployeeAction = async (
       }
     });
 
-    setter(cleanData);
-    setRowData(errorData);
-    setErrorRowOpen(errorData?.length > 0 ? true : false);
+    setter(orgId === 6 ? cleanData : modifiedData);
+    setRowData(orgId === 6 ? errorData : []);
+    setErrorRowOpen(orgId === 6 && errorData?.length > 0 ? true : false);
     setLoading && setLoading(false);
   } catch (error) {
     setter([]);
