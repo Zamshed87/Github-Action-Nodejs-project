@@ -60,8 +60,8 @@ const ContactBook = () => {
       method: "post",
       payload: {
         businessUnitId: buId,
-        pageSize: pagination.pageSize || 25,
-        pageNo: pagination.current || 1,
+        pageSize: pagination.pageSize || 0,
+        pageNo: pagination.current || 0,
         isForEXL: false,
         searchText: searchText || "",
         strDesignationList: filerList?.strDesignation || [],
@@ -205,8 +205,8 @@ const ContactBook = () => {
             loading={landingApi?.loading}
             header={header}
             pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
+              pageSize: landingApi?.data?.data?.pageSize,
+              total: landingApi?.data?.data?.totalCount,
             }}
             filterData={landingApi?.data?.employeeHeader}
             onChange={(pagination, filters, sorter, extra) => {
