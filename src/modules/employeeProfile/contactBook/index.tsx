@@ -80,8 +80,8 @@ const ContactBook = () => {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
         getSerial({
-          currentPage: landingApi?.data?.currentPage,
-          pageSize: landingApi?.data?.pageSize,
+          currentPage: landingApi?.data?.data?.currentPage,
+          pageSize: landingApi?.data?.data?.pageSize,
           index,
         }),
       fixed: "left",
@@ -190,7 +190,7 @@ const ContactBook = () => {
           {landingApi?.loading && <Loading />}
           <PCardHeader
             // exportIcon={true}
-            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            title={`Total ${landingApi?.data?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
