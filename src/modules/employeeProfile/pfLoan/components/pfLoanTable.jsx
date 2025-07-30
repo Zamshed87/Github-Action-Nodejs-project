@@ -383,7 +383,10 @@ const PfLoanTable = ({
           backdrop="static"
           classes="default-modal preview-modal"
           show={modalView}
-          onHide={() => setModalView(false)}
+          onHide={() => {
+            setModalView(false);
+            landing();
+          }}
         >
           <div className="mx-3">
             <div
@@ -603,10 +606,8 @@ const PfLoanTable = ({
                           () => {
                             setModalView(false);
                             setHoldOrCollect(false);
-                            close();
                             setFieldValue("comment", "");
-
-                            landing();
+                            landing(); // Ensure parent table is refreshed after update
                           },
                           true
                         );
