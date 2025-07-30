@@ -109,7 +109,28 @@ export const processBulkUploadEmployeeAction = async (
         !Boolean(item?.strSupervisorCode) ||
         !Boolean(item?.strDottedSupervisorCode) ||
         !Boolean(item?.strLineManagerCode) ||
-        !Boolean(item?.strUserType)
+        !Boolean(item?.strUserType) ||
+        !Boolean(item?.strBusinessUnit) ||
+        item?.strWorkplace == "undefined" ||
+        item?.strWorkplaceGroup == "undefined" ||
+        item?.strWorkplaceGroup == "undefined" ||
+        item?.strDepartment == "undefined" ||
+        item?.strDesignation == "undefined" ||
+        item?.strHrPosition == "undefined" ||
+        item?.strEmployeeName == "undefined" ||
+        item?.strEmploymentType == "undefined" ||
+        item?.strEmployeeCode == "undefined" ||
+        item?.strReferenceId == "undefined" ||
+        item?.strGender == "undefined" ||
+        item?.strSalaryType == "undefined" ||
+        item?.strReligionName == "undefined" ||
+        item?.dteDateOfBirth == "undefined" ||
+        item?.dteJoiningDate == "undefined" ||
+        item?.dteConfirmationDate == "undefined" ||
+        item?.strSupervisorCode == "undefined" ||
+        item?.strDottedSupervisorCode == "undefined" ||
+        item?.strLineManagerCode == "undefined" ||
+        item?.strUserType == "undefined"
       ) {
         errorData.push(item);
       } else {
