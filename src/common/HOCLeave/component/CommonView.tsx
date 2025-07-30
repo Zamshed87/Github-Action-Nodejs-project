@@ -42,6 +42,7 @@ export const CommonView = ({
       <Row gutter={[10, 2]} className=" justify-content-center">
         <Col
           md={12}
+          xs={24}
           className="leave-movement-FormCard"
           style={{ marginTop: "-3.4rem" }}
         >
@@ -61,6 +62,7 @@ export const CommonView = ({
         </Col>
         <Col
           md={12}
+          xs={24}
           className="leave-movement-FormCard"
           style={{ marginTop: "-4px" }}
         >
@@ -74,7 +76,7 @@ export const CommonView = ({
         </Col>
       </Row>
       <Row gutter={[10, 2]}>
-        <Col md={24}>
+        <Col md={24} xs={24}>
           <LeaveApp_History
             empId={form.getFieldValue("employee")?.value}
             setLeaveHistoryData={setLeaveHistoryData}

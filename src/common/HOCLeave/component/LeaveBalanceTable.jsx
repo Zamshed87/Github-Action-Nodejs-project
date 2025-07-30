@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { gray900 } from "utility/customColor";
 import ViewModal from "common/ViewModal";
-import { Popover, Tag } from "antd";
+import { Popover, Row, Tag, Col } from "antd";
 import Loading from "common/loading/Loading";
 import moment from "moment";
 
@@ -351,13 +351,17 @@ const LeaveBalanceTable = ({
       {(loading || loader) && <Loading />}
       <div>
         <PCardBody styles={{ minHeight: "240px" }}>
-          <DataTable
-            header={header.filter((item) => !item.hidden)}
-            nodataStyle={{ marginTop: "-35px", height: "175px" }}
-            // bordered
-            data={leaves?.length > 0 ? leaves : []}
-            // scroll={{ x: 1500 }}
-          />
+          <Row>
+            <Col md={24} xs={23}>
+              <DataTable
+                header={header.filter((item) => !item.hidden)}
+                nodataStyle={{ marginTop: "-35px", height: "175px" }}
+                // bordered
+                data={leaves?.length > 0 ? leaves : []}
+                // scroll={{ x: 1500 }}
+              />
+            </Col>
+          </Row>
         </PCardBody>
 
         <ViewModal
