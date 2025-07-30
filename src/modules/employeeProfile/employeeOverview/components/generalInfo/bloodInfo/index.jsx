@@ -19,9 +19,16 @@ import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
 import { updateEmployeeProfile } from "../../helper";
+import FormikInput from "common/FormikInput";
+import { FaPersonCirclePlus } from "react-icons/fa6";
+import { LuCalendarPlus } from "react-icons/lu";
+import moment from "moment";
+import { dateFormatterForInput } from "utility/dateFormatter";
 
 const initData = {
   bloodGroup: "",
+  donor: "",
+  donateDate: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -31,6 +38,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Blood Group is required"),
     })
     .typeError("Blood Group is required"),
+  donor: Yup.object()
+    .shape({
+      label: Yup.string().required("Donor is required"),
+      value: Yup.string().required("Donor is required"),
+    })
+    .typeError("Donor is required"),
 });
 
 function BloodGroup({
@@ -126,6 +139,8 @@ function BloodGroup({
         nid: "",
         dateOfBirth: todayDate(),
         remarks: "",
+        isBloodBonor: values?.donor?.value,
+        dteBloodDonateDate: values?.donateDate ? values?.donateDate : null,
       };
 
       const callback = () => {
@@ -202,6 +217,8 @@ function BloodGroup({
         nid: "",
         dateOfBirth: todayDate(),
         remarks: "",
+        isBloodBonor: values?.donor?.value || false,
+        dteBloodDonateDate: values?.donateDate ? values?.donateDate : null,
       };
       const callback = () => {
         getEmployeeProfileViewData(
@@ -311,6 +328,8 @@ function BloodGroup({
                 label: singleData?.label,
               }
             : "",
+          donateDate: singleData?.donateDate,
+          donor: singleData?.donor,
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
@@ -343,6 +362,44 @@ function BloodGroup({
                           errors={errors}
                           touched={touched}
                         />
+                        <h5>Are You a Donor?</h5>
+
+                        <FormikSelect
+                          name="donor"
+                          options={[
+                            { value: true, label: "Yes" },
+                            { value: false, label: "No" },
+                          ]}
+                          value={values?.donor}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue("donor", valueOption);
+                            setFieldValue("donateDate", "");
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                        {values?.donor?.value && (
+                          <div className="input-field-main">
+                            <label>Last Blood Donate Date</label>
+                            <FormikInput
+                              // label=""
+                              value={values?.donateDate}
+                              onChange={(e) =>
+                                setFieldValue("donateDate", e.target.value)
+                              }
+                              name="donateDate"
+                              // placeholder={todayDate()}
+                              type="date"
+                              classes="input-sm"
+                              // className="input-field-main"
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        )}
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}
@@ -451,17 +508,37 @@ function BloodGroup({
                                                 ),
                                                 onClick: () => {
                                                   setSingleData({
-                                                    value:
-                                                      rowDto
-                                                        ?.employeeProfileLandingView
-                                                        ?.strMaritalStatus ===
-                                                      "Single"
-                                                        ? 1
-                                                        : 2,
+                                                    value: rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.strBloodGroup
+                                                      ? rowDto
+                                                          ?.employeeProfileLandingView
+                                                          ?.strBloodGroup
+                                                      : "",
                                                     label:
                                                       rowDto
                                                         ?.employeeProfileLandingView
-                                                        ?.strMaritalStatus,
+                                                        ?.strBloodGroup || "",
+                                                    donor: rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.isBloodDonor
+                                                      ? {
+                                                          value: true,
+                                                          label: "Yes",
+                                                        }
+                                                      : {
+                                                          value: false,
+                                                          label: "No",
+                                                        },
+                                                    donateDate: rowDto
+                                                      ?.employeeProfileLandingView
+                                                      ?.dteBloodDonateDate
+                                                      ? dateFormatterForInput(
+                                                          rowDto
+                                                            ?.employeeProfileLandingView
+                                                            ?.dteBloodDonateDate
+                                                        )
+                                                      : "",
                                                   });
                                                   setStatus("input");
                                                   setIsCreateForm(true);
@@ -498,17 +575,37 @@ function BloodGroup({
                                               ),
                                               onClick: () => {
                                                 setSingleData({
-                                                  value:
-                                                    rowDto
-                                                      ?.employeeProfileLandingView
-                                                      ?.strMaritalStatus ===
-                                                    "Single"
-                                                      ? 1
-                                                      : 2,
+                                                  value: rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.strBloodGroup
+                                                    ? rowDto
+                                                        ?.employeeProfileLandingView
+                                                        ?.strBloodGroup
+                                                    : "",
                                                   label:
                                                     rowDto
                                                       ?.employeeProfileLandingView
-                                                      ?.strMaritalStatus,
+                                                      ?.strBloodGroup || "",
+                                                  donor: rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.isBloodDonor
+                                                    ? {
+                                                        value: true,
+                                                        label: "Yes",
+                                                      }
+                                                    : {
+                                                        value: false,
+                                                        label: "No",
+                                                      },
+                                                  donateDate: rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.dteBloodDonateDate
+                                                    ? dateFormatterForInput(
+                                                        rowDto
+                                                          ?.employeeProfileLandingView
+                                                          ?.dteBloodDonateDate
+                                                      )
+                                                    : "",
                                                 });
                                                 setStatus("input");
                                                 setIsCreateForm(true);
@@ -532,6 +629,47 @@ function BloodGroup({
                                           ]),
                                     ]}
                                   />
+                                </div>
+                                <div className="col-lg-1 my-1">
+                                  <Avatar className="overviewAvatar">
+                                    <FaPersonCirclePlus
+                                      style={{
+                                        color: "rgb(51, 51, 51)",
+                                        fontSize: "18px",
+                                      }}
+                                    />
+                                  </Avatar>
+                                </div>
+                                <div className="col-lg-11 my-1">
+                                  <h4>
+                                    {rowDto?.employeeProfileLandingView
+                                      ?.isBloodDonor
+                                      ? "Yes"
+                                      : "No"}
+                                  </h4>
+                                  <small>Donor</small>
+                                </div>
+                                <div className="col-lg-1 my-1">
+                                  <Avatar className="overviewAvatar">
+                                    <LuCalendarPlus
+                                      style={{
+                                        color: "rgb(51, 51, 51)",
+                                        fontSize: "18px",
+                                      }}
+                                    />
+                                  </Avatar>
+                                </div>
+                                <div className="col-lg-11 my-1">
+                                  <h4>
+                                    {rowDto?.employeeProfileLandingView
+                                      ?.dteBloodDonateDate
+                                      ? moment(
+                                          rowDto?.employeeProfileLandingView
+                                            ?.dteBloodDonateDate
+                                        ).format("ll")
+                                      : "N/A"}
+                                  </h4>
+                                  <small>Last Blood Donate Date</small>
                                 </div>
                               </div>
                             </div>

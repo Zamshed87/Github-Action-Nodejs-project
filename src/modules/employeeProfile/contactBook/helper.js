@@ -1,5 +1,6 @@
 import axios from "axios";
 import AvatarComponent from "../../../common/AvatarComponent";
+import moment from "moment";
 
 export const getEmployeeContactInfo = async (
   tableName,
@@ -124,6 +125,27 @@ export const empSelfContactBookCol = (page, paginationSize) => {
       dataIndex: "designationName",
       sorter: true,
       filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Blood Group",
+      dataIndex: "bloodGroup",
+      sorter: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Last Blood Donate Date",
+      dataIndex: "bloodDonateDate",
+      sorter: true,
+      filter: false,
+      render: (item) => (
+        <div className="ml-2">
+          {item?.bloodDonateDate
+            ? moment(item?.bloodDonateDate).format("ll")
+            : "-"}
+        </div>
+      ),
       fieldType: "string",
     },
     {
