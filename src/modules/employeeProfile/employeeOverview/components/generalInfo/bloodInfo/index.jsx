@@ -322,12 +322,14 @@ function BloodGroup({
         enableReinitialize={true}
         initialValues={{
           ...initData,
-          // bloodGroup: singleData?.value
-          //   ? {
-          //       value: singleData?.value,
-          //       label: singleData?.label,
-          //     }
-          //   : "",
+          bloodGroup: singleData?.value
+            ? {
+                value: singleData?.value,
+                label: singleData?.label,
+              }
+            : "",
+          donateDate: singleData?.donateDate,
+          donor: singleData?.donor,
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
@@ -372,29 +374,32 @@ function BloodGroup({
                           label=""
                           onChange={(valueOption) => {
                             setFieldValue("donor", valueOption);
+                            setFieldValue("donateDate", "");
                           }}
                           placeholder=" "
                           styles={customStyles}
                           errors={errors}
                           touched={touched}
                         />
-                        <div className="input-field-main">
-                          <label>Last Blood Donate Date</label>
-                          <FormikInput
-                            // label=""
-                            value={values?.donateDate}
-                            onChange={(e) =>
-                              setFieldValue("donateDate", e.target.value)
-                            }
-                            name="donateDate"
-                            // placeholder={todayDate()}
-                            type="date"
-                            classes="input-sm"
-                            // className="input-field-main"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
+                        {values?.donor?.value && (
+                          <div className="input-field-main">
+                            <label>Last Blood Donate Date</label>
+                            <FormikInput
+                              // label=""
+                              value={values?.donateDate}
+                              onChange={(e) =>
+                                setFieldValue("donateDate", e.target.value)
+                              }
+                              name="donateDate"
+                              // placeholder={todayDate()}
+                              type="date"
+                              classes="input-sm"
+                              // className="input-field-main"
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        )}
                         <div
                           className="d-flex align-items-center justify-content-end"
                           style={{ marginTop: "24px" }}

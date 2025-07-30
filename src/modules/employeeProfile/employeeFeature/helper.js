@@ -426,6 +426,16 @@ export const getEmployeeProfileViewData = async (
                 label: empBasic?.employeeProfileLandingView?.strBloodGroup,
               }
             : undefined,
+          donor: empBasic?.employeeProfileLandingView?.isBloodDonor
+            ? {
+                value: empBasic?.employeeProfileLandingView?.isBloodDonor,
+                label: "Yes",
+              }
+            : { value: false, label: "No" },
+          lastDonationDate: empBasic?.employeeProfileLandingView
+            ?.dteBloodDonateDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteBloodDonateDate)
+            : undefined,
           jobLocation: empBasic?.employeeProfileLandingView?.intJobLocationId
             ? {
                 value: empBasic?.employeeProfileLandingView?.intJobLocationId,
