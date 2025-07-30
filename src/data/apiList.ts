@@ -377,4 +377,5 @@ export const apiList = {
   GetPayrollGroupDDLbyWorkplace: "/Payroll/GetPayrollGroupDDLbyWorkplace",
   GetPayScaleSetupDDLbyWorkplace: "/Payroll/GetPayScaleSetupDDLbyWorkplace",
   MasterPolicyLanding: "/SaasMasterData/GetPolicyLanding",
+  EmployeeContactInfo: "/Employee/EmployeeContactInfo",
 };
