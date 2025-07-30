@@ -89,27 +89,27 @@ export const processBulkUploadEmployeeAction = async (
     const cleanData = [];
     modifiedData.forEach((item) => {
       if (
-        Boolean(item?.strBusinessUnit) ||
-        Boolean(item?.strWorkplace) ||
-        Boolean(item?.strWorkplaceGroup) ||
-        Boolean(item?.strWorkplaceGroup) ||
-        Boolean(item?.strDepartment) ||
-        Boolean(item?.strDesignation) ||
-        Boolean(item?.strHrPosition) ||
-        Boolean(item?.strEmployeeName) ||
-        Boolean(item?.strEmploymentType) ||
-        Boolean(item?.strEmployeeCode) ||
-        Boolean(item?.strReferenceId) ||
-        Boolean(item?.strGender) ||
-        Boolean(item?.strSalaryType) ||
-        Boolean(item?.strReligionName) ||
-        Boolean(item?.dteDateOfBirth) ||
-        Boolean(item?.dteJoiningDate) ||
-        Boolean(item?.dteConfirmationDate) ||
-        Boolean(item?.strSupervisorCode) ||
-        Boolean(item?.strDottedSupervisorCode) ||
-        Boolean(item?.strLineManagerCode) ||
-        Boolean(item?.strUserType)
+        !Boolean(item?.strBusinessUnit) ||
+        !Boolean(item?.strWorkplace) ||
+        !Boolean(item?.strWorkplaceGroup) ||
+        !Boolean(item?.strWorkplaceGroup) ||
+        !Boolean(item?.strDepartment) ||
+        !Boolean(item?.strDesignation) ||
+        !Boolean(item?.strHrPosition) ||
+        !Boolean(item?.strEmployeeName) ||
+        !Boolean(item?.strEmploymentType) ||
+        !Boolean(item?.strEmployeeCode) ||
+        !Boolean(item?.strReferenceId) ||
+        !Boolean(item?.strGender) ||
+        !Boolean(item?.strSalaryType) ||
+        !Boolean(item?.strReligionName) ||
+        !Boolean(item?.dteDateOfBirth) ||
+        !Boolean(item?.dteJoiningDate) ||
+        !Boolean(item?.dteConfirmationDate) ||
+        !Boolean(item?.strSupervisorCode) ||
+        !Boolean(item?.strDottedSupervisorCode) ||
+        !Boolean(item?.strLineManagerCode) ||
+        !Boolean(item?.strUserType)
       ) {
         errorData.push(item);
       } else {
@@ -118,7 +118,7 @@ export const processBulkUploadEmployeeAction = async (
         });
       }
     });
-
+    console.log({ errorData });
     setter(orgId === 6 ? cleanData : modifiedData);
     setRowData(orgId === 6 ? errorData : []);
     setErrorRowOpen(orgId === 6 && errorData?.length > 0 ? true : false);
