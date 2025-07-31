@@ -112,7 +112,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
               // const { employee, year } = form.getFieldsValue();
               return (
                 <Row gutter={[10, 2]} style={{ width: "500px" }}>
-                  <Col xs={16}>
+                  <Col md={16} xs={20}>
                     <PSelect
                       name="employee"
                       placeholder="Search Min 2 char"
@@ -132,7 +132,7 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
                       filterOption={false}
                     />
                   </Col>
-                  <Col xs={8}>
+                  <Col md={8} xs={5}>
                     <PButton
                       type="primary"
                       action="button"
