@@ -69,7 +69,7 @@ const LoanDetailsView = ({
                   content={"Early Settlement"}
                   icon={<AppstoreAddOutlined />}
                   onClick={() => {
-                    setViewDetails(false);
+                    // setViewDetails(false);
                     setViewEarlySettled(true);
                   }}
                 />
