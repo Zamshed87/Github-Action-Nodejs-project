@@ -3,7 +3,6 @@ import React, { forwardRef } from "react";
 import { dateFormatter } from "utility/dateFormatter";
 
 const PromotionInfo = forwardRef((props: any, ref: any) => {
-  console.log("PromotionInfo props", props);
   const { data } = props;
   const header = [
     {
