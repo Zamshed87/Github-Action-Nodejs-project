@@ -11,7 +11,12 @@ import moment from "moment";
 import { roundToDecimals } from "modules/CompensationBenefits/employeeSalary/salaryAssign/salaryAssignCal";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
+const EarlySettled = ({
+  callViewLoanDetails,
+  loanByIdDto,
+  headerId,
+  setViewEarlySettled,
+}) => {
   const [, saveData] = useAxiosPost({});
   const [, getCalculationData] = useAxiosGet();
 
@@ -61,6 +66,7 @@ const EarlySettled = ({ loanByIdDto, headerId, setViewEarlySettled }) => {
       } else {
         resetForm();
         setViewEarlySettled(false);
+        callViewLoanDetails();
         toast.success(res?.message[0] || "Submitted Successfully");
       }
     };

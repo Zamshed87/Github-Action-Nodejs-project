@@ -12,6 +12,7 @@ import { gray900, greenColor } from "utility/customColor";
 import DefaultInput from "common/DefaultInput";
 import { ModalFooter } from "Components/Modal";
 const PfLoanTable = ({
+  callViewLoanDetails,
   header,
   generatedData = [],
   isModal = false,
@@ -604,6 +605,7 @@ const PfLoanTable = ({
                             // intCreatedBy: employeeId,
                           },
                           () => {
+                            callViewLoanDetails();
                             setModalView(false);
                             setHoldOrCollect(false);
                             setFieldValue("comment", "");

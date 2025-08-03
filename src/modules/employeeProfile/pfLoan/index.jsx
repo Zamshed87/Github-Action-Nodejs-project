@@ -95,7 +95,10 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
       });
     });
   };
-
+  const callViewLoanDetails = () => {
+    getLoanById(`/PfLoan/GetById?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&LoanHeaderId=${singleData?.intEmployeeLoanHeaderId}
+                  `);
+  };
   useEffect(() => {
     if (!onlyViewDetails) {
       getData("", pages);
@@ -241,7 +244,12 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
                 bordered
                 data={rowDto?.length > 0 ? rowDto : []}
                 loading={loanLandingLoading}
-                header={pfLandingColData(history, setLoading, getData, dispatch)}
+                header={pfLandingColData(
+                  history,
+                  setLoading,
+                  getData,
+                  dispatch
+                )}
                 scroll={{ x: 1500 }}
                 pagination={{
                   pageSize: pages?.pageSize,
@@ -279,9 +287,11 @@ const PfLoanLanding = ({ onlyViewDetails = null }) => {
           loanByIdDto={loanByIdDto}
           headerId={loanByIdDto?.objHeader?.intEmployeeLoanHeaderId}
           setViewEarlySettled={setViewEarlySettled}
+          callViewLoanDetails={callViewLoanDetails}
         />
       </ViewModal>
       <LoanDetailsView
+        callViewLoanDetails={callViewLoanDetails}
         loanByIdLoading={loanByIdLoading}
         viewDetails={viewDetails}
         setViewDetails={setViewDetails}
