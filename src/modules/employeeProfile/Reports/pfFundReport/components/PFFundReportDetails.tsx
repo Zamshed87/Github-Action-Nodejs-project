@@ -92,10 +92,11 @@ const PFFundReportDetails: React.FC<TPFFundReport> = ({ form, data }) => {
             downloadFile(
               "/PdfAndExcelReport/DownloadEmployeeWisePfFundDetails",
               "EmployeeWisePfFundDetails",
-              "xlsx",
+              "pdf",
               setLoading,
               "POST",
               {
+                isForPdf:true,
                 intAccountId: orgId,
                 intEmployeeId: data?.employeeId ?? 0,
                 isCurrentFund: false,

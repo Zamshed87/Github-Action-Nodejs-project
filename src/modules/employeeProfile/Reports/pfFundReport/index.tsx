@@ -147,15 +147,16 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
       {loading && (<Loading />)}
       <PForm form={form}>
         <PCard>
-          <PCardHeader title="PF Fund Report" exportIcon onExport={() => {
-            // download excel after the api call
+          <PCardHeader title="PF Fund Report" printIcon pdfExport={() => {
+            // download pdf after the api call
             downloadFile(
               "/PdfAndExcelReport/DownloadRefundOrEarningReportLanding",
               "PF_Fund_Report",
-              "xlsx",
+              "pdf",
               setLoading,
               "POST",
               {
+                isForPdf:true,
                 intAccountId: orgId,
                 intEmployeeId: form.getFieldValue("employeeName")?.value || 0,
                 isCurrentFund: true,

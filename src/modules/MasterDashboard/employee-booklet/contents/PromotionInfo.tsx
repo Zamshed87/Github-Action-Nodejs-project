@@ -86,6 +86,12 @@ const PromotionInfo = forwardRef((props: any, ref: any) => {
       key: "grossSalary",
       width: 30,
     },
+    {
+      title: "Raised",
+      dataIndex: "Raised",
+      key: "Raised",
+      width: 30,
+    },
   ];
 
   return (
