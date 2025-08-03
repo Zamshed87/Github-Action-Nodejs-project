@@ -3,6 +3,7 @@ import React, { forwardRef } from "react";
 import { dateFormatter } from "utility/dateFormatter";
 
 const PromotionInfo = forwardRef((props: any, ref: any) => {
+  console.log("PromotionInfo props", props);
   const { data } = props;
   const header = [
     {
@@ -84,6 +85,12 @@ const PromotionInfo = forwardRef((props: any, ref: any) => {
       title: "Gross Salary",
       dataIndex: "GrossSalary",
       key: "grossSalary",
+      width: 30,
+    },
+    {
+      title: "Raised",
+      dataIndex: "Raised",
+      key: "Raised",
       width: 30,
     },
   ];
