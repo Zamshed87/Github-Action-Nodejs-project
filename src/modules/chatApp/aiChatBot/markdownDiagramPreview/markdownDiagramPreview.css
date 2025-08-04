@@ -4,7 +4,8 @@
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: 13px;
   word-wrap: break-word;
   scroll-behavior: auto;
@@ -24,7 +25,7 @@
 .ai-chatbot-markdown-body h6:hover .anchor .octicon-link:before {
   width: 16px;
   height: 16px;
-  content: ' ';
+  content: " ";
   display: inline-block;
   background-color: currentColor;
   -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
@@ -67,9 +68,9 @@
 }
 
 .ai-chatbot-markdown-body h1 {
-  margin: .67em 0;
+  margin: 0.67em 0;
   font-weight: 600;
-  padding-bottom: .3em;
+  padding-bottom: 0.3em;
   font-size: 18px;
   border-bottom: 1px solid #d0d7deb3;
 }
@@ -121,7 +122,7 @@
   overflow: hidden;
   background: transparent;
   border-bottom: 1px solid #d0d7deb3;
-  height: .25em;
+  height: 0.25em;
   padding: 0;
   margin: 24px 0;
   background-color: #d0d7de;
@@ -136,33 +137,33 @@
   font-size: inherit;
 }
 
-.ai-chatbot-markdown-body [type=button],
-.ai-chatbot-markdown-body [type=reset],
-.ai-chatbot-markdown-body [type=submit] {
+.ai-chatbot-markdown-body [type="button"],
+.ai-chatbot-markdown-body [type="reset"],
+.ai-chatbot-markdown-body [type="submit"] {
   -webkit-appearance: button;
   appearance: button;
 }
 
-.ai-chatbot-markdown-body [type=checkbox],
-.ai-chatbot-markdown-body [type=radio] {
+.ai-chatbot-markdown-body [type="checkbox"],
+.ai-chatbot-markdown-body [type="radio"] {
   box-sizing: border-box;
   padding: 0;
 }
 
-.ai-chatbot-markdown-body [type=number]::-webkit-inner-spin-button,
-.ai-chatbot-markdown-body [type=number]::-webkit-outer-spin-button {
+.ai-chatbot-markdown-body [type="number"]::-webkit-inner-spin-button,
+.ai-chatbot-markdown-body [type="number"]::-webkit-outer-spin-button {
   height: auto;
 }
 
-.ai-chatbot-markdown-body [type=search]::-webkit-search-cancel-button,
-.ai-chatbot-markdown-body [type=search]::-webkit-search-decoration {
+.ai-chatbot-markdown-body [type="search"]::-webkit-search-cancel-button,
+.ai-chatbot-markdown-body [type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
   appearance: none;
 }
 
 .ai-chatbot-markdown-body ::-webkit-input-placeholder {
   color: inherit;
-  opacity: .54;
+  opacity: 0.54;
 }
 
 .ai-chatbot-markdown-body ::-webkit-file-upload-button {
@@ -209,30 +210,30 @@
   cursor: pointer;
 }
 
-.ai-chatbot-markdown-body details:not([open])>*:not(summary) {
+.ai-chatbot-markdown-body details:not([open]) > *:not(summary) {
   display: none;
 }
 
 .ai-chatbot-markdown-body a:focus,
-.ai-chatbot-markdown-body [role=button]:focus,
-.ai-chatbot-markdown-body input[type=radio]:focus,
-.ai-chatbot-markdown-body input[type=checkbox]:focus {
+.ai-chatbot-markdown-body [role="button"]:focus,
+.ai-chatbot-markdown-body input[type="radio"]:focus,
+.ai-chatbot-markdown-body input[type="checkbox"]:focus {
   outline: 2px solid #0969da;
   outline-offset: -2px;
   box-shadow: none;
 }
 
 .ai-chatbot-markdown-body a:focus:not(:focus-visible),
-.ai-chatbot-markdown-body [role=button]:focus:not(:focus-visible),
-.ai-chatbot-markdown-body input[type=radio]:focus:not(:focus-visible),
-.ai-chatbot-markdown-body input[type=checkbox]:focus:not(:focus-visible) {
+.ai-chatbot-markdown-body [role="button"]:focus:not(:focus-visible),
+.ai-chatbot-markdown-body input[type="radio"]:focus:not(:focus-visible),
+.ai-chatbot-markdown-body input[type="checkbox"]:focus:not(:focus-visible) {
   outline: solid 1px transparent;
 }
 
 .ai-chatbot-markdown-body a:focus-visible,
-.ai-chatbot-markdown-body [role=button]:focus-visible,
-.ai-chatbot-markdown-body input[type=radio]:focus-visible,
-.ai-chatbot-markdown-body input[type=checkbox]:focus-visible {
+.ai-chatbot-markdown-body [role="button"]:focus-visible,
+.ai-chatbot-markdown-body input[type="radio"]:focus-visible,
+.ai-chatbot-markdown-body input[type="checkbox"]:focus-visible {
   outline: 2px solid #0969da;
   outline-offset: -2px;
   box-shadow: none;
@@ -240,17 +241,18 @@
 
 .ai-chatbot-markdown-body a:not([class]):focus,
 .ai-chatbot-markdown-body a:not([class]):focus-visible,
-.ai-chatbot-markdown-body input[type=radio]:focus,
-.ai-chatbot-markdown-body input[type=radio]:focus-visible,
-.ai-chatbot-markdown-body input[type=checkbox]:focus,
-.ai-chatbot-markdown-body input[type=checkbox]:focus-visible {
+.ai-chatbot-markdown-body input[type="radio"]:focus,
+.ai-chatbot-markdown-body input[type="radio"]:focus-visible,
+.ai-chatbot-markdown-body input[type="checkbox"]:focus,
+.ai-chatbot-markdown-body input[type="checkbox"]:focus-visible {
   outline-offset: 0;
 }
 
 .ai-chatbot-markdown-body kbd {
   display: inline-block;
   padding: 3px 5px;
-  font: 11px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font: 11px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
   color: #1f2328;
   vertical-align: middle;
   border: solid 1px #afb8c133;
@@ -268,12 +270,11 @@
   margin-top: 0px !important;
   margin-bottom: 0px !important;
   font-weight: 600;
-
 }
 
 .ai-chatbot-markdown-body h2 {
   font-weight: 600;
-  padding-bottom: .3em;
+  padding-bottom: 0.3em;
   font-size: 18px;
   line-height: 18px;
   border-bottom: 1px solid #d0d7deb3;
@@ -295,7 +296,6 @@
   font-weight: 600;
   font-size: 15px;
   line-height: 15px;
-
 }
 
 .ai-chatbot-markdown-body h6 {
@@ -314,7 +314,7 @@
   margin: 0;
   padding: 0 1em;
   color: #636c76;
-  border-left: .25em solid #d0d7de;
+  border-left: 0.25em solid #d0d7de;
 }
 
 .ai-chatbot-markdown-body ul,
@@ -343,14 +343,16 @@
 .ai-chatbot-markdown-body tt,
 .ai-chatbot-markdown-body code,
 .ai-chatbot-markdown-body samp {
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
   font-size: 12px;
 }
 
 .ai-chatbot-markdown-body pre {
   margin-top: 0;
   margin-bottom: 0;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
   font-size: 12px;
   word-wrap: normal;
 }
@@ -384,11 +386,11 @@
   content: "";
 }
 
-.ai-chatbot-markdown-body>*:first-child {
+.ai-chatbot-markdown-body > *:first-child {
   margin-top: 0 !important;
 }
 
-.ai-chatbot-markdown-body>*:last-child {
+.ai-chatbot-markdown-body > *:last-child {
   margin-bottom: 0 !important;
 }
 
@@ -423,11 +425,11 @@
   margin-bottom: 5px;
 }
 
-.ai-chatbot-markdown-body blockquote>:first-child {
+.ai-chatbot-markdown-body blockquote > :first-child {
   margin-top: 0;
 }
 
-.ai-chatbot-markdown-body blockquote>:last-child {
+.ai-chatbot-markdown-body blockquote > :last-child {
   margin-bottom: 0;
 }
 
@@ -472,7 +474,7 @@
 .ai-chatbot-markdown-body h5 code,
 .ai-chatbot-markdown-body h6 tt,
 .ai-chatbot-markdown-body h6 code {
-  padding: 0 .2em;
+  padding: 0 0.2em;
   font-size: inherit;
 }
 
@@ -526,7 +528,7 @@
   list-style-type: decimal;
 }
 
-.ai-chatbot-markdown-body div>ol:not([type]) {
+.ai-chatbot-markdown-body div > ol:not([type]) {
   list-style-type: decimal;
 }
 
@@ -538,12 +540,12 @@
   margin-bottom: 0;
 }
 
-.ai-chatbot-markdown-body li>p {
+.ai-chatbot-markdown-body li > p {
   margin-top: 5px;
 }
 
-.ai-chatbot-markdown-body li+li {
-  margin-top: .5px;
+.ai-chatbot-markdown-body li + li {
+  margin-top: 0.5px;
 }
 
 .ai-chatbot-markdown-body dl {
@@ -564,15 +566,16 @@
 
 .ai-chatbot-markdown-body table th {
   font-weight: 600;
+  width: max-content;
 }
 
 .ai-chatbot-markdown-body table th,
 .ai-chatbot-markdown-body table td {
-  padding: 6px 13px;
+  padding: 2px;
   border: 1px solid #d0d7de;
 }
 
-.ai-chatbot-markdown-body table td>:last-child {
+.ai-chatbot-markdown-body table td > :last-child {
   margin-bottom: 0;
 }
 
@@ -588,11 +591,11 @@
   background-color: transparent;
 }
 
-.ai-chatbot-markdown-body img[align=right] {
+.ai-chatbot-markdown-body img[align="right"] {
   padding-left: 20px;
 }
 
-.ai-chatbot-markdown-body img[align=left] {
+.ai-chatbot-markdown-body img[align="left"] {
   padding-right: 20px;
 }
 
@@ -607,7 +610,7 @@
   overflow: hidden;
 }
 
-.ai-chatbot-markdown-body span.frame>span {
+.ai-chatbot-markdown-body span.frame > span {
   display: block;
   float: left;
   width: auto;
@@ -635,7 +638,7 @@
   clear: both;
 }
 
-.ai-chatbot-markdown-body span.align-center>span {
+.ai-chatbot-markdown-body span.align-center > span {
   display: block;
   margin: 5px auto 0;
   overflow: hidden;
@@ -653,7 +656,7 @@
   clear: both;
 }
 
-.ai-chatbot-markdown-body span.align-right>span {
+.ai-chatbot-markdown-body span.align-right > span {
   display: block;
   margin: 5px 0 0;
   overflow: hidden;
@@ -683,7 +686,7 @@
   overflow: hidden;
 }
 
-.ai-chatbot-markdown-body span.float-right>span {
+.ai-chatbot-markdown-body span.float-right > span {
   display: block;
   margin: 5px auto 0;
   overflow: hidden;
@@ -692,7 +695,7 @@
 
 .ai-chatbot-markdown-body code,
 .ai-chatbot-markdown-body tt {
-  padding: .2em .4em;
+  padding: 0.2em 0.4em;
   margin: 0;
   font-size: 85%;
   white-space: break-spaces;
@@ -717,7 +720,7 @@
   font-size: 100%;
 }
 
-.ai-chatbot-markdown-body pre>code {
+.ai-chatbot-markdown-body pre > code {
   padding: 0;
   margin: 0;
   word-break: normal;
@@ -949,8 +952,9 @@
   color: #0a3069;
 }
 
-.ai-chatbot-markdown-body [role=button]:focus:not(:focus-visible),
-.ai-chatbot-markdown-body [role=tabpanel][tabindex="0"]:focus:not(:focus-visible),
+.ai-chatbot-markdown-body [role="button"]:focus:not(:focus-visible),
+.ai-chatbot-markdown-body
+  [role="tabpanel"][tabindex="0"]:focus:not(:focus-visible),
 .ai-chatbot-markdown-body button:focus:not(:focus-visible),
 .ai-chatbot-markdown-body summary:focus:not(:focus-visible),
 .ai-chatbot-markdown-body a:focus:not(:focus-visible) {
@@ -990,7 +994,7 @@
   cursor: pointer;
 }
 
-.ai-chatbot-markdown-body .task-list-item+.task-list-item {
+.ai-chatbot-markdown-body .task-list-item + .task-list-item {
   margin-top: 5px;
 }
 
@@ -999,20 +1003,26 @@
 }
 
 .ai-chatbot-markdown-body .task-list-item-checkbox {
-  margin: 0 5px .25em -1.4em;
+  margin: 0 5px 0.25em -1.4em;
   vertical-align: middle;
 }
 
-.ai-chatbot-markdown-body .contains-task-list:dir(rtl) .task-list-item-checkbox {
-  margin: 0 -1.6em .25em .2em;
+.ai-chatbot-markdown-body
+  .contains-task-list:dir(rtl)
+  .task-list-item-checkbox {
+  margin: 0 -1.6em 0.25em 0.2em;
 }
 
 .ai-chatbot-markdown-body .contains-task-list {
   position: relative;
 }
 
-.ai-chatbot-markdown-body .contains-task-list:hover .task-list-item-convert-container,
-.ai-chatbot-markdown-body .contains-task-list:focus-within .task-list-item-convert-container {
+.ai-chatbot-markdown-body
+  .contains-task-list:hover
+  .task-list-item-convert-container,
+.ai-chatbot-markdown-body
+  .contains-task-list:focus-within
+  .task-list-item-convert-container {
   display: block;
   width: auto;
   height: 24px;
@@ -1028,14 +1038,14 @@
   padding: 5px 5px;
   margin-bottom: 5px;
   color: inherit;
-  border-left: .25em solid #d0d7de;
+  border-left: 0.25em solid #d0d7de;
 }
 
-.ai-chatbot-markdown-body .markdown-alert>:first-child {
+.ai-chatbot-markdown-body .markdown-alert > :first-child {
   margin-top: 0;
 }
 
-.ai-chatbot-markdown-body .markdown-alert>:last-child {
+.ai-chatbot-markdown-body .markdown-alert > :last-child {
   margin-bottom: 0;
 }
 
@@ -1049,7 +1059,9 @@
   border-left-color: #0969da;
 }
 
-.ai-chatbot-markdown-body .markdown-alert.markdown-alert-note .markdown-alert-title {
+.ai-chatbot-markdown-body
+  .markdown-alert.markdown-alert-note
+  .markdown-alert-title {
   color: #0969da;
 }
 
@@ -1057,7 +1069,9 @@
   border-left-color: #8250df;
 }
 
-.ai-chatbot-markdown-body .markdown-alert.markdown-alert-important .markdown-alert-title {
+.ai-chatbot-markdown-body
+  .markdown-alert.markdown-alert-important
+  .markdown-alert-title {
   color: #8250df;
 }
 
@@ -1065,7 +1079,9 @@
   border-left-color: #bf8700;
 }
 
-.ai-chatbot-markdown-body .markdown-alert.markdown-alert-warning .markdown-alert-title {
+.ai-chatbot-markdown-body
+  .markdown-alert.markdown-alert-warning
+  .markdown-alert-title {
   color: #9a6700;
 }
 
@@ -1073,7 +1089,9 @@
   border-left-color: #1a7f37;
 }
 
-.ai-chatbot-markdown-body .markdown-alert.markdown-alert-tip .markdown-alert-title {
+.ai-chatbot-markdown-body
+  .markdown-alert.markdown-alert-tip
+  .markdown-alert-title {
   color: #1a7f37;
 }
 
@@ -1081,10 +1099,18 @@
   border-left-color: #cf222e;
 }
 
-.ai-chatbot-markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title {
+.ai-chatbot-markdown-body
+  .markdown-alert.markdown-alert-caution
+  .markdown-alert-title {
   color: #d1242f;
 }
 
-.ai-chatbot-markdown-body>*:first-child>.heading-element:first-child {
+.ai-chatbot-markdown-body > *:first-child > .heading-element:first-child {
   margin-top: 0 !important;
+}
+.ai-chatbot-markdown-body .table-wrapper {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }

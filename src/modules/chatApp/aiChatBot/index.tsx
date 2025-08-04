@@ -26,6 +26,8 @@ import type { TransitionProps } from "@mui/material/transitions";
 import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import MarkdownDiagramPreview from "./markdownDiagramPreview/markdownDiagramPreview";
+import { isDevServer } from "App";
+import JsonPreview from "./markdownDiagramPreview/jsonPreview";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -50,7 +52,7 @@ interface ApiResponse {
 }
 
 export default function AssistantChatbot() {
-  const { orgId, buId, wgId, wId, userName } = useSelector(
+  const { orgId, buId, wgId, wId, userName, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -90,17 +92,18 @@ export default function AssistantChatbot() {
   const callEmployeeAPI = async (question: string): Promise<ApiResponse> => {
     try {
       const response = await fetch(
-        "https://devtexttosql.ibos.io/search_employee",
+        `https://${isDevServer ? 'devtexttosql' : 'texttosql'}.ibos.io/search_employee`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            UnitId: buId,
-            intAccountId: orgId,
-            intWorkplaceGroupId: wgId,
-            intWorkplaceId: wId,
+            unitId: buId,
+            accountId: orgId,
+            userId: employeeId,
+            workplaceGroupId: wgId,
+            workplaceId: wId,
             question: question,
           }),
         }
@@ -108,7 +111,7 @@ export default function AssistantChatbot() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.text();
+      const data = await response.json();
       return {
         success: true,
         data: data,
@@ -275,92 +278,106 @@ export default function AssistantChatbot() {
               gap: 2,
             }}
           >
-            {messages.map((message) => (
-              <Box
-                key={message.id}
-                sx={{
-                  display: "flex",
-                  justifyContent:
-                    message.role === "user" ? "flex-end" : "flex-start",
-                  alignItems: "flex-start",
-                  gap: 1,
-                }}
-              >
-                {message.role === "assistant" && (
-                  <Avatar
-                    sx={{
-                      bgcolor: "var(--primary-color)",
-                      width: 32,
-                      height: 32,
-                    }}
-                  >
-                    <BotIcon fontSize="small" />
-                  </Avatar>
-                )}
-
-                <Paper
-                  elevation={2}
+            {messages.map((message) => {
+              console.log(message?.content)
+              return (
+                <Box
+                  key={message.id}
                   sx={{
-                    padding: 2,
-                    maxWidth: "75%",
-                    backgroundColor:
-                      message.role === "user"
-                        ? "var(--primary-color)"
-                        : "var(--white)",
-                    color:
-                      message.role === "user"
-                        ? "var(--white)"
-                        : "var(--gray900)",
-                    borderRadius: 2,
-                    borderTopLeftRadius: message.role === "assistant" ? 0 : 2,
-                    borderTopRightRadius: message.role === "user" ? 0 : 2,
+                    display: "flex",
+                    justifyContent:
+                      message.role === "user" ? "flex-end" : "flex-start",
+                    alignItems: "flex-start",
+                    gap: 1,
                   }}
                 >
-                  {message.role === "assistant" ? (
-                    <MarkdownDiagramPreview markdown={message.content} />
-                  ) : (
-                    <Typography
-                      variant="body2"
+                  {message.role === "assistant" && (
+                    <Avatar
                       sx={{
-                        whiteSpace: "pre-wrap",
-                        wordBreak: "break-word",
-                        color:
-                          message.role === "user"
-                            ? "var(--white)"
-                            : "var(--gray900)",
+                        bgcolor: "var(--primary-color)",
+                        width: 32,
+                        height: 32,
                       }}
                     >
-                      {message.content}
-                    </Typography>
+                      <BotIcon fontSize="small" />
+                    </Avatar>
                   )}
-                  <Typography
-                    variant="caption"
+
+                  <Paper
+                    elevation={2}
                     sx={{
-                      display: "block",
-                      textAlign: "right",
-                      marginTop: 1,
-                      opacity: 0.7,
-                      fontSize: "0.7rem",
+                      padding: 2,
+                      maxWidth: "75%",
+                      backgroundColor:
+                        message.role === "user"
+                          ? "var(--primary-color)"
+                          : "var(--white)",
+                      color:
+                        message.role === "user"
+                          ? "var(--white)"
+                          : "var(--gray900)",
+                      borderRadius: 2,
+                      borderTopLeftRadius: message.role === "assistant" ? 0 : 2,
+                      borderTopRightRadius: message.role === "user" ? 0 : 2,
                     }}
                   >
-                    {formatTime(message.timestamp)}
-                  </Typography>
-                </Paper>
 
-                {message.role === "user" && (
-                  <Avatar
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      textTransform: "uppercase",
-                      bgcolor: "var(--primary-color)",
-                      fontSize: "0.75rem",
-                    }}
-                    {...stringAvatar(userName)}
-                  ></Avatar>
-                )}
-              </Box>
-            ))}
+                    {message.role === "assistant" ? (
+
+                      message?.content && typeof message.content === "object" ? !Array.isArray(message.content) && "results" in message.content &&
+                        Array.isArray((message.content as { results?: unknown[] }).results) &&
+                        (message.content as { results: unknown[] }).results.length > 0 && <JsonPreview
+                          message={{
+                            results: (message.content as { results: unknown[] }).results as any[]
+                          }}
+                        /> : <MarkdownDiagramPreview
+                        markdown={message.content}
+                      />
+
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                          color:
+                            message.role === "user"
+                              ? "var(--white)"
+                              : "var(--gray900)",
+                        }}
+                      >
+                        {message.content}
+                      </Typography>
+                    )}
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        textAlign: "right",
+                        marginTop: 1,
+                        opacity: 0.7,
+                        fontSize: "0.7rem",
+                      }}
+                    >
+                      {formatTime(message.timestamp)}
+                    </Typography>
+                  </Paper>
+
+                  {message.role === "user" && (
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        textTransform: "uppercase",
+                        bgcolor: "var(--primary-color)",
+                        fontSize: "0.75rem",
+                      }}
+                      {...stringAvatar(userName)}
+                    ></Avatar>
+                  )}
+                </Box>
+              )
+            })}
 
             {isLoading && (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

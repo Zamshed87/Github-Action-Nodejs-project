@@ -2,6 +2,7 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 import mermaid from "mermaid";
 import "./markdownDiagramPreview.css";
+
 // Configure mermaid with more specific settings
 mermaid.initialize({
   startOnLoad: false,
@@ -9,34 +10,43 @@ mermaid.initialize({
   securityLevel: "loose",
   flowchart: {
     htmlLabels: true,
-    curve: "basis"
-  }
+    curve: "basis",
+  },
 });
 
-// Configure marked with custom renderer for mermaid
-const renderer = new marked.Renderer();
+// Configure marked with custom renderer for mermaid and tables
+const renderer: any = new marked.Renderer();
 const originalCodeRenderer = renderer.code.bind(renderer);
+const originalTableRenderer = renderer.table.bind(renderer);
 
-renderer.code = (codeObj) => {
+renderer.code = (codeObj: any) => {
   console.log(codeObj, "codeObj");
   if (codeObj?.lang === "mermaid") {
     return `<div class="mermaid">${codeObj?.text}</div>`;
   }
   return originalCodeRenderer(codeObj);
 };
+renderer.table = (header: string, body: string) => {
+  return `
+      <div class="table-wrapper">
+        ${originalTableRenderer(header, body)}
+      </div>
+    `;
+};
 
 marked.setOptions({
   renderer: renderer,
   breaks: true,
-  gfm: true
+  gfm: true,
 });
+
 type MarkdownDiagramPreviewType = {
   markdown: string;
 };
-function MarkdownDiagramPreview({ markdown }: MarkdownDiagramPreviewType) {
-  // const [preview, setPreview] = useState("");
 
+function MarkdownDiagramPreview({ markdown }: MarkdownDiagramPreviewType) {
   let markdownSanitized = "";
+
   const renderMarkdown = async () => {
     try {
       const rendered: any = marked(markdown);
@@ -48,7 +58,7 @@ function MarkdownDiagramPreview({ markdown }: MarkdownDiagramPreviewType) {
         try {
           await mermaid.run({
             querySelector: ".mermaid",
-            suppressErrors: true
+            suppressErrors: true,
           });
         } catch (error) {
           console.error("Mermaid rendering error:", error);
@@ -60,6 +70,7 @@ function MarkdownDiagramPreview({ markdown }: MarkdownDiagramPreviewType) {
   };
 
   renderMarkdown();
+
   return (
     <div
       className="ai-chatbot-markdown-body"
