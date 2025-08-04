@@ -204,3 +204,25 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
 .top-menu-search .ant-select-selection-placeholder {
   font-size: 11px !important;
 }
+.suggestion-box {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 999;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-box li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.suggestion-box li:hover,
+.suggestion-box li.active {
+  background-color: #f0f0f0;
+}

@@ -32,6 +32,13 @@ import {
 } from "../calculation";
 import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
+import FormulaInputWrapper from "Components/PForm/Input/Formula";
 
 type TOvertimePolicy = unknown;
 const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
@@ -142,7 +149,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       });
     }
   }, [orgId, state]);
-  console.log("state", state);
 
   const onFinish = () => {
     const values = form.getFieldsValue(true);
@@ -183,8 +189,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       intUpdatedBy: employeeId,
     };
 
-    console.log(values);
-
     if (values?.isPerdaySalary) {
       payload = {
         ...payload,
@@ -207,15 +211,36 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       if (dynamicForm?.length <= 0) {
         return toast.warn("Payroll Element List is empty!!!");
       }
+      const isFormulaExist = dynamicForm?.filter(
+        (i: any) => i?.strBasedOn === "Calculative"
+      );
+      if (isFormulaExist && isFormulaExist.length > 0) {
+        for (const item of isFormulaExist) {
+          if (!item?.strFormula) {
+            // Checks for null, undefined, or empty string
+            return toast.warn("Calculative Element can not be empty!!!");
+          }
+        }
+      }
+
+      const updatedDynamicForm = dynamicForm?.map((itm: any, idx: any) => {
+        return {
+          ...itm,
+          intSl: idx,
+          intCreatedBy: employeeId,
+          intUpdatedBy: employeeId,
+        };
+      });
       let temp: any = [];
       if (values?.dependsOn?.value === 2) {
-        temp = [...dynamicForm];
+        temp = updatedDynamicForm;
         temp.push({
           intSalaryBreakdownRowId: 0,
           intSalaryBreakdownHeaderId: 0,
           intDependsOn: 1,
           strDependOn: "Basic",
           strBasedOn: "Amount",
+          intSl: updatedDynamicForm?.length,
           intPayrollElementTypeId: (
             payrollElementDDL?.filter((i: any) => i?.isBasic)?.[0] as any
           )?.value,
@@ -235,7 +260,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         payload,
         singleData,
         state,
-        values?.dependsOn?.value === 2 ? temp : dynamicForm,
+        values?.dependsOn?.value === 2 ? temp : updatedDynamicForm,
         values,
         setLoading,
         callback
@@ -277,6 +302,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
+      label: values?.payrollElement?.label,
     };
     switch (orgId) {
       case 10026:
@@ -294,6 +320,14 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const reordered = Array.from(dynamicForm);
+    const [movedItem] = reordered.splice(result.source.index, 1);
+    reordered.splice(result.destination.index, 0, movedItem);
+    setDynamicForm(reordered); // You must store dynamicForm in a state
+  };
   return (
     <>
       <PForm
@@ -363,7 +397,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                     form.setFieldsValue({
                       payScale: option,
                     });
-                    form.resetFields(["workplace"])
+                    form.resetFields(["workplace"]);
                     getWorkplaceDDL(
                       orgId,
                       buId,
@@ -391,7 +425,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                   options={workplace || []}
                   mode="multiple"
                   maxTagCount={"responsive"}
-                  onSelect={(value, option) => {
+                  onSelect={(value) => {
                     // form.setFieldsValue({
                     //   workplace: option,
                     // });
@@ -535,6 +569,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                             options={[
                               { value: 1, label: "Percentage" },
                               { value: 2, label: "Amount" },
+                              { value: 3, label: "Calculative" },
                             ]}
                             onChange={(value, option) => {
                               form.setFieldsValue({
@@ -593,68 +628,181 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
             <Row gutter={[24, 2]}>
               <Form.Item noStyle shouldUpdate>
                 {() => {
-                  const { isPerdaySalary } = form.getFieldsValue();
+                  const { isPerdaySalary, dependsOn } =
+                    form.getFieldsValue(true);
+                  console.log({ dependsOn, dynamicForm });
                   return (
                     <>
-                      {!isPerdaySalary &&
-                        dynamicForm?.map((itm: any, index: number) => {
-                          return (
-                            <>
-                              <div className="d-flex align-items-center">
-                                <Col md={24} sm={24}>
-                                  <PInput
-                                    type="number"
-                                    label={
-                                      <>
-                                        {itm?.strPayrollElementName}
-                                        {itm?.strBasedOn === "Percentage" &&
-                                          `( % )`}
-                                        {`[Depends on ${
-                                          itm?.strDependOn === "Basic"
-                                            ? "Basic"
-                                            : "Gross"
-                                        }]`}
-                                        {!state?.intSalaryBreakdownHeaderId && (
-                                          <span
-                                            style={{
-                                              color: success800,
-                                              fontWeight: "500",
-                                              fontSize: "12px",
-                                              lineHeight: "18px",
-                                              textDecoration: "underline",
-                                              cursor: "pointer",
-                                              marginLeft: "8px",
-                                            }}
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              remover(itm?.levelVariable);
-                                              form.setFieldsValue({
-                                                levelVariable:
-                                                  itm?.levelVariable,
-                                              });
-                                            }}
-                                          >
-                                            Remove
-                                          </span>
-                                        )}
-                                      </>
-                                    }
-                                    value={itm?.[itm?.levelVariable]}
-                                    // name={itm?.levelVariable}
-                                    onChange={(value) => {
-                                      rowDtoHandler(
-                                        `${itm?.levelVariable}`,
-                                        index,
-                                        value
-                                      );
-                                    }}
-                                    disabled={state?.intSalaryBreakdownHeaderId}
-                                  />
-                                </Col>
+                      {!isPerdaySalary && (
+                        <DragDropContext onDragEnd={onDragEnd}>
+                          <Droppable droppableId="salary-elements">
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                              >
+                                {dynamicForm?.map((itm: any, index: number) => (
+                                  <Draggable
+                                    key={itm.levelVariable}
+                                    draggableId={itm.levelVariable}
+                                    index={index}
+                                  >
+                                    {(draggableProvided) => (
+                                      <div
+                                        className="d-flex align-items-center"
+                                        ref={draggableProvided.innerRef}
+                                        {...draggableProvided.draggableProps}
+                                        {...draggableProvided.dragHandleProps}
+                                        style={{
+                                          ...draggableProvided.draggableProps
+                                            .style,
+                                          marginBottom: "12px",
+                                        }}
+                                      >
+                                        <Col md={24} sm={24}>
+                                          {/* BasedOn != Calculative */}
+                                          {itm?.strBasedOn !== "Calculative" ? (
+                                            <PInput
+                                              type="number"
+                                              label={
+                                                <>
+                                                  {itm?.strPayrollElementName}
+                                                  {itm?.strBasedOn ===
+                                                    "Percentage" && `(%)`}
+                                                  {itm?.strBasedOn ===
+                                                    "Amount" && `(#)`}
+                                                  {` [Depends on ${
+                                                    itm?.strDependOn === "Basic"
+                                                      ? "Basic"
+                                                      : "Gross"
+                                                  }]`}
+                                                  {!state?.intSalaryBreakdownHeaderId && (
+                                                    <span
+                                                      style={{
+                                                        color: success800,
+                                                        fontWeight: "500",
+                                                        fontSize: "12px",
+                                                        lineHeight: "18px",
+                                                        textDecoration:
+                                                          "underline",
+                                                        cursor: "pointer",
+                                                        marginLeft: "8px",
+                                                      }}
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        remover(
+                                                          itm?.levelVariable
+                                                        );
+                                                        form.setFieldsValue({
+                                                          levelVariable:
+                                                            itm?.levelVariable,
+                                                        });
+                                                      }}
+                                                    >
+                                                      Remove
+                                                    </span>
+                                                  )}
+                                                </>
+                                              }
+                                              value={itm?.[itm?.levelVariable]}
+                                              onChange={(value) => {
+                                                rowDtoHandler(
+                                                  `${itm?.levelVariable}`,
+                                                  index,
+                                                  value
+                                                );
+                                              }}
+                                              disabled={
+                                                state?.intSalaryBreakdownHeaderId
+                                              }
+                                            />
+                                          ) : (
+                                            <FormulaInputWrapper
+                                              width={
+                                                state?.intSalaryBreakdownHeaderId
+                                                  ? "350px"
+                                                  : "100%"
+                                              }
+                                              formulaOptions={
+                                                dependsOn?.value === 2
+                                                  ? // payrollElementDDL?.filter(
+                                                    //     (i: any) =>
+                                                    //       !i?.label
+                                                    //         .toLowerCase()
+                                                    //         .includes("gross")
+                                                    //   )
+                                                    dynamicForm
+                                                  : [
+                                                      ...dynamicForm,
+                                                      { label: "Gross" },
+                                                    ]
+                                              }
+                                              label={
+                                                <>
+                                                  {itm?.strPayrollElementName}{" "}
+                                                  (Calc)
+                                                  {` [Depends on ${
+                                                    itm?.strDependOn === "Basic"
+                                                      ? "Basic"
+                                                      : "Gross"
+                                                  }]`}
+                                                  {!state?.intSalaryBreakdownHeaderId && (
+                                                    <span
+                                                      style={{
+                                                        color: success800,
+                                                        fontWeight: "500",
+                                                        fontSize: "12px",
+                                                        lineHeight: "18px",
+                                                        textDecoration:
+                                                          "underline",
+                                                        cursor: "pointer",
+                                                        marginLeft: "8px",
+                                                      }}
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        remover(
+                                                          itm?.levelVariable
+                                                        );
+                                                        form.setFieldsValue({
+                                                          levelVariable:
+                                                            itm?.levelVariable,
+                                                        });
+                                                      }}
+                                                    >
+                                                      Remove
+                                                    </span>
+                                                  )}
+                                                </>
+                                              }
+                                              value={itm?.strFormula || ""}
+                                              onChange={(e: any) => {
+                                                rowDtoHandler(
+                                                  "strFormula",
+                                                  index,
+                                                  e.target?.value
+                                                );
+                                                rowDtoHandler(
+                                                  `${itm?.levelVariable}`,
+                                                  index,
+                                                  0
+                                                );
+                                              }}
+                                              disabled={
+                                                state?.intSalaryBreakdownHeaderId
+                                              }
+                                            />
+                                          )}
+                                        </Col>
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                ))}
+                                {provided.placeholder}
                               </div>
-                            </>
-                          );
-                        })}
+                            )}
+                          </Droppable>
+                        </DragDropContext>
+                      )}
                     </>
                   );
                 }}
