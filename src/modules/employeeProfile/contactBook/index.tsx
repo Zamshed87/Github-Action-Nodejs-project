@@ -144,7 +144,7 @@ const ContactBook = () => {
       width: 40,
     },
     {
-      title: "Blood donate date",
+      title: "Last Blood Donate Date",
       dataIndex: "bloodGroup",
       render: (_: any, item: any) => (
         <div>
