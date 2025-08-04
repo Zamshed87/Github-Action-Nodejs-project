@@ -12,6 +12,7 @@ import { gray900, greenColor } from "utility/customColor";
 import DefaultInput from "common/DefaultInput";
 import { ModalFooter } from "Components/Modal";
 const PfLoanTable = ({
+  callViewLoanDetails,
   header,
   generatedData = [],
   isModal = false,
@@ -383,7 +384,10 @@ const PfLoanTable = ({
           backdrop="static"
           classes="default-modal preview-modal"
           show={modalView}
-          onHide={() => setModalView(false)}
+          onHide={() => {
+            setModalView(false);
+            landing();
+          }}
         >
           <div className="mx-3">
             <div
@@ -601,12 +605,11 @@ const PfLoanTable = ({
                             // intCreatedBy: employeeId,
                           },
                           () => {
+                            callViewLoanDetails();
                             setModalView(false);
                             setHoldOrCollect(false);
-                            close();
                             setFieldValue("comment", "");
-
-                            landing();
+                            landing(); // Ensure parent table is refreshed after update
                           },
                           true
                         );

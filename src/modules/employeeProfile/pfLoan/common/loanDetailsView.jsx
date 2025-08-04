@@ -9,6 +9,7 @@ import PrintTypeButton from "common/PrintTypeButton";
 import { toast } from "react-toastify";
 
 const LoanDetailsView = ({
+  callViewLoanDetails,
   loanByIdLoading,
   viewDetails,
   setViewDetails,
@@ -69,7 +70,7 @@ const LoanDetailsView = ({
                   content={"Early Settlement"}
                   icon={<AppstoreAddOutlined />}
                   onClick={() => {
-                    setViewDetails(false);
+                    // setViewDetails(false);
                     setViewEarlySettled(true);
                   }}
                 />
@@ -101,6 +102,7 @@ const LoanDetailsView = ({
         >
           {loanByIdDto?.objRow?.length > 0 && (
             <PfLoanTable
+              callViewLoanDetails={callViewLoanDetails}
               header={loanByIdDto?.objHeader}
               generatedData={loanByIdDto?.objRow}
               isModal={true}
