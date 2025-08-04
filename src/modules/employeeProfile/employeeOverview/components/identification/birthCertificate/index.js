@@ -26,14 +26,14 @@ const validationSchema = Yup.object().shape({
   birthCertificate: Yup.string().required("Birth Certificate is required"),
 });
 
-function BirthCertificate({ empId, buId, wgId }) {
+function BirthCertificate({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState(0);
 
-  const { employeeId, intAccountId,isOfficeAdmin } = useSelector(
+  const { employeeId, intAccountId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -106,6 +106,9 @@ function BirthCertificate({ empId, buId, wgId }) {
       };
 
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -172,6 +175,9 @@ function BirthCertificate({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -240,6 +246,9 @@ function BirthCertificate({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
@@ -405,7 +414,11 @@ function BirthCertificate({ empId, buId, wgId }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                setSingleData(rowDto?.empEmployeePhotoIdentity?.strBirthId);
+                                                setSingleData(
+                                                  rowDto
+                                                    ?.empEmployeePhotoIdentity
+                                                    ?.strBirthId
+                                                );
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -440,7 +453,10 @@ function BirthCertificate({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(rowDto?.empEmployeePhotoIdentity?.strBirthId);
+                                              setSingleData(
+                                                rowDto?.empEmployeePhotoIdentity
+                                                  ?.strBirthId
+                                              );
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -462,8 +478,6 @@ function BirthCertificate({ empId, buId, wgId }) {
                                           },
                                         ]),
                                   ]}
-                                  
-                                  
                                 />
                               </div>
                             </div>

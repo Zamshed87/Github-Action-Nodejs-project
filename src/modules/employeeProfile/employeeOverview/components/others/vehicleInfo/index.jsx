@@ -19,7 +19,7 @@ const initData = {
   autoId: 0,
 };
 
-export default function VehicleInfo({ empId, buId, wgId }) {
+export default function VehicleInfo({ empId, buId, wgId, getProgress }) {
   const [isForm, setIsForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [vehicleNo, setVehicleNo] = useState({});
@@ -58,6 +58,9 @@ export default function VehicleInfo({ empId, buId, wgId }) {
           saveHandler(
             values,
             () => {
+              getProgress(
+                `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+              );
               resetForm(initData);
               setIsForm(false);
               getData();

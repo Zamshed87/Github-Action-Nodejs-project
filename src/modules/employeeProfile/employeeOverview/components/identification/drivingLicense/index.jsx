@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
   drivingLicense: Yup.string().required("Driving license no. required"),
 });
 
-function DrivingLicense({ empId, buId, wgId }) {
+function DrivingLicense({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -104,6 +104,9 @@ function DrivingLicense({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -169,6 +172,9 @@ function DrivingLicense({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -237,6 +243,9 @@ function DrivingLicense({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
@@ -393,7 +402,11 @@ function DrivingLicense({ empId, buId, wgId }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                setSingleData(rowDto?.employeeProfileLandingView?.drivingLicenseNo);
+                                                setSingleData(
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.drivingLicenseNo
+                                                );
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -428,7 +441,11 @@ function DrivingLicense({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(rowDto?.employeeProfileLandingView?.drivingLicenseNo);
+                                              setSingleData(
+                                                rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.drivingLicenseNo
+                                              );
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -450,7 +467,6 @@ function DrivingLicense({ empId, buId, wgId }) {
                                           },
                                         ]),
                                   ]}
-                                  
                                 />
                               </div>
                             </div>

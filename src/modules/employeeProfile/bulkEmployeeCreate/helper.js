@@ -9,7 +9,9 @@ export const processBulkUploadEmployeeAction = async (
   setLoading,
   intUrlId,
   orgId,
-  employeeId
+  employeeId,
+  setRowData,
+  setErrorRowOpen
 ) => {
   setLoading && setLoading(true);
   try {
@@ -81,9 +83,66 @@ export const processBulkUploadEmployeeAction = async (
       intOTFixedHour: +item?.["OT Fixed Hour"] || 0,
       strJobLocation: item["Job Location"] || "",
       strJobTerritory: item["Job Territory"] || "",
+      strPayScaleGrade: item["Pay Scale Grade"] || "",
     }));
-
-    setter(modifiedData);
+    const errorData = [];
+    const cleanData = [];
+    modifiedData.forEach((item) => {
+      if (
+        !Boolean(item?.strBusinessUnit) ||
+        !Boolean(item?.strWorkplace) ||
+        !Boolean(item?.strWorkplaceGroup) ||
+        !Boolean(item?.strWorkplaceGroup) ||
+        !Boolean(item?.strDepartment) ||
+        !Boolean(item?.strDesignation) ||
+        !Boolean(item?.strHrPosition) ||
+        !Boolean(item?.strEmployeeName) ||
+        !Boolean(item?.strEmploymentType) ||
+        !Boolean(item?.strEmployeeCode) ||
+        !Boolean(item?.strReferenceId) ||
+        !Boolean(item?.strGender) ||
+        !Boolean(item?.strSalaryType) ||
+        !Boolean(item?.strReligionName) ||
+        !Boolean(item?.dteDateOfBirth) ||
+        !Boolean(item?.dteJoiningDate) ||
+        !Boolean(item?.dteConfirmationDate) ||
+        !Boolean(item?.strSupervisorCode) ||
+        !Boolean(item?.strDottedSupervisorCode) ||
+        !Boolean(item?.strLineManagerCode) ||
+        !Boolean(item?.strUserType) ||
+        !Boolean(item?.strBusinessUnit) ||
+        item?.strWorkplace == "undefined" ||
+        item?.strWorkplaceGroup == "undefined" ||
+        item?.strWorkplaceGroup == "undefined" ||
+        item?.strDepartment == "undefined" ||
+        item?.strDesignation == "undefined" ||
+        item?.strHrPosition == "undefined" ||
+        item?.strEmployeeName == "undefined" ||
+        item?.strEmploymentType == "undefined" ||
+        item?.strEmployeeCode == "undefined" ||
+        item?.strReferenceId == "undefined" ||
+        item?.strGender == "undefined" ||
+        item?.strSalaryType == "undefined" ||
+        item?.strReligionName == "undefined" ||
+        item?.dteDateOfBirth == "undefined" ||
+        item?.dteJoiningDate == "undefined" ||
+        item?.dteConfirmationDate == "undefined" ||
+        item?.strSupervisorCode == "undefined" ||
+        item?.strDottedSupervisorCode == "undefined" ||
+        item?.strLineManagerCode == "undefined" ||
+        item?.strUserType == "undefined"
+      ) {
+        errorData.push(item);
+      } else {
+        cleanData.push({
+          ...item,
+        });
+      }
+    });
+    console.log({ errorData });
+    setter(orgId === 6 ? cleanData : modifiedData);
+    setRowData(orgId === 6 ? errorData : []);
+    setErrorRowOpen(orgId === 6 && errorData?.length > 0 ? true : false);
     setLoading && setLoading(false);
   } catch (error) {
     setter([]);
@@ -110,7 +169,7 @@ export const saveBulkUploadEmployeeAction = async (
     setLoading(false);
     setErrorData(error?.response?.data?.listData);
     setOpen(true);
-    console.log("error",error?.response);
+    console.log("error", error?.response);
     toast.error(error?.response?.data?.message || "Failed to process!");
   }
 };

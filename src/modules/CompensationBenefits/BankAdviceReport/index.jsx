@@ -48,7 +48,8 @@ import SOIBLBankLetterHead from "./letterheadReports/SOIBLBankLetterHead";
 import MBLBankLetterHead from "./letterheadReports/MBLBankLetterHead";
 import BFTNEBLBankLetterHead from "./letterheadReports/BFTNEBLBankLetterHead";
 import PrimeBankLetterHead from "./letterheadReports/PrimeBankLetterHead";
-
+import SONALIBankLetterHead from "./letterheadReports/SONALIBankLetterHead";
+import EBLLetterHead from "./letterheadReports/EBLLetterHead";
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -353,108 +354,6 @@ const BankAdviceReport = () => {
     }
   };
 
-  // excel column set up
-  const excelColumnFunc = (processId) => {
-    switch (processId) {
-      default:
-        return salaryAdviceExcelColumn;
-    }
-  };
-
-  // excel data set up
-  const excelDataFunc = (processId) => {
-    switch (processId) {
-      default:
-        return salaryAdviceExcelData(rowDto);
-    }
-  };
-
-  const handleChangePage = (_, newPage, searchText) => {
-    setPages((prev) => {
-      return { ...prev, current: newPage };
-    });
-    if (values?.bankAdviceFor?.value === 2) {
-      if (!values?.bonusCode?.length > 0)
-        return toast.warning("Please select Bonus Code");
-      getBankAdviceBonusRequestLanding(
-        orgId,
-        buId,
-        wgId,
-        {
-          current: newPage,
-          pageSize: pages?.pageSize,
-          total: pages?.total,
-        },
-        values,
-        setPages,
-        setRowDto,
-        setLoading,
-        searchText
-      );
-    } else if (values?.bankAdviceFor?.value === 1) {
-      if (!values?.adviceName?.value)
-        return toast.warning("Please select Salary Code");
-      getBankAdviceRequestLanding(
-        orgId,
-        buId,
-        wgId,
-        {
-          current: newPage,
-          pageSize: pages?.pageSize,
-          total: pages?.total,
-        },
-        values,
-        setPages,
-        setRowDto,
-        setLoading,
-        searchText
-      );
-    }
-  };
-
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages(() => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
-    });
-
-    if (values?.bankAdviceFor?.value === 2) {
-      if (!values?.bonusCode?.length > 0)
-        return toast.warning("Please select Bonus Code");
-      getBankAdviceBonusRequestLanding(
-        orgId,
-        buId,
-        wgId,
-        {
-          current: 1,
-          pageSize: +event.target.value,
-          total: pages?.total,
-        },
-        values,
-        setPages,
-        setRowDto,
-        setLoading,
-        searchText
-      );
-    } else if (values?.bankAdviceFor?.value === 1) {
-      if (!values?.adviceName?.value)
-        return toast.warning("Please select Salary Code");
-      getBankAdviceRequestLanding(
-        orgId,
-        buId,
-        wgId,
-        {
-          current: 1,
-          pageSize: +event.target.value,
-          total: pages?.total,
-        },
-        values,
-        setPages,
-        setRowDto,
-        setLoading,
-        searchText
-      );
-    }
-  };
   const getBonusNameList = () => {
     getBonusNameDDLAPI(
       `/Employee/BonusAllLanding`,
@@ -513,6 +412,7 @@ const BankAdviceReport = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     document.title = "Bank Advice";
+    return () => (document.title = "PeopleDesk");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -927,7 +827,6 @@ const BankAdviceReport = () => {
                 </div>
               </div>
             </div>
-
             {/* <div>
                 {tenMsdata && (
                   <ul className="d-flex flex-wrap  align-items-center justify-content-end">
@@ -996,7 +895,6 @@ const BankAdviceReport = () => {
                   </ul>
                 )}
               </div> */}
-
             <div className="d-flex justify-content-between">
               <div>
                 <h2
@@ -1108,6 +1006,8 @@ const BankAdviceReport = () => {
                               "SOIBL",
                               "MBL",
                               "PRIME",
+                              "SONALI",
+                              "EBL",
                             ];
                             if (
                               advicenames.includes(values?.adviceType?.value)
@@ -1155,6 +1055,32 @@ const BankAdviceReport = () => {
                               `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetDetailsExcel_${values?.monthId}-${values?.yearId}`,
                               "xlsx",
                               setLoading
+                            );
+                          },
+                        },
+                        [3, 16].includes(orgId) && {
+                          value: 3,
+                          label: "Bank Letter",
+                          icon: (
+                            <MdPrint
+                              style={{
+                                marginRight: "5px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            const IntSalaryGenerateRequestId =
+                              values?.bankAdviceFor?.value === 1
+                                ? values?.adviceName?.value
+                                : values?.bonusCode?.value;
+
+                            const url = `/PdfAndExcelReport/TopSheetNAdvice?StrPartName=pdfView&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${values?.workplaceGroup?.value}&IntWorkplaceId=${values?.workplace?.value}&IntMonthId=${values?.monthId}&IntYearId=${values?.yearId}&IntBankId=${values?.bank?.value}&IntSalaryGenerateRequestId=${IntSalaryGenerateRequestId}&StrAdviceType=${values?.adviceType?.value}&bankAdviceFor=${values?.bankAdviceFor?.value}&StrDownloadType=BankLetter`;
+                            getPDFAction(
+                              url,
+                              setLoading,
+                              `${values?.workplace?.code}_${values?.adviceType?.label}_TopSheetPDF_${values?.monthId}-${values?.yearId}`
                             );
                           },
                         },
@@ -1287,7 +1213,6 @@ const BankAdviceReport = () => {
                 </ul>
               </div>
             </div>
-
             {/* {rowDto?.length ? (
               <PeopleDeskTable
                 columnData={bankAdviceColumnData(
@@ -1322,6 +1247,20 @@ const BankAdviceReport = () => {
               {!commonLanding1?.loading && (
                 <div style={{ display: "none" }}>
                   <div ref={contentRef}>
+                    {values?.adviceType?.value === "EBL" && (
+                      <EBLLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
+                    {values?.adviceType?.value === "SONALI" && (
+                      <SONALIBankLetterHead
+                        letterHeadImage={letterHeadImage}
+                        landingViewPdf={landingViewPdf}
+                        signatureImage={signatureImage}
+                      />
+                    )}
                     {values?.adviceType?.value === "IBBL" && (
                       <IbblBankLetterHead
                         letterHeadImage={letterHeadImage}

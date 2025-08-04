@@ -107,7 +107,7 @@ export default function SalaryBreakdownDetails() {
                             <tr>
                               <th style={{ width: "30px" }}>SL</th>
                               <th>Element Name</th>
-                              <th>Percentage / Amount</th>
+                              <th>Percentage / Amount/Calculative</th>
                               <th>Depends On</th>
                             </tr>
                           </thead>
@@ -119,32 +119,20 @@ export default function SalaryBreakdownDetails() {
                                     <div>{index + 1}</div>
                                   </td>
                                   <td>{item?.strPayrollElementName}</td>
-                                  {orgId === 10015 ? (
-                                    <td>
-                                      {item?.isBasic && (
-                                        <>(Gross - Conveyance) / 1.6</>
-                                      )}
-                                      {!item?.isBasic && (
-                                        <>
-                                          {item?.strBasedOn === "Percentage"
-                                            ? item?.numNumberOfPercent
-                                            : item?.numAmount}
-                                          {item?.strBasedOn === "Percentage"
-                                            ? ` % `
-                                            : ""}
-                                        </>
-                                      )}
-                                    </td>
-                                  ) : (
-                                    <td>
-                                      {item?.strBasedOn === "Percentage"
-                                        ? item?.showPercentage
-                                        : item?.numAmount}
-                                      {item?.strBasedOn === "Percentage"
-                                        ? ` % `
-                                        : ""}
-                                    </td>
-                                  )}
+
+                                  <td>
+                                    {item?.strBasedOn === "Percentage"
+                                      ? item?.numNumberOfPercent
+                                      : item?.strBasedOn === "Calculative"
+                                      ? item?.strFormula
+                                      : item?.numAmount}
+                                    {item?.strBasedOn === "Percentage"
+                                      ? `( %) `
+                                      : item?.strBasedOn === "Calculative"
+                                      ? "(Calc)"
+                                      : "(#)"}
+                                  </td>
+
                                   <td>{item?.strDependOn}</td>
                                 </tr>
                               );

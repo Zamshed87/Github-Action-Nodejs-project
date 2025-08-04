@@ -6,6 +6,7 @@ import AttendanceStatus from "common/AttendanceStatus";
 import { getEmployeeLeaveBalanceAndHistory } from "common/HOCLeave/helperAPI";
 import { toast } from "react-toastify";
 import demoUserIcon from "../../../assets/images/userIcon.svg";
+import { todayDate } from "utility/todayDate";
 
 export const attendanceDetailsReport = async (
   empId,
@@ -85,7 +86,8 @@ export const supervisorLandingColumn = (
   setLeaveBalanceData,
   buId,
   wgId,
-  getAttendanceLog
+  getAttendanceLog,
+  balanceApi
 ) => {
   return [
     {
@@ -211,16 +213,30 @@ export const supervisorLandingColumn = (
                 e.stopPropagation();
                 setOpen(true);
                 setEmpData(record);
-                getEmployeeLeaveBalanceAndHistory(
-                  record?.employeeId,
-                  "LeaveBalance",
-                  setLeaveBalanceData,
-                  setLoading,
-                  "",
-                  currYear(),
-                  buId,
-                  wgId
-                );
+                // getEmployeeLeaveBalanceAndHistory(
+                //   record?.employeeId,
+                //   "LeaveBalance",
+                //   setLeaveBalanceData,
+                //   setLoading,
+                //   "",
+                //   currYear(),
+                //   buId,
+                //   wgId
+                // );
+                balanceApi.action({
+                  method: "get",
+                  urlKey: "EmployeeLeaveBalanceList",
+                  params: {
+                    isAdmin: true,
+                    employeeId: record?.employeeId,
+                    date: todayDate(),
+                  },
+                  onError: (error) => {
+                    toast.error(
+                      error?.response?.data?.message || "Something went wrong"
+                    );
+                  },
+                });
               }}
             />
           </div>

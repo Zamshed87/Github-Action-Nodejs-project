@@ -1,33 +1,15 @@
 import { PSelect } from "Components";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+
 const AutoCompleteWithHint = () => {
   const history = useHistory();
-
-  const [childMenu, setChildMenus] = useState([]);
   const { menuList } = useSelector((state) => state?.auth, shallowEqual);
   const [menu, setMenu] = useState([]);
-  // let childMenu = [];
+  const [inputValue, setInputValue] = useState(null);
+
   React.useEffect(() => {
-    const newChildMenus = [];
-    // menuList?.length > 0 &&
-    //   menuList.forEach((menu) => {
-    //     menu?.childList?.length > 0 &&
-    //       menu?.childList.forEach((childMenu) => {
-    //         newChildMenus.push({
-    //           ...childMenu,
-
-    //         });
-    //         childMenu?.childList?.length > 0 &&
-    //           childMenu?.childList.forEach((thirdChild) => {
-    //             newChildMenus.push(thirdChild);
-    //           });
-    //       });
-    //   });
-    // childMenu = newChildMenus;
-
-    // setChildMenus(newChildMenus);
     const allMenu = [];
     menuList?.forEach((menu) => {
       menu?.childList?.forEach((childMenu) => {
@@ -40,138 +22,137 @@ const AutoCompleteWithHint = () => {
         }
       });
     });
-    setMenu(allMenu);
+    const idsToRemove = [30359, 30360, 30357, 30314, 103];
+    const filteredData = allMenu.filter(
+      (item) => !idsToRemove.includes(item.id)
+    );
+
+    // console.log({ allMenu });
+    // Add extra Approval menu item
+    // allMenu.push({
+    //   id: "approval",
+    //   label: "Approval",
+    //   value: "approval",
+    //   to: "/approval",
+    //   searchLabel: "approval", // for search compatibility
+    // });
+    setMenu(filteredData);
   }, [menuList]);
 
-  const [inputValue, setInputValue] = useState(undefined);
-  const [showSuggestion, setShowSuggestion] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [selectedKey, setSelectedKey] = useState("");
-  const inputRef = useRef(null);
-
-  const filterSuggestion = (inputValue) => {
-    const filteredSuggestions = childMenu.filter((keyword) =>
-      keyword.label.toLowerCase().startsWith(inputValue.toLowerCase())
-    );
-    return filteredSuggestions;
-  };
-
-  const handleInputChange = (event) => {
-    const { value } = event.target;
-    setInputValue(value);
-    const filteredSuggestions = filterSuggestion(value);
-    setSuggestions(filteredSuggestions);
-    setShowSuggestion(true);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Tab" && suggestions.length > 0) {
-      event.preventDefault();
-      const suggestion = suggestions[0];
-      setInputValue(suggestion.label);
-      setSelectedKey(suggestion);
-      setShowSuggestion(false);
-    } else if (event.key === "Enter" && selectedKey) {
-      history.push({
-        pathname: `${selectedKey.to}`,
-        state: {},
-      });
-    }
-  };
-
-  const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)) {
-      setShowSuggestion(false);
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  // const getCaretPosition = () => {
-  //   if (!inputRef.current) return 0;
-  //   return inputRef.current.selectionStart;
-  // };
-
-  const checkSuggestion = (inputValue) => {
-    const suggestionText = suggestions[0]?.label;
-    if (inputValue?.length > 3) {
-      const text = suggestionText?.split("")?.map((char, index) => {
-        const lowerCaseChar = char.toLowerCase();
-        const upperCaseChar = char.toUpperCase();
-
-        const inputValueChar = inputValue[index];
-
-        if (index > inputValue?.length) return char;
-        else if (inputValueChar === lowerCaseChar) {
-          return lowerCaseChar;
-        } else if (inputValueChar === upperCaseChar) {
-          return upperCaseChar;
-        } else return char;
-      });
-      return text?.join("");
-    }
-  };
-
   return (
-    <>
-      {/* <div
-        className={style?.autoCompleteContainer}
-        style={{ position: "relative" }}
-      >
-        <input
-          type="text"
-          className={style?.autoCompleteInputField}
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          ref={inputRef}
-          placeholder={`Type to get suggestions`}
-        />
-        {showSuggestion && suggestions.length > 0 && (
-          <span
-            style={{
-              position: "absolute",
-              top: "2px",
-              left: "6px",
-              zIndex: 1,
-              background: "transparent",
-              height: "100%",
-              width: "100%",
-              opacity: 0.4,
-              margin: 0,
-              padding: 0,
-              outline: 0,
-              border: "2px",
-              fontSize: "14px",
-            }}
-          >
-            {checkSuggestion(inputValue)}
-          </span>
-        )}
-      </div> */}
-      <PSelect
-        className="top-menu-search"
-        options={menu}
-        style={{ minWidth: "250px" }}
-        getPopupContainer={undefined}
-        placeholder="Search menu"
-        showSearch
-        value={inputValue}
-        onChange={(value, options) => {
-          value &&
-            history.push({
-              pathname: `${options?.to}`,
-              state: {},
-            });
-          setInputValue(null);
-        }}
-      />
-    </>
+    <PSelect
+      className="top-menu-search"
+      options={menu}
+      style={{ minWidth: "250px" }}
+      getPopupContainer={undefined}
+      placeholder="Search menu"
+      showSearch
+      value={inputValue}
+      onChange={(value, options) => {
+        // console.log({ options });
+        const op = options;
+        if (options?.id == 98) {
+          op.to = "/approval/8";
+          op.applicationTypeId = 8;
+          op.applicationType = "Leave";
+        } else if (options?.id == 110) {
+          op.to = "/approval/2";
+          op.applicationTypeId = 2;
+          op.applicationType = "Bonus Generate";
+        } else if (options?.id == 104) {
+          op.to = "/approval/21";
+          op.applicationTypeId = 21;
+          op.applicationType = "Movement";
+        } else if (options?.id == 106) {
+          op.to = "/approval/15";
+          op.applicationTypeId = 15;
+          op.applicationType = "Overtime";
+        } else if (options?.id == 107) {
+          op.to = "/approval/20";
+          op.applicationTypeId = 20;
+          op.applicationType = "Salary";
+        } else if (options?.id == 108) {
+          op.to = "/approval/9";
+          op.applicationTypeId = 9;
+          op.applicationType = "Loan";
+        } else if (options?.id == 109) {
+          op.to = "/approval/21";
+          op.applicationTypeId = 21;
+          op.applicationType = "Separation";
+        } else if (options?.id == 141) {
+          op.to = "/approval/32";
+          op.applicationTypeId = 32;
+          op.applicationType = "Asset Requisition";
+        } else if (options?.id == 30308) {
+          op.to = "/approval/31";
+          op.applicationTypeId = 31;
+          op.applicationType = "Pf Loan";
+        } else if (options?.id == 30309) {
+          op.to = "/approval/24";
+          op.applicationTypeId = 24;
+          op.applicationType = "Transfer & Promotion";
+        } else if (options?.id == 30310) {
+          op.to = "/approval/18";
+          op.applicationTypeId = 18;
+          op.applicationType = "Additiona & Deduction";
+        } else if (options?.id == 30311) {
+          op.to = "/approval/6";
+          op.applicationTypeId = 6;
+          op.applicationType = "IOU Application";
+        } else if (options?.id == 30312) {
+          op.to = "/approval/7";
+          op.applicationTypeId = 7;
+          op.applicationType = "IOU Adjustment";
+        } else if (options?.id == 30313) {
+          op.to = "/approval/4";
+          op.applicationTypeId = 4;
+          op.applicationType = "Increment";
+        } else if (options?.id == 30320) {
+          op.to = "/approval/3";
+          op.applicationTypeId = 3;
+          op.applicationType = "Expense";
+        } else if (options?.id == 30323) {
+          op.to = "/approval/19";
+          op.applicationTypeId = 19;
+          op.applicationType = "Salary Certificate ";
+        } else if (options?.id == 30332) {
+          op.to = "/approval/12";
+          op.applicationTypeId = 12;
+          op.applicationType = "Market Visit ";
+        } else if (options?.id == 30363) {
+          op.to = "/approval/13";
+          op.applicationTypeId = 13;
+          op.applicationType = "Master Location ";
+        } else if (options?.id == 30506) {
+          op.to = "/approval/5";
+          op.applicationTypeId = 5;
+          op.applicationType = "Increment Proposal ";
+        } else if (options?.id == 105) {
+          op.to = "/approval/11";
+          op.applicationTypeId = 11;
+          op.applicationType = "Manual Attendance ";
+        } else if (options?.id == 30319) {
+          op.to = "/approval/17";
+          op.applicationTypeId = 17;
+          op.applicationType = "Remote Attendance ";
+        } else if (options?.id == 30318) {
+          op.to = "/approval/10";
+          op.applicationTypeId = 10;
+          op.applicationType = "Location & Device ";
+        }
+        value &&
+          history.push({
+            pathname: `${op?.to}`,
+            state: {
+              state: {
+                applicationTypeId: op?.applicationTypeId,
+                applicationType: op?.applicationType,
+              },
+            },
+          });
+        setInputValue(null);
+      }}
+    />
   );
 };
 

@@ -4,7 +4,6 @@ import { useApiRequest } from "Hooks";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import CreateEditPayscale from "./CreateEditPayscale";
 // import CreatePayrollElement from "./Create/CreatePayrollElement";
 
@@ -25,7 +24,6 @@ const PayscaleLanding: React.FC<TPayscale> = () => {
   const [open, setOpen] = useState(false);
   // Api Actions
   const GetAllPayrollElementType = useApiRequest([]);
-  const IsSalaryElementById = useApiRequest({});
   const deletePayScale = useApiRequest({});
 
   // Life Cycle Hooks

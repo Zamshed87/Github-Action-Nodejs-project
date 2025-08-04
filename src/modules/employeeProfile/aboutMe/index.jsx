@@ -15,6 +15,7 @@ import { Tag } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import IConfirmModal from "common/IConfirmModal";
 import EmployeeViewModal from "./ViewModal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 function AboutMe() {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ function AboutMe() {
   // const [hasBankData, setHasBankData] = useState(true);
   const [confirmationMOdal, setConfirmationMOdal] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  const [progress, getProgress, load] = useAxiosGet();
 
   const getEmpData = () => {
     getEmployeeProfileViewData(
@@ -65,6 +67,9 @@ function AboutMe() {
 
   useEffect(() => {
     getEmpData();
+    getProgress(
+      `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${employeeId}`
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -141,6 +146,7 @@ function AboutMe() {
 
         <div className="container-about-info" style={{ marginTop: "18px" }}>
           <ProfileCard
+            progress={progress}
             getEmpPendingData={getEmpPendingData}
             isSelfService={selfService}
             viewBtnHandler={handleViewClick}
@@ -163,6 +169,7 @@ function AboutMe() {
                 buId={buId}
                 intAccountId={intAccountId}
                 isSelfService={selfService}
+                getProgress={getProgress}
               />
             </div>
           </div>

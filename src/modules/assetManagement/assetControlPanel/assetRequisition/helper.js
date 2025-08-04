@@ -174,7 +174,7 @@ export const assetRequisitionSelfTableColumn = (
                   onClick={(e) => {
                     e.stopPropagation();
                     history.push(
-                      `/SelfService/asset/assetRequisition/edit/${item?.assetRequisitionId}`
+                      `/assetManagement/assetControlPanel/assetRequisition/edit/${item?.assetRequisitionId}`
                     );
                   }}
                 />

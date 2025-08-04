@@ -25,7 +25,7 @@ const validationSchema = Yup.object().shape({
   tinNo: Yup.string().required("Driving license no. required"),
 });
 
-function TinNo({ empId, buId, wgId }) {
+function TinNo({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -103,6 +103,9 @@ function TinNo({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -169,6 +172,9 @@ function TinNo({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -237,6 +243,9 @@ function TinNo({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
@@ -389,7 +398,11 @@ function TinNo({ empId, buId, wgId }) {
                                                 />
                                               ),
                                               onClick: () => {
-                                                setSingleData(rowDto?.employeeProfileLandingView?.tinNo);
+                                                setSingleData(
+                                                  rowDto
+                                                    ?.employeeProfileLandingView
+                                                    ?.tinNo
+                                                );
                                                 setStatus("input");
                                                 setIsCreateForm(true);
                                               },
@@ -424,7 +437,11 @@ function TinNo({ empId, buId, wgId }) {
                                               />
                                             ),
                                             onClick: () => {
-                                              setSingleData(rowDto?.employeeProfileLandingView?.tinNo);
+                                              setSingleData(
+                                                rowDto
+                                                  ?.employeeProfileLandingView
+                                                  ?.tinNo
+                                              );
                                               setStatus("input");
                                               setIsCreateForm(true);
                                             },
@@ -446,7 +463,6 @@ function TinNo({ empId, buId, wgId }) {
                                           },
                                         ]),
                                   ]}
-                                  
                                 />
                               </div>
                             </div>

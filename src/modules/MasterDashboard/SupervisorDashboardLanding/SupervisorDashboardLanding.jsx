@@ -22,6 +22,7 @@ import useDebounce from "utility/customHooks/useDebounce";
 import MasterFilter from "common/MasterFilter";
 import { todayDate } from "utility/todayDate";
 import { paginationSize } from "common/AntTable";
+import { PModal } from "Components/Modal";
 
 const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   // const { employeeId, orgId } = useSelector(
@@ -66,7 +67,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   // leave balance modal states
   const [open, setOpen] = useState(false);
   const [leaveBalanceData, setLeaveBalanceData] = useState([]);
-
+  const balanceApi = useApiRequest();
   const getAttendanceData = (empId, setLoading, value) => {
     attendanceDetailsReport(
       empId,
@@ -418,7 +419,8 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                     setLeaveBalanceData,
                     buId,
                     wgId,
-                    getAttendanceLog
+                    getAttendanceLog,
+                    balanceApi
                   )}
                   onChange={(pagination, filters) => {
                     setPages({
@@ -483,51 +485,93 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
         </ViewModal>
       )}
       {!loading && (
-        <ViewModal
-          size="lg"
-          title="Employee Leave Balance Report"
-          backdrop="static"
-          classes="default-modal preview-modal"
-          show={open}
-          onHide={() => {
+        <PModal
+          open={open}
+          title={"Employee Leave Balance Report"}
+          width=""
+          onCancel={() => {
             setOpen(false);
             setEmpData(null);
             setLeaveBalanceData([]);
           }}
-        >
-          <div className="modal-body2 mx-3">
-            <div>
-              <p>
-                Employee :{" "}
-                <span style={{ fontWeight: "bold" }}>
-                  {empData?.employeeName} [{empData?.employeeCode}]
-                </span>
-              </p>
-              <p>
-                Designation :{" "}
-                <span style={{ fontWeight: "bold" }}>
-                  {empData?.designation}
-                </span>
-              </p>
-              <p>
-                Department :{" "}
-                <span style={{ fontWeight: "bold" }}>
-                  {empData?.departmant}
-                </span>
-              </p>
-            </div>
-            <div className="my-3">
-              <LeaveBalanceTable
-                leaveBalanceData={leaveBalanceData}
-                values={{
-                  year: { value: currYear() },
-                  employee: { value: empData?.employeeId },
-                }}
-              />
-            </div>
-          </div>
-        </ViewModal>
+          maskClosable={false}
+          components={
+            <>
+              <div className="modal-body2 mx-3">
+                <div>
+                  <p>
+                    Employee :{" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      {empData?.employeeName} [{empData?.employeeCode}]
+                    </span>
+                  </p>
+                  <p>
+                    Designation :{" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      {empData?.designation}
+                    </span>
+                  </p>
+                  <p>
+                    Department :{" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      {empData?.departmant}
+                    </span>
+                  </p>
+                </div>
+                <div className="my-3">
+                  <LeaveBalanceTable
+                    leaveBalanceData={balanceApi?.data}
+                    values={{ employee: { value: empData?.employeeId } }}
+                  />
+                </div>
+              </div>
+            </>
+          }
+        />
+        // <ViewModal
+        //   size="lg"
+        //   title="Employee Leave Balance Report"
+        //   backdrop="static"
+        //   classes="default-modal preview-modal"
+        //   show={open}
+        //   onHide={() => {
+        //     setOpen(false);
+        //     setEmpData(null);
+        //     setLeaveBalanceData([]);
+        //   }}
+        // >
+        //   <div className="modal-body2 mx-3">
+        //     <div>
+        //       <p>
+        //         Employee :{" "}
+        //         <span style={{ fontWeight: "bold" }}>
+        //           {empData?.employeeName} [{empData?.employeeCode}]
+        //         </span>
+        //       </p>
+        //       <p>
+        //         Designation :{" "}
+        //         <span style={{ fontWeight: "bold" }}>
+        //           {empData?.designation}
+        //         </span>
+        //       </p>
+        //       <p>
+        //         Department :{" "}
+        //         <span style={{ fontWeight: "bold" }}>
+        //           {empData?.departmant}
+        //         </span>
+        //       </p>
+        //     </div>
+        //     <div className="my-3">
+        //       <LeaveBalanceTable
+        //         leaveBalanceData={balanceApi?.data}
+        //         values=""
+        //       />
+        //     </div>
+        //   </div>
+        //   {console.log(balanceApi?.data)}
+        // </ViewModal>
       )}
+
       {!AttendanceLog?.loading && (
         <ViewModal
           size="lg"

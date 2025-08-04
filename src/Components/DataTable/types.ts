@@ -11,6 +11,7 @@ export type TDataTableProps = {
   headerTitle?: (pageData: any) => React.ReactElement | string;
   header: ColumnsType<any> | any;
   data: any[];
+  rowKey?: string | ((record: any) => string | number);
   showHeader?: boolean;
 
   filterData?: Record<string, unknown>;
@@ -101,6 +102,8 @@ export type buttonType =
   | "disbursement"
   | "print"
   | "extend"
+  | "punishment"
+  | "assign"
   | "disabled";
 export type buttonList = {
   isActive?: boolean;

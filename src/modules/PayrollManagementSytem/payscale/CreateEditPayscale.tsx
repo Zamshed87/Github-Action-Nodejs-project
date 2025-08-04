@@ -16,6 +16,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import CreateGrade from "./CreateGrade";
 import CreateJobLevel from "./CreateJoblevel";
 import { toast } from "react-toastify";
+import FormulaInputWrapper from "Components/PForm/Input/Formula";
 
 type CreateEditPayscaleType = {
   rowData: any;
@@ -41,7 +42,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
   const jobLevelDDL = useApiRequest({});
   const getById = useApiRequest({});
   const elementDDL = useApiRequest({});
-  const [elementDto, setElementDto] = useState([]);
+  const [elementDto, setElementDto] = useState<any[]>([]);
   const [incrementDto, setIncrementDto] = useState([]);
   const [designationDto, setDesignationDto] = useState([]);
   const [efficiencyDto, setEfficiencyDto] = useState([]);
@@ -132,6 +133,13 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     // getGradeDDL();
     // getJobLevelDDL();
   }, []);
+  //formula element handler
+  const rowDtoHandler = (name: any, index: any, value: any) => {
+    const data: any = [...elementDto];
+    data[index][name] = value;
+    const updated = calculateFormulaNetAmounts(data);
+    setElementDto(updated);
+  };
 
   //   Functions
   const onFinish = () => {
@@ -142,7 +150,18 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     if (designationDto?.length === 0) {
       return toast.warn("Designations are not selected");
     }
+    const isFormulaExist = elementDto?.filter(
+      (i: any) => i?.basedOn === "Calculative"
+    );
 
+    if (isFormulaExist && isFormulaExist.length > 0) {
+      for (const item of isFormulaExist) {
+        if (!item?.formula) {
+          // Checks for null, undefined, or empty string
+          return toast.warn("Calculative Element can not be empty!!!");
+        }
+      }
+    }
     if (!values?.jobLevel?.value) {
       form.setFieldsValue({
         jobLevelCreate: undefined,
@@ -181,6 +200,51 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       },
     });
   };
+  const calculateFormulaNetAmounts = (data: any[]) => {
+    const updated = [...data];
+    const valueMap = new Map<string, number>();
+
+    // Create a map of all element names to their net amounts
+    updated.forEach((el) => {
+      valueMap.set(el.payrollElementName, el.netAmount ?? 0);
+    });
+
+    updated.forEach((row) => {
+      if (row.basedOn === "Calculative" && row.formula) {
+        let formula = row.formula;
+
+        // First replace percentage of variables (like 2%#Basic#)
+        valueMap.forEach((value, label) => {
+          // Handle cases like 2%#Basic# → (2/100)*BasicValue
+          const percentageRegex = new RegExp(`(\\d+)%\\s*#${label}#`, "g");
+          formula = formula.replace(percentageRegex, `($1/100)*${value}`);
+        });
+
+        // Then replace simple #Label# references
+        valueMap.forEach((value, label) => {
+          const simpleReferenceRegex = new RegExp(`#${label}#`, "g");
+          formula = formula.replace(simpleReferenceRegex, value.toString());
+        });
+
+        // Convert standalone percentages to their decimal form (5% → 0.05)
+        formula = formula.replace(/(\d+)\s*%/g, "($1 / 100)");
+
+        try {
+          // Use Function constructor for evaluation
+          const result = new Function("return " + formula)();
+          row.netAmount = Number.isFinite(result)
+            ? parseFloat(result.toFixed(6))
+            : 0;
+        } catch (err) {
+          console.error(`Error evaluating formula "${row.formula}":`, err);
+          row.netAmount = 0;
+        }
+      }
+    });
+
+    return updated;
+  };
+
   const elementDtoHandler = (e: number, row: any, index: number) => {
     if (e < 0) {
       return toast.warn("number must be positive");
@@ -211,6 +275,10 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
       });
     }
 
+    // Calculate formula-based rows (Calculative)
+    temp = calculateFormulaNetAmounts(temp);
+
+    // Final state update
     setElementDto(temp);
   };
   const header: any = [
@@ -229,10 +297,10 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
     },
 
     {
-      title: "Amount/Percentage",
+      title: "Amount/Percentage/Calculative",
       render: (value: any, row: any, index: number) => (
         <>
-          {row?.id ? (
+          {row?.id && row?.basedOn !== "Calculative" ? (
             <PInput
               type="number"
               // name={`amountOrPercentage_${index}`}
@@ -258,7 +326,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                 elementDtoHandler(e, row, index);
               }}
             />
-          ) : (
+          ) : row?.basedOn !== "Calculative" ? (
             <PInput
               type="number"
               // name={`amountOrPercentage_${index}`}
@@ -283,6 +351,17 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                 elementDtoHandler(e, row, index);
               }}
             />
+          ) : (
+            <div style={{ height: "50px" }}>
+              <FormulaInputWrapper
+                disabled={rowData}
+                formulaOptions={elementDto?.length > 0 ? elementDto : []}
+                value={row?.formula || ""}
+                onChange={(e: any) => {
+                  rowDtoHandler("formula", index, e.target.value);
+                }}
+              />
+            </div>
           )}
         </>
       ),
@@ -421,7 +500,13 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
           }
 
           setIncrementDto(tempIncrement);
-          setElementDto(res?.payScaleElements);
+          const modify = res?.payScaleElements?.map((i: any) => {
+            return {
+              ...i,
+              label: i?.payrollElementName,
+            };
+          });
+          setElementDto(modify);
         },
       });
     }
@@ -686,6 +771,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
             onChange={(value, op) => {
               form.setFieldsValue({
                 element: op,
+                basedOn: undefined,
               });
             }}
             filterOption={false}
@@ -706,6 +792,7 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                       : [
                           { value: 1, label: "Amount" },
                           { value: 2, label: "Percentage" },
+                          { value: 3, label: "Calculative" },
                         ]
                   }
                   onChange={(value, op) => {
@@ -745,12 +832,15 @@ const CreateEditPayscale: React.FC<CreateEditPayscaleType> = ({
                   {
                     ...values?.element,
                     payrollElementName: values?.element?.label,
+                    label: values?.element?.label,
                     isBasic: values?.element?.isBasic,
                     element: values?.element?.label,
                     elementId: values?.element?.value,
                     payrollElementId: values?.element?.value,
                     basedOn: values?.basedOn?.label,
                     netAmount: 0,
+                    sl: elementDto?.length,
+                    formula: "",
                     amountOrPercentage: 0,
                   },
                 ];

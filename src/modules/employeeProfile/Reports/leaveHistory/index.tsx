@@ -196,7 +196,8 @@ const EmLeaveHistory = () => {
                     </button>
                   </Tooltip>
                 </li>
-                <li>
+                {/* instruction from Mr Parhib banik  */}
+                <li className="d-none">
                   <Tooltip title="Print as PDF">
                     <button
                       className="btn-save"

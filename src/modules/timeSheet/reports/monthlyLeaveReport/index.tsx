@@ -55,7 +55,7 @@ const MonthlyLeaveReport = () => {
   //   const debounce = useDebounce();
   //states
   const [, setFilterList] = useState({});
-  const [buDetails, setBuDetails] = useState({});
+  const [buDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [viewModal, setViewModal] = useState(false);
   const [pages, setPages] = useState({
@@ -258,36 +258,36 @@ const MonthlyLeaveReport = () => {
       },
       {
         title: "From Date",
-        dataIndex: "LeaveStartDate",
-        render: (_: any, item: any) => dateFormatter(item?.LeaveStartDate),
+        dataIndex: "FromTime",
+        render: (_: any, item: any) => dateFormatter(item?.FromTime),
         width: 100,
       },
       {
         title: "Duration",
-        dataIndex: "StartEndTime",
+        dataIndex: "Duration",
 
         width: 100,
       },
       {
         title: "To Date",
-        dataIndex: "LeaveEndDate",
-        render: (_: any, item: any) => dateFormatter(item?.LeaveEndDate),
+        dataIndex: "ToTime",
+        render: (_: any, item: any) => dateFormatter(item?.ToTime),
 
         width: 100,
       },
 
-      {
-        title: "Half Day (Hours)",
-        dataIndex: "HalfDayHours",
+      // {
+      //   title: "Half Day (Hours)",
+      //   dataIndex: "HalfDayHours",
 
-        width: 100,
-      },
-      {
-        title: "Days",
-        dataIndex: "TotalDays",
+      //   width: 100,
+      // },
+      // {
+      //   title: "Days",
+      //   dataIndex: "TotalDays",
 
-        width: 100,
-      },
+      //   width: 100,
+      // },
       {
         title: "Application Date",
         dataIndex: "ApplicationDate",
@@ -394,7 +394,7 @@ const MonthlyLeaveReport = () => {
                 try {
                   const values = form.getFieldsValue(true);
                   const res = await axios.post(
-                    "/LeaveMovement/MonthlyleaveReport",
+                    "/LeaveBalance/MonthlyleaveReport",
                     {
                       accountId: orgId,
                       businessUnitId: buId,
@@ -436,8 +436,8 @@ const MonthlyLeaveReport = () => {
                         return {
                           ...item,
                           sl: index + 1,
-                          EndDate: dateFormatter(item?.LeaveEndDate),
-                          StartDate: dateFormatter(item?.LeaveStartDate),
+                          EndDate: dateFormatter(item?.ToTime),
+                          StartDate: dateFormatter(item?.FromTime),
                           ApplicationDate: dateFormatter(item?.ApplicationDate),
                         };
                       }

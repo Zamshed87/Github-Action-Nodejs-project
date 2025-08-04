@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
   // .matches(/^(?:\+?88)?01[15-9]\d{8}/, "Work Phone Number is invalid"),
 });
 
-function WorkPhone({ empId, buId, wgId }) {
+function WorkPhone({ empId, buId, wgId, getProgress }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
@@ -105,6 +105,9 @@ function WorkPhone({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -170,6 +173,9 @@ function WorkPhone({ empId, buId, wgId }) {
         remarks: "",
       };
       const callback = () => {
+        getProgress(
+          `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+        );
         getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
         setStatus("empty");
         setSingleData("");
@@ -238,6 +244,9 @@ function WorkPhone({ empId, buId, wgId }) {
       remarks: "",
     };
     const callback = () => {
+      getProgress(
+        `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+      );
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");

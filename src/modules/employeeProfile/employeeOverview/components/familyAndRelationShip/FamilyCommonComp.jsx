@@ -65,7 +65,14 @@ const validationSchema = Yup.object().shape({
   ),
 });
 
-function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
+function FamilyCommonComp({
+  mainTitle,
+  typeId,
+  typeName,
+  subTitle,
+  empId,
+  getProgress,
+}) {
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -129,6 +136,9 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
           saveHandler(
             values,
             () => {
+              getProgress(
+                `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+              );
               resetForm(initData);
               getData();
               setEmergencyContact("empty");

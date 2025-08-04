@@ -1658,6 +1658,41 @@ const CreateAndEditEmploye = () => {
                   />
                 </Col>
                 <Col md={6} sm={24}>
+                  <PSelect
+                    options={[
+                      { value: true, label: "Yes" },
+                      { value: false, label: "No" },
+                    ]}
+                    name="donor"
+                    label="Are You a Donor?"
+                    // placeholder="Are You a Donor?"
+                    allowClear
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        donor: op,
+                        lastDonationDate: undefined,
+                      });
+                    }}
+                  />
+                </Col>
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const { donor } = form.getFieldsValue(true);
+                    return (
+                      donor?.value && (
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="date"
+                            name="lastDonationDate"
+                            label="Last Blood Donation Date"
+                            placeholder=""
+                          />
+                        </Col>
+                      )
+                    );
+                  }}
+                </Form.Item>
+                <Col md={6} sm={24}>
                   <PInput
                     name="officeEmail"
                     type="email"

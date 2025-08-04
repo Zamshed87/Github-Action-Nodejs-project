@@ -9,6 +9,7 @@ import { Folder } from "@mui/icons-material";
 import { APIUrl } from "App";
 import NocSlider from "../employeeOverview/components/documents/NocSlider";
 import { gray900 } from "utility/customColor";
+import moment from "moment";
 
 const { TabPane } = Tabs;
 const { Text, Paragraph } = Typography;
@@ -167,6 +168,28 @@ const EmployeeViewModal = ({ visible, onClose, empData, originalData }) => {
               }}
             >
               {employeeProfileLandingView?.strBloodGroup || "N/A"}
+            </Descriptions.Item>
+            <Descriptions.Item
+              label="Donor"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.isBloodDonor ? highlightStyle : {}),
+              }}
+            >
+              {employeeProfileLandingView?.isBloodDonor ? "Yes" : "No"}
+            </Descriptions.Item>
+            <Descriptions.Item
+              label="Last blood donation date"
+              style={{
+                ...descriptionItemStyle,
+                ...(diffMap?.dteBloodDonateDate ? highlightStyle : {}),
+              }}
+            >
+              {employeeProfileLandingView?.dteBloodDonateDate
+                ? moment(employeeProfileLandingView?.dteBloodDonateDate).format(
+                    "ll"
+                  )
+                : "-"}
             </Descriptions.Item>
             <Descriptions.Item
               label="Employee Signature"

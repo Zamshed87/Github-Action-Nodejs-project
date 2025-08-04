@@ -43,6 +43,8 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
     const [employeeDDL, setEmployeeDDL] = useState([]);
     const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
     const [leaveBalanceData, setLeaveBalanceData] = useState([]);
+    const [showHistoryBalanceData, setShowHistoryBalanceData] = useState(false);
+    const [historyBalanceData, setHistoryBalanceData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [loadingForInfo, setLoadingForInfo] = useState(false);
@@ -50,6 +52,7 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
     const [medicalLvePunishment, setMedicalLvePunishment] = useState([]);
     const leaveDDLApi = useApiRequest({});
     const balanceApi = useApiRequest({});
+    const balanceHistoryApi = useApiRequest({});
     const historyApi = useApiRequest({});
     const createApi = useApiRequest({});
     const getLeaveDDL = (id) => {
@@ -109,6 +112,20 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
         },
         onSuccess: (res) => {
           setLeaveBalanceData(res);
+        },
+      });
+    };
+    const balanceHistory = (id) => {
+      balanceHistoryApi?.action({
+        urlKey: "EmployeeLeaveBalanceHistory",
+        method: "GET",
+        params: {
+          employeeId: id,
+          date: todayDate(),
+          isAdmin: isAdmin,
+        },
+        onSuccess: (res) => {
+          setHistoryBalanceData(res);
         },
       });
     };
@@ -288,6 +305,8 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
       getLeaveDDL(empId ? empId : employeeId);
       balanceInfo(empId ? empId : employeeId);
       getLeaveHistory(empId ? empId : employeeId);
+      balanceHistory(empId ? empId : employeeId);
+
       // PeopleDeskSaasDDL(
       //   "EmployeeLeaveType",
       //   wgId,
@@ -416,6 +435,9 @@ const withLeaveApplication = (WrappedComponent, isAdmin) => {
           empMgmtLeaveApplicationDto,
           casualLvePunishment,
           medicalLvePunishment,
+          historyBalanceData,
+          showHistoryBalanceData,
+          setShowHistoryBalanceData,
         }}
       />
     );

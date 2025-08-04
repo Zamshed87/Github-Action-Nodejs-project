@@ -20,12 +20,232 @@ import {
   processBulkUploadEmployeeAction,
   saveBulkUploadEmployeeAction,
 } from "./helper";
+import { ModalFooter, PModal } from "Components/Modal";
+import { DataTable } from "Components";
 
 const initData = {
   files: "",
 };
 
 export default function BulkEmployeeCreate() {
+  const columns = [
+    {
+      title: "SL",
+      dataIndex: "index",
+      key: "index",
+      width: 30,
+      render: (text, record, index) => index + 1,
+    },
+    {
+      title: "Name",
+      dataIndex: "strEmployeeName",
+      key: "strEmployeeName",
+      width: 120,
+    },
+    {
+      title: "Card Number",
+      dataIndex: "strCardNumber",
+      key: "strCardNumber",
+      width: 80,
+    },
+    {
+      title: "Machine ID",
+      dataIndex: "strReferenceId",
+      key: "strReferenceId",
+      width: 80,
+    },
+    {
+      title: "Designation",
+      dataIndex: "strDesignation",
+      key: "strDesignation",
+      width: 80,
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "strBusinessUnit",
+      key: "strBusinessUnit",
+      width: 80,
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      key: "strWorkplaceGroup",
+      width: 80,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      key: "strWorkplace",
+      width: 80,
+    },
+    {
+      title: "Job Territory",
+      dataIndex: "strJobTerritory",
+      key: "strJobTerritory",
+      width: 80,
+    },
+    {
+      title: "Job Location",
+      dataIndex: "strJobLocation",
+      key: "strJobLocation",
+      width: 80,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      key: "strDepartment",
+      width: 80,
+    },
+    {
+      title: "Employee Division",
+      dataIndex: "strEmpDivision",
+      key: "strEmpDivision",
+      width: 80,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSection",
+      key: "strSection",
+      width: 80,
+    },
+    {
+      title: "HR Position",
+      dataIndex: "strHrPosition",
+      key: "strHrPosition",
+      width: 80,
+    },
+    {
+      title: "Employment Type",
+      dataIndex: "strEmploymentType",
+      key: "strEmploymentType",
+      width: 80,
+    },
+    {
+      title: "Gender",
+      dataIndex: "strGender",
+      key: "strGender",
+      width: 80,
+    },
+    {
+      title: "OT Type",
+      dataIndex: "intOtTypeName",
+      key: "intOtTypeName",
+      width: 80,
+    },
+    {
+      title: "OT Fixed Hour",
+      dataIndex: "intOTFixedHour",
+      key: "intOTFixedHour",
+      width: 80,
+    },
+    {
+      title: "Salary Hold",
+      dataIndex: "isSalaryHold",
+      key: "isSalaryHold",
+      width: 80,
+
+      // render: (text) => `${text}`?.toUpperCase(),
+    },
+    {
+      title: "Salary Type",
+      dataIndex: "strSalaryType",
+      key: "strSalaryType",
+      // render: (text) => `${text}`?.toUpperCase(),
+      width: 80,
+    },
+    {
+      title: "Religion Name",
+      dataIndex: "strReligionName",
+      key: "strReligionName",
+      width: 80,
+    },
+    {
+      title: "Date Of Birth",
+      dataIndex: "dteDateOfBirth",
+      key: "dteDateOfBirth",
+      align: "center",
+      // render: dateFormatter,
+      width: 80,
+    },
+    {
+      title: "Joining Date",
+      dataIndex: "dteJoiningDate",
+      key: "dteJoiningDate",
+      align: "center",
+      // render: dateFormatter,
+      width: 80,
+    },
+    {
+      title: "Confirmation Date",
+      dataIndex: "dteConfirmationDate",
+      key: "dteConfirmationDate",
+      align: "center",
+      // render: dateFormatter,
+      width: 80,
+    },
+    {
+      title: "Intern Close Date",
+      dataIndex: "dteInternCloseDate",
+      key: "dteInternCloseDate",
+      align: "center",
+      width: 80,
+
+      render: (text) => (text ? dateFormatter(text) : "-"),
+    },
+    {
+      title: "Probation Period",
+      dataIndex: "ProbationaryEndInDays",
+      key: "ProbationaryEndInDays",
+      align: "center",
+      width: 80,
+
+      // render: (text) => text || "-",
+    },
+    {
+      title: "Probationary Close Date",
+      dataIndex: "dteProbationaryCloseDate",
+      key: "dteProbationaryCloseDate",
+      align: "center",
+      width: 80,
+
+      // render: (text) => (text ? dateFormatter(text) : "-"),
+    },
+    {
+      title: "Contact From Date",
+      dataIndex: "dteContactFromDate",
+      key: "dteContactFromDate",
+      align: "center",
+      width: 80,
+
+      // render: (text) => (text ? dateFormatter(text) : "-"),
+    },
+    {
+      title: "Contact To Date",
+      dataIndex: "dteContactToDate",
+      key: "dteContactToDate",
+      align: "center",
+      width: 80,
+
+      // render: (text) => (text ? dateFormatter(text) : "-"),
+    },
+    {
+      title: "Phone",
+      dataIndex: "strPhoneNumber",
+      key: "strPhoneNumber",
+      align: "center",
+      width: 80,
+
+      // render: (text) => text || "-",
+    },
+    {
+      title: "Email",
+      dataIndex: "strEmailAddress",
+      key: "strEmailAddress",
+      width: 80,
+
+      // render: (text) => text || "-",
+    },
+  ];
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -33,10 +253,13 @@ export default function BulkEmployeeCreate() {
   }, []);
   const [data, setData] = useState([]);
   const [errorData, setErrorData] = useState([]);
+  const [rowData, setRowData] = useState([]);
+
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   // for create state
   const [open, setOpen] = useState(false);
+  const [errorRowOpen, setErrorRowOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -124,7 +347,9 @@ export default function BulkEmployeeCreate() {
         setIsLoading,
         intUrlId,
         orgId,
-        employeeId
+        employeeId,
+        setRowData,
+        setErrorRowOpen
       );
     } catch (error) {
       toast.warn("Failed to process!");
@@ -168,8 +393,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=12983"
-                                  : "/document/downloadfile?id=13325"
+                                  ? "/document/downloadfile?id=17226"
+                                  : "/document/downloadfile?id=15690"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -555,6 +780,31 @@ export default function BulkEmployeeCreate() {
                 values={values}
                 errorData={errorData}
                 resetForm={resetForm}
+              />
+              <PModal
+                width={900}
+                open={errorRowOpen}
+                onCancel={() => setErrorRowOpen(false)}
+                title={`Warning Missing Data`}
+                components={
+                  <>
+                    <DataTable
+                      header={columns}
+                      bordered
+                      data={rowData || []}
+                      scroll={{ x: 2000 }}
+                    />
+                    <ModalFooter
+                      submitText={`Skip (${rowData?.length}) and Proceed`}
+                      submitAction="button"
+                      cancelText={false}
+                      onSubmit={() => {
+                        setErrorRowOpen(false);
+                        setRowData([]);
+                      }}
+                    />
+                  </>
+                }
               />
             </Form>
           </>

@@ -20,7 +20,7 @@ const initData = {
   hobbies: "",
 };
 
-export default function Hobbies({ empId, buId, wgId }) {
+export default function Hobbies({ empId, buId, wgId, getProgress }) {
   const [rowDto, setRowDto] = useState({});
   const [isForm, setIsForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,6 +74,9 @@ export default function Hobbies({ empId, buId, wgId }) {
         }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
+            getProgress(
+              `/Employee/PeopleDeskAllLanding?tableName=EmployeeProfileCompletePercentage&accountId=${intAccountId}&businessUnitId=${buId}&empId=${empId}`
+            );
             resetForm(initData);
             setIsForm(false);
             getData();
@@ -217,7 +220,6 @@ export default function Hobbies({ empId, buId, wgId }) {
                               },
                             ]),
                       ]}
-                      
                     />
                   </div>
                 )}

@@ -1,6 +1,13 @@
-import { Avatar, TableButton } from "Components";
+import { Avatar, Flex } from "Components";
+import { Tooltip, Modal } from "antd";
+import axios from "axios";
+import AttachmentTooltip from "common/AttachmentTooltip";
 import Chips from "common/Chips";
+import {
+  getDownlloadFileView_Action,
+} from "commonRedux/auth/actions";
 import moment from "moment";
+import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 
 export const initialValues = {
@@ -75,22 +82,34 @@ export const viewHandler = (values, setGeneratedData) => {
   setGeneratedData(() => modifiedArr);
 };
 
-export const pfLandingColData = (history) => {
+export const pfLandingColData = (history, setLoading, getData, dispatch) => {
+  const showInActiveConfirm = (record) => {
+    Modal.confirm({
+      title: "Are you sure you want to inactivate this loan?",
+      content: "This action cannot be undone.",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: () => handleInActive(record, setLoading, getData),
+    });
+  };
   return [
     {
       title: "SL",
       render: (text, record, index) => index + 1,
       className: "text-center",
-      width: 20,
+      width: 40,
+      fixed: "left",
     },
     {
-      title: "Employee Id",
+      title: "Employee Code",
       dataIndex: "strEmployeeCode",
       sort: true,
       fieldType: "string",
+      fixed: "left",
+      width: 100,
     },
     {
-      title: "Employee",
+      title: "Employee Name",
       dataIndex: "strEmployeeName",
       sort: true,
       render: (_, item) => (
@@ -104,25 +123,31 @@ export const pfLandingColData = (history) => {
         </div>
       ),
       fieldType: "string",
-      width: 100,
+      width: 110,
+      fixed: "left",
     },
     {
       title: "Loan ID",
       dataIndex: "strLoanId",
       sort: true,
       fieldType: "string",
+      width: 60,
+      fixed: "left",
     },
     {
       title: "Loan Type",
       dataIndex: "strLoanType",
       sort: true,
       fieldType: "string",
+      fixed: "left",
+      width: 80,
     },
     {
       title: "Loan Amount",
       dataIndex: "numLoanAmount",
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
       title: "Interest(%)",
@@ -130,12 +155,42 @@ export const pfLandingColData = (history) => {
       render: (text) => <>{text}%</>,
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
-      title: "Installment Number",
+      title: "Loan Amount with Interest",
+      dataIndex: "numTotalInstallment",
+      sort: true,
+      fieldType: "string",
+      width: 180,
+    },
+    {
+      title: "Installment",
       dataIndex: "intNumberOfInstallment",
       sort: true,
       fieldType: "string",
+      width: 90,
+    },
+    {
+      title: "Settled Installment",
+      dataIndex: "settledInstallment",
+      sort: true,
+      fieldType: "string",
+      width: 100,
+    },
+    {
+      title: "Settled Amount",
+      dataIndex: "settledAmount",
+      sort: true,
+      fieldType: "string",
+      width: 100,
+    },
+    {
+      title: "Un-settled Amount",
+      dataIndex: "unSettledAmount",
+      sort: true,
+      fieldType: "string",
+      width: 100,
     },
     {
       title: "Effective Date",
@@ -143,6 +198,21 @@ export const pfLandingColData = (history) => {
       render: (text) => <>{dateFormatter(text)}</>,
       sort: true,
       fieldType: "string",
+      width: 100,
+    },
+    // attachement column
+    {
+      title: "Attachment",
+      dataIndex: "intFileUrlId",
+      render: (_, record) => (
+        <AttachmentTooltip
+          strDocumentList={record?.intFileUrlId ? String(record.intFileUrlId) : ""}
+          onClickAttachment={() => dispatch(getDownlloadFileView_Action(record?.intFileUrlId))}
+        />
+      ),
+      sort: true,
+      fieldType: "string",
+      width: 100,
     },
     {
       title: "Description",
@@ -150,44 +220,143 @@ export const pfLandingColData = (history) => {
       render: (text) => <>{text || "-"}</>,
       sort: true,
       fieldType: "string",
+      width: 100,
     },
     {
       title: "Status",
-      dataIndex: "strStatus",
-      render: (data) => (
+      render: (data, record) => (
         <div>
-          {data === "Approved" && <Chips label={data} classess="success" />}
-          {data === "Pending" && <Chips label={data} classess="warning" />}
-          {data === "Rejected" && <Chips label={data} classess="danger" />}
-          {data === "Process" && <Chips label={data} classess="primary" />}
+          {/* Show status chips based on isApproved, isReject, isActive, and strStatus */}
+          {record.isApproved && <Chips label="Approved" classess="success" />}
+          {record.isReject && <Chips label="Rejected" classess="danger" />}
+          {!record.isApproved &&
+            !record.isReject &&
+            record?.strStatus?.toLowerCase() === "pending" && (
+              <Chips label="Pending" classess="warning" />
+            )}
         </div>
       ),
       sort: true,
       fieldType: "string",
-      width: 50,
+      width: 80,
+      // fixed: "right",
     },
     {
-      title: "",
+      title: "Action",
       dataIndex: "strStatus",
-      width: 30,
-      render: (text, record) => (
-        <>
-          {text.toLowerCase() === "pending" && (
-            <TableButton
-              buttonsList={[
-                {
-                  type: "edit",
-                  onClick: () => {
+      width: 160,
+      render: (text, record) => {
+        const isPending = text?.toLowerCase() === "pending";
+        const isApproved = record.isApproved === true;
+        return (
+          <Flex justify="center" align="center" gap="5px">
+            {/* Show Edit and InActive if pending, only InActive if approved */}
+            {isPending && (
+              <>
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "12px",
+                    padding: "0px 12px",
+                    merginRight: "5px",
+                  }}
+                  className="btn btn-default"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
                     history.push({
-                      pathname: `/profile/pfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
+                      pathname: `/loanManagement/PfLoan/edit/${record?.intEmployeeLoanHeaderId}`,
                     });
-                  },
-                },
-              ]}
-            />
-          )}
-        </>
-      ),
+                  }}
+                >
+                  Edit
+                </button>
+                {record.isActive && (
+                  <Tooltip
+                    placement="bottom"
+                    title={record?.isActive ? "Inactive" : "Active"}
+                  >
+                    <button
+                      style={{
+                        height: "24px",
+                        fontSize: "12px",
+                        padding: "0px 12px",
+                      }}
+                      className="btn btn-info"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        showInActiveConfirm(record);
+                      }}
+                    >
+                      InActive
+                    </button>
+                  </Tooltip>
+                )}
+              </>
+            )}
+            {!record.isActive && (
+              <Chips label="InActivated" classess="danger" />
+            )}
+            {!isPending && isApproved && record.isActive && (
+              <Tooltip
+                placement="bottom"
+                title={record?.isActive ? "Inactive" : "Active"}
+              >
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "12px",
+                    padding: "0px 12px",
+                  }}
+                  className="btn btn-info"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    showInActiveConfirm(record);
+                  }}
+                >
+                  InActive
+                </button>
+              </Tooltip>
+            )}
+          </Flex>
+        );
+      },
+      // fixed: "right",
     },
   ];
 };
+
+export const handleInActive = async (data, setLoading, getData) => {
+  console.log("data", data);
+
+  setLoading(true);
+  try {
+    const res = await axios.delete(
+      `/PfLoan/DeleteById?HeaderId=${data?.intEmployeeLoanHeaderId}`
+    );
+    toast.success("InActive Successfully", { toastId: 1222 });
+    getData();
+    setLoading(false);
+  } catch (error) {
+    toast.warn(error.response.data.message || "An unexpected error occurred", {
+      toastId: 1222,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const statusDDL = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Pending" },
+  { value: 2, label: "Inactive" },
+  { value: 3, label: "Approved" },
+  { value: 4, label: "Running" },
+  { value: 5, label: "Early Settled" },
+  { value: 6, label: "Completed" },
+];

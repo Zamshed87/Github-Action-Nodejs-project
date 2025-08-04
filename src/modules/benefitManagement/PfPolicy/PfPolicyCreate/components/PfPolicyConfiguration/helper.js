@@ -1,12 +1,10 @@
-import { DeleteOutlined } from "@mui/icons-material";
-import { Tooltip } from "antd";
 import DeleteIcon from "common/DeleteIcon/DeleteIcon";
-import { Flex } from "Components";
 
 export const detailsHeader = ({
   removeData,
   intPfEligibilityDependOn,
   action = true,
+  company = false,
 }) => {
   const PEDO =
     intPfEligibilityDependOn?.value && intPfEligibilityDependOn?.value !== "0";
@@ -43,16 +41,15 @@ export const detailsHeader = ({
         ]
       : []),
     {
-      title: "Employee Contribution Depend On",
+      title: company ? "Company Contribution Depend On" : "Employee Contribution Depend On",
       render: (_, rec) => rec?.strContributionDependOn ?? "-",
     },
     {
-      title: "Employee Contribution",
+      title: company ? "Company Contribution" : "Employee Contribution",
       dataIndex: "numAppraisalValue",
       render: (value, record) => {
-        // Add % only if intContributionDependOn is 1 (Gross)
-        console.log("intContributionDependOn", record.intContributionDependOn);
-        if (record.intContributionDependOn == 1) {
+        // Add % only if intContributionDependOn is 1 (Gross) or 2 (Basic)
+        if (record.intContributionDependOn == 1 || record.intContributionDependOn == 2) {
           return `${value}%`;
         }
         return value;

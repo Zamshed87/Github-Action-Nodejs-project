@@ -599,7 +599,6 @@ const ApproverCommonLanding = lazy(() =>
 const ChangePassword = lazy(() =>
   import("../modules/auth/changePassword/index.jsx")
 );
-const Chat = lazy(() => import("../modules/chat/index.jsx"));
 const ArearSalaryGenerateForm = lazy(() =>
   import(
     "../modules/CompensationBenefits/arearSalaryGenerate/addEditForm/index.jsx"
@@ -674,6 +673,17 @@ const BulkUpload = lazy(() =>
 );
 const IncomeTaxAssign = lazy(() =>
   import("../modules/CompensationBenefits/IncomeTaxAssign/index.jsx")
+);
+const TdsChallan = lazy(() =>
+  import("../modules/CompensationBenefits/TdsChallan/index.jsx")
+);
+const TdsChallanCreate = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/TdsChallan/TdsChallanCreate/index.jsx"
+  )
+);
+const TaxSalaryCertificate = lazy(() =>
+  import("../modules/CompensationBenefits/TaxSalaryCertificate/index.jsx")
 );
 const BulkIncrementEntry = lazy(() =>
   import("../modules/CompensationBenefits/Increment/bulkIncrement/index.jsx")
@@ -1039,7 +1049,7 @@ const BulkUploadHistory = lazy(() =>
 //   import("../modules/employeeProfile/confirmation/index.jsx")
 // );
 const ContactBook = lazy(() =>
-  import("../modules/employeeProfile/contactBook/index.jsx")
+  import("../modules/employeeProfile/contactBook/index.tsx")
 );
 const ContactClosingReport = lazy(() =>
   import("../modules/employeeProfile/contractClosing/index.tsx")
@@ -1076,6 +1086,9 @@ const PfLoanLanding = lazy(() =>
 );
 const PfLoanAddEdit = lazy(() =>
   import("../modules/employeeProfile/pfLoan/PfLoanAddEdit")
+);
+const PfLoanLifeCycle = lazy(() =>
+  import("../modules/employeeProfile/pfLoan/report/pfLoanLifeCycle")
 );
 const EmMovementApplication = lazy(() =>
   import("../modules/employeeProfile/movementApplication/index.tsx")
@@ -1477,7 +1490,6 @@ const PayrollGrossWiseBasicForm = lazy(() =>
 // const IndKpiEntry = lazy(() => import("../modules/pms/indKpi/IndKpiEntry.jsx"));
 // const Kpis = lazy(() => import("../modules/pms/kpis/index.jsx"));
 // const StrPlan = lazy(() => import("../modules/pms/strPlan/index.jsx"));
-const PolicyUpload = lazy(() => import("../modules/policyUpload/index.jsx"));
 const RemoteAttendanceApproval = lazy(() =>
   import("../modules/remoteAttendanceLocation/approval/index.jsx")
 );
@@ -1826,6 +1838,12 @@ import NOCManagementLanding from "modules/NOC/nocManagment";
 import NOCForm from "modules/NOC/components/NOCForm";
 import NocSelfLanding from "modules/NOC/nocSelf";
 import { ManageriumOnBoarding } from "modules/onboarding/Managerium";
+import EmployeeSalaryReport from "modules/CompensationBenefits/employeeSalaryReport";
+import WorkforcePlanningLanding from "modules/manpowerAnalysis/workforcePlanning/workforceLanding";
+import WorkForceComparison from "modules/manpowerAnalysis/workforceComparison/workforceComparison";
+import WorkForceCreate from "modules/manpowerAnalysis/workforcePlanning/workforceCreateEdit";
+import ChattingIndex from "modules/chattingApp/ChattingIndex";
+import { PolicyCRUD } from "../modules/policyUpload/index.tsx";
 
 // Log Monitor Module
 const ApplicationNotificationLogs = lazy(() =>
@@ -1837,6 +1855,9 @@ const PFPolicy = lazy(() =>
 );
 const PFPolicyCreate = lazy(() =>
   import("../modules/benefitManagement/PfPolicy/PfPolicyCreate/index.jsx")
+);
+const PFPolicyAssign = lazy(() =>
+  import("../modules/benefitManagement/PfPolicy/PfPolicyAssign")
 );
 const PFInvestment = lazy(() =>
   import("../modules/benefitManagement/PfInvestment/index.jsx")
@@ -1877,7 +1898,7 @@ const PFInvestmentToOrganization = lazy(() =>
 );
 export const routingList = [
   { path: "/", component: Homepage },
-  { path: "/chat", component: Chat },
+  { path: "/chat-app", component: ChattingIndex },
   {
     path: "/SelfService/myrewardsandpunishment",
     component: RewardsAndPunishmentView,
@@ -2038,10 +2059,13 @@ export const routingList = [
   { path: "/profile/leave/leaveAdjustment", component: LeaveAdjustment },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
-  { path: "/profile/pfLoan", component: PfLoanLanding },
-  { path: "/profile/pfLoan/create", component: PfLoanAddEdit },
-  { path: "/profile/pfLoan/edit/:id", component: PfLoanAddEdit },
-
+  { path: "/loanManagement/PfLoan", component: PfLoanLanding },
+  { path: "/loanManagement/PfLoan/create", component: PfLoanAddEdit },
+  { path: "/loanManagement/PfLoan/edit/:id", component: PfLoanAddEdit },
+  {
+    path: "/loanManagement/report/PfLoanLifeCycle",
+    component: PfLoanLifeCycle,
+  },
   { path: "/profile/confirmation", component: Confirmation },
   {
     path: "/profile/cafeteriaManagement/cafeteriaPricingSetup",
@@ -2655,8 +2679,9 @@ export const routingList = [
   },
   {
     path: "/administration/policyUpload",
-    component: PolicyUpload,
+    component: PolicyCRUD,
   },
+
   {
     path: "/administration/announcement/:id",
     component: AnnouncementViewPage,
@@ -2796,6 +2821,14 @@ export const routingList = [
     component: ApprovalListNew,
   },
   {
+    path: "/approval/arrearSalaryApproval",
+    component: ArrearSalaryGenerateApproval,
+  },
+  {
+    path: "/approval/leaveEncashmentApproval",
+    component: LeaveEncashmentApproval,
+  },
+  {
     path: "/approval/:id",
     component: ApproverCommonLanding,
   },
@@ -2803,63 +2836,7 @@ export const routingList = [
   //   path: "/approval",
   //   component: ApprovalList,
   // },
-  {
-    path: "/approval/leaveApproval",
-    component: LeaveApproval,
-  },
-  {
-    path: "/approval/leaveEncashmentApproval",
-    component: LeaveEncashmentApproval,
-  },
-  {
-    path: "/approval/movementApproval",
-    component: MovementApproval,
-  },
-  {
-    path: "/approval/attendanceApproval",
-    component: AttendanceApproval,
-  },
-  {
-    path: "/approval/overtimeApproval",
-    component: OvertimeApproval,
-  },
-  {
-    path: "/approval/salaryApproval",
-    component: SalaryGenerateApproval,
-    // component: EmployeeSalaryApproval,
-  },
-  {
-    path: "/approval/loanApproval",
-    component: LoanApproval,
-  },
-  {
-    path: "/approval/separationApproval",
-    component: SeparationApproval,
-  },
-  {
-    path: "/approval/bonusApproval",
-    component: EmployeeBonusApproval,
-  },
-  {
-    path: "/approval/allowanceNDeduction",
-    component: AllowanceNDeductionApproval,
-  },
-  {
-    path: "/approval/iouApplication",
-    component: IOUApproval,
-  },
-  {
-    path: "/approval/expenseApproval",
-    component: ExpenseApplicationApproval,
-  },
-  {
-    path: "/approval/transferandpromotion",
-    component: TransferNPromotionApproval,
-  },
-  {
-    path: "/approval/iouAdjustmentApproval",
-    component: AdjustmentIOUApproval,
-  },
+
   {
     path: "/approval/remoteAttendance",
     component: RemoteAttendanceApproval,
@@ -2896,10 +2873,7 @@ export const routingList = [
     path: "/approval/pfWithdraw",
     component: PfWithdrawApproval,
   },
-  {
-    path: "/approval/arrearSalaryApproval",
-    component: ArrearSalaryGenerateApproval,
-  },
+
   {
     path: "/approval/salaryCertificateApproval",
     component: SalaryCertificateApproval,
@@ -3003,12 +2977,36 @@ export const routingList = [
     component: IncomeTaxAssign,
   },
   {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan",
+    component: TdsChallan,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/create",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/view",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxChallan/edit",
+    component: TdsChallanCreate,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/taxSalaryCertificate",
+    component: TaxSalaryCertificate,
+  },
+  {
     path: "/compensationAndBenefits/employeeSalary/salaryAssignv2",
     component: SalaryV2,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign",
     component: SalaryAssign,
+  },
+  {
+    path: "/compensationAndBenefits/reports/employeeSalary",
+    component: EmployeeSalaryReport,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign/bulk",
@@ -3283,7 +3281,6 @@ export const routingList = [
     component: TMProjectSingleTask,
   },
   { path: "/tm/task-project/:id/task-board", component: TMProjectTaskBoard },
-  { path: "/chat", component: Chat },
   { path: "/taskmanagement/taskmgmt/dashboard", component: TMDashboard },
   { path: "/taskmanagement/taskmgmt/projects", component: TMProject },
   {
@@ -3676,6 +3673,10 @@ export const routingList = [
     component: AssetRequisitionSelfCreate,
   },
   {
+    path: "/assetManagement/assetControlPanel/assetRequisition/edit/:id",
+    component: AssetRequisitionCreate,
+  },
+  {
     path: "/SelfService/asset/assetRequisition/create",
     component: AssetRequisitionSelfCreate,
   },
@@ -3939,6 +3940,24 @@ export const routingList = [
     component: ExternalTrainingLanding,
   },
   //external training end
+  // manpower analysis
+
+  {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning",
+    component: WorkforcePlanningLanding,
+  },
+  {
+    path: "/profile/ManpowerAnalysis/WorkforceComparison",
+    component: WorkForceComparison,
+  },
+  {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/create",
+    component: WorkForceCreate,
+  },
+  {
+    path: "/profile/ManpowerAnalysis/WorkforcePlanning/edit",
+    component: WorkForceCreate,
+  },
 
   {
     path: "/trainingAndDevelopment/assessment/assessmentForm",
@@ -4500,6 +4519,10 @@ export const routingList = [
     component: PFPolicyCreate,
   },
   {
+    path: "/BenefitsManagement/providentFund/pfPolicy/assign",
+    component: PFPolicyAssign,
+  },
+  {
     path: "/BenefitsManagement/providentFund/pfInvestment",
     component: PFInvestment,
   },
@@ -4557,12 +4580,13 @@ export const routingList = [
   },
 
   // PF report end
+
   {
-    path: "/bm/gratuityPolicy",
+    path: "/BenefitsManagement/gratuity/gratuityPolicy",
     component: GratuityPolicy,
   },
   {
-    path: "/bm/gratuityPolicy/:type/:id",
+    path: "/BenefitsManagement/gratuity/gratuityPolicy/:type/:id",
     component: GPCreateViewEdit,
   },
   {
