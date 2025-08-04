@@ -24,6 +24,7 @@ import DashboardHead from "../layout/dashboardHead/DashboardHead";
 import DashboardSidemenu from "../layout/menuComponent/DashboardSidemenu";
 import SideMenu from "../layout/menuComponent/SideMenu";
 import ApprovalSidemenu from "./../layout/menuComponent/ApprovalSidemenu";
+import AssistantChatbot from "modules/chatApp/aiChatBot";
 
 const BasePage = () => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(true);
@@ -174,6 +175,7 @@ const BasePage = () => {
           />
         </div>
       </Router>
+      <AssistantChatbot/>
     </div>
   );
 };

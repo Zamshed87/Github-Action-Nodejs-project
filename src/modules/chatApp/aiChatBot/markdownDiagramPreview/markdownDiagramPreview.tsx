@@ -1,0 +1,82 @@
+import DOMPurify from "dompurify";
+import { marked } from "marked";
+import mermaid from "mermaid";
+import "./markdownDiagramPreview.css";
+
+// Configure mermaid with more specific settings
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "default",
+  securityLevel: "loose",
+  flowchart: {
+    htmlLabels: true,
+    curve: "basis",
+  },
+});
+
+// Configure marked with custom renderer for mermaid and tables
+const renderer: any = new marked.Renderer();
+const originalCodeRenderer = renderer.code.bind(renderer);
+const originalTableRenderer = renderer.table.bind(renderer);
+
+renderer.code = (codeObj: any) => {
+  console.log(codeObj, "codeObj");
+  if (codeObj?.lang === "mermaid") {
+    return `<div class="mermaid">${codeObj?.text}</div>`;
+  }
+  return originalCodeRenderer(codeObj);
+};
+renderer.table = (header: string, body: string) => {
+  return `
+      <div class="table-wrapper">
+        ${originalTableRenderer(header, body)}
+      </div>
+    `;
+};
+
+marked.setOptions({
+  renderer: renderer,
+  breaks: true,
+  gfm: true,
+});
+
+type MarkdownDiagramPreviewType = {
+  markdown: string;
+};
+
+function MarkdownDiagramPreview({ markdown }: MarkdownDiagramPreviewType) {
+  let markdownSanitized = "";
+
+  const renderMarkdown = async () => {
+    try {
+      const rendered: any = marked(markdown);
+      const sanitized = DOMPurify.sanitize(rendered);
+      markdownSanitized = sanitized;
+
+      // Use a more robust way to render mermaid diagrams
+      setTimeout(async () => {
+        try {
+          await mermaid.run({
+            querySelector: ".mermaid",
+            suppressErrors: true,
+          });
+        } catch (error) {
+          console.error("Mermaid rendering error:", error);
+        }
+      }, 100);
+    } catch (error) {
+      console.error("Markdown rendering error:", error);
+    }
+  };
+
+  renderMarkdown();
+
+  return (
+    <div
+      className="ai-chatbot-markdown-body"
+      dangerouslySetInnerHTML={{ __html: markdownSanitized }}
+    />
+  );
+}
+
+export default MarkdownDiagramPreview;
