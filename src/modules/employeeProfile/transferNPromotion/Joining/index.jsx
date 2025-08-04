@@ -102,7 +102,7 @@ export default function Joining() {
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event) => {
     setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
@@ -114,7 +114,7 @@ export default function Joining() {
       },
       values?.filterFromDate,
       values?.filterToDate,
-      searchText
+      values?.search
     );
   };
 
