@@ -1,10 +1,11 @@
+---
 name: Docker Build & Deploy
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: true
 
 jobs:
   build:
