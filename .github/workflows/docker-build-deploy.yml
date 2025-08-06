@@ -3,7 +3,7 @@ name: Docker Build & Deploy
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 env:
   DOCKER_IMAGE_NAME: test-project
