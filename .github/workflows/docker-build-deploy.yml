@@ -1,45 +1,37 @@
 ---
-name: Smart Deploy
+name: Optimized Docker Build
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-    inputs:
-      skip_build:
-        description: 'Skip Node build step?'
-        required: false
-        default: 'false'
+  workflow_dispatch: ~
 
 env:
-  CONTAINER_NAME: app-frontend
-  BUILD_DIR: ./build
+  IMAGE_NAME: app-frontend
+  BUILD_ARGS: >
+    --build-arg NODE_ENV=production
+    --build-arg NODE_OPTIONS=--max_old_space_size=4096
 
 jobs:
   deploy:
     runs-on: [self-hosted, ibos4]
-
+    
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build assets (conditional)
-        if: ${{ !inputs.skip_build }}
+      - name: Build Docker image
         run: |
-          docker build \
-            --target builder \
-            -t temp-builder .
-          docker cp $(docker create temp-builder):/app/build ${{ env.BUILD_DIR }}
+          docker build ${{ env.BUILD_ARGS }} \
+            --network=host \
+            -t ${{ env.IMAGE_NAME }}:latest .
 
       - name: Deploy
         run: |
-          docker build \
-            --network=host \
-            -t ${{ env.CONTAINER_NAME }}:latest .
-          docker compose down --timeout 2 || true
+          docker compose down --timeout 2
           docker compose up -d --build
 
       - name: Verify
         run: |
           sleep 5
-          curl -fsS http://localhost/api/health || \
-            { docker logs ${{ env.CONTAINER_NAME }}; exit 1; }
+          curl -fsS http://localhost || \
+            { docker logs $(docker ps -ql); exit 1; }
