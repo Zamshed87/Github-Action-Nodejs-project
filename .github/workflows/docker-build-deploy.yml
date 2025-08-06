@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build Docker Image
-    runs-on: [self-hosted, ibos]
+    runs-on: [self-hosted, ibos2]
 
     outputs:
       image-built: ${{ steps.build-image.outputs.image-built }}
