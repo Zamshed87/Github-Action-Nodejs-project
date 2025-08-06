@@ -1,42 +1,36 @@
-# Use official Debian-based Node.js image for better network stability
-FROM node:20 as build
+# Builder stage
+FROM node:20-alpine as builder
 
-# Set working directory
 WORKDIR /app
 
-# Add yarn config for network retries
-RUN yarn config set network-concurrency 1
-RUN yarn config set network-timeout 600000
+# Configure yarn for better network resilience
+RUN yarn config set network-timeout 600000 -g && \
+    yarn config set network-concurrency 1 -g
 
-# Add node_modules/.bin to PATH for running scripts
-ENV PATH /app/node_modules/.bin:$PATH
-
-# Copy package.json and yarn.lock to install dependencies
+# Copy package files first for better caching
 COPY package.json yarn.lock ./
 
-# Install dependencies (force to avoid cache issues)
-RUN yarn install --force
+# Install dependencies
+RUN yarn install --frozen-lockfile
 
-# Update browserslist db to avoid warnings (optional)
-RUN npx update-browserslist-db@latest || true
-
-# Copy the rest of the project files
+# Copy all files
 COPY . .
 
-# Build your React app (adjust if you have different build scripts)
-RUN yarn run build
+# Build application
+RUN yarn build
 
-# Use stable Nginx Alpine image for serving static files
+# Production stage
 FROM nginx:stable-alpine
 
-# Copy build output to Nginx html folder
-COPY --from=build /app/build /usr/share/nginx/html
+# Remove default nginx config
+RUN rm -rf /etc/nginx/conf.d/default.conf
 
-# Copy your custom nginx config if needed
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx configuration
+COPY nginx/nginx.conf /etc/nginx/conf.d
 
-# Expose port 80 for the web server
+# Copy built assets from builder
+COPY --from=builder /app/build /usr/share/nginx/html
+
 EXPOSE 80
 
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
