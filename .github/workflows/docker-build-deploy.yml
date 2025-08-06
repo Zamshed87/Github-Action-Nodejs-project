@@ -1,51 +1,45 @@
-name: Docker Build & Deploy
+---
+name: Smart Deploy
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      skip_build:
+        description: 'Skip Node build step?'
+        required: false
+        default: 'false'
 
 env:
-  DOCKER_IMAGE_NAME: test-project
+  CONTAINER_NAME: app-frontend
+  BUILD_DIR: ./build
 
 jobs:
-  build:
-    name: Build Docker Image
+  deploy:
     runs-on: [self-hosted, ibos4]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Cache yarn dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/yarn
-            node_modules
-          key: ${{ runner.os }}-node20-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node20-yarn-
+      - name: Build assets (conditional)
+        if: ${{ !inputs.skip_build }}
+        run: |
+          docker build \
+            --target builder \
+            -t temp-builder .
+          docker cp $(docker create temp-builder):/app/build ${{ env.BUILD_DIR }}
 
-      - name: Build Docker image
+      - name: Deploy
         run: |
           docker build \
             --network=host \
-            -t ${{ env.DOCKER_IMAGE_NAME }}:latest .
-
-  deploy:
-    name: Deploy Application
-    runs-on: [self-hosted, ibos4]
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Stop and remove old containers
-        run: |
-          docker compose down || true
-
-      - name: Deploy application
-        run: |
+            -t ${{ env.CONTAINER_NAME }}:latest .
+          docker compose down --timeout 2 || true
           docker compose up -d --build
+
+      - name: Verify
+        run: |
+          sleep 5
+          curl -fsS http://localhost/api/health || \
+            { docker logs ${{ env.CONTAINER_NAME }}; exit 1; }
