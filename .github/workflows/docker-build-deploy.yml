@@ -1,16 +1,18 @@
+---
 name: Docker Build & Deploy
 
 on:
   push:
     branches:
       - main
-
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy with Docker Compose
-    runs-on: [self-hosted, ibos2]
+  build:
+    name: Build Docker Image
+    runs-on:
+      - self-hosted
+      - ibos3
 
     steps:
       - name: Checkout code
@@ -21,12 +23,27 @@ jobs:
           echo "📦 Building Docker image..."
           docker build -t test-project:latest .
 
+  deploy:
+    name: Deploy with Docker Compose
+    runs-on:
+      - self-hosted
+      - ibos3
+
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Stop and remove existing container
         run: |
           echo "🛑 Stopping and removing old container if it exists..."
-          docker ps -q --filter "name=test-project" | grep -q . && \
-            docker stop test-project && docker rm test-project || \
+          if docker ps -q --filter "name=test-project" | grep -q .; then
+            docker stop test-project
+            docker rm test-project
+          else
             echo "No running container to stop."
+          fi
 
       - name: Deploy with Docker Compose
         run: |
@@ -34,4 +51,6 @@ jobs:
           docker-compose up -d --build --remove-orphans
 
       - name: Verify running containers
-        run: docker ps
+        run: |
+          echo "🔍 Running containers:"
+          docker ps
