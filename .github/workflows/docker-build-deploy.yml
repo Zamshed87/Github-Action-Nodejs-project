@@ -1,32 +1,48 @@
+---
 name: Docker Build & Deploy
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch:  # Enabled without value (correct YAML syntax)
 
 jobs:
-  build-and-deploy:
-    name: Build Docker Image and Deploy Locally
+  build:
+    name: Build Docker Image
     runs-on: [self-hosted, ibos]
+
+    outputs:
+      image-built: ${{ steps.build-image.outputs.image-built }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Build Docker image
+        id: build-image
         run: |
           set -x
           echo "📦 Building Docker image..."
           docker build --progress=plain -t test-project:latest .
+          echo "image-built=true" >> $GITHUB_OUTPUT
+
+  deploy:
+    name: Deploy Container
+    runs-on: [self-hosted, ibos]
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Stop and remove existing container
         run: |
           set -x
           echo "🛑 Stopping existing container (if any)..."
           docker ps -q --filter "name=test-project" | grep -q . && \
-            docker stop test-project && docker rm test-project || echo "No running container to stop."
+            docker stop test-project && docker rm test-project || \
+            echo "No running container to stop."
 
       - name: Deploy with Docker Compose
         run: |

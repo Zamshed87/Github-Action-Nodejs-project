@@ -24,7 +24,10 @@ yarn-debug.log*
 yarn-error.log*
 yarn.lock
 
-
-#dev
+# dev
 /.vscode
-/.ideaactions-runner/
+/.idea
+
+# GitHub Actions runner
+/actions-runner/
+actions-runner-*.tar.gz
