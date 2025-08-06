@@ -12,7 +12,7 @@ jobs:
     name: Build Docker Image
     runs-on:
       - self-hosted
-      - ibos3
+      - ibos4
 
     steps:
       - name: Checkout code
@@ -35,7 +35,7 @@ jobs:
     name: Deploy with Docker Compose
     runs-on:
       - self-hosted
-      - ibos3
+      - ibos4
 
     needs: build
 
