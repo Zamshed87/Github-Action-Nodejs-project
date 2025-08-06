@@ -1,0 +1,40 @@
+name: Docker Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build Docker Image and Deploy Locally
+    runs-on: [self-hosted, ibos]  # Uses your self-hosted runner named "ibos"
+
+    steps:
+      # ✅ Step 1: Clone the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ✅ Step 2: Build Docker image from Dockerfile
+      - name: Build Docker image
+        run: |
+          echo "📦 Building Docker image..."
+          docker build -t test-project:latest .
+
+      # ✅ Step 3: Remove old container if running
+      - name: Stop and remove existing container
+        run: |
+          echo "🛑 Stopping existing container (if any)..."
+          docker ps -q --filter "name=test-project" | grep -q . && \
+            docker stop test-project && docker rm test-project || echo "No running container to stop."
+
+      # ✅ Step 4: Deploy using docker-compose (ensure docker-compose.yml exists)
+      - name: Deploy with Docker Compose
+        run: |
+          echo "🚀 Deploying with Docker Compose..."
+          docker-compose up -d --build
+
+      # ✅ Step 5: Show running containers
+      - name: Check running containers
+        run: docker ps
