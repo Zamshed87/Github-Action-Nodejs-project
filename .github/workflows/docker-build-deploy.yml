@@ -1,11 +1,10 @@
----
 name: Docker Build & Deploy
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,10 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Cache yarn dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
       - name: Build Docker image
         run: |
           echo "📦 Building Docker image..."
-          docker build -t test-project:latest .
+          docker build --network=host -t test-project:latest .
 
   deploy:
     name: Deploy with Docker Compose
@@ -35,7 +42,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Stop and remove existing container
+      - name: Stop and remove existing container if any
         run: |
           echo "🛑 Stopping and removing old container if it exists..."
           if docker ps -q --filter "name=test-project" | grep -q .; then
