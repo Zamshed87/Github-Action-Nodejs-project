@@ -3,34 +3,25 @@ FROM node:20-alpine as builder
 
 WORKDIR /app
 
-# Configure yarn for better network resilience
-RUN yarn config set network-timeout 600000 -g && \
-    yarn config set network-concurrency 1 -g
-
-# Copy package files first for better caching
+# Set Yarn config and install dependencies
 COPY package.json yarn.lock ./
+RUN yarn config set network-timeout 600000 -g && \
+    yarn config set network-concurrency 1 -g && \
+    yarn install --frozen-lockfile
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy all files
+# Copy all project files and build
 COPY . .
-
-# Build application
 RUN yarn build
 
 # Production stage
 FROM nginx:stable-alpine
 
-# Remove default nginx config
+# Clean default config and add custom
 RUN rm -rf /etc/nginx/conf.d/default.conf
-
-# Copy nginx configuration
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
-# Copy built assets from builder
+# Copy build output from previous stage
 COPY --from=builder /app/build /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]

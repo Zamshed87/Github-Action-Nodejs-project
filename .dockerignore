@@ -1,9 +1,13 @@
-.git
-.gitignore
+# Ignore unnecessary files/folders from Docker build context
 node_modules
 build
-*.md
-*.log
-.DS_Store
-.env
+.git
+.github
 .vscode
+.env
+*.log
+*.md
+.DS_Store
+test1.txt
+Dockerfile
+docker-compose.yml
