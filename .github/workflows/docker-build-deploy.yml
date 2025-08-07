@@ -1,37 +1,51 @@
----
-name: Optimized Docker Build
+name: Docker Build & Deploy
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: ~
+  workflow_dispatch: {}
 
 env:
-  IMAGE_NAME: app-frontend
-  BUILD_ARGS: >
-    --build-arg NODE_ENV=production
-    --build-arg NODE_OPTIONS=--max_old_space_size=4096
+  DOCKER_IMAGE_NAME: test-project
 
 jobs:
-  deploy:
+  build:
+    name: Build Docker Image
     runs-on: [self-hosted, ibos4]
-    
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/yarn
+            node_modules
+          key: ${{ runner.os }}-node20-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node20-yarn-
 
       - name: Build Docker image
         run: |
-          docker build ${{ env.BUILD_ARGS }} \
+          docker build \
             --network=host \
-            -t ${{ env.IMAGE_NAME }}:latest .
+            -t ${{ env.DOCKER_IMAGE_NAME }}:latest .
 
-      - name: Deploy
+  deploy:
+    name: Deploy Application
+    runs-on: [self-hosted, ibos4]
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Stop and remove old containers
         run: |
-          docker compose down --timeout 2
+          docker compose down || true
+
+      - name: Deploy application
+        run: |
           docker compose up -d --build
-
-      - name: Verify
-        run: |
-          sleep 5
-          curl -fsS http://localhost || \
-            { docker logs $(docker ps -ql); exit 1; }

@@ -1,47 +1,36 @@
-# ======== BUILDER STAGE ========
+# Builder stage
 FROM node:20-alpine as builder
-
-# Install system dependencies for native modules
-RUN apk add --no-cache \
-    python3 \
-    make \
-    g++ \
-    git \
-    && ln -sf python3 /usr/bin/python
 
 WORKDIR /app
 
-# Configure yarn
+# Configure yarn for better network resilience
 RUN yarn config set network-timeout 600000 -g && \
-    yarn config set ignore-optional true -g
+    yarn config set network-concurrency 1 -g
 
-# Copy package files first
+# Copy package files first for better caching
 COPY package.json yarn.lock ./
 
-# Clean install with frozen lockfile
-RUN yarn install --frozen-lockfile --production=false --ignore-optional
+# Install dependencies
+RUN yarn install --frozen-lockfile
 
-# Copy remaining files
+# Copy all files
 COPY . .
 
-# Build with memory limit
-RUN yarn build --max_old_space_size=4096
+# Build application
+RUN yarn build
 
-# ======== PRODUCTION STAGE ========
+# Production stage
 FROM nginx:stable-alpine
 
-# Security hardening
-RUN rm -rf /etc/nginx/conf.d/default.conf && \
-    chown -R nginx:nginx /var/cache/nginx
+# Remove default nginx config
+RUN rm -rf /etc/nginx/conf.d/default.conf
 
-# Copy nginx config
-COPY nginx/nginx.conf /etc/nginx/conf.d/
+# Copy nginx configuration
+COPY nginx/nginx.conf /etc/nginx/conf.d
 
-# Copy built assets
-COPY --from=builder --chown=nginx:nginx /app/build /usr/share/nginx/html
-
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget -qO- http://localhost/ >/dev/null || exit 1
+# Copy built assets from builder
+COPY --from=builder /app/build /usr/share/nginx/html
 
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
