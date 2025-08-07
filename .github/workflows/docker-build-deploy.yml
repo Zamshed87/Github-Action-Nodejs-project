@@ -3,10 +3,13 @@ name: Docker Build & Deploy
 on:
   push:
     branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 env:
   DOCKER_IMAGE_NAME: test-project
+  CONTAINER_NAME: test-project-container
+  HOST_PORT: 80
+  CONTAINER_PORT: 80
 
 jobs:
   build:
@@ -30,11 +33,13 @@ jobs:
     needs: build
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Stop and remove existing container (if any)
+        run: |
+          if [ $(docker ps -q -f name=${{ env.CONTAINER_NAME }}) ]; then
+            docker stop ${{ env.CONTAINER_NAME }}
+            docker rm ${{ env.CONTAINER_NAME }}
+          fi
 
-      - name: Stop and remove old containers
-        run: docker compose down || true
-
-      - name: Deploy application
-        run: docker compose up -d --build
+      - name: Run container with docker run
+        run: |
+          docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} ${{ env.DOCKER_IMAGE_NAME }}:latest

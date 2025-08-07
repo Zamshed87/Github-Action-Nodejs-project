@@ -1,27 +1,40 @@
-# Builder stage
+# Stage 1: Builder
 FROM node:20-alpine as builder
 
+# Set working directory
 WORKDIR /app
 
-# Set Yarn config and install dependencies
-COPY package.json yarn.lock ./
-RUN yarn config set network-timeout 600000 -g && \
-    yarn config set network-concurrency 1 -g && \
-    yarn install --frozen-lockfile
+# Use faster registry and conservative network settings
+RUN yarn config set registry https://registry.npmmirror.com && \
+    yarn config set network-timeout 600000 -g && \
+    yarn config set network-concurrency 1 -g
 
-# Copy all project files and build
+# Copy only lock and manifest to install dependencies and enable Docker caching
+COPY package.json yarn.lock ./
+
+# Install dependencies (cached unless package.json/yarn.lock changes)
+RUN yarn install --frozen-lockfile
+
+# Copy the rest of your code
 COPY . .
+
+# Build your app
 RUN yarn build
 
-# Production stage
+# Stage 2: Production image
 FROM nginx:stable-alpine
 
-# Clean default config and add custom
-RUN rm -rf /etc/nginx/conf.d/default.conf
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy custom nginx config
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
-# Copy build output from previous stage
+# Copy built React app from builder
 COPY --from=builder /app/build /usr/share/nginx/html
 
+# Expose port
 EXPOSE 80
+
+# Run nginx
 CMD ["nginx", "-g", "daemon off;"]
