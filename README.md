@@ -1,104 +1,257 @@
-# Peopledesk-Matador
+📘 Project Documentation – Docker Build & Deploy with GitHub Actions & Self-Hosted Runner (ibos4)
 
-## Getting started
+🧾 Objective
+Automate the build and deployment of a React app via Docker using GitHub Actions and a self-hosted runner (label: ibos4) on a Linux server.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+            📁 Project Structure
+            test-project/
+            │
+            ├── .github/workflows/
+            │   └── docker-build-deploy.yml      ← GitHub Actions workflow
+            ├── nginx/
+            │   └── nginx.conf                   ← Custom Nginx config
+            ├── Dockerfile                       ← Multi-stage Dockerfile (React + Nginx)
+            ├── docker-compose.yml              ← (Optional, unused)
+            ├── actions-runner/                 ← GitHub self-hosted runner (git-ignored)
+            ├── package.json, yarn.lock         ← React dependencies
+            ├── public/, src/, ...              ← React source code
+            └── ...
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-## Add your files
+🚀 Deployment Overview
+            Item
+            Description
+            App Framework
+            React + Nginx (via multi-stage Docker)
+            CI/CD Tool
+            GitHub Actions
+            Runner
+            Self-hosted on label ibos4
+            Deployment Port
+            Host 8080 → Container 80
+            Final URL
+            http://<your-server-ip>:8080
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
-```
-cd existing_repo
-git remote add origin https://gitlab.ibos.io/peopledesk/peopledesk-matador-front.git
-git branch -M main
-git push -uf origin main
-```
+🔁 GitHub Actions Workflow
+📄 Path: .github/workflows/docker-build-deploy.yml
 
-## Integrate with your tools
+      name: Docker Build & Deploy
+      
+      on:
+        push:
+          branches: [main]
+        workflow_dispatch:
+      
+      env:
+        DOCKER_IMAGE_NAME: test-project
+        CONTAINER_NAME: test-project-container
+        HOST_PORT: 8080
+        CONTAINER_PORT: 80
+      
+      jobs:
+        build:
+          name: Build Docker Image
+          runs-on: [self-hosted, ibos4]
+      
+          steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+      
+            - name: Build Docker image
+              run: |
+                docker build \
+                  --network=host \
+                  -t ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} \
+                  -t ${{ env.DOCKER_IMAGE_NAME }}:latest .
+      
+        deploy:
+          name: Deploy Application
+          runs-on: [self-hosted, ibos4]
+          needs: build
+      
+          steps:
+            - name: Stop and remove existing container (if any)
+              run: |
+                if [ $(docker ps -q -f name=${{ env.CONTAINER_NAME }}) ]; then
+                  docker stop ${{ env.CONTAINER_NAME }}
+                  docker rm ${{ env.CONTAINER_NAME }}
+                fi
+      
+            - name: Run container with docker run
+              run: |
+                docker run -d --name ${{ env.CONTAINER_NAME }} \
+                  -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} \
+                  ${{ env.DOCKER_IMAGE_NAME }}:latest
+      
+      
 
-- [ ] [Set up project integrations](https://gitlab.ibos.io/peopledesk/peopledesk-matador/-/settings/integrations)
 
-## Collaborate with your team
+🧱 Dockerfile
+📄 Path: Dockerfile
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+            # Stage 1: Builder
+            FROM node:20-alpine as builder
+            WORKDIR /app
+            
+            RUN yarn config set registry https://registry.npmmirror.com && \
+                yarn config set network-timeout 600000 -g && \
+                yarn config set network-concurrency 1 -g
+            
+            COPY package.json yarn.lock ./
+            RUN yarn install --frozen-lockfile
+            COPY . .
+            RUN yarn build
+            
+            # Stage 2: Production image
+            FROM nginx:stable-alpine
+            
+            RUN rm /etc/nginx/conf.d/default.conf
+            COPY nginx/nginx.conf /etc/nginx/conf.d
+            COPY --from=builder /app/build /usr/share/nginx/html
+            
+            EXPOSE 80
+            CMD ["nginx", "-g", "daemon off;"]
 
-## Test and Deploy
 
-Use the built-in continuous integration in GitLab.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
 
----
 
-# Editing this README
+🏗️ Self-Hosted Runner Setup (ibos4)
+1. 🔄 Remove Existing Runner (if needed)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+            cd ~/github-action/test-project/actions-runner
+            ./svc.sh stop || ./run.sh --stop
+            ./config.sh remove --unattended
+            sudo chown -R $USER:$USER ~/github-action/test-project/actions-runner
+            sudo rm -rf ~/github-action/test-project/actions-runner
 
-## Suggestions for a good README
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+2. 🧰 Install New Runner
+1. Create Runner Directory & Download Package
 
-## Name
+            mkdir -p ~/github-action/test-project/actions-runner && cd ~/github-action/test-project/actions-runner
+            
+            curl -o actions-runner-linux-x64-2.327.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.327.1/actions-runner-linux-x64-2.327.1.tar.gz
+            
+            echo "d68ac1f500b747d1271d9e52661c408d56cffd226974f68b7dc813e30b9e0575  actions-runner-linux-x64-2.327.1.tar.gz" | shasum -a 256 -c
 
-Choose a self-explaining name for your project.
+            tar xzf actions-runner-linux-x64-2.327.1.tar.gz
 
-## Description
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
+2. Set Ownership (if needed) && Configure the Runner
+ (as user ibos, without sudo)
+Make sure your user (e.g., ibos) owns the directory:
+            chown -R ibos:ibos /home/ibos/github-action/test-project/actions-runner/
+            
+            su - ibos
+            
+            cd /home/ibos/github-action/test-project/actions-runner/
+            
+            ./config.sh --url https://github.com/Zamshed87/Github-Action-Nodejs-project --token APKW6DI3VOSO6K64XB2C4QLISSBOG --name ibos4 --labels ibos4
 
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
-## Visuals
 
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
-## Installation
+4. 🚀 Run the Runner
+Option A – Foreground:
+            
+            ./run.sh
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Option B – Run as Service (Recommended):
+            
+            sudo ./svc.sh install
+            sudo ./svc.sh start
+            sudo ./svc.sh status
 
-## Usage
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+5. 🧹 Ignore Runner Directory in Git
 
-## Support
+            echo "actions-runner/" >> .gitignore
+            git rm -r --cached actions-runner/
+            git commit -m "Ignore actions-runner binaries"
+            git push
 
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
 
-## Roadmap
 
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+🌐 Output & Accessing the App
 
-## Contributing
 
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
 
-## Authors and acknowledgment
+Visit your app at:  http://10.209.99.209:8080
 
-Show your appreciation to those who have contributed to the project.
+Make sure port 8080 is open in your server firewall.
 
-## License
+🧹 Docker Maintenance Commands 
+Stop container
+            docker stop test-project-container
+Remove container
+            docker rm test-project-container
+View running containers
+            docker ps
+Remove image
+            docker rmi -f <IMAGE_ID>
 
-For open source projects, say how it is licensed.
 
-## Project status
+            ✅ Final Checklist
+            ✅ Item
+            Status
+            GitHub Actions Workflow
+            ✅ Present and configured
+            Dockerfile
+            ✅ Multi-stage React → Nginx
+            Port Mapping
+            ✅ 8080 → 80
+            Runner Installed
+            ✅ Labeled ibos4
+            Runner Running
+            ✅ As service
+            Workflow Target
+            ✅ runs-on: [self-hosted, ibos4]
+            Git Ignore Runner Directory
+            ✅ actions-runner/ ignored
 
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
-# test-project
+
+
+
+
+
+
+
+
+
+Nginx documentation
+
+
+root@ibos:/home/ibos/github-action/test-project# cat /etc/nginx/sites-available/default
+
+                        server {
+                            listen 80;
+                            server_name 10.209.99.209;
+                        
+                            # Redirect all HTTP to HTTPS
+                            return 301 https://$host$request_uri;
+                        }
+                        
+                        server {
+                            listen 443 ssl;
+                            server_name 10.209.99.209;
+                        
+                            ssl_certificate /home/ibos/cert.pem;
+                            ssl_certificate_key /home/ibos/key.pem;
+                        
+                            ssl_protocols TLSv1.2 TLSv1.3;
+                            ssl_ciphers HIGH:!aNULL:!MD5;
+                        
+                            location / {
+                                proxy_pass http://127.0.0.1:8080;
+                                proxy_http_version 1.1;
+                                proxy_set_header Upgrade $http_upgrade;
+                                proxy_set_header Connection "upgrade";
+                                proxy_set_header Host $host;
+                                proxy_cache_bypass $http_upgrade;
+                            }
+                        }
