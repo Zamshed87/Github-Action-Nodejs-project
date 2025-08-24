@@ -1,26 +1,17 @@
 # Stage 1: Builder
 FROM node:20-alpine as builder
-
 WORKDIR /app
 
-# Use faster registry, reasonable network concurrency
 RUN yarn config set registry https://registry.npmmirror.com && \
-    yarn config set network-timeout 300000 -g && \
-    yarn config set network-concurrency 8 -g
+    yarn config set network-timeout 600000 -g && \
+    yarn config set network-concurrency 1 -g
 
-# Copy lock & manifest first
 COPY package.json yarn.lock ./
-
-# Install dependencies with cache folder and ignore engine/peer warnings
-RUN yarn install --frozen-lockfile --ignore-engines --cache-folder /app/.yarn-cache
-
-# Copy the rest of the code
+RUN yarn install --frozen-lockfile
 COPY . .
-
-# Build app
 RUN yarn build
 
-# Stage 2: Production
+# Stage 2: Production image
 FROM nginx:stable-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf

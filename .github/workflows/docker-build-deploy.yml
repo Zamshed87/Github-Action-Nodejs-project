@@ -6,32 +6,19 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_IMAGE_NAME: zamshed/github-action-nodejs-project
-  CONTAINER_NAME: Github-Action-nodejs-project-container
-  HOST_PORT: 8081
+  DOCKER_IMAGE_NAME: test-project
+  CONTAINER_NAME: test-project-container
+  HOST_PORT: 8080
   CONTAINER_PORT: 80
 
 jobs:
   build:
-    name: Build & Push Docker Image
+    name: Build Docker Image
     runs-on: [self-hosted, ibos4]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Cache Yarn dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.yarn/cache
-            /app/.yarn-cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Build Docker image
         run: |
@@ -40,20 +27,12 @@ jobs:
             -t ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} \
             -t ${{ env.DOCKER_IMAGE_NAME }}:latest .
 
-      - name: Push Docker image
-        run: |
-          docker push ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.DOCKER_IMAGE_NAME }}:latest
-
   deploy:
     name: Deploy Application
     runs-on: [self-hosted, ibos4]
     needs: build
 
     steps:
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
       - name: Stop and remove existing container (if any)
         run: |
           if [ $(docker ps -q -f name=${{ env.CONTAINER_NAME }}) ]; then
@@ -61,9 +40,8 @@ jobs:
             docker rm ${{ env.CONTAINER_NAME }}
           fi
 
-      - name: Pull latest image from Docker Hub
-        run: docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
-
-      - name: Run container
+      - name: Run container with docker run
         run: |
-          docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} ${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker run -d --name ${{ env.CONTAINER_NAME }} \
+            -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} \
+            ${{ env.DOCKER_IMAGE_NAME }}:latest
