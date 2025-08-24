@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_IMAGE_NAME: zamshed/Github-Action-Nodejs-project   # <--- your Docker Hub repo
+  DOCKER_IMAGE_NAME: zamshed/github-action-nodejs-project   # <--- your Docker Hub repo
   CONTAINER_NAME: Github-Action-Nodejs-project-container
   HOST_PORT: 8080
   CONTAINER_PORT: 80
